@@ -8,7 +8,7 @@ import { APP_PREFIX_PATH, AUTH_PREFIX_PATH } from "configs/AppConfig";
 export const Views = ({ location }) => {
   return (
     <Switch>
-      <Route exact path="/">
+      <Route path="/" exact>
         <Redirect to={APP_PREFIX_PATH} />
       </Route>
       <Route path={AUTH_PREFIX_PATH}>
