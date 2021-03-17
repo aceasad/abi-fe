@@ -1,43 +1,64 @@
+import {
+  PieChartOutlined,
+  CalendarOutlined,
+  TeamOutlined,
+  UserOutlined,
+  WhatsAppOutlined,
+  SettingOutlined,
+} from "@ant-design/icons";
 import { APP_PREFIX_PATH } from "configs/AppConfig";
 
-const dashBoardNavTree = [
+const pagesNavTree = [
   {
-    key: "contacts",
-    path: `${APP_PREFIX_PATH}/contacts`,
-    title: "Contacts",
+    key: "overview",
+    path: `${APP_PREFIX_PATH}/overview`,
+    title: "sidenav.pages.overview",
+    icon: PieChartOutlined,
     breadcrumb: false,
     submenu: [],
   },
   {
-    key: "funnels",
-    path: `${APP_PREFIX_PATH}/funnels`,
-    title: "Funnels",
+    key: "appointments",
+    path: `${APP_PREFIX_PATH}/appointments`,
+    title: "sidenav.pages.appointments",
+    icon: CalendarOutlined,
     breadcrumb: false,
     submenu: [],
   },
   {
-    key: "automation",
-    path: `${APP_PREFIX_PATH}/automation`,
-    title: "Automation",
+    key: "patients",
+    path: `${APP_PREFIX_PATH}/patients`,
+    title: "sidenav.pages.patients",
+    icon: TeamOutlined,
     breadcrumb: false,
     submenu: [],
   },
   {
-    key: "calendar",
-    path: `${APP_PREFIX_PATH}/calendar`,
-    title: "Calendar",
+    key: "staff",
+    path: `${APP_PREFIX_PATH}/staff`,
+    title: "sidenav.pages.staff",
+    icon: UserOutlined,
+    breadcrumb: false,
+    submenu: [],
+  },
+  {
+    key: "conversation",
+    path: `${APP_PREFIX_PATH}/conversation`,
+    title: "sidenav.pages.conversation",
+    icon: WhatsAppOutlined,
     breadcrumb: false,
     submenu: [],
   },
   {
     key: "settings",
     path: `${APP_PREFIX_PATH}/settings`,
-    title: "Settings",
+    title: "sidenav.pages.setting",
+    icon: SettingOutlined,
     breadcrumb: false,
     submenu: [],
   },
 ];
 
-const navigationConfig = [...dashBoardNavTree];
+const navigationConfig = [...pagesNavTree];
 
 export default navigationConfig;

@@ -50,7 +50,7 @@ export const AppLayout = ({ navCollapsed, navType, location }) => {
       {isNavTop && !isMobile ? <TopNav routeInfo={currentRouteInfo} /> : null}
       <Layout className="app-container">
         {isNavSide && !isMobile ? (
-          <SideNav localization={false} routeInfo={currentRouteInfo} />
+          <SideNav routeInfo={currentRouteInfo} />
         ) : null}
         <Layout
           className="app-layout"

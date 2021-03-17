@@ -60,7 +60,7 @@ export const Logo = (props) => {
       <img
         src={getLogo(props)}
         alt={`${APP_NAME} logo`}
-        style={{ width: "60%" }}
+        style={{ width: "60%", height: "60%", objectFit: "contain" }}
       />
     </div>
   );

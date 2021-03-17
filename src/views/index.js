@@ -3,21 +3,33 @@ import { Route, Switch, Redirect, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import AppLayout from "layouts/app-layout";
 import AuthLayout from "layouts/auth-layout";
+import AppLocale from "lang";
+import { IntlProvider } from "react-intl";
+import { ConfigProvider } from "antd";
 import { APP_PREFIX_PATH, AUTH_PREFIX_PATH } from "configs/AppConfig";
 
-export const Views = ({ location }) => {
+export const Views = ({ location, locale }) => {
+  const currentAppLocale = AppLocale[locale];
+
   return (
-    <Switch>
-      <Route path="/" exact>
-        <Redirect to={APP_PREFIX_PATH} />
-      </Route>
-      <Route path={AUTH_PREFIX_PATH}>
-        <AuthLayout />
-      </Route>
-      <Route path={APP_PREFIX_PATH}>
-        <AppLayout location={location} />
-      </Route>
-    </Switch>
+    <IntlProvider
+      locale={currentAppLocale.locale}
+      messages={currentAppLocale.messages}
+    >
+      <ConfigProvider locale={currentAppLocale.antd}>
+        <Switch>
+          <Route path="/" exact>
+            <Redirect to={APP_PREFIX_PATH} />
+          </Route>
+          <Route path={AUTH_PREFIX_PATH}>
+            <AuthLayout />
+          </Route>
+          <Route path={APP_PREFIX_PATH}>
+            <AppLayout location={location} />
+          </Route>
+        </Switch>
+      </ConfigProvider>
+    </IntlProvider>
   );
 };
 
