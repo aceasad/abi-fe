@@ -8,20 +8,24 @@ export const AppViews = () => {
     <Suspense fallback={<Loading cover="content" />}>
       <Switch>
         <Route
-          path={`${APP_PREFIX_PATH}/contacts`}
-          component={lazy(() => import(`./ContactsPage`))}
+          path={`${APP_PREFIX_PATH}/overview`}
+          component={lazy(() => import(`./OverviewPage`))}
         />
         <Route
-          path={`${APP_PREFIX_PATH}/funnels`}
-          component={lazy(() => import(`./FunnelsPage`))}
+          path={`${APP_PREFIX_PATH}/appointments`}
+          component={lazy(() => import(`./AppointmentsPage`))}
         />
         <Route
-          path={`${APP_PREFIX_PATH}/automation`}
-          component={lazy(() => import(`./AutomationPage`))}
+          path={`${APP_PREFIX_PATH}/patients`}
+          component={lazy(() => import(`./PatientsPage`))}
         />
         <Route
-          path={`${APP_PREFIX_PATH}/calendar`}
-          component={lazy(() => import(`./CalendarPage`))}
+          path={`${APP_PREFIX_PATH}/staff`}
+          component={lazy(() => import(`./StaffPage`))}
+        />
+        <Route
+          path={`${APP_PREFIX_PATH}/conversation`}
+          component={lazy(() => import(`./ConversationPage`))}
         />
         <Route
           path={`${APP_PREFIX_PATH}/settings`}
@@ -29,7 +33,7 @@ export const AppViews = () => {
         />
         <Redirect
           from={`${APP_PREFIX_PATH}`}
-          to={`${APP_PREFIX_PATH}/contacts`}
+          to={`${APP_PREFIX_PATH}/overview`}
         />
       </Switch>
     </Suspense>

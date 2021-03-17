@@ -104,12 +104,12 @@
   "sidenav.maps.simple": "Simple Maps",
 
   "sidenav.pages": "Pages",
-  "sidenav.pages.profile": "Profile",
-  "sidenav.pages.invoice": "Invoice",
-  "sidenav.pages.pricing": "Pricing",
-  "sidenav.pages.faq": "FAQ",
+  "sidenav.pages.overview": "Overview",
+  "sidenav.pages.appointments": "Appointments",
+  "sidenav.pages.patients": "Patients",
+  "sidenav.pages.staff": "Staff",
+  "sidenav.pages.conversation": "Conversation",
   "sidenav.pages.setting": "Setting",
-  "sidenav.pages.userlist": "User list",
 
   "sidenav.authentication": "Authentication",
   "sidenav.authentication.login.1": "Login 1",
