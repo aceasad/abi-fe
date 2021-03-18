@@ -72,17 +72,17 @@ export const showLoading = () => {
   };
 };
 
-export const sendForgotPasswordEmail = (payload) => {
+export const sendForgotPasswordEmail = (email) => {
   return {
     type: SEND_FORGOT_PASSWORD_EMAIL,
-    payload,
+    email,
   };
 };
 
-export const sendForgotPasswordEmailSuccess = (payload) => {
+export const sendForgotPasswordEmailSuccess = (email) => {
   return {
     type: SEND_FORGOT_PASSWORD_EMAIL_SUCCESS,
-    payload,
+    email,
   };
 };
 

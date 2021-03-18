@@ -46,12 +46,9 @@ export function* signOut() {
 }
 
 export function* forgotPasswordEmailSend() {
-  yield takeEvery(SEND_FORGOT_PASSWORD_EMAIL, function* ({ payload }) {
+  yield takeEvery(SEND_FORGOT_PASSWORD_EMAIL, function* ({ email }) {
     try {
-      const sendEmail = yield call(
-        AuthService.sendForgotPasswordEmail,
-        payload
-      );
+      const sendEmail = yield call(AuthService.sendForgotPasswordEmail, email);
       yield put(push(ROUTES.LOGIN));
       yield put(go());
       yield put(sendForgotPasswordEmailSuccess(sendEmail));
