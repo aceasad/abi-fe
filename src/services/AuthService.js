@@ -66,6 +66,20 @@ class AuthService extends ApiService {
 
     return data;
   };
+
+  resetPassword = async (password, token, email) => {
+    const { data } = await this.apiClient.post(
+      ENDPOINTS.FORGOT_PASSWORD,
+
+      {
+        password,
+        token,
+        email,
+      },
+      { params: { token: token } }
+    );
+    return data;
+  };
 }
 
 const authService = new AuthService();
