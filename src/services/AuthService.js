@@ -58,11 +58,12 @@ class AuthService extends ApiService {
     return user ? JSON.parse(user).access : undefined;
   };
 
-  sendForgotPasswordEmail = async (payload) => {
+  sendForgotPasswordEmail = async (email) => {
     const { data } = await this.apiClient.post(
       ENDPOINTS.FORGOT_PASSWORD,
-      payload
+      email
     );
+
     return data;
   };
 }
