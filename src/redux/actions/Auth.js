@@ -11,9 +11,6 @@ import {
   SEND_FORGOT_PASSWORD_EMAIL,
   SEND_FORGOT_PASSWORD_EMAIL_SUCCESS,
   SEND_FORGOT_PASSWORD_EMAIL_ERROR,
-  RESET_PASSWORD,
-  RESET_PASSWORD_SUCCESS,
-  RESET_PASSWORD_ERROR,
 } from "../constants/Auth";
 
 export const signIn = (payload) => {
@@ -93,30 +90,5 @@ export const sendForgotPasswordEmailError = (payload) => {
   return {
     type: SEND_FORGOT_PASSWORD_EMAIL_ERROR,
     payload,
-  };
-};
-
-export const resetPassword = (password, token, email) => {
-  return {
-    type: RESET_PASSWORD,
-    password,
-    token,
-    email,
-  };
-};
-
-export const resetPasswordSuccess = (password, token, email) => {
-  return {
-    type: RESET_PASSWORD_SUCCESS,
-    password,
-    token,
-    email,
-  };
-};
-
-export const resetPasswordError = (error_message) => {
-  return {
-    type: RESET_PASSWORD_ERROR,
-    error_message,
   };
 };

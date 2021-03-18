@@ -13,9 +13,5 @@
   "forgot_password_page.link.terms_and_conditions": "Terms and conditions",
   "forgot_password_page.link.privacy_policy": "Privacy policy",
   "forgot_password_page.text.forgotten_password_title": "Forgotten password",
-  "forgot_password_page.text.forgotten_password_paragraph": "Please enter the email you use to sign in to Abi. We'll then send you an email with the instructions to follow.",
-  "reset_password_page.input_label.password": "{label}",
-  "reset_password_page.input_label.passwordRepeat": "{label}",
-  "reset_password_page.button.confirm_button": "Confrim",
-  "reset_password_page.matches_password": "{label} must contain at least 8 characters,one upper letter,one number and one special character."
+  "forgot_password_page.text.forgotten_password_paragraph": "Please enter the email you use to sign in to Abi. We'll then send you an email with the instructions to follow."
 }

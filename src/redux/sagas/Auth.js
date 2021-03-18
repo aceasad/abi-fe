@@ -4,15 +4,12 @@ import {
   SEND_FORGOT_PASSWORD_EMAIL,
   SIGNOUT,
   SIGNIN,
-  RESET_PASSWORD,
 } from "../constants/Auth";
 import {
-  resetPasswordError,
   sendForgotPasswordEmailError,
   sendForgotPasswordEmailSuccess,
   showAuthMessage,
   signOutSuccess,
-  resetPasswordSuccess,
 } from "../actions/Auth";
 import { push, go } from "connected-react-router";
 
@@ -61,29 +58,6 @@ export function* forgotPasswordEmailSend() {
   });
 }
 
-export function* resetPassword() {
-  yield takeEvery(RESET_PASSWORD, function* ({ password, token, email }) {
-    try {
-      const response = yield call(
-        AuthService.resetPassword,
-        password,
-        token,
-        email
-      );
-      yield put(push(ROUTES.LOGIN));
-      yield put(go());
-      yield put(resetPasswordSuccess(response));
-    } catch (err) {
-      yield put(resetPasswordError(err));
-    }
-  });
-}
-
 export default function* rootSaga() {
-  yield all([
-    fork(signIn),
-    fork(signOut),
-    fork(forgotPasswordEmailSend),
-    fork(resetPassword),
-  ]);
+  yield all([fork(signIn), fork(signOut), fork(forgotPasswordEmailSend)]);
 }
