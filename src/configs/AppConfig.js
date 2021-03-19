@@ -14,5 +14,5 @@ export const THEME_CONFIG = {
   topNavColor: "#11add0",
   headerNavColor: "",
   mobileNav: false,
-  default: "light",
+  currentTheme: "light"
 };

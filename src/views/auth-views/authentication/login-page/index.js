@@ -8,14 +8,7 @@ import { useIntl } from "react-intl";
 
 const backgroundStyle = {
   backgroundRepeat: "no-repeat",
-  backgroundSize: "cover",
-};
-
-const linkStyle = {
-  color: "#5c5cd6",
-  textDecoration: "underline",
-  textDecorationColor: "#ccb3ff",
-  cursor: "pointer",
+  backgroundSize: "cover"
 };
 
 const LoginPage = (props) => {
@@ -46,22 +39,6 @@ const LoginPage = (props) => {
                 <Row justify="center">
                   <Col xs={24}>
                     <LoginForm {...props} />
-                  </Col>
-                </Row>
-                <Row
-                  className="login-footer"
-                  style={{ marginTop: "4rem" }}
-                  justify="center"
-                >
-                  <Col lg={10} xs={12}>
-                    <span style={linkStyle}>
-                      {formatMessage(messages.termsAndConditionsLink)}
-                    </span>
-                  </Col>
-                  <Col lg={10} xs={12}>
-                    <span style={{ float: "right", ...linkStyle }}>
-                      {formatMessage(messages.privacyPolicyLink)}
-                    </span>
                   </Col>
                 </Row>
               </div>

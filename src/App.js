@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter as Router } from "react-router-dom";
 import Views from "./views";
 import { ThemeSwitcherProvider } from "react-css-theme-switcher";
 import { THEME_CONFIG } from "./configs/AppConfig";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUser } from "redux/actions/Auth";
+import { makeSelectIsAuthenticated } from "redux/selectors/Users";
 
 const themes = {
   dark: `${process.env.PUBLIC_URL}/css/dark-theme.css`,
@@ -10,11 +13,18 @@ const themes = {
 };
 
 function App() {
+  const dispatch = useDispatch();
+  const isAuthenticated = useSelector(makeSelectIsAuthenticated());
+
+  useEffect(() => {
+    if (isAuthenticated) dispatch(fetchUser());
+  }, [dispatch, isAuthenticated]);
+
   return (
     <div className="App">
       <ThemeSwitcherProvider
         themeMap={themes}
-        defaultTheme={THEME_CONFIG.default}
+        defaultTheme={THEME_CONFIG.currentTheme}
         insertionPoint="styles-insertion-point"
       >
         <Router>
