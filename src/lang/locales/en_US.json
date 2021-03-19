@@ -124,5 +124,32 @@
 
   "sidenav.docs": "Docs",
   "sidenav.docs.documentation": "Documentation",
-  "sidenav.docs.changelog": "Changelog"
+  "sidenav.docs.changelog": "Changelog",
+
+  "login_page.button.login": "Log In",
+  "login_page.input_label.email": "Email Address",
+  "login_page.input_label.password": "Password",
+  "login_page.text.forgot_password": "Forgot your password?",
+  "login_page.text.login_title": "Log In",
+  "login_page.link.terms_and_conditions": "Terms and conditions",
+  "login_page.link.privacy_policy": "Privacy policy",
+  "login_page.validation.trim_password": "Password can't start with space",
+  "login_page.error.invalid_username_or_password": "Invalid username or password",
+
+  "forgot_password_page.button.confirm_button": "Confim",
+  "forgot_password_page.input_label.email": "Email Address",
+  "forgot_password_page.link.terms_and_conditions": "Terms and conditions",
+  "forgot_password_page.link.privacy_policy": "Privacy policy",
+  "forgot_password_page.text.forgotten_password_title": "Forgotten password",
+  "forgot_password_page.text.forgotten_password_paragraph": "Please enter the email you use to sign in to Abi. We'll then send you an email with the instructions to follow.",
+
+  "global.session_expired": "Your session has expired",
+  "global.validations.email": "{label} must be a valid email",
+  "global.validations.one_of": "{label} must match with {value}",
+  "global.validations.min": "{label} must be at least {minValue} characters",
+  "global.validations.max": "{label} must be max {maxValue} characters",
+  "global.validations.required": "{label} is required",
+  "global.validations.positive_number": "{label} must be positive number",
+  "global.validations.greater_than_number": "{label} must be greather than {number}",
+  "global.validations.matches": "{matchesLabel}"
 }
