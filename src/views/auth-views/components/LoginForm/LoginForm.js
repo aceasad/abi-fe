@@ -1,18 +1,11 @@
 import React, { useEffect } from "react";
-import { connect, useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Button, Form } from "antd";
 import { MailOutlined, LockOutlined } from "@ant-design/icons";
-import PropTypes from "prop-types";
-import {
-  showLoading,
-  showAuthMessage,
-  hideAuthMessage,
-  authenticated,
-  signIn
-} from "redux/actions/Auth";
+import { signIn } from "redux/actions/Auth";
 import { useHistory } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Formik } from "formik";
+import { Formik, Field } from "formik";
 import { loginSchema } from "../../../../utils/validations";
 import "../../../../assets/sass/views/auth/login.scss";
 import messages from "./messages";
@@ -20,6 +13,7 @@ import { useIntl } from "react-intl";
 import { ROUTES } from "routes";
 import { passwordMinLength } from "constants/Validation";
 import FormField from "components/shared-components/Form/FormField";
+import { makeSelectLoginDetails } from "redux/selectors/Users";
 
 const linkStyle = {
   color: "#5c5cd6",
@@ -35,19 +29,13 @@ const loginButtonStyle = {
   outline: "none"
 };
 
-export const LoginForm = (props) => {
+export const LoginForm = ({ redirect, allowRedirect }) => {
   let history = useHistory();
   const dispatch = useDispatch();
 
-  const {
-    loading,
-    showMessage,
-    message,
-    token,
-    redirect,
-    allowRedirect
-  } = props;
-
+  const { loading, message, showMessage, token } = useSelector(
+    makeSelectLoginDetails()
+  );
   const { formatMessage } = useIntl();
 
   const onLogin = (values) => {
@@ -60,17 +48,29 @@ export const LoginForm = (props) => {
     }
   }, [token]);
 
-  const PasswordLabel = () => (
+  const PasswordLabel = ({ email }) => (
     <div className={"d-flex justify-content-between w-100 align-items-center"}>
       <span>{formatMessage(messages.passwordInputLabel)}</span>
 
       <span
         className="login-underlined"
         style={linkStyle}
-        onClick={() => history.push(ROUTES.FORGOT_PASSWORD)}
+        onClick={() => history.push(ROUTES.FORGOT_PASSWORD, email)}
       >
         {formatMessage(messages.forgotPasswordLink)}
       </span>
+    </div>
+  );
+
+  const ValidPasswordFormat = (
+    <div>
+      <div>
+        {formatMessage(messages.minimumCharacters, { min: passwordMinLength })}
+      </div>
+      <div>{formatMessage(messages.upperAndLowerMixture)}</div>
+      <div>{formatMessage(messages.lettersAndNumberMixture)}</div>
+      <div>{formatMessage(messages.specialCharacters)}</div>
+      <div>{formatMessage(messages.specialCharactersExcluded)}</div>
     </div>
   );
 
@@ -91,48 +91,34 @@ export const LoginForm = (props) => {
         onSubmit={(values) => {
           onLogin(values);
         }}
+        validateOnMount={false}
       >
-        {({
-          values,
-          handleChange,
-          handleBlur,
-          handleSubmit,
-          dirty,
-          isValid
-        }) => (
+        {({ values, handleSubmit, dirty, isValid, errors }) => (
           <Form layout="vertical" name="login-form">
-            <FormField
+            <Field
+              component={FormField}
               label={formatMessage(messages.emailInputLabel)}
               name={"username"}
-              handleChange={handleChange}
-              handleBlur={handleBlur}
-              value={values.email}
               prefix={<MailOutlined className="text-primary" />}
-              errorMessage={(msg) =>
-                formatMessage(msg, {
-                  label: formatMessage(messages.emailInputLabel)
-                })
-              }
+              errorTexts={{
+                label: formatMessage(messages.emailInputLabel)
+              }}
               autoFocus
             />
-            <FormField
-              labelComponent={PasswordLabel}
+            <Field
+              component={FormField}
+              labelComponent={() => <PasswordLabel email={values.username} />}
+              Tooltip={ValidPasswordFormat}
               name={"password"}
-              handleChange={handleChange}
-              handleBlur={handleBlur}
-              value={values.email}
               prefix={<LockOutlined className="text-primary" />}
-              errorMessage={(msg) =>
-                formatMessage(msg, {
-                  label: formatMessage(messages.passwordInputLabel),
-                  minValue: passwordMinLength,
-                  matchesLabel: formatMessage(
-                    messages.passwordCantStartWithSpace
-                  )
-                })
-              }
               secureField
+              errorTexts={{
+                label: formatMessage(messages.passwordInputLabel),
+                minValue: passwordMinLength,
+                matchesLabel: formatMessage(messages.passwordValidFormat)
+              }}
             />
+
             <Form.Item>
               <Button
                 style={loginButtonStyle}
@@ -153,25 +139,4 @@ export const LoginForm = (props) => {
   );
 };
 
-LoginForm.propTypes = {
-  otherSignIn: PropTypes.bool,
-  extra: PropTypes.oneOfType([PropTypes.string, PropTypes.element])
-};
-
-LoginForm.defaultProps = {
-  otherSignIn: true
-};
-
-const mapStateToProps = ({ auth }) => {
-  const { loading, message, showMessage, token, redirect } = auth;
-  return { loading, message, showMessage, token, redirect };
-};
-
-const mapDispatchToProps = {
-  showAuthMessage,
-  showLoading,
-  hideAuthMessage,
-  authenticated
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(LoginForm);
+export default LoginForm;

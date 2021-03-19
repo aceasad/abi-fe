@@ -19,12 +19,34 @@ export default defineMessages({
     id: `${scope}.input_label.password`,
     defaultMessage: "Password"
   },
-  passwordCantStartWithSpace: {
-    id: `${scope}.validation.trim_password`,
-    defaultMessage: "Password can't start with space"
+  passwordValidFormat: {
+    id: `${scope}.validation.valid_password`,
+    defaultMessage: "Password must be in valid format"
   },
   invalidEmailOrPassword: {
     id: `${scope}.error.invalid_username_or_password`,
     defaultMessage: "Invalid username or password"
+  },
+  minimumCharacters: {
+    id: `${scope}.note.min_characters`,
+    defaultMessage: "At least {min} characters"
+  },
+  upperAndLowerMixture: {
+    id: `${scope}.note.upper_and_lower_mix`,
+    defaultMessage: "A mixture of both uppercase and lowercase letters"
+  },
+  lettersAndNumberMixture: {
+    id: `${scope}.note.char_and_letter_mix`,
+    defaultMessage: "A mixture of letters and numbers"
+  },
+  specialCharacters: {
+    id: `${scope}.note.special_characters`,
+    defaultMessage:
+      "Inclusion of at least one special character, e.g., ! @ # ? ]"
+  },
+  specialCharactersExcluded: {
+    id: `${scope}.note.special_characters_excluded`,
+    defaultMessage:
+      "Note: do not use < or > in your password, as both can cause problems in Web browsers"
   }
 });

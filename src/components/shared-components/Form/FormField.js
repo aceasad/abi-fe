@@ -1,37 +1,49 @@
 import React from "react";
 import { ErrorMessage } from "formik";
-import { Form, Input } from "antd";
+import { Form, Input, Popover } from "antd";
+import { useIntl } from "react-intl";
 
 const FormField = ({
-  handleChange,
-  handleBlur,
-  value,
-  label,
-  autoFocus,
-  name,
-  errorMessage,
-  prefix,
+  form: { handleBlur, handleChange },
+  field,
   labelComponent: Label,
-  secureField
+  secureField,
+  errorTexts,
+  label,
+  Tooltip,
+  ...props
 }) => {
   const InputField = secureField ? Input.Password : Input;
+  const { formatMessage } = useIntl();
+
+  const defaultErrorMessage = (msg) =>
+    formatMessage(msg, {
+      label
+    });
+
+  const FormItem = (
+    <Form.Item>
+      <InputField
+        name={field.name}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        value={field.value}
+        {...props}
+      />
+    </Form.Item>
+  );
 
   return (
-    <>
+    <div>
       {Label && <Label />}
       {label && <label>{label}</label>}
-      <Form.Item>
-        <InputField
-          autoFocus={autoFocus}
-          name={name}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          value={value}
-          prefix={prefix}
-        />
-        <ErrorMessage name={name}>{errorMessage}</ErrorMessage>
-      </Form.Item>
-    </>
+      {Tooltip ? <Popover content={Tooltip}>{FormItem}</Popover> : FormItem}
+      <ErrorMessage name={field.name}>
+        {errorTexts
+          ? (msg) => formatMessage(msg, errorTexts)
+          : defaultErrorMessage}
+      </ErrorMessage>
+    </div>
   );
 };
 
