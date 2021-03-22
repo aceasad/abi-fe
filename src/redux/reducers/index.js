@@ -1,6 +1,7 @@
 import languageReducer from "containers/LanguageProvider/reducer";
 import { combineReducers } from "redux";
 import Auth from "./Auth";
+import Clinic from "./Clinic";
 import Theme from "./Theme";
 import { connectRouter } from "connected-react-router";
 
@@ -9,6 +10,7 @@ export default (history) =>
   combineReducers({
     theme: Theme,
     auth: Auth,
+    clinic: Clinic,
     language: languageReducer,
     router: connectRouter(history),
   });

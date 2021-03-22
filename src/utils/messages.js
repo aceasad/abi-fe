@@ -11,4 +11,8 @@ export default defineMessages({
     id: `${scope}.validations.required`,
     defaultMessage: "{label} is required",
   },
+  matches: {
+    id: `${scope}.validations.matches`,
+    defaultMessage: "{label} must match with {matches}",
+  },
 });

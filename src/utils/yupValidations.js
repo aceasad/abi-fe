@@ -7,6 +7,7 @@ Yup.setLocale({
   },
   string: {
     email: messages.email,
+    matches: messages.matches,
   },
 });
 
