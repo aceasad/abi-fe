@@ -46,6 +46,7 @@ export const LoginForm = ({ redirect, allowRedirect }) => {
     if (token && allowRedirect) {
       history.push(redirect);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
   const PasswordLabel = ({ email }) => (

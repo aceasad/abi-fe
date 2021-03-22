@@ -48,5 +48,9 @@ export default defineMessages({
     id: `${scope}.note.special_characters_excluded`,
     defaultMessage:
       "Note: do not use < or > in your password, as both can cause problems in Web browsers"
+  },
+  logOut: {
+    id: `${scope}.text.log_out`,
+    defaultMessage: "Log out"
   }
 });

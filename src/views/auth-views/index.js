@@ -15,24 +15,16 @@ export const AppViews = () => {
           component={lazy(() => import(`./authentication/login`))}
         />
         <Route
-          path={`${AUTH_PREFIX_PATH}/login-1`}
-          component={lazy(() => import(`./authentication/login-1`))}
-        />
-        <Route
-          path={`${AUTH_PREFIX_PATH}/login-2`}
-          component={lazy(() => import(`./authentication/login-2`))}
-        />
-        <Route
           path={`${AUTH_PREFIX_PATH}/forgot-password`}
           component={lazy(() => import(`./authentication/forgot-password`))}
         />
         <Route
-          path={`${AUTH_PREFIX_PATH}/error-1`}
-          component={lazy(() => import(`./errors/error-page-1`))}
+          path={`${AUTH_PREFIX_PATH}/not-found`}
+          component={lazy(() => import(`./errors/page-not-found`))}
         />
         <Route
-          path={`${AUTH_PREFIX_PATH}/error-2`}
-          component={lazy(() => import(`./errors/error-page-2`))}
+          path={`${AUTH_PREFIX_PATH}/something-went-wrong`}
+          component={lazy(() => import(`./errors/something-went-wrong`))}
         />
         <ResetPasswordRoute
           exact
