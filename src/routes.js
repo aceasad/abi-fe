@@ -4,5 +4,6 @@ export const ROUTES = {
   LOGIN: `${AUTH_PREFIX_PATH}/login`,
   FORGOT_PASSWORD: `${AUTH_PREFIX_PATH}/forgot-password`,
   CONTACTS: `${APP_PREFIX_PATH}/contacts`,
-  DASHBOARD: `/`
+  DASHBOARD: `/`,
+  CREATE_PASSWORD: `${AUTH_PREFIX_PATH}/create-password`
 };
