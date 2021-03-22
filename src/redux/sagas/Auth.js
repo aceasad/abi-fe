@@ -5,6 +5,7 @@ import {
   SIGNOUT,
   SIGNIN,
   RESET_PASSWORD,
+  FETCH_USER,
 } from "../constants/Auth";
 import {
   sendForgotPasswordEmailError,
@@ -13,17 +14,32 @@ import {
   signOutSuccess,
   resetPasswordSuccess,
   resetPasswordError,
+  authenticated,
+  setUser,
 } from "../actions/Auth";
 import { push, go } from "connected-react-router";
 
 import FirebaseService from "services/FirebaseService";
 import AuthService from "services/AuthService";
 import { ROUTES } from "routes";
+import messages from "views/auth-views/components/LoginForm/messages";
 
 export function* signIn() {
   yield takeEvery(SIGNIN, function* ({ payload }) {
     try {
-      yield call(AuthService.login, payload);
+      const data = yield call(AuthService.login, payload);
+      yield put(authenticated(data));
+    } catch (error) {
+      yield put(showAuthMessage(messages.invalidEmailOrPassword));
+    }
+  });
+}
+
+export function* userFetch() {
+  yield takeEvery(FETCH_USER, function* () {
+    try {
+      const { data } = yield call(AuthService.fetchUser);
+      yield put(setUser(data));
       //yield put(push(ROUTES.CONTACTS));
       //yield put(go());
     } catch (error) {
@@ -85,5 +101,6 @@ export default function* rootSaga() {
     fork(signOut),
     fork(forgotPasswordEmailSend),
     fork(resetPassword),
+    fork(userFetch),
   ]);
 }

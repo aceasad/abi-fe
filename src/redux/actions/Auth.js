@@ -14,11 +14,26 @@ import {
   RESET_PASSWORD,
   RESET_PASSWORD_SUCCESS,
   RESET_PASSWORD_ERROR,
+  SET_USER,
+  FETCH_USER,
 } from "../constants/Auth";
 
 export const signIn = (payload) => {
   return {
     type: SIGNIN,
+    payload,
+  };
+};
+
+export const fetchUser = () => {
+  return {
+    type: FETCH_USER,
+  };
+};
+
+export const setUser = (payload) => {
+  return {
+    type: SET_USER,
     payload,
   };
 };

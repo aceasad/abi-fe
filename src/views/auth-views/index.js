@@ -8,6 +8,7 @@ export const AppViews = () => {
     <Suspense fallback={<Loading cover="page" />}>
       <Switch>
         <Route
+          exact
           path={`${AUTH_PREFIX_PATH}/login`}
           component={lazy(() => import(`./authentication/login`))}
         />

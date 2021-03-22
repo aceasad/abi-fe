@@ -2,8 +2,9 @@ import { getLocalStorageItem, setLocalStorageItem } from "utils/localStorage";
 import ApiService from "./ApiService";
 
 const ENDPOINTS = {
-  LOGIN: "/login/",
+  LOGIN: "/token/",
   FORGOT_PASSWORD: "/password_reset/",
+  FETCH_USER: "/users/me/"
 };
 
 class AuthService extends ApiService {
@@ -14,9 +15,8 @@ class AuthService extends ApiService {
 
   init = () => {
     const token = this.getToken();
-    const user = this.getUser();
 
-    if (token && user) {
+    if (token) {
       this.setAuthorizationHeader();
 
       this.api.setUnauthorizedCallback(this.destroySession.bind(this));
@@ -27,24 +27,19 @@ class AuthService extends ApiService {
     const token = this.getToken();
     if (token) {
       this.api.attachHeaders({
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token}`
       });
     }
   };
 
-  createSession = (user) => {
-    setLocalStorageItem("token", JSON.stringify(user));
+  createSession = (token) => {
+    setLocalStorageItem("token", token);
     this.setAuthorizationHeader();
   };
 
   destroySession = () => {
     localStorage.clear();
     this.api.removeHeaders(["Authorization"]);
-  };
-
-  getUser = () => {
-    const user = getLocalStorageItem("token");
-    return JSON.parse(user);
   };
 
   login = async (loginData) => {
@@ -54,8 +49,12 @@ class AuthService extends ApiService {
   };
 
   getToken = () => {
-    const user = getLocalStorageItem("token");
-    return user ? JSON.parse(user).access : undefined;
+    const token = getLocalStorageItem("token");
+    return token ? token.access : undefined;
+  };
+
+  fetchUser = () => {
+    return this.apiClient.get(ENDPOINTS.FETCH_USER);
   };
 
   sendForgotPasswordEmail = async (email) => {

@@ -2,12 +2,14 @@ import React, { lazy, Suspense } from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
 import Loading from "components/shared-components/Loading";
 import { APP_PREFIX_PATH } from "configs/AppConfig";
+import PrivateRoute from "routes/PrivateRoute";
 
 export const AppViews = () => {
   return (
     <Suspense fallback={<Loading cover="content" />}>
       <Switch>
-        <Route
+        <PrivateRoute
+          exact
           path={`${APP_PREFIX_PATH}/overview`}
           component={lazy(() => import(`./OverviewPage`))}
         />
