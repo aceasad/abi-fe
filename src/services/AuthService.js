@@ -4,7 +4,8 @@ import ApiService from "./ApiService";
 const ENDPOINTS = {
   LOGIN: "/token/",
   FORGOT_PASSWORD: "/password_reset/",
-  FETCH_USER: "/users/me/"
+  FETCH_USER: "/users/me/",
+  CREATE_PASSWORD: "/users/create_password/"
 };
 
 class AuthService extends ApiService {
@@ -65,6 +66,8 @@ class AuthService extends ApiService {
 
     return data;
   };
+  createUserPassword = (password) =>
+    this.apiClient.post(ENDPOINTS.CREATE_PASSWORD, password);
 }
 
 const authService = new AuthService();

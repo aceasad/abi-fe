@@ -12,7 +12,9 @@ import {
   SEND_FORGOT_PASSWORD_EMAIL_SUCCESS,
   SEND_FORGOT_PASSWORD_EMAIL_ERROR,
   SET_USER,
-  FETCH_USER
+  SET_PASSWORD_CHANGED,
+  FETCH_USER,
+  CREATE_PASSWORD
 } from "../constants/Auth";
 
 export const signIn = (payload) => {
@@ -81,9 +83,10 @@ export const hideAuthMessage = () => {
   };
 };
 
-export const showLoading = () => {
+export const showLoading = (payload) => {
   return {
-    type: SHOW_LOADING
+    type: SHOW_LOADING,
+    payload
   };
 };
 
@@ -105,5 +108,18 @@ export const sendForgotPasswordEmailError = (payload) => {
   return {
     type: SEND_FORGOT_PASSWORD_EMAIL_ERROR,
     payload
+  };
+};
+
+export const createPassword = (payload) => {
+  return {
+    type: CREATE_PASSWORD,
+    payload
+  };
+};
+
+export const setPasswordChanged = () => {
+  return {
+    type: SET_PASSWORD_CHANGED
   };
 };
