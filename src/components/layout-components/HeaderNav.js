@@ -10,7 +10,7 @@ import { toggleCollapsedNav, onMobileNavToggle } from "redux/actions/Theme";
 import {
   NAV_TYPE_TOP,
   SIDE_NAV_COLLAPSED_WIDTH,
-  SIDE_NAV_WIDTH,
+  SIDE_NAV_WIDTH
 } from "constants/ThemeConstant";
 import { LogoutOutlined } from "@ant-design/icons";
 import utils from "utils";
@@ -26,7 +26,7 @@ export const HeaderNav = (props) => {
     toggleCollapsedNav,
     onMobileNavToggle,
     isMobile,
-    currentTheme,
+    currentTheme
   } = props;
   const [searchActive, setSearchActive] = useState(false);
 
@@ -111,12 +111,12 @@ const mapStateToProps = ({ theme }) => {
     navType,
     headerNavColor,
     mobileNav,
-    currentTheme,
+    currentTheme
   } = theme;
   return { navCollapsed, navType, headerNavColor, mobileNav, currentTheme };
 };
 
 export default connect(mapStateToProps, {
   toggleCollapsedNav,
-  onMobileNavToggle,
+  onMobileNavToggle
 })(HeaderNav);

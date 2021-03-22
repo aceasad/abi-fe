@@ -7,6 +7,9 @@ import AppLocale from "lang";
 import { IntlProvider } from "react-intl";
 import { ConfigProvider } from "antd";
 import { APP_PREFIX_PATH, AUTH_PREFIX_PATH } from "configs/AppConfig";
+import { PrivateRoute } from "routes/PrivateRoute";
+import PublicRoute from "routes/PublicRoute";
+import { ROUTES } from "routes";
 
 export const Views = ({ location, locale }) => {
   const currentAppLocale = AppLocale[locale];
@@ -18,15 +21,15 @@ export const Views = ({ location, locale }) => {
     >
       <ConfigProvider locale={currentAppLocale.antd}>
         <Switch>
-          <Route path="/" exact>
+          <Route exact path="/">
             <Redirect to={APP_PREFIX_PATH} />
           </Route>
-          <Route path={AUTH_PREFIX_PATH}>
-            <AuthLayout />
-          </Route>
-          <Route path={APP_PREFIX_PATH}>
-            <AppLayout location={location} />
-          </Route>
+          <PublicRoute path={AUTH_PREFIX_PATH} component={AuthLayout} />
+          <PrivateRoute
+            path={APP_PREFIX_PATH}
+            component={(props) => <AppLayout {...props} location={location} />}
+          />
+          <Redirect to={ROUTES.LOGIN} />
         </Switch>
       </ConfigProvider>
     </IntlProvider>
