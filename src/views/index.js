@@ -8,7 +8,6 @@ import { IntlProvider } from "react-intl";
 import { ConfigProvider } from "antd";
 import { APP_PREFIX_PATH, AUTH_PREFIX_PATH } from "configs/AppConfig";
 import { PrivateRoute } from "routes/PrivateRoute";
-import PublicRoute from "routes/PublicRoute";
 import { ROUTES } from "routes";
 
 export const Views = ({ location, locale }) => {
@@ -24,7 +23,7 @@ export const Views = ({ location, locale }) => {
           <Route exact path="/">
             <Redirect to={APP_PREFIX_PATH} />
           </Route>
-          <PublicRoute path={AUTH_PREFIX_PATH} component={AuthLayout} />
+          <Route path={AUTH_PREFIX_PATH} component={AuthLayout} />
           <PrivateRoute
             path={APP_PREFIX_PATH}
             component={(props) => <AppLayout {...props} location={location} />}

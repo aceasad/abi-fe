@@ -2,12 +2,14 @@ import React, { lazy, Suspense } from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
 import Loading from "components/shared-components/Loading";
 import { AUTH_PREFIX_PATH } from "configs/AppConfig";
+import PublicRoute from "routes/PublicRoute";
+import ResetPasswordRoute from "routes/ResetPasswordRoute";
 
 export const AppViews = () => {
   return (
     <Suspense fallback={<Loading cover="page" />}>
       <Switch>
-        <Route
+        <PublicRoute
           exact
           path={`${AUTH_PREFIX_PATH}/login`}
           component={lazy(() => import(`./authentication/login`))}
@@ -31,6 +33,11 @@ export const AppViews = () => {
         <Route
           path={`${AUTH_PREFIX_PATH}/error-2`}
           component={lazy(() => import(`./errors/error-page-2`))}
+        />
+        <ResetPasswordRoute
+          exact
+          path={`${AUTH_PREFIX_PATH}/create-password`}
+          component={lazy(() => import(`./authentication/create-password`))}
         />
         <Redirect
           from={`${AUTH_PREFIX_PATH}`}

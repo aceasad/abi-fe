@@ -8,10 +8,12 @@ import {
   SHOW_LOADING,
   SIGNIN_WITH_GOOGLE_AUTHENTICATED,
   SIGNIN_WITH_FACEBOOK_AUTHENTICATED,
-  SET_USER
+  SET_USER,
+  SET_PASSWORD_CHANGED
 } from "../constants/Auth";
 import { getLocalStorageItem } from "utils/localStorage";
 import produce from "immer";
+import { PASSWORD_STATUSES } from "constants/UserConstants";
 
 const initState = {
   loading: false,
@@ -62,6 +64,12 @@ const auth = (state = initState, action) =>
         break;
       case SET_USER:
         draft.user = action.payload;
+        break;
+      case SET_PASSWORD_CHANGED:
+        draft.user = {
+          ...state.user,
+          password_changed_status: PASSWORD_STATUSES.CHANGED
+        };
         break;
     }
   });

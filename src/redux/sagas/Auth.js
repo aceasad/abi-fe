@@ -4,7 +4,8 @@ import {
   SEND_FORGOT_PASSWORD_EMAIL,
   SIGNOUT,
   SIGNIN,
-  FETCH_USER
+  FETCH_USER,
+  CREATE_PASSWORD
 } from "../constants/Auth";
 import {
   sendForgotPasswordEmailError,
@@ -12,7 +13,8 @@ import {
   showAuthMessage,
   signOutSuccess,
   authenticated,
-  setUser
+  setUser,
+  setPasswordChanged
 } from "../actions/Auth";
 import { push, go } from "connected-react-router";
 
@@ -74,11 +76,24 @@ export function* forgotPasswordEmailSend() {
   });
 }
 
+export function* createUserPassword() {
+  yield takeEvery(CREATE_PASSWORD, function* ({ payload }) {
+    try {
+      yield call(AuthService.createUserPassword, payload);
+      yield put(setPasswordChanged());
+      yield put(push(ROUTES.DASHBOARD));
+    } catch (err) {
+      //
+    }
+  });
+}
+
 export default function* rootSaga() {
   yield all([
     fork(signIn),
     fork(signOut),
     fork(forgotPasswordEmailSend),
-    fork(userFetch)
+    fork(userFetch),
+    fork(createUserPassword)
   ]);
 }

@@ -147,6 +147,8 @@
   "forgot_password_page.link.privacy_policy": "Privacy policy",
   "forgot_password_page.text.forgotten_password_title": "Forgotten password",
   "forgot_password_page.text.forgotten_password_paragraph": "Please enter the email you use to sign in to Abi. We'll then send you an email with the instructions to follow.",
+  "create_password_page.text.create_password_title": "Create password",
+  "create_password_page.input_label.password": "Repeat password",
 
   "global.session_expired": "Your session has expired",
   "global.validations.email": "{label} must be a valid email",

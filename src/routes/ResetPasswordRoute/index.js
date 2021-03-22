@@ -3,24 +3,25 @@ import { Route, Redirect } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { ROUTES } from "routes";
 import {
-  makeSelectCurrentUser,
-  makeSelectIsAuthenticated
+  makeSelectIsAuthenticated,
+  maskeSelectIsPasswordCreateRequired,
+  makeSelectCurrentUser
 } from "../../redux/selectors/Users";
 import Loading from "components/shared-components/Loading";
-import { PASSWORD_STATUSES } from "constants/UserConstants";
 
-export function PrivateRoute({ component: Component, type, ...rest }) {
+export function ResetPasswordRoute({ component: Component, type, ...rest }) {
   const isAuthenticated = useSelector(makeSelectIsAuthenticated());
+  const isPasswordCreateRequired = useSelector(
+    maskeSelectIsPasswordCreateRequired()
+  );
   const user = useSelector(makeSelectCurrentUser());
 
-  const getComponentByPasswordStatus = (props) => {
-    if (
-      user.password_changed_status === PASSWORD_STATUSES.NOT_CHANGED ||
-      user.password_changed_status === PASSWORD_STATUSES.EXPIRED
-    )
-      return <Redirect to={ROUTES.CREATE_PASSWORD} />;
-    return <Component {...props} />;
-  };
+  const getComponentByPasswordStatus = (props) =>
+    isPasswordCreateRequired ? (
+      <Component {...props} />
+    ) : (
+      <Redirect to={ROUTES.DASHBOARD} />
+    );
 
   const getComponent = (props) =>
     !user ? <Loading /> : getComponentByPasswordStatus(props);
@@ -35,4 +36,4 @@ export function PrivateRoute({ component: Component, type, ...rest }) {
   );
 }
 
-export default PrivateRoute;
+export default ResetPasswordRoute;

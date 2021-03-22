@@ -1,5 +1,6 @@
 import { createSelector } from "reselect";
 import reducers from "../reducers";
+import { PASSWORD_STATUSES } from "constants/UserConstants";
 
 const selectUsersDomain = (state) => state.auth || reducers;
 
@@ -17,8 +18,18 @@ const makeSelectLoginDetails = () =>
     token: substate.token
   }));
 
+const maskeSelectIsPasswordCreateRequired = () =>
+  createSelector(
+    selectUsersDomain,
+    (substate) =>
+      substate?.user?.password_changed_status ===
+        PASSWORD_STATUSES.NOT_CHANGED ||
+      substate?.user?.password_changed_status === PASSWORD_STATUSES.EXPIRED
+  );
+
 export {
   makeSelectCurrentUser,
   makeSelectIsAuthenticated,
-  makeSelectLoginDetails
+  makeSelectLoginDetails,
+  maskeSelectIsPasswordCreateRequired
 };
