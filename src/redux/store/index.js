@@ -8,7 +8,8 @@ import { routerMiddleware } from "connected-react-router";
 const sagaMiddleware = createSagaMiddleware();
 
 const middlewares = [sagaMiddleware];
-const history = createBrowserHistory();
+
+export const history = createBrowserHistory();
 
 function configureStore(preloadedState) {
   const composeEnhancers =

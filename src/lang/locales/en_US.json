@@ -131,6 +131,7 @@
   "login_page.input_label.password": "Password",
   "login_page.text.forgot_password": "Forgot your password?",
   "login_page.text.login_title": "Log In",
+  "login_page.text.log_out": "Log out",
   "login_page.link.terms_and_conditions": "Terms and conditions",
   "login_page.link.privacy_policy": "Privacy policy",
   "login_page.validation.valid_password": "Password must be in valid format",

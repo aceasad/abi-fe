@@ -49,6 +49,10 @@ export default defineMessages({
     defaultMessage:
       "Note: do not use < or > in your password, as both can cause problems in Web browsers"
   },
+  logOut: {
+    id: `${scope}.text.log_out`,
+    defaultMessage: "Log out"
+  },
   createPasswordError: {
     id: `${scope}.error.create_password`,
     defaultMessage: "Failed to create password, try again later"

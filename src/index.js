@@ -6,9 +6,8 @@ import "./index.css";
 import LanguageProvider from "containers/LanguageProvider";
 import { translationMessages } from "./i18n";
 import { Provider } from "react-redux";
-import store from "./redux/store";
+import store, { history } from "redux/store";
 import { ConnectedRouter } from "connected-react-router";
-import history from "./utils/history";
 
 const MOUNT_NODE = document.getElementById("root");
 

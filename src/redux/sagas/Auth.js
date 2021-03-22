@@ -1,6 +1,5 @@
 import { all, takeEvery, put, fork, call } from "redux-saga/effects";
 import {
-  AUTH_TOKEN,
   SEND_FORGOT_PASSWORD_EMAIL,
   SIGNOUT,
   SIGNIN,
@@ -11,18 +10,18 @@ import {
   sendForgotPasswordEmailError,
   sendForgotPasswordEmailSuccess,
   showAuthMessage,
-  signOutSuccess,
   authenticated,
   setUser,
   setPasswordChanged,
+  signOutSuccess,
   showLoading
 } from "../actions/Auth";
 import { push, go } from "connected-react-router";
 
-import FirebaseService from "services/FirebaseService";
 import AuthService from "services/AuthService";
 import { ROUTES } from "routes";
 import messages from "views/auth-views/components/LoginForm/messages";
+import { clearLocalStorage } from "utils/localStorage";
 
 export function* signIn() {
   yield takeEvery(SIGNIN, function* ({ payload }) {
@@ -49,15 +48,11 @@ export function* userFetch() {
 export function* signOut() {
   yield takeEvery(SIGNOUT, function* () {
     try {
-      const signOutUser = yield call(FirebaseService.signOutRequest);
-      if (signOutUser === undefined) {
-        localStorage.removeItem(AUTH_TOKEN);
-        yield put(signOutSuccess(signOutUser));
-      } else {
-        yield put(showAuthMessage(signOutUser.message));
-      }
+      yield put(signOutSuccess());
+      yield clearLocalStorage();
+      yield put(push(ROUTES.LOGIN));
     } catch (err) {
-      yield put(showAuthMessage(err));
+      //
     }
   });
 }
