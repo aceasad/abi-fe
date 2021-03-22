@@ -120,18 +120,17 @@ export const resetPassword = (password, token, email) => {
   };
 };
 
-export const resetPasswordSuccess = (password, token, email) => {
+export const resetPasswordSuccess = (password, token) => {
   return {
     type: RESET_PASSWORD_SUCCESS,
     password,
     token,
-    email,
   };
 };
 
-export const resetPasswordError = (error_message) => {
+export const resetPasswordError = (errorMessage) => {
   return {
     type: RESET_PASSWORD_ERROR,
-    error_message,
+    errorMessage,
   };
 };

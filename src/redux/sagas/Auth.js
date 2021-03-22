@@ -78,13 +78,12 @@ export function* forgotPasswordEmailSend() {
 }
 
 export function* resetPassword() {
-  yield takeEvery(RESET_PASSWORD, function* ({ password, token, email }) {
+  yield takeEvery(RESET_PASSWORD, function* ({ password, token }) {
     try {
-      const response = yield call(
+      const { response } = yield call(
         AuthService.resetPassword,
         password,
-        token,
-        email
+        token
       );
       yield put(push(ROUTES.LOGIN));
       yield put(go());

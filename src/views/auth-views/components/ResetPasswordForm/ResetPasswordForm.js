@@ -1,9 +1,10 @@
 import React from "react";
-import { ErrorMessage, Formik } from "formik";
-import { Button, Form, Input } from "antd";
+import { Formik, Field } from "formik";
+import { Button, Form } from "antd";
 import messages from "./messages";
 import { useDispatch } from "react-redux";
 import { useIntl } from "react-intl";
+import FormField from "components/shared-components/Form/FormField";
 import { useParams } from "react-router-dom";
 import { resetPassword } from "../../../../redux/actions/Auth";
 
@@ -21,8 +22,8 @@ const ResetPasswordForm = (match) => {
   const { token, email } = useParams();
   const { formatMessage } = useIntl();
 
-  const resetPasswordFun = (values) => {
-    dispatch(resetPassword(values.password, token, email));
+  const handleResetPassword = (values) => {
+    dispatch(resetPassword(values.password, token));
   };
 
   return (
@@ -31,47 +32,38 @@ const ResetPasswordForm = (match) => {
         initialValues={{ password: "", passwordRepeat: "" }}
         validationSchema={resetPasswordSchema}
         onSubmit={(values) => {
-          resetPasswordFun(values);
+          handleResetPassword(values);
         }}
       >
-        {({ values, handleChange, handleBlur, handleSubmit }) => (
+        {({
+          values,
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          dirty,
+          isValid,
+        }) => (
           <Form layout="vertical" name="login-form">
-            <Form.Item>
-              <Input
-                autoFocus
-                name="password"
-                type="password"
-                onChange={handleChange}
-                onBlur={handleBlur}
-                value={values.password}
-              />
-              <ErrorMessage name="password">
-                {(msg) =>
-                  formatMessage(msg, {
-                    label: formatMessage(messages.passwordInputLabel),
-                    matchesLabel: formatMessage(messages.matches_password),
-                  })
-                }
-              </ErrorMessage>
-            </Form.Item>
-            <Form.Item>
-              <Input
-                autoFocus
-                name="passwordRepeat"
-                type="password"
-                onChange={handleChange}
-                onBlur={handleBlur}
-                value={values.passwordRepeat}
-              />
-              <ErrorMessage name="passwordRepeat">
-                {(msg) =>
-                  formatMessage(msg, {
-                    label: formatMessage(messages.passwordRepeatInputLabel),
-                    value: formatMessage(messages.passwordInputLabel),
-                  })
-                }
-              </ErrorMessage>
-            </Form.Item>
+            <Field
+              component={FormField}
+              name={"password"}
+              secureField
+              errorTexts={{
+                label: formatMessage(messages.passwordInputLabel),
+                matchesLabel: formatMessage(messages.matches_password),
+              }}
+              autoFocus
+            />
+            <Field
+              component={FormField}
+              name={"passwordRepeat"}
+              secureField
+              errorTexts={{
+                label: formatMessage(messages.passwordRepeatInputLabel),
+                value: formatMessage(messages.passwordInputLabel),
+              }}
+              autoFocus
+            />
             <Form.Item>
               <Button
                 style={confirmButtonStyle}
@@ -79,6 +71,7 @@ const ResetPasswordForm = (match) => {
                 type="primary"
                 htmlType="submit"
                 block
+                disabled={!dirty || !isValid}
               >
                 {formatMessage(messages.confirmButton)}
               </Button>

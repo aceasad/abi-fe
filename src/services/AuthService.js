@@ -4,7 +4,8 @@ import ApiService from "./ApiService";
 const ENDPOINTS = {
   LOGIN: "/token/",
   FORGOT_PASSWORD: "/password_reset/",
-  FETCH_USER: "/users/me/"
+  FORGOT_PASSWORD_CONFIRM: "/password_reset/confirm/",
+  FETCH_USER: "/users/me/",
 };
 
 class AuthService extends ApiService {
@@ -27,7 +28,7 @@ class AuthService extends ApiService {
     const token = this.getToken();
     if (token) {
       this.api.attachHeaders({
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       });
     }
   };
@@ -66,18 +67,16 @@ class AuthService extends ApiService {
     return data;
   };
 
-  resetPassword = async (password, token, email) => {
-    const { data } = await this.apiClient.post(
-      ENDPOINTS.FORGOT_PASSWORD,
+  resetPassword = (password, token) => {
+    return this.apiClient.post(
+      ENDPOINTS.FORGOT_PASSWORD_CONFIRM,
 
       {
         password,
         token,
-        email,
       },
       { params: { token: token } }
     );
-    return data;
   };
 }
 

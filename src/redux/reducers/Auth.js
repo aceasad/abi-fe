@@ -23,25 +23,7 @@ const initState = {
   showMessage: false,
   redirect: "",
   token: localStorage.getItem(AUTH_TOKEN),
-};
-
-/*
-    case RESET_PASSWORD: {
-      return { ...state };
-    }
-    case RESET_PASSWORD_SUCCESS: {
-      return { ...state };
-    }
-    case RESET_PASSWORD_ERROR: {
-      return { ...state, message: action.error_message.message };
-    }
-    default:
-      return state;
-  }
-}; +/
-
-  token: getLocalStorageItem(AUTH_TOKEN)?.access,
-  user: null
+  user: null,
 };
 
 /* eslint-disable default-case */
@@ -85,6 +67,8 @@ const auth = (state = initState, action) =>
       case SET_USER:
         draft.user = action.payload;
         break;
+      case RESET_PASSWORD_ERROR:
+        draft.message = action.errorMessage.message;
     }
   });
 

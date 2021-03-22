@@ -19,14 +19,14 @@ const linkStyle = {
   color: "#5c5cd6",
   textDecoration: "underline",
   textDecorationColor: "#ccb3ff",
-  cursor: "pointer"
+  cursor: "pointer",
 };
 
 const loginButtonStyle = {
   backgroundColor: "#5c5cd6",
   borderRadius: "5px",
   border: "none",
-  outline: "none"
+  outline: "none",
 };
 
 export const LoginForm = ({ redirect, allowRedirect }) => {
@@ -80,7 +80,7 @@ export const LoginForm = ({ redirect, allowRedirect }) => {
         initial={{ opacity: 0, marginBottom: 0 }}
         animate={{
           opacity: showMessage ? 1 : 0,
-          marginBottom: showMessage ? 20 : 0
+          marginBottom: showMessage ? 20 : 0,
         }}
       >
         {showMessage && formatMessage(message)}
@@ -101,7 +101,7 @@ export const LoginForm = ({ redirect, allowRedirect }) => {
               name={"username"}
               prefix={<MailOutlined className="text-primary" />}
               errorTexts={{
-                label: formatMessage(messages.emailInputLabel)
+                label: formatMessage(messages.emailInputLabel),
               }}
               autoFocus
             />
@@ -115,7 +115,7 @@ export const LoginForm = ({ redirect, allowRedirect }) => {
               errorTexts={{
                 label: formatMessage(messages.passwordInputLabel),
                 minValue: passwordMinLength,
-                matchesLabel: formatMessage(messages.passwordValidFormat)
+                matchesLabel: formatMessage(messages.passwordValidFormat),
               }}
             />
 
