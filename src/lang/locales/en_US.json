@@ -135,6 +135,7 @@
   "login_page.link.privacy_policy": "Privacy policy",
   "login_page.validation.valid_password": "Password must be in valid format",
   "login_page.error.invalid_username_or_password": "Invalid username or password",
+  "login_page.error.create_password": "Failed to create password, try again later",
   "login_page.note.min_characters": "At least {min} characters",
   "login_page.note.upper_and_lower_mix": "A mixture of both uppercase and lowercase letters",
   "login_page.note.char_and_letter_mix": "A mixture of letters and numbers",

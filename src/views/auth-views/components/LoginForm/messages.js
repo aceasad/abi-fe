@@ -48,5 +48,9 @@ export default defineMessages({
     id: `${scope}.note.special_characters_excluded`,
     defaultMessage:
       "Note: do not use < or > in your password, as both can cause problems in Web browsers"
+  },
+  createPasswordError: {
+    id: `${scope}.error.create_password`,
+    defaultMessage: "Failed to create password, try again later"
   }
 });

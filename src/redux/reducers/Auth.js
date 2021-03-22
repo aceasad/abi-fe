@@ -52,7 +52,7 @@ const auth = (state = initState, action) =>
         draft.token = action.token;
         break;
       case SHOW_LOADING:
-        draft.loading = true;
+        draft.loading = action.payload;
         break;
       case SIGNIN_WITH_GOOGLE_AUTHENTICATED:
         draft.loading = false;
