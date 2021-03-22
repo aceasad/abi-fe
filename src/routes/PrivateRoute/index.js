@@ -4,20 +4,20 @@ import { useSelector } from "react-redux";
 import { ROUTES } from "routes";
 import {
   makeSelectCurrentUser,
-  makeSelectIsAuthenticated
+  makeSelectIsAuthenticated,
+  maskeSelectIsPasswordCreateRequired
 } from "../../redux/selectors/Users";
 import Loading from "components/shared-components/Loading";
-import { PASSWORD_STATUSES } from "constants/UserConstants";
 
 export function PrivateRoute({ component: Component, type, ...rest }) {
   const isAuthenticated = useSelector(makeSelectIsAuthenticated());
   const user = useSelector(makeSelectCurrentUser());
+  const isPasswordCreateRequired = useSelector(
+    maskeSelectIsPasswordCreateRequired()
+  );
 
   const getComponentByPasswordStatus = (props) => {
-    if (
-      user.password_changed_status === PASSWORD_STATUSES.NOT_CHANGED ||
-      user.password_changed_status === PASSWORD_STATUSES.EXPIRED
-    )
+    if (isPasswordCreateRequired)
       return <Redirect to={ROUTES.CREATE_PASSWORD} />;
     return <Component {...props} />;
   };

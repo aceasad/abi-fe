@@ -83,7 +83,6 @@ export const CreatePassowrdForm = () => {
           <Form.Item>
             <Button
               style={loginButtonStyle}
-              onClick={() => handleSubmit(values)}
               type="primary"
               htmlType="submit"
               block

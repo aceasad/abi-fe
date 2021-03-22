@@ -21,10 +21,9 @@ const makeSelectLoginDetails = () =>
 const maskeSelectIsPasswordCreateRequired = () =>
   createSelector(
     selectUsersDomain,
-    (substate) =>
-      substate?.user?.password_changed_status ===
-        PASSWORD_STATUSES.NOT_CHANGED ||
-      substate?.user?.password_changed_status === PASSWORD_STATUSES.EXPIRED
+    ({ user }) =>
+      user?.password_changed_status === PASSWORD_STATUSES.NOT_CHANGED ||
+      user?.password_changed_status === PASSWORD_STATUSES.EXPIRED
   );
 
 export {

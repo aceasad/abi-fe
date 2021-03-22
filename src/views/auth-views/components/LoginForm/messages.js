@@ -52,5 +52,9 @@ export default defineMessages({
   logOut: {
     id: `${scope}.text.log_out`,
     defaultMessage: "Log out"
+  },
+  createPasswordError: {
+    id: `${scope}.error.create_password`,
+    defaultMessage: "Failed to create password, try again later"
   }
 });

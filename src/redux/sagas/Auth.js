@@ -13,7 +13,8 @@ import {
   authenticated,
   setUser,
   setPasswordChanged,
-  signOutSuccess
+  signOutSuccess,
+  showLoading
 } from "../actions/Auth";
 import { push, go } from "connected-react-router";
 
@@ -38,8 +39,6 @@ export function* userFetch() {
     try {
       const { data } = yield call(AuthService.fetchUser);
       yield put(setUser(data));
-      //yield put(push(ROUTES.CONTACTS));
-      //yield put(go());
     } catch (error) {
       yield put(showAuthMessage(error));
     }
@@ -74,11 +73,14 @@ export function* forgotPasswordEmailSend() {
 export function* createUserPassword() {
   yield takeEvery(CREATE_PASSWORD, function* ({ payload }) {
     try {
+      yield put(showLoading(true));
       yield call(AuthService.createUserPassword, payload);
       yield put(setPasswordChanged());
       yield put(push(ROUTES.DASHBOARD));
     } catch (err) {
-      //
+      yield put(showAuthMessage(messages.createPasswordError));
+    } finally {
+      yield put(showLoading(false));
     }
   });
 }

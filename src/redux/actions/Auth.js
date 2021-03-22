@@ -83,9 +83,10 @@ export const hideAuthMessage = () => {
   };
 };
 
-export const showLoading = () => {
+export const showLoading = (payload) => {
   return {
-    type: SHOW_LOADING
+    type: SHOW_LOADING,
+    payload
   };
 };
 

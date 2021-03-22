@@ -1,15 +1,18 @@
 import React from "react";
 import { Card, Row, Col } from "antd";
 import { useSelector } from "react-redux";
+import { makeSelectCurrentTheme } from "redux/selectors/Theme";
 import "assets/sass/views/auth/login.scss";
+import { THEME_LIGHT } from "constants/ThemeConstant";
 
 const backgroundStyle = {
   backgroundRepeat: "no-repeat",
   backgroundSize: "cover"
 };
 
-const AuthFormWrapper = ({ title, paragraph, children }) => {
-  const theme = useSelector((state) => state.theme.currentTheme);
+const AuthFormWrapper = ({ title = false, paragraph = false, children }) => {
+  const theme = useSelector(makeSelectCurrentTheme());
+
   return (
     <div className="h-100" style={backgroundStyle}>
       <div className="container d-flex flex-column justify-content-center h-100">
@@ -22,7 +25,7 @@ const AuthFormWrapper = ({ title, paragraph, children }) => {
                     <img
                       className="img-fluid"
                       src={`/img/${
-                        theme === "light" ? "logo.png" : "logo-white.png"
+                        theme === THEME_LIGHT ? "logo.png" : "logo-white.png"
                       }`}
                       alt=""
                     />
