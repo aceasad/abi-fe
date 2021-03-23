@@ -1,13 +1,13 @@
-import React from "react";
-import { Route, Redirect } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { ROUTES } from "routes";
+import React from 'react';
+import { Route, Redirect } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { ROUTES } from 'routes';
 import {
   makeSelectIsAuthenticated,
   maskeSelectIsPasswordCreateRequired,
-  makeSelectCurrentUser
-} from "../../redux/selectors/Users";
-import Loading from "components/shared-components/Loading";
+  makeSelectCurrentUser,
+} from '../../redux/selectors/Users';
+import Loading from 'components/shared-components/Loading';
 
 export function ResetPasswordRoute({ component: Component, type, ...rest }) {
   const isAuthenticated = useSelector(makeSelectIsAuthenticated());

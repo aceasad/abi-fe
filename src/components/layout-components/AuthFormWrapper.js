@@ -20,7 +20,7 @@ const AuthFormWrapper = ({ title = false, paragraph = false, children }) => {
                     <img
                       className="authentication-image"
                       src={`/img/${
-                        theme === THEME_LIGHT ? "logo.png" : "logo-white.png"
+                        theme === THEME_LIGHT ? 'logo.png' : 'logo-white.png'
                       }`}
                       alt="logo"
                     />

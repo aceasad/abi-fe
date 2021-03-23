@@ -1,9 +1,9 @@
-import languageReducer from "containers/LanguageProvider/reducer";
-import { combineReducers } from "redux";
-import Auth from "./Auth";
-import Theme from "./Theme";
-import { connectRouter } from "connected-react-router";
-import { SIGNOUT_SUCCESS } from "redux/constants/Auth";
+import languageReducer from 'containers/LanguageProvider/reducer';
+import { combineReducers } from 'redux';
+import Auth from './Auth';
+import Theme from './Theme';
+import { connectRouter } from 'connected-react-router';
+import { SIGNOUT_SUCCESS } from 'redux/constants/Auth';
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default (history) => {
@@ -11,7 +11,7 @@ export default (history) => {
     router: connectRouter(history),
     theme: Theme,
     auth: Auth,
-    language: languageReducer
+    language: languageReducer,
   });
 
   const rootReducer = (state, action) => {

@@ -1,13 +1,13 @@
-import React from "react";
+import React from 'react';
 import {
   SIDE_NAV_WIDTH,
   SIDE_NAV_COLLAPSED_WIDTH,
   NAV_TYPE_TOP,
-} from "constants/ThemeConstant";
-import { APP_NAME } from "configs/AppConfig";
-import { connect } from "react-redux";
-import utils from "utils";
-import { Grid } from "antd";
+} from 'constants/ThemeConstant';
+import { APP_NAME } from 'configs/AppConfig';
+import { connect } from 'react-redux';
+import utils from 'utils';
+import { Grid } from 'antd';
 
 const { useBreakpoint } = Grid;
 
@@ -18,7 +18,7 @@ const getLogoWidthGutter = (props, isMobile) => {
     return 0;
   }
   if (isNavTop) {
-    return "auto";
+    return 'auto';
   }
   if (navCollapsed) {
     return `${SIDE_NAV_COLLAPSED_WIDTH}px`;
@@ -29,29 +29,29 @@ const getLogoWidthGutter = (props, isMobile) => {
 
 const getLogo = (props) => {
   const { navCollapsed, logoType } = props;
-  if (logoType === "light") {
+  if (logoType === 'light') {
     if (navCollapsed) {
-      return "/img/logo-sm-white.png";
+      return '/img/logo-sm-white.png';
     }
-    return "/img/logo-white.png";
+    return '/img/logo-white.png';
   }
 
   if (navCollapsed) {
-    return "/img/logo-sm.png";
+    return '/img/logo-sm.png';
   }
-  return "/img/logo.png";
+  return '/img/logo.png';
 };
 
 const getLogoDisplay = (isMobile, mobileLogo) => {
   if (isMobile && !mobileLogo) {
-    return "d-none";
+    return 'd-none';
   } else {
-    return "logo";
+    return 'logo';
   }
 };
 
 export const Logo = (props) => {
-  const isMobile = !utils.getBreakPoint(useBreakpoint()).includes("lg");
+  const isMobile = !utils.getBreakPoint(useBreakpoint()).includes('lg');
   return (
     <div
       className={getLogoDisplay(isMobile, props.mobileLogo)}
@@ -60,7 +60,7 @@ export const Logo = (props) => {
       <img
         src={getLogo(props)}
         alt={`${APP_NAME} logo`}
-        style={{ width: "60%", height: "60%", objectFit: "contain" }}
+        style={{ width: '60%', height: '60%', objectFit: 'contain' }}
       />
     </div>
   );

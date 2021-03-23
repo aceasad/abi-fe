@@ -14,112 +14,112 @@ import {
   SET_USER,
   SET_PASSWORD_CHANGED,
   FETCH_USER,
-  CREATE_PASSWORD
-} from "../constants/Auth";
+  CREATE_PASSWORD,
+} from '../constants/Auth';
 
 export const signIn = (payload) => {
   return {
     type: SIGNIN,
-    payload
+    payload,
   };
 };
 
 export const fetchUser = () => {
   return {
-    type: FETCH_USER
+    type: FETCH_USER,
   };
 };
 
 export const setUser = (payload) => {
   return {
     type: SET_USER,
-    payload
+    payload,
   };
 };
 
 export const authenticated = (token) => {
   return {
     type: AUTHENTICATED,
-    token
+    token,
   };
 };
 
 export const signOut = () => {
   return {
-    type: SIGNOUT
+    type: SIGNOUT,
   };
 };
 
 export const signOutSuccess = () => {
   return {
-    type: SIGNOUT_SUCCESS
+    type: SIGNOUT_SUCCESS,
   };
 };
 
 export const signUp = (user) => {
   return {
     type: SIGNUP,
-    payload: user
+    payload: user,
   };
 };
 
 export const signUpSuccess = (token) => {
   return {
     type: SIGNUP_SUCCESS,
-    token
+    token,
   };
 };
 
 export const showAuthMessage = (message) => {
   return {
     type: SHOW_AUTH_MESSAGE,
-    message
+    message,
   };
 };
 
 export const hideAuthMessage = () => {
   return {
-    type: HIDE_AUTH_MESSAGE
+    type: HIDE_AUTH_MESSAGE,
   };
 };
 
 export const showLoading = (payload) => {
   return {
     type: SHOW_LOADING,
-    payload
+    payload,
   };
 };
 
 export const sendForgotPasswordEmail = (email) => {
   return {
     type: SEND_FORGOT_PASSWORD_EMAIL,
-    email
+    email,
   };
 };
 
 export const sendForgotPasswordEmailSuccess = (email) => {
   return {
     type: SEND_FORGOT_PASSWORD_EMAIL_SUCCESS,
-    email
+    email,
   };
 };
 
 export const sendForgotPasswordEmailError = (payload) => {
   return {
     type: SEND_FORGOT_PASSWORD_EMAIL_ERROR,
-    payload
+    payload,
   };
 };
 
 export const createPassword = (payload) => {
   return {
     type: CREATE_PASSWORD,
-    payload
+    payload,
   };
 };
 
 export const setPasswordChanged = () => {
   return {
-    type: SET_PASSWORD_CHANGED
+    type: SET_PASSWORD_CHANGED,
   };
 };

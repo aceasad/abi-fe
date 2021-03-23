@@ -1,15 +1,15 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import App from "./App";
-import * as serviceWorker from "./serviceWorker";
-import "./index.css";
-import LanguageProvider from "containers/LanguageProvider";
-import { translationMessages } from "./i18n";
-import { Provider } from "react-redux";
-import store, { history } from "redux/store";
-import { ConnectedRouter } from "connected-react-router";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './App';
+import * as serviceWorker from './serviceWorker';
+import './index.css';
+import LanguageProvider from 'containers/LanguageProvider';
+import { translationMessages } from './i18n';
+import { Provider } from 'react-redux';
+import store, { history } from 'redux/store';
+import { ConnectedRouter } from 'connected-react-router';
 
-const MOUNT_NODE = document.getElementById("root");
+const MOUNT_NODE = document.getElementById('root');
 
 const render = (messages) => {
   ReactDOM.render(

@@ -1,19 +1,19 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Button, Form } from "antd";
-import { MailOutlined, LockOutlined } from "@ant-design/icons";
-import { signIn } from "redux/actions/Auth";
-import { useHistory } from "react-router-dom";
-import { motion } from "framer-motion";
-import { Formik, Field } from "formik";
-import { loginSchema } from "../../../../utils/validations";
-import "../../../../assets/sass/views/auth/login.scss";
-import messages from "./messages";
-import { useIntl } from "react-intl";
-import { ROUTES } from "routes";
-import { passwordMinLength } from "constants/Validation";
-import FormField from "components/shared-components/Form/FormField";
-import { makeSelectLoginDetails } from "redux/selectors/Users";
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Button, Form } from 'antd';
+import { MailOutlined, LockOutlined } from '@ant-design/icons';
+import { signIn } from 'redux/actions/Auth';
+import { useHistory } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { Formik, Field } from 'formik';
+import { loginSchema } from '../../../../utils/validations';
+import '../../../../assets/sass/views/auth/login.scss';
+import messages from './messages';
+import { useIntl } from 'react-intl';
+import { ROUTES } from 'routes';
+import { passwordMinLength } from 'constants/Validation';
+import FormField from 'components/shared-components/Form/FormField';
+import { makeSelectLoginDetails } from 'redux/selectors/Users';
 
 export const LoginForm = ({ redirect, allowRedirect }) => {
   let history = useHistory();
@@ -31,11 +31,11 @@ export const LoginForm = ({ redirect, allowRedirect }) => {
     if (token && allowRedirect) {
       history.push(redirect);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
   const PasswordLabel = ({ email }) => (
-    <div className={"d-flex justify-content-between w-100 align-items-center"}>
+    <div className={'d-flex justify-content-between w-100 align-items-center'}>
       <span>{formatMessage(messages.passwordInputLabel)}</span>
 
       <span
@@ -47,7 +47,7 @@ export const LoginForm = ({ redirect, allowRedirect }) => {
     </div>
   );
 
-  const validPasswordFormat = (
+  const ValidPasswordFormat = (
     <div>
       <div>
         {formatMessage(messages.minimumCharacters, { min: passwordMinLength })}
@@ -72,7 +72,7 @@ export const LoginForm = ({ redirect, allowRedirect }) => {
       </motion.div>
 
       <Formik
-        initialValues={{ username: "", password: "" }}
+        initialValues={{ username: '', password: '' }}
         validationSchema={loginSchema}
         onSubmit={(values) => {
           onLogin(values);
@@ -84,7 +84,7 @@ export const LoginForm = ({ redirect, allowRedirect }) => {
             <Field
               component={FormField}
               label={formatMessage(messages.emailInputLabel)}
-              name={"username"}
+              name={'username'}
               prefix={<MailOutlined className="text-primary" />}
               errorTexts={{
                 label: formatMessage(messages.emailInputLabel),
@@ -94,7 +94,7 @@ export const LoginForm = ({ redirect, allowRedirect }) => {
             <Field
               component={FormField}
               labelComponent={() => <PasswordLabel email={values.username} />}
-              tooltipText={validPasswordFormat}
+              tooltipText={ValidPasswordFormat}
               name={"password"}
               prefix={<LockOutlined className="text-primary" />}
               secureField

@@ -1,7 +1,5 @@
-import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-
-import "../../../../assets/sass/views/auth/login.scss";
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import messages from "./messages";
 import { useIntl } from "react-intl";
 import AuthFormWrapper from "components/layout-components/AuthFormWrapper";

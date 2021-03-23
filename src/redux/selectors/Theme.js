@@ -1,5 +1,5 @@
-import { createSelector } from "reselect";
-import reducers from "../reducers";
+import { createSelector } from 'reselect';
+import reducers from '../reducers';
 
 const selectUsersDomain = (state) => state.theme || reducers;
 

@@ -1,13 +1,13 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { Menu, Grid } from "antd";
-import IntlMessage from "../util-components/IntlMessage";
-import Icon from "../util-components/Icon";
-import navigationConfig from "configs/NavigationConfig";
-import { connect } from "react-redux";
-import { SIDE_NAV_LIGHT, NAV_TYPE_SIDE } from "constants/ThemeConstant";
-import utils from 'utils'
-import { onMobileNavToggle } from "redux/actions/Theme";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Menu, Grid } from 'antd';
+import IntlMessage from '../util-components/IntlMessage';
+import Icon from '../util-components/Icon';
+import navigationConfig from 'configs/NavigationConfig';
+import { connect } from 'react-redux';
+import { SIDE_NAV_LIGHT, NAV_TYPE_SIDE } from 'constants/ThemeConstant';
+import utils from 'utils';
+import { onMobileNavToggle } from 'redux/actions/Theme';
 
 const { SubMenu } = Menu;
 const { useBreakpoint } = Grid;
@@ -17,9 +17,9 @@ const setLocale = (isLocaleOn, localeKey) =>
 
 const setDefaultOpen = (key) => {
   let keyList = [];
-  let keyString = "";
+  let keyString = '';
   if (key) {
-    const arr = key.split("-");
+    const arr = key.split('-');
     for (let index = 0; index < arr.length; index++) {
       const elm = arr[index];
       index === 0 ? (keyString = elm) : (keyString = `${keyString}-${elm}`);
@@ -30,21 +30,27 @@ const setDefaultOpen = (key) => {
 };
 
 const SideNavContent = (props) => {
-	const { sideNavTheme, routeInfo, hideGroupTitle, localization, onMobileNavToggle } = props;
-	const isMobile = !utils.getBreakPoint(useBreakpoint()).includes('lg')
-	const closeMobileNav = () => {
-		if (isMobile) {
-			onMobileNavToggle(false)
-		}
-	}
+  const {
+    sideNavTheme,
+    routeInfo,
+    hideGroupTitle,
+    localization,
+    onMobileNavToggle,
+  } = props;
+  const isMobile = !utils.getBreakPoint(useBreakpoint()).includes('lg');
+  const closeMobileNav = () => {
+    if (isMobile) {
+      onMobileNavToggle(false);
+    }
+  };
   return (
     <Menu
-      theme={sideNavTheme === SIDE_NAV_LIGHT ? "light" : "dark"}
+      theme={sideNavTheme === SIDE_NAV_LIGHT ? 'light' : 'dark'}
       mode="inline"
-      style={{ height: "100%", borderRight: 0 }}
+      style={{ height: '100%', borderRight: 0 }}
       defaultSelectedKeys={[routeInfo?.key]}
       defaultOpenKeys={setDefaultOpen(routeInfo?.key)}
-      className={hideGroupTitle ? "hide-group-title" : ""}
+      className={hideGroupTitle ? 'hide-group-title' : ''}
     >
       {navigationConfig.map((menu) =>
         menu.submenu.length > 0 ? (
@@ -71,7 +77,10 @@ const SideNavContent = (props) => {
                       <span>
                         {setLocale(localization, subMenuSecond.title)}
                       </span>
-                      <Link onClick={() => closeMobileNav()} to={subMenuSecond.path} />
+                      <Link
+                        onClick={() => closeMobileNav()}
+                        to={subMenuSecond.path}
+                      />
                     </Menu.Item>
                   ))}
                 </SubMenu>
@@ -79,7 +88,10 @@ const SideNavContent = (props) => {
                 <Menu.Item key={subMenuFirst.key}>
                   {subMenuFirst.icon ? <Icon type={subMenuFirst.icon} /> : null}
                   <span>{setLocale(localization, subMenuFirst.title)}</span>
-                  <Link onClick={() => closeMobileNav()} to={subMenuFirst.path} />
+                  <Link
+                    onClick={() => closeMobileNav()}
+                    to={subMenuFirst.path}
+                  />
                 </Menu.Item>
               )
             )}
@@ -88,7 +100,9 @@ const SideNavContent = (props) => {
           <Menu.Item key={menu.key}>
             {menu.icon ? <Icon type={menu?.icon} /> : null}
             <span>{setLocale(localization, menu?.title)}</span>
-            {menu.path ? <Link onClick={() => closeMobileNav()} to={menu.path} /> : null}
+            {menu.path ? (
+              <Link onClick={() => closeMobileNav()} to={menu.path} />
+            ) : null}
           </Menu.Item>
         )
       )}
