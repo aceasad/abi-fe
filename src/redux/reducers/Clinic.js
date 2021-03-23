@@ -1,9 +1,8 @@
 import {
-  UPDATE_CLINIC,
   UPDATE_CLINIC_SUCCESS,
   UPDATE_CLINIC_ERROR,
-} from "../constants/Clinic";
-import produce from "immer";
+} from '../constants/Clinic';
+import produce from 'immer';
 const initialState = { isUpdated: false, message: null };
 
 const clinic = (state = initialState, action) =>

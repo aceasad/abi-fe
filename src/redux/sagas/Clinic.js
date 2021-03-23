@@ -1,11 +1,7 @@
-import { UPDATE_CLINIC } from "../constants/Clinic";
-import { takeEvery, put, call, all, fork } from "redux-saga/effects";
-import clinicService from "../../services/ClinicService";
-import {
-  updateClinic,
-  updateClinicSuccess,
-  updateClinicError,
-} from "../actions/Clinic";
+import { UPDATE_CLINIC } from '../constants/Clinic';
+import { takeEvery, put, call, all, fork } from 'redux-saga/effects';
+import clinicService from '../../services/ClinicService';
+import { updateClinicSuccess, updateClinicError } from '../actions/Clinic';
 
 export function* updateClinicSaga() {
   yield takeEvery(UPDATE_CLINIC, function* ({ values }) {
