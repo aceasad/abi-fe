@@ -3,18 +3,15 @@ import { ErrorMessage } from "formik";
 import { Form, Input, Popover } from "antd";
 import { useIntl } from "react-intl";
 
-const FormField = ({
+const FormTimeField = ({
   form: { handleBlur, handleChange },
   field,
   labelComponent: Label,
-  secureField,
   errorTexts,
   label,
   Tooltip,
   ...props
 }) => {
-  const InputField = secureField ? Input.Password : Input;
-
   const { formatMessage } = useIntl();
 
   const defaultErrorMessage = (msg) =>
@@ -24,7 +21,8 @@ const FormField = ({
 
   const FormItem = (
     <Form.Item>
-      <InputField
+      <Input
+        type="time"
         name={field.name}
         onChange={handleChange}
         onBlur={handleBlur}
@@ -48,4 +46,4 @@ const FormField = ({
   );
 };
 
-export default FormField;
+export default FormTimeField;

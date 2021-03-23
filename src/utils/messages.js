@@ -39,4 +39,8 @@ export default defineMessages({
     id: `${scope}.validations.matches`,
     defaultMessage: "{matchesLabel}",
   },
+  url: {
+    id: `${scope}.validations.url`,
+    defaultMessage: "{label} is url",
+  },
 });

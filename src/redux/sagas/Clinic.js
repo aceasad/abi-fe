@@ -13,7 +13,7 @@ export function* updateClinicSaga() {
       const { response } = yield call(clinicService.updateClinic, values);
       yield put(updateClinicSuccess(response));
     } catch (exception) {
-      put(updateClinicError(exception.message));
+      put(updateClinicError(exception));
     }
   });
 }

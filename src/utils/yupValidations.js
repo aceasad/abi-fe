@@ -11,6 +11,7 @@ Yup.setLocale({
     min: messages.min,
     max: messages.max,
     matches: messages.matches,
+    url: messages.url,
   },
   number: {
     min: messages.greatherThan,

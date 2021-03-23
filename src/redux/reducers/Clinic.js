@@ -3,22 +3,18 @@ import {
   UPDATE_CLINIC_SUCCESS,
   UPDATE_CLINIC_ERROR,
 } from "../constants/Clinic";
-
+import produce from "immer";
 const initialState = { isUpdated: false, message: null };
 
-const clinic = (state = initialState, action) => {
-  switch (action.type) {
-    case UPDATE_CLINIC: {
-      return { ...state };
+const clinic = (state = initialState, action) =>
+  produce(state, (draft) => {
+    switch (action.type) {
+      case UPDATE_CLINIC_SUCCESS:
+        draft.isUpdated = true;
+        break;
+      case UPDATE_CLINIC_ERROR:
+        draft.message = action.message;
+        break;
     }
-    case UPDATE_CLINIC_SUCCESS: {
-      return { ...state, isUpdated: true };
-    }
-    case UPDATE_CLINIC_ERROR: {
-      return { ...state, message: action.message };
-    }
-    default:
-      return state;
-  }
-};
+  });
 export default clinic;

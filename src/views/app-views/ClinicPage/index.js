@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import { Button, Form, Input, Radio } from "antd";
-import { ErrorMessage, Formik } from "formik";
+import { Formik, Field } from "formik";
 import { clinicSchema } from "utils/validations";
 import { useDispatch } from "react-redux";
 import messages from "./messages";
+import FormField from "components/shared-components/Form/FormField";
+import FormNumberField from "components/shared-components/Form/FormNumberField";
+import FormTimeField from "components/shared-components/Form/FormTimeField";
 
 import { useIntl } from "react-intl";
 import { updateClinic } from "redux/actions/Clinic";
@@ -20,32 +23,17 @@ const imageStyle = {
   backgroundSize: "cover",
 };
 
-const inputStyle = {
-  width: "60%",
-  marginRight: "2%",
-  marginBottom: "2%",
-};
-const inputStyleWorkOur = {
-  width: "25%",
-  marginRight: "2%",
-  marginBottom: "2%",
-};
-const labelStyle = {
-  float: "left",
-  width: "150px",
-  textAlign: "right",
-  paddingRight: "10px",
-};
-
 const ClinicPage = () => {
   const dispatch = useDispatch();
   const [image, setImage] = useState(""); // za vizuelni prikaz slike
+  const [imageFile, setImageFile] = useState(null);
   const [visibilityOfParkinSizeField, setVisibility] = useState(false); // za prikaz dodatnog polja
   //za parking
   const { formatMessage } = useIntl();
 
   const onImageChange = (event) => {
     if (event.target.files && event.target.files[0]) {
+      setImageFile(event.target.files[0]);
       let reader = new FileReader();
       reader.onload = (e) => {
         setImage(e.target.result);
@@ -58,31 +46,23 @@ const ClinicPage = () => {
     <div className="container">
       <Formik
         initialValues={{
-          photo: undefined,
-          name: " ",
-          phone_number: " ",
-          address: " ",
-          google_map_link: " ",
-          parikng_availability: undefined,
-          parking_size: undefined,
-          start_of_work: undefined,
-          end_of_work: undefined,
+          photo: null,
+          name: "",
+          phone_number: "",
+          address: "",
+          google_maps_link: "",
+          parking_availability: null,
+          parking_size: 0,
+          start_of_work: null,
+          end_of_work: null,
         }}
         validationSchema={clinicSchema}
         onSubmit={(values) => {
-          alert(values);
+          values.photo = imageFile;
           dispatch(updateClinic(values));
         }}
       >
-        {({
-          setFieldValue,
-          dirty,
-          isValid,
-          values,
-          handleChange,
-          handleBlur,
-          handleSubmit,
-        }) => (
+        {({ setFieldValue, dirty, isValid, values, handleSubmit }) => (
           <Form layout="vertical" name="clinic-form" onSubmit={handleSubmit}>
             <div className="row" style={{ marginLeft: "40%" }}>
               <img style={imageStyle} alt="clinic" src={image}></img>
@@ -90,195 +70,114 @@ const ClinicPage = () => {
             <Form.Item>
               <div className="row" style={{ marginLeft: "17%" }}>
                 <Input
-                  style={{ width: "20%" }}
+                  style={{ width: "40%" }}
                   autoFocus
                   accept="image/*"
                   name="photo"
                   type="file"
                   onChange={(event) => {
-                    setFieldValue("photo", event.target.value);
                     onImageChange(event);
                   }}
-                  onBlur={handleBlur}
                   value={values.photo}
                 ></Input>
                 <Button
                   autoFocus
                   name="remove"
                   onClick={() => {
-                    setImage(undefined);
-                    setFieldValue("photo", "");
+                    setImage(null);
+                    setImageFile(null);
+                    setFieldValue("photo", null);
                   }}
                 >
                   Remove
                 </Button>
               </div>
             </Form.Item>
-
-            <Form.Item>
-              <label style={labelStyle}>
-                {formatMessage(messages.clinic_name)}
-              </label>
-              <Input
-                style={inputStyle}
-                autoFocus
-                name="name"
-                type="text"
-                onChange={handleChange}
-                onBlur={handleBlur}
-                value={values.name}
-              ></Input>
-              <ErrorMessage name="name">
-                {(msg) =>
-                  formatMessage(msg, {
-                    label: formatMessage(messages.error_input_label_name),
-                  })
-                }
-              </ErrorMessage>
-            </Form.Item>
-            <Form.Item>
-              <label style={labelStyle}>
-                {formatMessage(messages.phone_number)}
-              </label>
-              <Input
-                style={inputStyle}
-                autoFocus
-                name="phone_number"
-                type="text"
-                onChange={handleChange}
-                onBlur={handleBlur}
-                value={values.phone_number}
-              ></Input>
-              <ErrorMessage name="phone_number">
-                {(msg) =>
-                  formatMessage(msg, {
-                    label: formatMessage(
-                      messages.error_input_label_phone_number
-                    ),
-                  })
-                }
-              </ErrorMessage>
-            </Form.Item>
-            <Form.Item>
-              <label style={labelStyle}>
-                {formatMessage(messages.address)}
-              </label>
-              <Input
-                style={inputStyle}
-                autoFocus
-                name="address"
-                type="text"
-                onChange={handleChange}
-                onBlur={handleBlur}
-                value={values.address}
-              ></Input>
-              <ErrorMessage name="address">
-                {(msg) =>
-                  formatMessage(msg, {
-                    label: formatMessage(messages.error_input_label_address),
-                  })
-                }
-              </ErrorMessage>
-            </Form.Item>
-            <Form.Item>
-              <label style={labelStyle}>
-                {formatMessage(messages.google_maps_link)}
-              </label>
-              <Input
-                style={inputStyle}
-                autoFocus
-                name="google_map_link"
-                type="text"
-                onChange={handleChange}
-                onBlur={handleBlur}
-                value={values.google_map_link}
-              ></Input>
-              <ErrorMessage name="google_map_link">
-                {(msg) =>
-                  formatMessage(msg, {
-                    label: formatMessage(
-                      messages.error_input_label_google_maps_link
-                    ),
-                    matches: formatMessage(
-                      messages.error_input_label_google_maps_link
-                    ),
-                  })
-                }
-              </ErrorMessage>
-            </Form.Item>
-            <label style={labelStyle}>
-              {formatMessage(messages.parking_availability)}
-            </label>
+            <Field
+              component={FormField}
+              label={formatMessage(messages.clinic_name)}
+              name={"name"}
+              errorTexts={{
+                label: formatMessage(messages.error_input_label_name),
+              }}
+              autoFocus
+            />
+            <Field
+              component={FormField}
+              label={formatMessage(messages.phone_number)}
+              name={"phone_number"}
+              errorTexts={{
+                label: formatMessage(messages.error_input_label_phone_number),
+              }}
+              autoFocus
+            />
+            <Field
+              component={FormField}
+              label={formatMessage(messages.address)}
+              name={"address"}
+              errorTexts={{
+                label: formatMessage(messages.error_input_label_address),
+              }}
+              autoFocus
+            />
+            <Field
+              component={FormField}
+              label={formatMessage(messages.google_maps_link)}
+              name={"google_maps_link"}
+              errorTexts={{
+                label: formatMessage(
+                  messages.error_input_label_google_maps_link
+                ),
+              }}
+              autoFocus
+            />
+            <label>{formatMessage(messages.parking_availability)}</label>
             <Form.Item name="radio-group">
               <Radio.Group
                 onChange={(event) => {
-                  if (event.target.value === "PARKING_AVAILABLE") {
+                  if (event.target.value === "AVAILABLE") {
                     setVisibility(true);
                   } else {
                     setVisibility(false);
                   }
-                  values.parikng_availability = event.target.value;
+                  values.parking_availability = event.target.value;
                 }}
               >
-                <Radio value="NO_PARKING">
-                  {formatMessage(messages.parking_no)}
-                </Radio>
+                <Radio value="NO">{formatMessage(messages.parking_no)}</Radio>
                 <Radio value="FREE">
                   {formatMessage(messages.parking_free)}
                 </Radio>
-                <Radio value="PARKING_AVAILABLE">
+                <Radio value="AVAILABLE">
                   {formatMessage(messages.parking_available)}
                 </Radio>
                 {visibilityOfParkinSizeField ? (
                   <div style={{ marginLeft: "330px" }}>
-                    <label style={labelStyle}>
-                      {formatMessage(messages.parking_size)}
-                    </label>
-                    <Input
-                      style={inputStyle}
+                    <Field
+                      component={FormNumberField}
+                      label={formatMessage(messages.parking_size)}
+                      name={"parking_size"}
+                      min={1}
                       autoFocus
-                      name="parking_size"
-                      type="number"
-                      min={0}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.parking_size}
-                    ></Input>
+                    />
                   </div>
                 ) : null}
               </Radio.Group>
             </Form.Item>
-            <Form.Item>
-              <label style={labelStyle}>
-                {formatMessage(messages.working_hours)}
-              </label>
-              <div className="row">
-                <Input
-                  style={inputStyleWorkOur}
-                  autoFocus
-                  name="start_of_work"
-                  type="time"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  value={values.start_of_work}
-                ></Input>
-                <Input
-                  style={inputStyleWorkOur}
-                  autoFocus
-                  name="end_of_work"
-                  type="time"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  value={values.end_of_work}
-                ></Input>
-              </div>
-            </Form.Item>
+            <label>{formatMessage(messages.working_hours)}</label>
+            <div className="row">
+              <Field
+                component={FormTimeField}
+                name={"start_of_work"}
+                autoFocus
+              />
+              <Field component={FormTimeField} name={"end_of_work"} autoFocus />
+            </div>
             <Form.Item>
               <Button
+                name="create"
+                type="primary"
                 disabled={!dirty || !isValid}
                 onClick={() => handleSubmit(values)}
-                name="create"
-                type="submit"
               >
                 Create
               </Button>

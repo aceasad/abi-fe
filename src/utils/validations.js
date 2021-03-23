@@ -6,16 +6,16 @@ export const loginSchema = Yup.object().shape({
   password: Yup.string()
     .matches(passwordFormat)
     .min(passwordMinLength)
-    .required()
+    .required(),
 });
 
 export const forgotPasswordSchema = Yup.object().shape({
-  email: Yup.string().email().required()
+  email: Yup.string().email().required(),
 });
 
 export const clinicSchema = Yup.object().shape({
   name: Yup.string().required(),
-  google_map_link: Yup.string().required(),
+  google_maps_link: Yup.string().required().url(),
   phone_number: Yup.string().required(), //dodati regex za uk phone number
   address: Yup.string().required(),
 });
