@@ -1,36 +1,35 @@
-import React, { lazy, Suspense } from "react";
-import { Switch, Route, Redirect } from "react-router-dom";
-import Loading from "components/shared-components/Loading";
-import { AUTH_PREFIX_PATH } from "configs/AppConfig";
+import React, { lazy, Suspense } from 'react';
+import { Switch, Route, Redirect } from 'react-router-dom';
+import Loading from 'components/shared-components/Loading';
+import { AUTH_PREFIX_PATH } from 'configs/AppConfig';
+import PublicRoute from 'routes/PublicRoute';
+import ResetPasswordRoute from 'routes/ResetPasswordRoute';
 
 export const AppViews = () => {
   return (
     <Suspense fallback={<Loading cover="page" />}>
       <Switch>
-        <Route
+        <PublicRoute
           exact
           path={`${AUTH_PREFIX_PATH}/login`}
           component={lazy(() => import(`./authentication/login`))}
-        />
-        <Route
-          path={`${AUTH_PREFIX_PATH}/login-1`}
-          component={lazy(() => import(`./authentication/login-1`))}
-        />
-        <Route
-          path={`${AUTH_PREFIX_PATH}/login-2`}
-          component={lazy(() => import(`./authentication/login-2`))}
         />
         <Route
           path={`${AUTH_PREFIX_PATH}/forgot-password`}
           component={lazy(() => import(`./authentication/forgot-password`))}
         />
         <Route
-          path={`${AUTH_PREFIX_PATH}/error-1`}
-          component={lazy(() => import(`./errors/error-page-1`))}
+          path={`${AUTH_PREFIX_PATH}/not-found`}
+          component={lazy(() => import(`./errors/page-not-found`))}
         />
         <Route
-          path={`${AUTH_PREFIX_PATH}/error-2`}
-          component={lazy(() => import(`./errors/error-page-2`))}
+          path={`${AUTH_PREFIX_PATH}/something-went-wrong`}
+          component={lazy(() => import(`./errors/something-went-wrong`))}
+        />
+        <ResetPasswordRoute
+          exact
+          path={`${AUTH_PREFIX_PATH}/create-password`}
+          component={lazy(() => import(`./authentication/create-password`))}
         />
         <Redirect
           from={`${AUTH_PREFIX_PATH}`}

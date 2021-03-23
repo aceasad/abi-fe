@@ -1,5 +1,5 @@
-import * as Yup from "yup";
-import messages from "./messages";
+import * as Yup from 'yup';
+import messages from './messages';
 
 Yup.setLocale({
   mixed: {

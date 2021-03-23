@@ -8,18 +8,20 @@ import {
   SHOW_LOADING,
   SIGNIN_WITH_GOOGLE_AUTHENTICATED,
   SIGNIN_WITH_FACEBOOK_AUTHENTICATED,
-  SET_USER
-} from "../constants/Auth";
-import { getLocalStorageItem } from "utils/localStorage";
-import produce from "immer";
+  SET_USER,
+  SET_PASSWORD_CHANGED,
+} from '../constants/Auth';
+import { getLocalStorageItem } from 'utils/localStorage';
+import produce from 'immer';
+import { PASSWORD_STATUSES } from 'constants/UserConstants';
 
 const initState = {
   loading: false,
-  message: "",
+  message: '',
   showMessage: false,
-  redirect: "",
+  redirect: '',
   token: getLocalStorageItem(AUTH_TOKEN)?.access,
-  user: null
+  user: null,
 };
 
 /* eslint-disable default-case */
@@ -28,7 +30,7 @@ const auth = (state = initState, action) =>
     switch (action.type) {
       case AUTHENTICATED:
         draft.loading = false;
-        draft.redirect = "/";
+        draft.redirect = '/';
         draft.token = action.token;
         break;
       case SHOW_AUTH_MESSAGE:
@@ -37,12 +39,12 @@ const auth = (state = initState, action) =>
         draft.loading = false;
         break;
       case HIDE_AUTH_MESSAGE:
-        draft.message = "";
+        draft.message = '';
         draft.showMessage = false;
         break;
       case SIGNOUT_SUCCESS:
         draft.token = null;
-        draft.redirect = "/";
+        draft.redirect = '/';
         draft.loading = false;
         break;
       case SIGNUP_SUCCESS:
@@ -50,7 +52,7 @@ const auth = (state = initState, action) =>
         draft.token = action.token;
         break;
       case SHOW_LOADING:
-        draft.loading = true;
+        draft.loading = action.payload;
         break;
       case SIGNIN_WITH_GOOGLE_AUTHENTICATED:
         draft.loading = false;
@@ -62,6 +64,12 @@ const auth = (state = initState, action) =>
         break;
       case SET_USER:
         draft.user = action.payload;
+        break;
+      case SET_PASSWORD_CHANGED:
+        draft.user = {
+          ...state.user,
+          password_changed_status: PASSWORD_STATUSES.CHANGED,
+        };
         break;
     }
   });

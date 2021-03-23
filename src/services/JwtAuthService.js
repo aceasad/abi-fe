@@ -1,16 +1,16 @@
-import fetch from 'auth/FetchInterceptor'
+import fetch from 'auth/FetchInterceptor';
 
-const JwtAuthService = {}
+const JwtAuthService = {};
 
 JwtAuthService.login = function (data) {
-	return fetch({
-		url: '/login/',
-		method: 'post',
-		headers: {
-      'public-request': 'true'
+  return fetch({
+    url: '/login/',
+    method: 'post',
+    headers: {
+      'public-request': 'true',
     },
-		data: data
-	})
-}
+    data: data,
+  });
+};
 
-export default JwtAuthService
+export default JwtAuthService;

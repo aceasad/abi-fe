@@ -1,42 +1,47 @@
-import React from "react";
-import { Menu, Dropdown, Avatar } from "antd";
-import { connect } from 'react-redux'
-import { 
-  EditOutlined, 
-  SettingOutlined, 
-  ShopOutlined, 
-  QuestionCircleOutlined, 
-  LogoutOutlined 
+import React from 'react';
+import { Menu, Dropdown, Avatar } from 'antd';
+import { useDispatch } from 'react-redux';
+import {
+  EditOutlined,
+  SettingOutlined,
+  ShopOutlined,
+  QuestionCircleOutlined,
+  LogoutOutlined,
 } from '@ant-design/icons';
 import Icon from 'components/util-components/Icon';
 import { signOut } from 'redux/actions/Auth';
+import { useIntl } from 'react-intl';
+import messages from 'views/auth-views/components/LoginForm/messages';
 
 const menuItem = [
-	{
-		title: "Edit Profile",
-		icon: EditOutlined ,
-		path: "/"
-    },
-    
-    {
-		title: "Account Setting",
-		icon: SettingOutlined,
-		path: "/"
-    },
-    {
-		title: "Billing",
-		icon: ShopOutlined ,
-		path: "/"
-	},
-    {
-		title: "Help Center",
-		icon: QuestionCircleOutlined,
-		path: "/"
-	}
-]
+  {
+    title: 'Edit Profile',
+    icon: EditOutlined,
+    path: '/',
+  },
 
-export const NavProfile = ({signOut}) => {
-  const profileImg = "/img/avatars/thumb-1.jpg";
+  {
+    title: 'Account Setting',
+    icon: SettingOutlined,
+    path: '/',
+  },
+  {
+    title: 'Billing',
+    icon: ShopOutlined,
+    path: '/',
+  },
+  {
+    title: 'Help Center',
+    icon: QuestionCircleOutlined,
+    path: '/',
+  },
+];
+
+export const NavProfile = () => {
+  const dispatch = useDispatch();
+  const { formatMessage } = useIntl();
+
+  const profileImg = '/img/avatars/thumb-1.jpg';
   const profileMenu = (
     <div className="nav-profile nav-dropdown">
       <div className="nav-profile-header">
@@ -60,10 +65,15 @@ export const NavProfile = ({signOut}) => {
               </Menu.Item>
             );
           })}
-          <Menu.Item key={menuItem.legth + 1} onClick={e => signOut()}>
+          <Menu.Item
+            key={menuItem.legth + 1}
+            onClick={() => dispatch(signOut())}
+          >
             <span>
-              <LogoutOutlined className="mr-3"/>
-              <span className="font-weight-normal">Sign Out</span>
+              <LogoutOutlined className="mr-3" />
+              <span className="font-weight-normal">
+                {formatMessage(messages.logOut)}
+              </span>
             </span>
           </Menu.Item>
         </Menu>
@@ -71,7 +81,7 @@ export const NavProfile = ({signOut}) => {
     </div>
   );
   return (
-    <Dropdown placement="bottomRight" overlay={profileMenu} trigger={["click"]}>
+    <Dropdown placement="bottomRight" overlay={profileMenu} trigger={['click']}>
       <Menu className="d-flex align-item-center" mode="horizontal">
         <Menu.Item>
           <Avatar src={profileImg} />
@@ -79,6 +89,6 @@ export const NavProfile = ({signOut}) => {
       </Menu>
     </Dropdown>
   );
-}
+};
 
-export default connect(null, {signOut})(NavProfile)
+export default NavProfile;
