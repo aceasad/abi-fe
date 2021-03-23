@@ -1,4 +1,4 @@
-import { GET_STAFF, SET_STAFF } from '../constants/Staff';
+import { GET_STAFF, SET_STAFF, SET_STAFF_PAGE } from '../constants/Staff';
 
 export function getStaff() {
   return {
@@ -9,6 +9,13 @@ export function getStaff() {
 export function setStaff(payload) {
   return {
     type: SET_STAFF,
+    payload,
+  };
+}
+
+export function setStaffPage(payload) {
+  return {
+    type: SET_STAFF_PAGE,
     payload,
   };
 }

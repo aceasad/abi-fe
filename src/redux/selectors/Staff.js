@@ -6,4 +6,10 @@ const selectStaffDomain = (state) => state.staff || reducers;
 const makeSelectStaff = () =>
   createSelector(selectStaffDomain, (substate) => substate.staff);
 
-export { makeSelectStaff };
+const makeSelectPagination = () =>
+  createSelector(selectStaffDomain, (substate) => ({
+    count: substate.count,
+    page: substate.page,
+  }));
+
+export { makeSelectStaff, makeSelectPagination };

@@ -2,11 +2,12 @@ import CardComponent from 'components/shared-components/Card';
 import React, { useEffect } from 'react';
 import { useIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
-import { getStaff } from 'redux/actions/Staff';
-import { makeSelectStaff } from 'redux/selectors/Staff';
+import { getStaff, setStaffPage } from 'redux/actions/Staff';
+import { makeSelectStaff, makeSelectPagination } from 'redux/selectors/Staff';
 
 import messages from './messages';
 import StaffCardOptions from './StaffCardOptions';
+import PaginationComponent from 'components/shared-components/Pagination';
 
 export const OPTION_KEYS = {
   EDIT: 1,
@@ -16,6 +17,7 @@ export const OPTION_KEYS = {
 const StaffPage = () => {
   const dispatch = useDispatch();
   const staff = useSelector(makeSelectStaff());
+  const { count, page } = useSelector(makeSelectPagination());
   const { formatMessage } = useIntl();
 
   useEffect(() => {
@@ -60,6 +62,11 @@ const StaffPage = () => {
           }}
         />
       ))}
+      <PaginationComponent
+        page={page}
+        count={count}
+        handlePageChange={(page) => dispatch(setStaffPage(page))}
+      />
     </div>
   );
 };
