@@ -10,6 +10,7 @@ import { makeSelectCurrentUser } from "redux/selectors/Users";
 import { PASSWORD_STATUSES } from "constants/UserConstants";
 import { LogoutOutlined } from "@ant-design/icons";
 import { signOut } from "redux/actions/Auth";
+import { Button } from "antd";
 
 const LoginPage = (props) => {
   const { formatMessage } = useIntl();
@@ -18,15 +19,16 @@ const LoginPage = (props) => {
   const user = useSelector(makeSelectCurrentUser);
 
   return (
-    <div>
-      <div className="float-right">
-        <span onClick={() => dispatch(signOut())}>
-          <LogoutOutlined className="mr-3" />
-          <span className="font-weight-normal">
-            {formatMessage(messages.logOut)}
-          </span>
-        </span>
-      </div>
+    <>
+      <Button
+        type="primary"
+        className="authentication-logout"
+        onClick={() => dispatch(signOut())}
+      >
+        {formatMessage(messages.logOut)}
+        <LogoutOutlined />
+      </Button>
+
       <AuthFormWrapper title={formatMessage(messages.createPasswordTitle)}>
         {user.password_changed_status === PASSWORD_STATUSES.EXPIRED ? (
           <p>{formatMessage(messages.passwordHasExpired)}</p>
@@ -34,7 +36,7 @@ const LoginPage = (props) => {
           <CreatePassowrdForm {...props} />
         )}
       </AuthFormWrapper>
-    </div>
+    </>
   );
 };
 

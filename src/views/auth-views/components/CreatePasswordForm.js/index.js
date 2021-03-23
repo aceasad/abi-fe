@@ -14,13 +14,6 @@ import { passwordMinLength } from "constants/Validation";
 import FormField from "components/shared-components/Form/FormField";
 import { makeSelectLoginDetails } from "redux/selectors/Users";
 
-const loginButtonStyle = {
-  backgroundColor: "#5c5cd6",
-  borderRadius: "5px",
-  border: "none",
-  outline: "none"
-};
-
 export const CreatePassowrdForm = () => {
   const dispatch = useDispatch();
 
@@ -31,7 +24,7 @@ export const CreatePassowrdForm = () => {
     dispatch(createPassword(values));
   };
 
-  const ValidPasswordFormat = (
+  const validPasswordFormat = (
     <div>
       <div>
         {formatMessage(messages.minimumCharacters, { min: passwordMinLength })}
@@ -55,20 +48,20 @@ export const CreatePassowrdForm = () => {
           <Field
             component={FormField}
             label={formatMessage(messages.passwordInputLabel)}
-            Tooltip={ValidPasswordFormat}
+            tooltipText={validPasswordFormat}
             name={"password"}
             prefix={<LockOutlined className="text-primary" />}
             secureField
             errorTexts={{
               label: formatMessage(messages.passwordInputLabel),
               minValue: passwordMinLength,
-              matchesLabel: formatMessage(messages.passwordValidFormat)
+              matchesLabel: formatMessage(messages.passwordValidFormat),
             }}
           />
           <Field
             component={FormField}
             label={formatMessage(messages.passwordRepeatInputLabel)}
-            Tooltip={ValidPasswordFormat}
+            tooltipText={validPasswordFormat}
             name={"passwordRepeat"}
             prefix={<LockOutlined className="text-primary" />}
             secureField
@@ -76,13 +69,12 @@ export const CreatePassowrdForm = () => {
               label: formatMessage(messages.passwordRepeatInputLabel),
               minValue: passwordMinLength,
               matchesLabel: formatMessage(messages.passwordValidFormat),
-              value: formatMessage(messages.passwordInputLabel)
+              value: formatMessage(messages.passwordInputLabel),
             }}
           />
 
-          <Form.Item>
+          <Form.Item className="mt-sm-5">
             <Button
-              style={loginButtonStyle}
               type="primary"
               htmlType="submit"
               block
