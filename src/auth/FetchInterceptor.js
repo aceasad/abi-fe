@@ -1,18 +1,18 @@
-import axios from "axios";
-import { API_BASE_URL } from "configs/AppConfig";
-import { history } from "redux/store";
-import { AUTH_TOKEN } from "redux/constants/Auth";
-import { notification } from "antd";
+import axios from 'axios';
+import { API_BASE_URL } from 'configs/AppConfig';
+import { history } from 'redux/store';
+import { AUTH_TOKEN } from 'redux/constants/Auth';
+import { notification } from 'antd';
 
 const service = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 60000
+  timeout: 60000,
 });
 
 // Config
-const ENTRY_ROUTE = "/auth/login";
-const TOKEN_PAYLOAD_KEY = "authorization";
-const PUBLIC_REQUEST_KEY = "public-request";
+const ENTRY_ROUTE = '/auth/login';
+const TOKEN_PAYLOAD_KEY = 'authorization';
+const PUBLIC_REQUEST_KEY = 'public-request';
 
 // API Request interceptor
 service.interceptors.request.use(
@@ -33,7 +33,7 @@ service.interceptors.request.use(
   (error) => {
     // Do something with request error here
     notification.error({
-      message: "Error"
+      message: 'Error',
     });
     Promise.reject(error);
   }
@@ -46,28 +46,28 @@ service.interceptors.response.use(
   },
   (error) => {
     let notificationParam = {
-      message: ""
+      message: '',
     };
 
     // Remove token and redirect
     if (error.response.status === 400 || error.response.status === 403) {
-      notificationParam.message = "Authentication Fail";
-      notificationParam.description = "Please login again";
+      notificationParam.message = 'Authentication Fail';
+      notificationParam.description = 'Please login again';
       localStorage.removeItem(AUTH_TOKEN);
       history.push(ENTRY_ROUTE);
       window.location.reload();
     }
 
     if (error.response.status === 404) {
-      notificationParam.message = "Not Found";
+      notificationParam.message = 'Not Found';
     }
 
     if (error.response.status === 500) {
-      notificationParam.message = "Internal Server Error";
+      notificationParam.message = 'Internal Server Error';
     }
 
     if (error.response.status === 508) {
-      notificationParam.message = "Time Out";
+      notificationParam.message = 'Time Out';
     }
 
     notification.error(notificationParam);

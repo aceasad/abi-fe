@@ -1,5 +1,5 @@
 export const PASSWORD_STATUSES = {
-  EXPIRED: "EXP",
-  NOT_CHANGED: "NCNG",
-  CHANGED: "CNG"
+  EXPIRED: 'EXP',
+  NOT_CHANGED: 'NCNG',
+  CHANGED: 'CNG',
 };

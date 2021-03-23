@@ -1,10 +1,10 @@
-import React from "react";
-import LoginForm from "../../components/LoginForm/LoginForm";
+import React from 'react';
+import LoginForm from '../../components/LoginForm/LoginForm';
 
-import "../../../../assets/sass/views/auth/login.scss";
-import messages from "./messages";
-import { useIntl } from "react-intl";
-import AuthFormWrapper from "components/layout-components/AuthFormWrapper";
+import '../../../../assets/sass/views/auth/login.scss';
+import messages from './messages';
+import { useIntl } from 'react-intl';
+import AuthFormWrapper from 'components/layout-components/AuthFormWrapper';
 
 const LoginPage = (props) => {
   const { formatMessage } = useIntl();

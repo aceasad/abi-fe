@@ -11,7 +11,7 @@ export function setLocalStorageItem(key, value) {
   try {
     localStorage.setItem(key, JSON.stringify(value));
   } catch (e) {
-    console.log("Local storage is full.");
+    console.log('Local storage is full.');
   }
 }
 

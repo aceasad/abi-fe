@@ -1,13 +1,13 @@
-import React from "react";
-import { Route, Redirect } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { ROUTES } from "routes";
+import React from 'react';
+import { Route, Redirect } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { ROUTES } from 'routes';
 import {
   makeSelectCurrentUser,
   makeSelectIsAuthenticated,
-  maskeSelectIsPasswordCreateRequired
-} from "../../redux/selectors/Users";
-import Loading from "components/shared-components/Loading";
+  maskeSelectIsPasswordCreateRequired,
+} from '../../redux/selectors/Users';
+import Loading from 'components/shared-components/Loading';
 
 export function PrivateRoute({ component: Component, type, ...rest }) {
   const isAuthenticated = useSelector(makeSelectIsAuthenticated());

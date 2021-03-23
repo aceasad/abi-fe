@@ -1,19 +1,19 @@
-import React, { useState } from "react";
-import { connect } from "react-redux";
-import { Menu, Layout } from "antd";
-import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
-import Logo from "./Logo";
-import NavProfile from "./NavProfile";
-import NavNotification from "./NavNotification";
-import NavSearch from "./NavSearch";
-import { toggleCollapsedNav, onMobileNavToggle } from "redux/actions/Theme";
+import React, { useState } from 'react';
+import { connect } from 'react-redux';
+import { Menu, Layout } from 'antd';
+import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
+import Logo from './Logo';
+import NavProfile from './NavProfile';
+import NavNotification from './NavNotification';
+import NavSearch from './NavSearch';
+import { toggleCollapsedNav, onMobileNavToggle } from 'redux/actions/Theme';
 import {
   NAV_TYPE_TOP,
   SIDE_NAV_COLLAPSED_WIDTH,
-  SIDE_NAV_WIDTH
-} from "constants/ThemeConstant";
-import { LogoutOutlined } from "@ant-design/icons";
-import utils from "utils";
+  SIDE_NAV_WIDTH,
+} from 'constants/ThemeConstant';
+import { LogoutOutlined } from '@ant-design/icons';
+import utils from 'utils';
 
 const { Header } = Layout;
 
@@ -26,7 +26,7 @@ export const HeaderNav = (props) => {
     toggleCollapsedNav,
     onMobileNavToggle,
     isMobile,
-    currentTheme
+    currentTheme,
   } = props;
   const [searchActive, setSearchActive] = useState(false);
 
@@ -46,7 +46,7 @@ export const HeaderNav = (props) => {
   const mode = () => {
     if (!headerNavColor) {
       return utils.getColorContrast(
-        currentTheme === "dark" ? "#00000" : "#ffffff"
+        currentTheme === 'dark' ? '#00000' : '#ffffff'
       );
     }
     return utils.getColorContrast(headerNavColor);
@@ -54,7 +54,7 @@ export const HeaderNav = (props) => {
   const navMode = mode();
   const getNavWidth = () => {
     if (isNavTop || isMobile) {
-      return "0px";
+      return '0px';
     }
     if (navCollapsed) {
       return `${SIDE_NAV_COLLAPSED_WIDTH}px`;
@@ -67,7 +67,7 @@ export const HeaderNav = (props) => {
       className={`app-header ${navMode}`}
       style={{ backgroundColor: headerNavColor }}
     >
-      <div className={`app-header-wrapper ${isNavTop ? "layout-top-nav" : ""}`}>
+      <div className={`app-header-wrapper ${isNavTop ? 'layout-top-nav' : ''}`}>
         <Logo logoType={navMode} />
         <div className="nav" style={{ width: `calc(100% - ${getNavWidth()})` }}>
           <div className="nav-left">
@@ -111,12 +111,12 @@ const mapStateToProps = ({ theme }) => {
     navType,
     headerNavColor,
     mobileNav,
-    currentTheme
+    currentTheme,
   } = theme;
   return { navCollapsed, navType, headerNavColor, mobileNav, currentTheme };
 };
 
 export default connect(mapStateToProps, {
   toggleCollapsedNav,
-  onMobileNavToggle
+  onMobileNavToggle,
 })(HeaderNav);

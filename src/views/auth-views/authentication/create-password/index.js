@@ -1,15 +1,15 @@
-import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-import "../../../../assets/sass/views/auth/login.scss";
-import messages from "./messages";
-import { useIntl } from "react-intl";
-import AuthFormWrapper from "components/layout-components/AuthFormWrapper";
-import CreatePassowrdForm from "views/auth-views/components/CreatePasswordForm.js";
-import { makeSelectCurrentUser } from "redux/selectors/Users";
-import { PASSWORD_STATUSES } from "constants/UserConstants";
-import { LogoutOutlined } from "@ant-design/icons";
-import { signOut } from "redux/actions/Auth";
+import '../../../../assets/sass/views/auth/login.scss';
+import messages from './messages';
+import { useIntl } from 'react-intl';
+import AuthFormWrapper from 'components/layout-components/AuthFormWrapper';
+import CreatePassowrdForm from 'views/auth-views/components/CreatePasswordForm.js';
+import { makeSelectCurrentUser } from 'redux/selectors/Users';
+import { PASSWORD_STATUSES } from 'constants/UserConstants';
+import { LogoutOutlined } from '@ant-design/icons';
+import { signOut } from 'redux/actions/Auth';
 
 const LoginPage = (props) => {
   const { formatMessage } = useIntl();

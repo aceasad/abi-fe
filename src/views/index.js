@@ -1,14 +1,14 @@
-import React from "react";
-import { Route, Switch, Redirect, withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import AppLayout from "layouts/app-layout";
-import AuthLayout from "layouts/auth-layout";
-import AppLocale from "lang";
-import { IntlProvider } from "react-intl";
-import { ConfigProvider } from "antd";
-import { APP_PREFIX_PATH, AUTH_PREFIX_PATH } from "configs/AppConfig";
-import { PrivateRoute } from "routes/PrivateRoute";
-import { ROUTES } from "routes";
+import React from 'react';
+import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import AppLayout from 'layouts/app-layout';
+import AuthLayout from 'layouts/auth-layout';
+import AppLocale from 'lang';
+import { IntlProvider } from 'react-intl';
+import { ConfigProvider } from 'antd';
+import { APP_PREFIX_PATH, AUTH_PREFIX_PATH } from 'configs/AppConfig';
+import { PrivateRoute } from 'routes/PrivateRoute';
+import { ROUTES } from 'routes';
 
 export const Views = ({ location, locale }) => {
   const currentAppLocale = AppLocale[locale];
