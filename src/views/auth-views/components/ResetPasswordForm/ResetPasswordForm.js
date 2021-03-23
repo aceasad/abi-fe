@@ -10,13 +10,6 @@ import { resetPassword } from "../../../../redux/actions/Auth";
 
 const { resetPasswordSchema } = require("utils/validations");
 
-const confirmButtonStyle = {
-  backgroundColor: "#5c5cd6",
-  borderRadius: "5px",
-  border: "none",
-  outline: "none",
-};
-
 const ResetPasswordForm = (match) => {
   const dispatch = useDispatch();
   const { token, email } = useParams();
@@ -35,14 +28,7 @@ const ResetPasswordForm = (match) => {
           handleResetPassword(values);
         }}
       >
-        {({
-          values,
-          handleChange,
-          handleBlur,
-          handleSubmit,
-          dirty,
-          isValid,
-        }) => (
+        {({ values, handleSubmit, dirty, isValid }) => (
           <Form layout="vertical" name="login-form">
             <Field
               component={FormField}

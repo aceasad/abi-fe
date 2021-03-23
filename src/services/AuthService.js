@@ -68,14 +68,14 @@ class AuthService extends ApiService {
   };
 
   resetPassword = (password, token) => {
-    return this.apiClient.post(
+    this.apiClient.post(
       ENDPOINTS.FORGOT_PASSWORD_CONFIRM,
 
       {
         password,
         token,
       },
-      { params: { token: token } }
+      { params: { token } }
     );
   };
 }
