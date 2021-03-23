@@ -12,7 +12,6 @@ import {
   sendForgotPasswordEmailError,
   sendForgotPasswordEmailSuccess,
   showAuthMessage,
-  signOutSuccess,
   resetPasswordSuccess,
   resetPasswordError,
   authenticated,
