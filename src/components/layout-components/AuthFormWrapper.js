@@ -1,13 +1,13 @@
-import React from "react";
-import { Card, Row, Col } from "antd";
-import { useSelector } from "react-redux";
-import { makeSelectCurrentTheme } from "redux/selectors/Theme";
-import "assets/sass/views/auth/login.scss";
-import { THEME_LIGHT } from "constants/ThemeConstant";
+import React from 'react';
+import { Card, Row, Col } from 'antd';
+import { useSelector } from 'react-redux';
+import { makeSelectCurrentTheme } from 'redux/selectors/Theme';
+import 'assets/sass/views/auth/login.scss';
+import { THEME_LIGHT } from 'constants/ThemeConstant';
 
 const backgroundStyle = {
-  backgroundRepeat: "no-repeat",
-  backgroundSize: "cover"
+  backgroundRepeat: 'no-repeat',
+  backgroundSize: 'cover',
 };
 
 const AuthFormWrapper = ({ title = false, paragraph = false, children }) => {
@@ -25,7 +25,7 @@ const AuthFormWrapper = ({ title = false, paragraph = false, children }) => {
                     <img
                       className="img-fluid"
                       src={`/img/${
-                        theme === THEME_LIGHT ? "logo.png" : "logo-white.png"
+                        theme === THEME_LIGHT ? 'logo.png' : 'logo-white.png'
                       }`}
                       alt=""
                     />

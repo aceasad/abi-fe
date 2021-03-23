@@ -1,4 +1,4 @@
-import httpService from "./HttpService";
+import httpService from './HttpService';
 
 class ApiService {
   constructor() {

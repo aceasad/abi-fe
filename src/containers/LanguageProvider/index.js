@@ -16,7 +16,7 @@ export function LanguageProvider({ messages, children }) {
 
 LanguageProvider.propTypes = {
   messages: PropTypes.object,
-  children: PropTypes.element.isRequired
+  children: PropTypes.element.isRequired,
 };
 
 export default LanguageProvider;

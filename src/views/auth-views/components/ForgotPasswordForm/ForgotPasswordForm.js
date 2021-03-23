@@ -1,20 +1,20 @@
-import React from "react";
-import { useDispatch } from "react-redux";
-import { Button, Form, Input } from "antd";
-import { MailOutlined } from "@ant-design/icons";
-import { sendForgotPasswordEmail } from "redux/actions/Auth";
-import { motion } from "framer-motion";
-import { ErrorMessage, Formik } from "formik";
-import messages from "./messages";
-import { useIntl } from "react-intl";
-import { forgotPasswordSchema } from "utils/validations";
-import "../../../../assets/sass/views/auth/forgotPassword.scss";
+import React from 'react';
+import { useDispatch } from 'react-redux';
+import { Button, Form, Input } from 'antd';
+import { MailOutlined } from '@ant-design/icons';
+import { sendForgotPasswordEmail } from 'redux/actions/Auth';
+import { motion } from 'framer-motion';
+import { ErrorMessage, Formik } from 'formik';
+import messages from './messages';
+import { useIntl } from 'react-intl';
+import { forgotPasswordSchema } from 'utils/validations';
+import '../../../../assets/sass/views/auth/forgotPassword.scss';
 
 const confirmButtonStyle = {
-  backgroundColor: "#5c5cd6",
-  borderRadius: "5px",
-  border: "none",
-  outline: "none",
+  backgroundColor: '#5c5cd6',
+  borderRadius: '5px',
+  border: 'none',
+  outline: 'none',
 };
 
 export const ForgotPasswordForm = (props) => {
@@ -38,7 +38,7 @@ export const ForgotPasswordForm = (props) => {
         }}
       ></motion.div>
       <Formik
-        initialValues={{ email: "" }}
+        initialValues={{ email: '' }}
         validationSchema={forgotPasswordSchema}
         onSubmit={(values) => {
           confirm(values);

@@ -1,9 +1,9 @@
-import React, { lazy, Suspense } from "react";
-import { Switch, Route, Redirect } from "react-router-dom";
-import Loading from "components/shared-components/Loading";
-import { AUTH_PREFIX_PATH } from "configs/AppConfig";
-import PublicRoute from "routes/PublicRoute";
-import ResetPasswordRoute from "routes/ResetPasswordRoute";
+import React, { lazy, Suspense } from 'react';
+import { Switch, Route, Redirect } from 'react-router-dom';
+import Loading from 'components/shared-components/Loading';
+import { AUTH_PREFIX_PATH } from 'configs/AppConfig';
+import PublicRoute from 'routes/PublicRoute';
+import ResetPasswordRoute from 'routes/ResetPasswordRoute';
 
 export const AppViews = () => {
   return (

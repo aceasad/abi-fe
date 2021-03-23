@@ -1,24 +1,24 @@
-import React from "react";
-import { connect } from "react-redux";
-import SideNav from "components/layout-components/SideNav";
-import TopNav from "components/layout-components/TopNav";
-import Loading from "components/shared-components/Loading";
-import MobileNav from "components/layout-components/MobileNav";
-import HeaderNav from "components/layout-components/HeaderNav";
-import PageHeader from "components/layout-components/PageHeader";
-import Footer from "components/layout-components/Footer";
-import AppViews from "views/app-views";
-import { Layout, Grid } from "antd";
+import React from 'react';
+import { connect } from 'react-redux';
+import SideNav from 'components/layout-components/SideNav';
+import TopNav from 'components/layout-components/TopNav';
+import Loading from 'components/shared-components/Loading';
+import MobileNav from 'components/layout-components/MobileNav';
+import HeaderNav from 'components/layout-components/HeaderNav';
+import PageHeader from 'components/layout-components/PageHeader';
+import Footer from 'components/layout-components/Footer';
+import AppViews from 'views/app-views';
+import { Layout, Grid } from 'antd';
 
-import navigationConfig from "configs/NavigationConfig";
+import navigationConfig from 'configs/NavigationConfig';
 import {
   SIDE_NAV_WIDTH,
   SIDE_NAV_COLLAPSED_WIDTH,
   NAV_TYPE_SIDE,
   NAV_TYPE_TOP,
-} from "constants/ThemeConstant";
-import utils from "utils";
-import { useThemeSwitcher } from "react-css-theme-switcher";
+} from 'constants/ThemeConstant';
+import utils from 'utils';
+import { useThemeSwitcher } from 'react-css-theme-switcher';
 const { Content } = Layout;
 const { useBreakpoint } = Grid;
 
@@ -28,7 +28,7 @@ export const AppLayout = ({ navCollapsed, navType, location }) => {
     location.pathname
   );
   const screens = utils.getBreakPoint(useBreakpoint());
-  const isMobile = !screens.includes("lg");
+  const isMobile = !screens.includes('lg');
   const isNavSide = navType === NAV_TYPE_SIDE;
   const isNavTop = navType === NAV_TYPE_TOP;
   const getLayoutGutter = () => {
@@ -40,7 +40,7 @@ export const AppLayout = ({ navCollapsed, navType, location }) => {
 
   const { status } = useThemeSwitcher();
 
-  if (status === "loading") {
+  if (status === 'loading') {
     return <Loading cover="page" />;
   }
 
@@ -56,7 +56,7 @@ export const AppLayout = ({ navCollapsed, navType, location }) => {
           className="app-layout"
           style={{ paddingLeft: getLayoutGutter() }}
         >
-          <div className={`app-content ${isNavTop ? "layout-top-nav" : ""}`}>
+          <div className={`app-content ${isNavTop ? 'layout-top-nav' : ''}`}>
             <PageHeader
               display={currentRouteInfo?.breadcrumb}
               title={currentRouteInfo?.title}

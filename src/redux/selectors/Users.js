@@ -1,6 +1,6 @@
-import { createSelector } from "reselect";
-import reducers from "../reducers";
-import { PASSWORD_STATUSES } from "constants/UserConstants";
+import { createSelector } from 'reselect';
+import reducers from '../reducers';
+import { PASSWORD_STATUSES } from 'constants/UserConstants';
 
 const selectUsersDomain = (state) => state.auth || reducers;
 
@@ -15,7 +15,7 @@ const makeSelectLoginDetails = () =>
     loading: substate.loading,
     message: substate.message,
     showMessage: substate.showMessage,
-    token: substate.token
+    token: substate.token,
   }));
 
 const maskeSelectIsPasswordCreateRequired = () =>
@@ -30,5 +30,5 @@ export {
   makeSelectCurrentUser,
   makeSelectIsAuthenticated,
   makeSelectLoginDetails,
-  maskeSelectIsPasswordCreateRequired
+  maskeSelectIsPasswordCreateRequired,
 };

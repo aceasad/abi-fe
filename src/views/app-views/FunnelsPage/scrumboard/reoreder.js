@@ -12,11 +12,7 @@ export const reorderQuoteMap = ({ quoteMap, source, destination }) => {
 
   // moving to same list
   if (source.droppableId === destination.droppableId) {
-    const reordered = reorder(
-      current,
-      source.index,
-      destination.index,
-    );
+    const reordered = reorder(current, source.index, destination.index);
     const result = {
       ...quoteMap,
       [source.droppableId]: reordered,
@@ -47,6 +43,5 @@ export const renameKey = (object, key, newKey) => {
   clonedObj[newKey] = targetKey;
   return clonedObj;
 };
-
 
 export default reorder;

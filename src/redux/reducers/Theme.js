@@ -6,13 +6,13 @@ import {
   TOP_NAV_COLOR_CHANGE,
   HEADER_NAV_COLOR_CHANGE,
   TOGGLE_MOBILE_NAV,
-  SWITCH_THEME
-} from "../constants/Theme";
-import { THEME_CONFIG } from "configs/AppConfig";
-import produce from "immer";
+  SWITCH_THEME,
+} from '../constants/Theme';
+import { THEME_CONFIG } from 'configs/AppConfig';
+import produce from 'immer';
 
 const initTheme = {
-  ...THEME_CONFIG
+  ...THEME_CONFIG,
 };
 
 /* eslint-disable default-case */

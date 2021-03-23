@@ -96,6 +96,13 @@
     "gulp-debug": "4.0.0",
     "gulp-less": "4.0.1",
     "gulp-postcss": "8.0.0",
-    "less-plugin-npm-import": "2.1.0"
+    "husky": "^5.2.0",
+    "prettier": "2.2.1",
+    "pretty-quick": "^3.1.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
   }
 }

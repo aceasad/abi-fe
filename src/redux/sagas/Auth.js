@@ -1,11 +1,11 @@
-import { all, takeEvery, put, fork, call } from "redux-saga/effects";
+import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
 import {
   SEND_FORGOT_PASSWORD_EMAIL,
   SIGNOUT,
   SIGNIN,
   FETCH_USER,
-  CREATE_PASSWORD
-} from "../constants/Auth";
+  CREATE_PASSWORD,
+} from '../constants/Auth';
 import {
   sendForgotPasswordEmailError,
   sendForgotPasswordEmailSuccess,
@@ -14,14 +14,14 @@ import {
   setUser,
   setPasswordChanged,
   signOutSuccess,
-  showLoading
-} from "../actions/Auth";
-import { push, go } from "connected-react-router";
+  showLoading,
+} from '../actions/Auth';
+import { push, go } from 'connected-react-router';
 
-import AuthService from "services/AuthService";
-import { ROUTES } from "routes";
-import messages from "views/auth-views/components/LoginForm/messages";
-import { clearLocalStorage } from "utils/localStorage";
+import AuthService from 'services/AuthService';
+import { ROUTES } from 'routes';
+import messages from 'views/auth-views/components/LoginForm/messages';
+import { clearLocalStorage } from 'utils/localStorage';
 
 export function* signIn() {
   yield takeEvery(SIGNIN, function* ({ payload }) {
@@ -91,6 +91,6 @@ export default function* rootSaga() {
     fork(signOut),
     fork(forgotPasswordEmailSend),
     fork(userFetch),
-    fork(createUserPassword)
+    fork(createUserPassword),
   ]);
 }

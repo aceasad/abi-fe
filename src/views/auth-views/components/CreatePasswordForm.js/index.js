@@ -1,24 +1,24 @@
-import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Button, Form } from "antd";
-import { LockOutlined } from "@ant-design/icons";
-import { createPassword } from "redux/actions/Auth";
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Button, Form } from 'antd';
+import { LockOutlined } from '@ant-design/icons';
+import { createPassword } from 'redux/actions/Auth';
 
-import { Formik, Field } from "formik";
-import { createPasswordSchema } from "utils/validations";
-import "../../../../assets/sass/views/auth/login.scss";
-import messages from "./messages";
-import { useIntl } from "react-intl";
+import { Formik, Field } from 'formik';
+import { createPasswordSchema } from 'utils/validations';
+import '../../../../assets/sass/views/auth/login.scss';
+import messages from './messages';
+import { useIntl } from 'react-intl';
 
-import { passwordMinLength } from "constants/Validation";
-import FormField from "components/shared-components/Form/FormField";
-import { makeSelectLoginDetails } from "redux/selectors/Users";
+import { passwordMinLength } from 'constants/Validation';
+import FormField from 'components/shared-components/Form/FormField';
+import { makeSelectLoginDetails } from 'redux/selectors/Users';
 
 const loginButtonStyle = {
-  backgroundColor: "#5c5cd6",
-  borderRadius: "5px",
-  border: "none",
-  outline: "none"
+  backgroundColor: '#5c5cd6',
+  borderRadius: '5px',
+  border: 'none',
+  outline: 'none',
 };
 
 export const CreatePassowrdForm = () => {
@@ -45,7 +45,7 @@ export const CreatePassowrdForm = () => {
 
   return (
     <Formik
-      initialValues={{ password: "", passwordRepeat: "" }}
+      initialValues={{ password: '', passwordRepeat: '' }}
       validationSchema={createPasswordSchema}
       onSubmit={onCreatePassword}
       validateOnMount={false}
@@ -56,27 +56,27 @@ export const CreatePassowrdForm = () => {
             component={FormField}
             label={formatMessage(messages.passwordInputLabel)}
             Tooltip={ValidPasswordFormat}
-            name={"password"}
+            name={'password'}
             prefix={<LockOutlined className="text-primary" />}
             secureField
             errorTexts={{
               label: formatMessage(messages.passwordInputLabel),
               minValue: passwordMinLength,
-              matchesLabel: formatMessage(messages.passwordValidFormat)
+              matchesLabel: formatMessage(messages.passwordValidFormat),
             }}
           />
           <Field
             component={FormField}
             label={formatMessage(messages.passwordRepeatInputLabel)}
             Tooltip={ValidPasswordFormat}
-            name={"passwordRepeat"}
+            name={'passwordRepeat'}
             prefix={<LockOutlined className="text-primary" />}
             secureField
             errorTexts={{
               label: formatMessage(messages.passwordRepeatInputLabel),
               minValue: passwordMinLength,
               matchesLabel: formatMessage(messages.passwordValidFormat),
-              value: formatMessage(messages.passwordInputLabel)
+              value: formatMessage(messages.passwordInputLabel),
             }}
           />
 

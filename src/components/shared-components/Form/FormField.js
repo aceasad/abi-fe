@@ -1,7 +1,7 @@
-import React from "react";
-import { ErrorMessage } from "formik";
-import { Form, Input, Popover } from "antd";
-import { useIntl } from "react-intl";
+import React from 'react';
+import { ErrorMessage } from 'formik';
+import { Form, Input, Popover } from 'antd';
+import { useIntl } from 'react-intl';
 
 const FormField = ({
   form: { handleBlur, handleChange },
@@ -18,7 +18,7 @@ const FormField = ({
 
   const defaultErrorMessage = (msg) =>
     formatMessage(msg, {
-      label
+      label,
     });
 
   const FormItem = (

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   Calendar,
   Badge,
@@ -12,24 +12,24 @@ import {
   TimePicker,
   Button,
   Tooltip,
-} from "antd";
-import moment from "moment";
-import { CalendarOutlined, DeleteOutlined } from "@ant-design/icons";
+} from 'antd';
+import moment from 'moment';
+import { CalendarOutlined, DeleteOutlined } from '@ant-design/icons';
 
 const m = new Date().getMonth();
 const y = new Date().getFullYear();
 
-const getDate = (date) => moment(new Date(y, m, date)).format("DD MMMM");
+const getDate = (date) => moment(new Date(y, m, date)).format('DD MMMM');
 
 const CalendarData = [
   {
     date: getDate(2),
     event: [
       {
-        title: "Meeting",
-        bullet: "cyan",
-        start: "11.00am",
-        end: "1.00pm",
+        title: 'Meeting',
+        bullet: 'cyan',
+        start: '11.00am',
+        end: '1.00pm',
       },
     ],
   },
@@ -37,16 +37,16 @@ const CalendarData = [
     date: getDate(5),
     event: [
       {
-        title: "Birthday Party",
-        bullet: "cyan",
-        start: "11.00am",
-        end: "1.00pm",
+        title: 'Birthday Party',
+        bullet: 'cyan',
+        start: '11.00am',
+        end: '1.00pm',
       },
       {
-        title: "Designer Meeting",
-        bullet: "red",
-        start: "3.00pm",
-        end: "4.00pm",
+        title: 'Designer Meeting',
+        bullet: 'red',
+        start: '3.00pm',
+        end: '4.00pm',
       },
     ],
   },
@@ -54,10 +54,10 @@ const CalendarData = [
     date: getDate(20),
     event: [
       {
-        title: "Dave ceremony",
-        bullet: "blue",
-        start: "2.00pm",
-        end: "5.00pm",
+        title: 'Dave ceremony',
+        bullet: 'blue',
+        start: '2.00pm',
+        end: '5.00pm',
       },
     ],
   },
@@ -65,10 +65,10 @@ const CalendarData = [
     date: getDate(25),
     event: [
       {
-        title: "Project discussion",
-        bullet: "gold",
-        start: "8.00pm",
-        end: "9.00pm",
+        title: 'Project discussion',
+        bullet: 'gold',
+        start: '8.00pm',
+        end: '9.00pm',
       },
     ],
   },
@@ -77,29 +77,29 @@ const CalendarData = [
 const { Option } = Select;
 
 const badgeColors = [
-  "pink",
-  "red",
-  "yellow",
-  "orange",
-  "cyan",
-  "green",
-  "blue",
-  "purple",
-  "geekblue",
-  "magenta",
-  "volcano",
-  "gold",
-  "lime",
+  'pink',
+  'red',
+  'yellow',
+  'orange',
+  'cyan',
+  'green',
+  'blue',
+  'purple',
+  'geekblue',
+  'magenta',
+  'volcano',
+  'gold',
+  'lime',
 ];
 
 const initialFormValues = {
-  title: "",
-  start: moment("00:00:00", "HH:mm:ss"),
-  end: moment("00:00:00", "HH:mm:ss"),
+  title: '',
+  start: moment('00:00:00', 'HH:mm:ss'),
+  end: moment('00:00:00', 'HH:mm:ss'),
   bullet: badgeColors[0],
 };
 
-const dateFormat = "DD MMMM";
+const dateFormat = 'DD MMMM';
 
 const AgendaList = (props) => {
   const { list, onDelete } = props;
@@ -242,10 +242,10 @@ const CalendarPage = () => {
   const onAddEvent = (values) => {
     const data = [
       {
-        title: values.title ? values.title : "Untitled Event",
+        title: values.title ? values.title : 'Untitled Event',
         bullet: values.bullet,
-        start: values.start.format("HH:mm A"),
-        end: values.end.format("HH:mm A"),
+        start: values.start.format('HH:mm A'),
+        end: values.end.format('HH:mm A'),
       },
     ];
     const newCalendarArr = calendarList;

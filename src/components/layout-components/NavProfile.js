@@ -1,47 +1,47 @@
-import React from "react";
-import { Menu, Dropdown, Avatar } from "antd";
-import { useDispatch } from "react-redux";
+import React from 'react';
+import { Menu, Dropdown, Avatar } from 'antd';
+import { useDispatch } from 'react-redux';
 import {
   EditOutlined,
   SettingOutlined,
   ShopOutlined,
   QuestionCircleOutlined,
-  LogoutOutlined
-} from "@ant-design/icons";
-import Icon from "components/util-components/Icon";
-import { signOut } from "redux/actions/Auth";
-import { useIntl } from "react-intl";
-import messages from "views/auth-views/components/LoginForm/messages";
+  LogoutOutlined,
+} from '@ant-design/icons';
+import Icon from 'components/util-components/Icon';
+import { signOut } from 'redux/actions/Auth';
+import { useIntl } from 'react-intl';
+import messages from 'views/auth-views/components/LoginForm/messages';
 
 const menuItem = [
   {
-    title: "Edit Profile",
+    title: 'Edit Profile',
     icon: EditOutlined,
-    path: "/"
+    path: '/',
   },
 
   {
-    title: "Account Setting",
+    title: 'Account Setting',
     icon: SettingOutlined,
-    path: "/"
+    path: '/',
   },
   {
-    title: "Billing",
+    title: 'Billing',
     icon: ShopOutlined,
-    path: "/"
+    path: '/',
   },
   {
-    title: "Help Center",
+    title: 'Help Center',
     icon: QuestionCircleOutlined,
-    path: "/"
-  }
+    path: '/',
+  },
 ];
 
 export const NavProfile = () => {
   const dispatch = useDispatch();
   const { formatMessage } = useIntl();
 
-  const profileImg = "/img/avatars/thumb-1.jpg";
+  const profileImg = '/img/avatars/thumb-1.jpg';
   const profileMenu = (
     <div className="nav-profile nav-dropdown">
       <div className="nav-profile-header">
@@ -81,7 +81,7 @@ export const NavProfile = () => {
     </div>
   );
   return (
-    <Dropdown placement="bottomRight" overlay={profileMenu} trigger={["click"]}>
+    <Dropdown placement="bottomRight" overlay={profileMenu} trigger={['click']}>
       <Menu className="d-flex align-item-center" mode="horizontal">
         <Menu.Item>
           <Avatar src={profileImg} />
