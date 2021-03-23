@@ -49,7 +49,7 @@ export const CreatePassowrdForm = () => {
             component={FormField}
             label={formatMessage(messages.passwordInputLabel)}
             tooltipText={ValidPasswordFormat}
-            name={"password"}
+            name={'password'}
             prefix={<LockOutlined className="text-primary" />}
             secureField
             errorTexts={{
@@ -62,7 +62,7 @@ export const CreatePassowrdForm = () => {
             component={FormField}
             label={formatMessage(messages.passwordRepeatInputLabel)}
             tooltipText={ValidPasswordFormat}
-            name={"passwordRepeat"}
+            name={'passwordRepeat'}
             prefix={<LockOutlined className="text-primary" />}
             secureField
             errorTexts={{
@@ -80,6 +80,7 @@ export const CreatePassowrdForm = () => {
               block
               disabled={!dirty || !isValid}
               loading={loading}
+              onClick={() => handleSubmit(values)}
             >
               {formatMessage(messages.createPassword)}
             </Button>
