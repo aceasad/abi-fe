@@ -1,11 +1,13 @@
-import { getLocalStorageItem, setLocalStorageItem } from "utils/localStorage";
-import ApiService from "./ApiService";
+import { getLocalStorageItem, setLocalStorageItem } from 'utils/localStorage';
+import ApiService from './ApiService';
 
 const ENDPOINTS = {
-  LOGIN: "/token/",
-  FORGOT_PASSWORD: "/password_reset/",
-  FORGOT_PASSWORD_CONFIRM: "/password_reset/confirm/",
-  FETCH_USER: "/users/me/",
+  LOGIN: '/token/',
+  FORGOT_PASSWORD: '/password_reset/',
+  FORGOT_PASSWORD_CONFIRM: '/password_reset/confirm/',
+  FETCH_USER: '/users/me/',
+  FETCH_USER: '/users/me/',
+  CREATE_PASSWORD: '/users/create_password/',
 };
 
 class AuthService extends ApiService {
@@ -34,13 +36,13 @@ class AuthService extends ApiService {
   };
 
   createSession = (token) => {
-    setLocalStorageItem("token", token);
+    setLocalStorageItem('token', token);
     this.setAuthorizationHeader();
   };
 
   destroySession = () => {
     localStorage.clear();
-    this.api.removeHeaders(["Authorization"]);
+    this.api.removeHeaders(['Authorization']);
   };
 
   login = async (loginData) => {
@@ -50,7 +52,7 @@ class AuthService extends ApiService {
   };
 
   getToken = () => {
-    const token = getLocalStorageItem("token");
+    const token = getLocalStorageItem('token');
     return token ? token.access : undefined;
   };
 
@@ -78,6 +80,9 @@ class AuthService extends ApiService {
       { params: { token } }
     );
   };
+
+  createUserPassword = (password) =>
+    this.apiClient.post(ENDPOINTS.CREATE_PASSWORD, password);
 }
 
 const authService = new AuthService();

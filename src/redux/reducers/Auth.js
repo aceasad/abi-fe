@@ -13,16 +13,18 @@ import {
   RESET_PASSWORD_ERROR,
   RESET_PASSWORD,
   SET_USER,
-} from "../constants/Auth";
-import { getLocalStorageItem } from "utils/localStorage";
-import produce from "immer";
+  SET_PASSWORD_CHANGED,
+} from '../constants/Auth';
+import { getLocalStorageItem } from 'utils/localStorage';
+import produce from 'immer';
+import { PASSWORD_STATUSES } from 'constants/UserConstants';
 
 const initState = {
   loading: false,
-  message: "",
+  message: '',
   showMessage: false,
-  redirect: "",
-  token: localStorage.getItem(AUTH_TOKEN),
+  redirect: '',
+  token: getLocalStorageItem(AUTH_TOKEN)?.access,
   user: null,
 };
 
@@ -32,7 +34,7 @@ const auth = (state = initState, action) =>
     switch (action.type) {
       case AUTHENTICATED:
         draft.loading = false;
-        draft.redirect = "/";
+        draft.redirect = '/';
         draft.token = action.token;
         break;
       case SHOW_AUTH_MESSAGE:
@@ -41,12 +43,12 @@ const auth = (state = initState, action) =>
         draft.loading = false;
         break;
       case HIDE_AUTH_MESSAGE:
-        draft.message = "";
+        draft.message = '';
         draft.showMessage = false;
         break;
       case SIGNOUT_SUCCESS:
         draft.token = null;
-        draft.redirect = "/";
+        draft.redirect = '/';
         draft.loading = false;
         break;
       case SIGNUP_SUCCESS:
@@ -54,7 +56,7 @@ const auth = (state = initState, action) =>
         draft.token = action.token;
         break;
       case SHOW_LOADING:
-        draft.loading = true;
+        draft.loading = action.payload;
         break;
       case SIGNIN_WITH_GOOGLE_AUTHENTICATED:
         draft.loading = false;
@@ -69,6 +71,13 @@ const auth = (state = initState, action) =>
         break;
       case RESET_PASSWORD_ERROR:
         draft.message = action.errorMessage.message;
+        break;
+      case SET_PASSWORD_CHANGED:
+        draft.user = {
+          ...state.user,
+          password_changed_status: PASSWORD_STATUSES.CHANGED,
+        };
+        break;
     }
   });
 

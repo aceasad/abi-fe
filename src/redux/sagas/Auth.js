@@ -1,12 +1,13 @@
-import { all, takeEvery, put, fork, call } from "redux-saga/effects";
+import { all, takeEvery, put, fork, call } from 'redux-saga/effects';
 import {
-  AUTH_TOKEN,
   SEND_FORGOT_PASSWORD_EMAIL,
   SIGNOUT,
   SIGNIN,
   RESET_PASSWORD,
   FETCH_USER,
-} from "../constants/Auth";
+  CREATE_PASSWORD,
+} from '../constants/Auth';
+
 import {
   sendForgotPasswordEmailError,
   sendForgotPasswordEmailSuccess,
@@ -16,13 +17,16 @@ import {
   resetPasswordError,
   authenticated,
   setUser,
-} from "../actions/Auth";
-import { push, go } from "connected-react-router";
+  setPasswordChanged,
+  signOutSuccess,
+  showLoading,
+} from '../actions/Auth';
+import { push, go } from 'connected-react-router';
 
-import FirebaseService from "services/FirebaseService";
-import AuthService from "services/AuthService";
-import { ROUTES } from "routes";
-import messages from "views/auth-views/components/LoginForm/messages";
+import AuthService from 'services/AuthService';
+import { ROUTES } from 'routes';
+import messages from 'views/auth-views/components/LoginForm/messages';
+import { clearLocalStorage } from 'utils/localStorage';
 
 export function* signIn() {
   yield takeEvery(SIGNIN, function* ({ payload }) {
@@ -40,8 +44,6 @@ export function* userFetch() {
     try {
       const { data } = yield call(AuthService.fetchUser);
       yield put(setUser(data));
-      //yield put(push(ROUTES.CONTACTS));
-      //yield put(go());
     } catch (error) {
       yield put(showAuthMessage(error));
     }
@@ -51,15 +53,11 @@ export function* userFetch() {
 export function* signOut() {
   yield takeEvery(SIGNOUT, function* () {
     try {
-      const signOutUser = yield call(FirebaseService.signOutRequest);
-      if (signOutUser === undefined) {
-        localStorage.removeItem(AUTH_TOKEN);
-        yield put(signOutSuccess(signOutUser));
-      } else {
-        yield put(showAuthMessage(signOutUser.message));
-      }
+      yield put(signOutSuccess());
+      yield clearLocalStorage();
+      yield put(push(ROUTES.LOGIN));
     } catch (err) {
-      yield put(showAuthMessage(err));
+      //
     }
   });
 }
@@ -94,6 +92,21 @@ export function* resetPassword() {
   });
 }
 
+export function* createUserPassword() {
+  yield takeEvery(CREATE_PASSWORD, function* ({ payload }) {
+    try {
+      yield put(showLoading(true));
+      yield call(AuthService.createUserPassword, payload);
+      yield put(setPasswordChanged());
+      yield put(push(ROUTES.DASHBOARD));
+    } catch (err) {
+      yield put(showAuthMessage(messages.createPasswordError));
+    } finally {
+      yield put(showLoading(false));
+    }
+  });
+}
+
 export default function* rootSaga() {
   yield all([
     fork(signIn),
@@ -101,5 +114,6 @@ export default function* rootSaga() {
     fork(forgotPasswordEmailSend),
     fork(resetPassword),
     fork(userFetch),
+    fork(createUserPassword),
   ]);
 }

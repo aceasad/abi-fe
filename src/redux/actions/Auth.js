@@ -15,8 +15,10 @@ import {
   RESET_PASSWORD_SUCCESS,
   RESET_PASSWORD_ERROR,
   SET_USER,
+  SET_PASSWORD_CHANGED,
   FETCH_USER,
-} from "../constants/Auth";
+  CREATE_PASSWORD,
+} from '../constants/Auth';
 
 export const signIn = (payload) => {
   return {
@@ -84,7 +86,7 @@ export const hideAuthMessage = () => {
   };
 };
 
-export const showLoading = () => {
+export const showLoading = (payload) => {
   return {
     type: SHOW_LOADING,
   };
@@ -132,5 +134,17 @@ export const resetPasswordError = (errorMessage) => {
   return {
     type: RESET_PASSWORD_ERROR,
     errorMessage,
+  };
+};
+export const createPassword = (payload) => {
+  return {
+    type: CREATE_PASSWORD,
+    payload,
+  };
+};
+
+export const setPasswordChanged = () => {
+  return {
+    type: SET_PASSWORD_CHANGED,
   };
 };

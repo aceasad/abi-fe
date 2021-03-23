@@ -1,6 +1,6 @@
-const enTranslationMessages = require("./translations/en.json");
+const enTranslationMessages = require('./translations/en.json');
 
-const DEFAULT_LOCALE = "en";
+const DEFAULT_LOCALE = 'en';
 
 // prettier-ignore
 const appLocales = [
@@ -23,7 +23,7 @@ const formatTranslationMessages = (locale, messages) => {
 };
 
 const translationMessages = {
-  en: formatTranslationMessages("en", enTranslationMessages),
+  en: formatTranslationMessages('en', enTranslationMessages),
 };
 
 export {
