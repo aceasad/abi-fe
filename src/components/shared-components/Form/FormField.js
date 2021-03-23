@@ -10,6 +10,7 @@ const FormField = ({
   secureField,
   errorTexts,
   label,
+  labelBlock,
   tooltipText,
   ...props
 }) => {
@@ -29,7 +30,7 @@ const FormField = ({
 
   const FormItem = (
     <Form.Item
-      className={props.labelBlock ? "label-block" : ""}
+      className={labelBlock ? "label-block" : ""}
       label={getLabel()}
     >
       <InputField
