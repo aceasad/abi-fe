@@ -15,24 +15,9 @@ import { passwordMinLength } from 'constants/Validation';
 import FormField from 'components/shared-components/Form/FormField';
 import { makeSelectLoginDetails } from 'redux/selectors/Users';
 
-const linkStyle = {
-  color: '#5c5cd6',
-  textDecoration: 'underline',
-  textDecorationColor: '#ccb3ff',
-  cursor: 'pointer',
-};
-
-const loginButtonStyle = {
-  backgroundColor: '#5c5cd6',
-  borderRadius: '5px',
-  border: 'none',
-  outline: 'none',
-};
-
 export const LoginForm = ({ redirect, allowRedirect }) => {
   let history = useHistory();
   const dispatch = useDispatch();
-
   const { loading, message, showMessage, token } = useSelector(
     makeSelectLoginDetails()
   );
@@ -54,8 +39,7 @@ export const LoginForm = ({ redirect, allowRedirect }) => {
       <span>{formatMessage(messages.passwordInputLabel)}</span>
 
       <span
-        className="login-underlined"
-        style={linkStyle}
+        className="authentication-label-link"
         onClick={() => history.push(ROUTES.FORGOT_PASSWORD, email)}
       >
         {formatMessage(messages.forgotPasswordLink)}
@@ -86,6 +70,7 @@ export const LoginForm = ({ redirect, allowRedirect }) => {
       >
         {showMessage && formatMessage(message)}
       </motion.div>
+
       <Formik
         initialValues={{ username: '', password: '' }}
         validationSchema={loginSchema}
@@ -109,8 +94,8 @@ export const LoginForm = ({ redirect, allowRedirect }) => {
             <Field
               component={FormField}
               labelComponent={() => <PasswordLabel email={values.username} />}
-              Tooltip={ValidPasswordFormat}
-              name={'password'}
+              tooltipText={ValidPasswordFormat}
+              name={"password"}
               prefix={<LockOutlined className="text-primary" />}
               secureField
               errorTexts={{
@@ -118,11 +103,11 @@ export const LoginForm = ({ redirect, allowRedirect }) => {
                 minValue: passwordMinLength,
                 matchesLabel: formatMessage(messages.passwordValidFormat),
               }}
+              labelBlock={true}
             />
 
-            <Form.Item>
+            <Form.Item className="mt-sm-5">
               <Button
-                style={loginButtonStyle}
                 onClick={() => handleSubmit(values)}
                 type="primary"
                 htmlType="submit"

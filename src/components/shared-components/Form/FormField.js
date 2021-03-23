@@ -1,7 +1,7 @@
-import React from 'react';
-import { ErrorMessage } from 'formik';
-import { Form, Input, Popover } from 'antd';
-import { useIntl } from 'react-intl';
+import React from "react";
+import { ErrorMessage } from "formik";
+import { Form, Input, Tooltip } from "antd";
+import { useIntl } from "react-intl";
 
 const FormField = ({
   form: { handleBlur, handleChange },
@@ -10,19 +10,29 @@ const FormField = ({
   secureField,
   errorTexts,
   label,
-  Tooltip,
+  labelBlock,
+  tooltipText,
   ...props
 }) => {
   const InputField = secureField ? Input.Password : Input;
   const { formatMessage } = useIntl();
 
+  const getLabel = () => {
+    if (Label) {
+      return <Label />;
+    }
+    return label;
+  };
   const defaultErrorMessage = (msg) =>
     formatMessage(msg, {
       label,
     });
 
   const FormItem = (
-    <Form.Item>
+    <Form.Item
+      className={labelBlock ? "label-block" : ""}
+      label={getLabel()}
+    >
       <InputField
         name={field.name}
         onChange={handleChange}
@@ -30,19 +40,25 @@ const FormField = ({
         value={field.value}
         {...props}
       />
+      <div className="authentication-error">
+        <ErrorMessage name={field.name}>
+          {errorTexts
+            ? (msg) => formatMessage(msg, errorTexts)
+            : defaultErrorMessage}
+        </ErrorMessage>
+      </div>
     </Form.Item>
   );
 
   return (
     <div>
-      {Label && <Label />}
-      {label && <label>{label}</label>}
-      {Tooltip ? <Popover content={Tooltip}>{FormItem}</Popover> : FormItem}
-      <ErrorMessage name={field.name}>
-        {errorTexts
-          ? (msg) => formatMessage(msg, errorTexts)
-          : defaultErrorMessage}
-      </ErrorMessage>
+      {Tooltip ? (
+        <Tooltip placement="bottomRight" title={tooltipText}>
+          {FormItem}
+        </Tooltip>
+      ) : (
+        FormItem
+      )}
     </div>
   );
 };
