@@ -6,15 +6,13 @@ import { useDispatch } from 'react-redux';
 import messages from './messages';
 import FormField from 'components/shared-components/Form/FormField';
 import FormInputField from 'components/shared-components/Form/FormInputField';
-import ImageInputField from 'components/shared-components/Form/ImageInputField';
+import FormImageField from 'components/shared-components/Form/FormImageField';
 import { useIntl } from 'react-intl';
 import { updateClinic } from 'redux/actions/Clinic';
 import { NO, FREE, AVAILABLE } from '../../../constants/ClinicConstants';
 
 const ClinicPage = () => {
   const dispatch = useDispatch();
-  const [image, setImage] = useState('');
-  const [imageFile, setImageFile] = useState(null);
   const [visibilityOfParkinSizeField, setVisibility] = useState(false);
 
   const { formatMessage } = useIntl();
@@ -29,17 +27,6 @@ const ClinicPage = () => {
     backgroundRepeat: 'no-repeat',
     backgroundPosition: 'center center',
     backgroundSize: 'cover',
-  };
-
-  const onImageChange = (event) => {
-    if (event.target.files && event.target.files[0]) {
-      setImageFile(event.target.files[0]);
-      let reader = new FileReader();
-      reader.onload = (e) => {
-        setImage(e.target.result);
-      };
-      reader.readAsDataURL(event.target.files[0]);
-    }
   };
 
   return (
@@ -58,34 +45,13 @@ const ClinicPage = () => {
         }}
         validationSchema={clinicSchema}
         onSubmit={(values) => {
-          values.photo = imageFile;
           dispatch(updateClinic(values));
         }}
       >
         {({ setFieldValue, dirty, isValid, values, handleSubmit }) => (
           <Form layout="vertical" name="clinic-form" onSubmit={handleSubmit}>
-            <div className="row" style={{ marginLeft: '40%' }}>
-              <img style={imageStyle} alt="clinic" src={image}></img>
-            </div>
-            <Field
-              component={FormInputField}
-              name={'photo'}
-              type={'file'}
-              autoFocus
-              onChange={onImageChange}
-            />
-            <Form.Item>
-              <Button
-                autoFocus
-                name="remove"
-                onClick={() => {
-                  setImage(null);
-                  setImageFile(null);
-                }}
-              >
-                Remove
-              </Button>
-            </Form.Item>
+            <Field component={FormImageField} name={'photo'}></Field>
+
             <Field
               component={FormField}
               label={formatMessage(messages.clinic_name)}
