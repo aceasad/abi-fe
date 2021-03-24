@@ -31,3 +31,11 @@ export const createPasswordSchema = Yup.object().shape({
     .required()
     .oneOf([Yup.ref('password')]),
 });
+
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+export const resetPasswordSchema = Yup.object().shape({
+  password: Yup.string().required().matches(passwordRegex),
+  passwordRepeat: Yup.string()
+    .required()
+    .oneOf([Yup.ref("password")]),
+});

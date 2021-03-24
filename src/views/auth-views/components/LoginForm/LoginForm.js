@@ -15,6 +15,20 @@ import { passwordMinLength } from 'constants/Validation';
 import FormField from 'components/shared-components/Form/FormField';
 import { makeSelectLoginDetails } from 'redux/selectors/Users';
 
+const linkStyle = {
+  color: '#5c5cd6',
+  textDecoration: 'underline',
+  textDecorationColor: '#ccb3ff',
+  cursor: 'pointer',
+};
+
+const loginButtonStyle = {
+  backgroundColor: '#5c5cd6',
+  borderRadius: '5px',
+  border: 'none',
+  outline: 'none',
+};
+
 export const LoginForm = ({ redirect, allowRedirect }) => {
   let history = useHistory();
   const dispatch = useDispatch();
@@ -41,6 +55,9 @@ export const LoginForm = ({ redirect, allowRedirect }) => {
       <span
         className="authentication-label-link"
         onClick={() => history.push(ROUTES.FORGOT_PASSWORD, email)}
+        onMouseDown={(event) => {
+          event.preventDefault();
+        }}
       >
         {formatMessage(messages.forgotPasswordLink)}
       </span>
@@ -79,7 +96,7 @@ export const LoginForm = ({ redirect, allowRedirect }) => {
         }}
         validateOnMount={false}
       >
-        {({ values, handleSubmit, dirty, isValid, errors }) => (
+        {({ values, handleSubmit, dirty, isValid }) => (
           <Form layout="vertical" name="login-form">
             <Field
               component={FormField}
@@ -95,7 +112,7 @@ export const LoginForm = ({ redirect, allowRedirect }) => {
               component={FormField}
               labelComponent={() => <PasswordLabel email={values.username} />}
               tooltipText={ValidPasswordFormat}
-              name={"password"}
+              name={'password'}
               prefix={<LockOutlined className="text-primary" />}
               secureField
               errorTexts={{

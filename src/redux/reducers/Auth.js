@@ -8,6 +8,10 @@ import {
   SHOW_LOADING,
   SIGNIN_WITH_GOOGLE_AUTHENTICATED,
   SIGNIN_WITH_FACEBOOK_AUTHENTICATED,
+  SEND_FORGOT_PASSWORD_EMAIL_SUCCESS,
+  RESET_PASSWORD_SUCCESS,
+  RESET_PASSWORD_ERROR,
+  RESET_PASSWORD,
   SET_USER,
   SET_PASSWORD_CHANGED,
 } from '../constants/Auth';
@@ -64,6 +68,9 @@ const auth = (state = initState, action) =>
         break;
       case SET_USER:
         draft.user = action.payload;
+        break;
+      case RESET_PASSWORD_ERROR:
+        draft.message = action.errorMessage.message;
         break;
       case SET_PASSWORD_CHANGED:
         draft.user = {

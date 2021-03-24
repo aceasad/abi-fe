@@ -176,5 +176,11 @@
   "global.validations.required": "{label} is required",
   "global.validations.positive_number": "{label} must be positive number",
   "global.validations.greater_than_number": "{label} must be greather than {number}",
-  "global.validations.matches": "{matchesLabel}"
+  "global.validations.matches": "{matchesLabel}",
+
+  "staff_page.text.see_appointments": "See Appointments",
+  "staff_page.text.staff": "Staff",
+  "staff_page.text.add_new_staff": "Add New Staff",
+  "staff_page.text.delete": "Delete",
+  "staff_page.text.edit": "Edit"
 }

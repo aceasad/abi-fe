@@ -4,6 +4,8 @@ import ApiService from './ApiService';
 const ENDPOINTS = {
   LOGIN: '/token/',
   FORGOT_PASSWORD: '/password_reset/',
+  FORGOT_PASSWORD_CONFIRM: '/password_reset/confirm/',
+  FETCH_USER: '/users/me/',
   FETCH_USER: '/users/me/',
   CREATE_PASSWORD: '/users/create_password/',
 };
@@ -66,6 +68,19 @@ class AuthService extends ApiService {
 
     return data;
   };
+
+  resetPassword = (password, token) => {
+    this.apiClient.post(
+      ENDPOINTS.FORGOT_PASSWORD_CONFIRM,
+
+      {
+        password,
+        token,
+      },
+      { params: { token } }
+    );
+  };
+
   createUserPassword = (password) =>
     this.apiClient.post(ENDPOINTS.CREATE_PASSWORD, password);
 }
