@@ -14,13 +14,6 @@ import { passwordMinLength } from 'constants/Validation';
 import FormField from 'components/shared-components/Form/FormField';
 import { makeSelectLoginDetails } from 'redux/selectors/Users';
 
-const loginButtonStyle = {
-  backgroundColor: '#5c5cd6',
-  borderRadius: '5px',
-  border: 'none',
-  outline: 'none',
-};
-
 export const CreatePassowrdForm = () => {
   const dispatch = useDispatch();
 
@@ -55,7 +48,7 @@ export const CreatePassowrdForm = () => {
           <Field
             component={FormField}
             label={formatMessage(messages.passwordInputLabel)}
-            Tooltip={ValidPasswordFormat}
+            tooltipText={ValidPasswordFormat}
             name={'password'}
             prefix={<LockOutlined className="text-primary" />}
             secureField
@@ -68,7 +61,7 @@ export const CreatePassowrdForm = () => {
           <Field
             component={FormField}
             label={formatMessage(messages.passwordRepeatInputLabel)}
-            Tooltip={ValidPasswordFormat}
+            tooltipText={ValidPasswordFormat}
             name={'passwordRepeat'}
             prefix={<LockOutlined className="text-primary" />}
             secureField
@@ -80,14 +73,14 @@ export const CreatePassowrdForm = () => {
             }}
           />
 
-          <Form.Item>
+          <Form.Item className="mt-sm-5">
             <Button
-              style={loginButtonStyle}
               type="primary"
               htmlType="submit"
               block
               disabled={!dirty || !isValid}
               loading={loading}
+              onClick={() => handleSubmit(values)}
             >
               {formatMessage(messages.createPassword)}
             </Button>
