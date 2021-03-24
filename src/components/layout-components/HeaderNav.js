@@ -10,6 +10,7 @@ import {
   SIDE_NAV_WIDTH,
 } from 'constants/ThemeConstant';
 import utils from 'utils';
+import localeString from 'utils/localeString';
 import {
   LeftOutlined,
   RightOutlined,
@@ -17,7 +18,6 @@ import {
 } from '@ant-design/icons';
 import { signOut } from 'redux/actions/Auth';
 import { useDispatch } from 'react-redux';
-import LocaleString from 'components/util-components/LocaleString/LocaleString';
 
 const { Header } = Layout;
 
@@ -39,23 +39,14 @@ export const HeaderNav = (props) => {
   const dropdownMenu = (
     <Menu>
       <Menu.Item key="0">
-        <LocaleString
-          isLocaleOn={localization}
-          localeKey={'user_menu.company_settings'}
-        />
+        {localeString(localization, 'user_menu.company_settings')}
       </Menu.Item>
       <Menu.Item key="1">
-        <LocaleString
-          isLocaleOn={localization}
-          localeKey={'user_menu.user_settings'}
-        />
+        {localeString(localization, 'user_menu.user_settings')}
       </Menu.Item>
       <Menu.Divider />
       <Menu.Item key="3" onClick={() => dispatch(signOut())}>
-        <LocaleString
-          isLocaleOn={localization}
-          localeKey={'login_page.text.log_out'}
-        />
+        {localeString(localization, 'login_page.text.log_out')}
       </Menu.Item>
     </Menu>
   );
