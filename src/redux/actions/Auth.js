@@ -18,6 +18,7 @@ import {
   SET_PASSWORD_CHANGED,
   FETCH_USER,
   CREATE_PASSWORD,
+  SET_TOKEN,
 } from '../constants/Auth';
 
 export const signIn = (payload) => {
@@ -146,5 +147,12 @@ export const createPassword = (payload) => {
 export const setPasswordChanged = () => {
   return {
     type: SET_PASSWORD_CHANGED,
+  };
+};
+
+export const setToken = (payload) => {
+  return {
+    type: SET_TOKEN,
+    payload,
   };
 };
