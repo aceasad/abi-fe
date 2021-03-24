@@ -1,9 +1,9 @@
-import React from "react";
-import { ErrorMessage } from "formik";
-import { Form, Input, Popover } from "antd";
-import { useIntl } from "react-intl";
+import React from 'react';
+import { ErrorMessage } from 'formik';
+import { Form, Input, Popover } from 'antd';
+import { useIntl } from 'react-intl';
 
-const FormNumberField = ({
+const FormInputField = ({
   form: { handleBlur, handleChange, min },
   field,
   labelComponent: Label,
@@ -22,7 +22,6 @@ const FormNumberField = ({
   const FormItem = (
     <Form.Item>
       <Input
-        type="number"
         name={field.name}
         onChange={handleChange}
         onBlur={handleBlur}
@@ -46,4 +45,4 @@ const FormNumberField = ({
   );
 };
 
-export default FormNumberField;
+export default FormInputField;
