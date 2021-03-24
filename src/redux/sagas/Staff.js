@@ -19,7 +19,7 @@ export function* getPaginatedStaff() {
     try {
       const pagination = yield select(makeSelectPagination());
       const { data } = yield call(StaffService.getPaginatedStaff, pagination);
-      yield put(setStaff({ results: data.results, count: data.count }));
+      yield put(setStaff(data));
     } catch (error) {}
   });
 }
