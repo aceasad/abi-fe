@@ -14,7 +14,7 @@ const LoginPage = (props) => {
   const { formatMessage } = useIntl();
   const dispatch = useDispatch();
 
-  const user = useSelector(makeSelectCurrentUser);
+  const user = useSelector(makeSelectCurrentUser());
 
   return (
     <>
