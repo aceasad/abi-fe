@@ -6,21 +6,11 @@ const ENDPOINTS = {
 
 export const create_clinic = (values) => {
   const clinic = new FormData();
-  clinic.append('name', values.name);
-  clinic.append('phone_number', values.phone_number);
-  clinic.append('address', values.address);
-  clinic.append('google_maps_link', values.google_maps_link);
-  clinic.append('parking_availability', values.parking_availability);
-  clinic.append('parking_size', values.parking_size);
-  if (values.photo) {
-    clinic.append('photo', values.photo);
-  }
-  if (values.start_of_work) {
-    clinic.append('start_of_work', values.start_of_work);
-  }
-  if (values.end_of_work) {
-    clinic.append('end_of_work', values.end_of_work);
-  }
+  Object.keys(values).map((key) => {
+    if (values[key]) {
+      clinic.append(key, values[key]);
+    }
+  });
   return clinic;
 };
 

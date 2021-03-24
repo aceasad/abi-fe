@@ -19,6 +19,18 @@ const ClinicPage = () => {
 
   const { formatMessage } = useIntl();
 
+  const imageStyle = {
+    display: 'inline-block',
+    width: '150px',
+    height: '150px',
+    backgroundColor: 'lightgray',
+    borderRadius: '30%',
+    border: '10%',
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: 'center center',
+    backgroundSize: 'cover',
+  };
+
   const onImageChange = (event) => {
     if (event.target.files && event.target.files[0]) {
       setImageFile(event.target.files[0]);
@@ -52,12 +64,28 @@ const ClinicPage = () => {
       >
         {({ setFieldValue, dirty, isValid, values, handleSubmit }) => (
           <Form layout="vertical" name="clinic-form" onSubmit={handleSubmit}>
-            <ImageInputField
-              setImage={setImage}
-              setImageFile={setImageFile}
-              image={image}
-              onImageChange={onImageChange}
-            ></ImageInputField>
+            <div className="row" style={{ marginLeft: '40%' }}>
+              <img style={imageStyle} alt="clinic" src={image}></img>
+            </div>
+            <Field
+              component={FormInputField}
+              name={'photo'}
+              type={'file'}
+              autoFocus
+              onChange={onImageChange}
+            />
+            <Form.Item>
+              <Button
+                autoFocus
+                name="remove"
+                onClick={() => {
+                  setImage(null);
+                  setImageFile(null);
+                }}
+              >
+                Remove
+              </Button>
+            </Form.Item>
             <Field
               component={FormField}
               label={formatMessage(messages.clinic_name)}
@@ -100,11 +128,7 @@ const ClinicPage = () => {
             <Form.Item name="radio-group">
               <Radio.Group
                 onChange={(event) => {
-                  if (event.target.value === AVAILABLE) {
-                    setVisibility(true);
-                  } else {
-                    setVisibility(false);
-                  }
+                  setVisibility(event.target.value === AVAILABLE);
                   values.parking_availability = event.target.value;
                 }}
               >
