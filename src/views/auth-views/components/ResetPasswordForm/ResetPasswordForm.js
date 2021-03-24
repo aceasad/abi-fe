@@ -24,9 +24,7 @@ const ResetPasswordForm = (match) => {
       <Formik
         initialValues={{ password: '', passwordRepeat: '' }}
         validationSchema={resetPasswordSchema}
-        onSubmit={(values) => {
-          handleResetPassword(values);
-        }}
+        onSubmit={handleResetPassword}
       >
         {({ values, handleSubmit, dirty, isValid }) => (
           <Form layout="vertical" name="login-form">
