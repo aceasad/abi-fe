@@ -2,7 +2,7 @@ import React from 'react';
 import { Menu, Dropdown } from 'antd';
 import { useIntl } from 'react-intl';
 import messages from './messages';
-import { OPTION_KEYS } from './index';
+import { OPTION_KEYS } from './StaffList';
 
 function StaffCardOptions({ styles = {}, handleMenuClick }) {
   const { formatMessage } = useIntl();

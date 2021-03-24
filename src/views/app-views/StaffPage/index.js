@@ -1,74 +1,21 @@
-import CardComponent from 'components/shared-components/Card';
-import React, { useEffect } from 'react';
-import { useIntl } from 'react-intl';
-import { useDispatch, useSelector } from 'react-redux';
-import { getStaff, setStaffPage } from 'redux/actions/Staff';
-import { makeSelectStaff, makeSelectPagination } from 'redux/selectors/Staff';
+import React, { useState } from 'react';
+import StaffList from './StaffList';
 
-import messages from './messages';
-import StaffCardOptions from './StaffCardOptions';
-import PaginationComponent from 'components/shared-components/Pagination';
-
-export const OPTION_KEYS = {
-  EDIT: 1,
-  DELETE: 2,
+export const STAFF_PAGE = {
+  LIST: 0,
+  CREATE: 1,
+  EDIT: 2,
 };
 
 const StaffPage = () => {
-  const dispatch = useDispatch();
-  const staff = useSelector(makeSelectStaff());
-  const { count, page } = useSelector(makeSelectPagination());
-  const { formatMessage } = useIntl();
+  const [staffPage, setStaffPage] = useState(STAFF_PAGE.LIST);
 
-  useEffect(() => {
-    dispatch(getStaff());
-  }, []);
-
-  const handleOptionClick = (staffId, key) => {
-    // eslint-disable-next-line default-case
-    switch (key) {
-      case OPTION_KEYS.DELETE:
-        //TO-DO
-        break;
-      case OPTION_KEYS.EDIT:
-        //TO-DO
-        break;
-    }
-  };
-
-  return (
-    <div>
-      <div>
-        <h1>{formatMessage(messages.staff)}</h1>
-        <button>{formatMessage(messages.addNewStaff)}</button>
-      </div>
-
-      {staff.map((staffItem) => (
-        <CardComponent
-          key={staffItem.id}
-          title={staffItem.first_name + ' ' + staffItem.last_name}
-          description={staffItem.seniority + ' ' + staffItem.specialization}
-          avatar={staffItem.profile_picture}
-          action={formatMessage(messages.seeAppointments)}
-          Options={() => (
-            <StaffCardOptions
-              handleMenuClick={({ key }) =>
-                handleOptionClick(staffItem.id, key)
-              }
-            />
-          )}
-          handleClick={() => {
-            //TO-DO
-          }}
-        />
-      ))}
-      <PaginationComponent
-        page={page}
-        count={count}
-        handlePageChange={(page) => dispatch(setStaffPage(page))}
-      />
-    </div>
-  );
+  switch (staffPage) {
+    case STAFF_PAGE.LIST:
+      return <StaffList />;
+    default:
+      return <StaffList />;
+  }
 };
 
 export default StaffPage;

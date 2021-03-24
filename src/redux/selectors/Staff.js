@@ -4,7 +4,10 @@ import reducers from '../reducers';
 const selectStaffDomain = (state) => state.staff || reducers;
 
 const makeSelectStaff = () =>
-  createSelector(selectStaffDomain, (substate) => substate.staff);
+  createSelector(selectStaffDomain, (substate) => ({
+    staff: substate.staff,
+    loading: substate.loading,
+  }));
 
 const makeSelectPagination = () =>
   createSelector(selectStaffDomain, (substate) => ({

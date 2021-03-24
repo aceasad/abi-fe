@@ -1,10 +1,15 @@
-import { SET_STAFF, SET_STAFF_PAGE } from '../constants/Staff';
+import {
+  SET_STAFF,
+  SET_STAFF_PAGE,
+  SET_STAFF_LOADING,
+} from '../constants/Staff';
 import produce from 'immer';
 
 const initTheme = {
   staff: [],
   count: 0,
   page: 1,
+  loading: false,
 };
 
 /* eslint-disable default-case */
@@ -17,6 +22,9 @@ const theme = (state = initTheme, action) =>
         break;
       case SET_STAFF_PAGE:
         draft.page = action.payload;
+        break;
+      case SET_STAFF_LOADING:
+        draft.loading = action.payload;
         break;
     }
   });
