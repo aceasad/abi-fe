@@ -5,29 +5,29 @@ import {
   SET_STAFF_PAGE,
 } from '../constants/Staff';
 
-export function getStaff() {
+export const getStaff = () => {
   return {
     type: GET_STAFF,
   };
-}
+};
 
-export function setStaff(payload) {
+export const setStaff = (payload) => {
   return {
     type: SET_STAFF,
     payload,
   };
-}
+};
 
-export function setStaffPage(payload) {
+export const setStaffPage = (payload) => {
   return {
     type: SET_STAFF_PAGE,
     payload,
   };
-}
+};
 
-export function setStaffLoading(payload) {
+export const setStaffLoading = (payload) => {
   return {
     type: SET_STAFF_LOADING,
     payload,
   };
-}
+};

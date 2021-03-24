@@ -3,13 +3,17 @@ import {
   SEND_FORGOT_PASSWORD_EMAIL,
   SIGNOUT,
   SIGNIN,
+  RESET_PASSWORD,
   FETCH_USER,
   CREATE_PASSWORD,
 } from '../constants/Auth';
+
 import {
   sendForgotPasswordEmailError,
   sendForgotPasswordEmailSuccess,
   showAuthMessage,
+  resetPasswordSuccess,
+  resetPasswordError,
   authenticated,
   setUser,
   setPasswordChanged,
@@ -70,6 +74,23 @@ export function* forgotPasswordEmailSend() {
   });
 }
 
+export function* resetPassword() {
+  yield takeEvery(RESET_PASSWORD, function* ({ password, token }) {
+    try {
+      const { response } = yield call(
+        AuthService.resetPassword,
+        password,
+        token
+      );
+      yield put(push(ROUTES.LOGIN));
+      yield put(go());
+      yield put(resetPasswordSuccess(response));
+    } catch (err) {
+      yield put(resetPasswordError(err));
+    }
+  });
+}
+
 export function* createUserPassword() {
   yield takeEvery(CREATE_PASSWORD, function* ({ payload }) {
     try {
@@ -90,6 +111,7 @@ export default function* rootSaga() {
     fork(signIn),
     fork(signOut),
     fork(forgotPasswordEmailSend),
+    fork(resetPassword),
     fork(userFetch),
     fork(createUserPassword),
   ]);

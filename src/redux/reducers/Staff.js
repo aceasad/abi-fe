@@ -5,7 +5,7 @@ import {
 } from '../constants/Staff';
 import produce from 'immer';
 
-const initTheme = {
+const initialState = {
   staff: [],
   count: 0,
   page: 1,
@@ -13,7 +13,7 @@ const initTheme = {
 };
 
 /* eslint-disable default-case */
-const theme = (state = initTheme, action) =>
+const staff = (state = initialState, action) =>
   produce(state, (draft) => {
     switch (action.type) {
       case SET_STAFF:
@@ -29,4 +29,4 @@ const theme = (state = initTheme, action) =>
     }
   });
 
-export default theme;
+export default staff;
