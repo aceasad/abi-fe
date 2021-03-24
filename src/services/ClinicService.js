@@ -12,9 +12,15 @@ export const create_clinic = (values) => {
   clinic.append('google_maps_link', values.google_maps_link);
   clinic.append('parking_availability', values.parking_availability);
   clinic.append('parking_size', values.parking_size);
-  clinic.append('photo', values.photo);
-  clinic.append('start_of_work', values.start_of_work);
-  clinic.append('end_of_work', values.end_of_work);
+  if (values.photo) {
+    clinic.append('photo', values.photo);
+  }
+  if (values.start_of_work) {
+    clinic.append('start_of_work', values.start_of_work);
+  }
+  if (values.end_of_work) {
+    clinic.append('end_of_work', values.end_of_work);
+  }
   return clinic;
 };
 
