@@ -1,7 +1,7 @@
-import React from "react";
-import { ErrorMessage } from "formik";
-import { Form, Input, Tooltip } from "antd";
-import { useIntl } from "react-intl";
+import React from 'react';
+import { ErrorMessage } from 'formik';
+import { Form, Input, Tooltip } from 'antd';
+import { useIntl } from 'react-intl';
 
 const FormField = ({
   form: { handleBlur, handleChange },
@@ -19,7 +19,7 @@ const FormField = ({
   const { formatMessage } = useIntl();
 
   const getLabel = () => {
-    if (Label) {
+    if (label) {
       return <Label />;
     }
     return label;
@@ -30,10 +30,7 @@ const FormField = ({
     });
 
   const FormItem = (
-    <Form.Item
-      className={labelBlock ? "label-block" : ""}
-      label={getLabel()}
-    >
+    <Form.Item className={labelBlock ? 'label-block' : ''} label={getLabel()}>
       <InputField
         name={field.name}
         onChange={handleChange}
