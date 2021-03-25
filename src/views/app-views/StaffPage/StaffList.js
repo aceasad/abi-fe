@@ -11,7 +11,9 @@ import { makeSelectStaff, makeSelectPagination } from 'redux/selectors/Staff';
 import Loading from 'components/shared-components/Loading';
 import Modal from 'components/shared-components/Modal';
 import { deleteStaff } from 'redux/actions/Staff';
-import { message, List, Card, Layout } from 'antd';
+import { message, List, Typography, Layout, Button } from 'antd';
+
+const { Title } = Typography;
 
 const { Header, Content } = Layout;
 
@@ -69,20 +71,20 @@ const StaffList = ({ showCreate, editUser }) => {
 
   return (
     <Layout>
-      <Header>
-        <h1>{formatMessage(messages.staff)}</h1>
-        <button onClick={showCreate}>
+      <Header className="ant-layout-page-header d-flex justify-content-sm-between">
+        <Title className="mb-sm-0">{formatMessage(messages.staff)}</Title>
+        <Button type="primary" onClick={showCreate}>
           {formatMessage(messages.addNewStaff)}
-        </button>
+        </Button>
       </Header>
-      <Content>
+      <Content className="staff-list-content">
         {loading ? (
           <Loading />
         ) : (
           <Layout>
             <List
               grid={{
-                gutter: 16,
+                gutter: 8,
                 xs: 1,
                 sm: 2,
                 md: 3,
@@ -115,11 +117,13 @@ const StaffList = ({ showCreate, editUser }) => {
                 </List.Item>
               )}
             />
-            <PaginationComponent
-              page={page}
-              count={count}
-              handlePageChange={(page) => dispatch(setStaffPage(page))}
-            />
+            <div className="ml-2 mb-3">
+              <PaginationComponent
+                page={page}
+                count={count}
+                handlePageChange={(page) => dispatch(setStaffPage(page))}
+              />
+            </div>
             <Modal
               title={formatMessage(messages.deleteTitle)}
               description={formatMessage(messages.deleteDescription, {
