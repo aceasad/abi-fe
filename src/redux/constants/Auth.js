@@ -26,3 +26,5 @@ export const FETCH_USER = 'FETCH_USER';
 export const SET_USER = 'SET_USER';
 export const CREATE_PASSWORD = 'CREATE_PASSWORD';
 export const SET_PASSWORD_CHANGED = 'SET_PASSWORD_CHANGED';
+export const SET_TOKEN = 'SET_TOKEN';
+export const INVALID_TOKEN_CODE = 'token_not_valid';
