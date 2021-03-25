@@ -182,5 +182,8 @@
   "staff_page.text.staff": "Staff",
   "staff_page.text.add_new_staff": "Add New Staff",
   "staff_page.text.delete": "Delete",
-  "staff_page.text.edit": "Edit"
+  "staff_page.text.edit": "Edit",
+
+  "user_menu.user_settings": "User Settings",
+  "user_menu.company_settings": "Company Settings"
 }

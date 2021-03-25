@@ -1,19 +1,23 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { Menu, Layout } from 'antd';
+import { Menu, Layout, Divider, Dropdown } from 'antd';
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import Logo from './Logo';
-import NavProfile from './NavProfile';
-import NavNotification from './NavNotification';
-import NavSearch from './NavSearch';
 import { toggleCollapsedNav, onMobileNavToggle } from 'redux/actions/Theme';
 import {
   NAV_TYPE_TOP,
   SIDE_NAV_COLLAPSED_WIDTH,
   SIDE_NAV_WIDTH,
 } from 'constants/ThemeConstant';
-import { LogoutOutlined } from '@ant-design/icons';
 import utils from 'utils';
+import localeString from 'utils/localeString';
+import {
+  LeftOutlined,
+  RightOutlined,
+  EllipsisOutlined,
+} from '@ant-design/icons';
+import { signOut } from 'redux/actions/Auth';
+import { useDispatch } from 'react-redux';
 
 const { Header } = Layout;
 
@@ -27,8 +31,25 @@ export const HeaderNav = (props) => {
     onMobileNavToggle,
     isMobile,
     currentTheme,
+    localization = true,
   } = props;
   const [searchActive, setSearchActive] = useState(false);
+  const dispatch = useDispatch();
+
+  const dropdownMenu = (
+    <Menu>
+      <Menu.Item key="0">
+        {localeString(localization, 'user_menu.company_settings')}
+      </Menu.Item>
+      <Menu.Item key="1">
+        {localeString(localization, 'user_menu.user_settings')}
+      </Menu.Item>
+      <Menu.Divider />
+      <Menu.Item key="3" onClick={() => dispatch(signOut())}>
+        {localeString(localization, 'login_page.text.log_out')}
+      </Menu.Item>
+    </Menu>
+  );
 
   const onSearchClose = () => {
     setSearchActive(false);
@@ -65,41 +86,57 @@ export const HeaderNav = (props) => {
   return (
     <Header
       className={`app-header ${navMode}`}
-      style={{ backgroundColor: headerNavColor }}
+      style={{
+        backgroundColor: headerNavColor,
+        width: !isMobile ? 'auto' : '',
+      }}
     >
       <div className={`app-header-wrapper ${isNavTop ? 'layout-top-nav' : ''}`}>
-        <Logo logoType={navMode} />
-        <div className="nav" style={{ width: `calc(100% - ${getNavWidth()})` }}>
-          <div className="nav-left">
-            <Menu mode="horizontal">
-              {isNavTop && !isMobile ? null : (
-                <Menu.Item
-                  key="0"
-                  onClick={() => {
-                    onToggle();
-                  }}
-                >
-                  {navCollapsed || isMobile ? (
-                    <MenuUnfoldOutlined className="nav-icon" />
-                  ) : (
-                    <MenuFoldOutlined className="nav-icon" />
-                  )}
-                </Menu.Item>
-              )}
-            </Menu>
+        <Dropdown overlay={dropdownMenu} trigger={['click']}>
+          <a className="ant-dropdown-link" href="#">
+            <Logo logoType={navMode} />
+          </a>
+        </Dropdown>
+        <Divider type="vertical" className="nav-divider" />
+        {!isMobile && (
+          <div
+            className="nav-collapse-button"
+            onClick={() => {
+              onToggle();
+            }}
+          >
+            {navCollapsed ? (
+              <RightOutlined className="text-primary" />
+            ) : (
+              <LeftOutlined className="text-primary" />
+            )}
           </div>
-          <div className="nav-right">
-            <NavNotification />
-            <NavProfile />
-
-            <Menu className="d-flex align-item-center" mode="horizontal">
-              <Menu.Item onClick={() => {}}>
-                <LogoutOutlined />
-              </Menu.Item>
-            </Menu>
+        )}
+        {isMobile && (
+          <div
+            className="nav"
+            style={{ width: `calc(100% - ${getNavWidth()})` }}
+          >
+            {isNavTop && !isMobile ? null : (
+              <div className="nav-left">
+                <Menu mode="horizontal">
+                  <Menu.Item key="0" onClick={onToggle}>
+                    {navCollapsed || isMobile ? (
+                      <MenuUnfoldOutlined className="nav-icon ml-2" />
+                    ) : (
+                      <MenuFoldOutlined className="nav-icon ml-2" />
+                    )}
+                  </Menu.Item>
+                </Menu>
+              </div>
+            )}
+            <Dropdown overlay={dropdownMenu} trigger={['click']}>
+              <div className="ellipsis-dropdown align-self-center mr-3">
+                <EllipsisOutlined />
+              </div>
+            </Dropdown>
           </div>
-          <NavSearch active={searchActive} close={onSearchClose} />
-        </div>
+        )}
       </div>
     </Header>
   );
