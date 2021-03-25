@@ -203,5 +203,7 @@
   "staff_page.text.delete_description": "Are you sure you want to delete {label}?",
   "staff_page.text.delete_title": "Delete Staff?",
   "staff_page.text.deleted_success": "Staff Deleted",
-  "staff_page.text.update_staff": "Update Staff"
+  "staff_page.text.update_staff": "Update Staff",
+  "user_menu.user_settings": "User Settings",
+  "user_menu.company_settings": "Company Settings"
 }
