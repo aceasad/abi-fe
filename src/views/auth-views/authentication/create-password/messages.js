@@ -13,7 +13,7 @@ export default defineMessages({
     defaultMessage: 'Password has expired',
   },
   logOut: {
-    id: `${scope}.text.log_out`,
+    id: `${login_scope}.text.log_out`,
     defaultMessage: 'Log out',
   },
 });
