@@ -20,6 +20,7 @@ import { makeSelectPagination } from 'redux/selectors/Staff';
 
 function* getPaginatedStaff() {
   try {
+    yield put(setStaffLoading(true));
     const pagination = yield select(makeSelectPagination());
     const { data } = yield call(StaffService.getPaginatedStaff, pagination);
     yield put(setStaff(data));
