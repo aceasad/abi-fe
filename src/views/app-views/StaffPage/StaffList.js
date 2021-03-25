@@ -11,7 +11,9 @@ import { makeSelectStaff, makeSelectPagination } from 'redux/selectors/Staff';
 import Loading from 'components/shared-components/Loading';
 import Modal from 'components/shared-components/Modal';
 import { deleteStaff } from 'redux/actions/Staff';
-import { message } from 'antd';
+import { message, List, Card, Layout } from 'antd';
+
+const { Header, Content } = Layout;
 
 export const OPTION_KEYS = {
   EDIT: '1',
@@ -66,55 +68,73 @@ const StaffList = ({ showCreate, editUser }) => {
   };
 
   return (
-    <div>
-      <div>
+    <Layout>
+      <Header>
         <h1>{formatMessage(messages.staff)}</h1>
         <button onClick={showCreate}>
           {formatMessage(messages.addNewStaff)}
         </button>
-      </div>
-      {loading ? (
-        <Loading />
-      ) : (
-        <>
-          {staff.map((staffItem) => (
-            <CardComponent
-              key={staffItem.id}
-              title={staffItem.first_name + ' ' + staffItem.last_name}
-              description={staffItem.seniority + ' ' + staffItem.specialization}
-              avatar={staffItem.profile_picture}
-              action={formatMessage(messages.seeAppointments)}
-              Options={() => (
-                <StaffCardOptions
-                  handleMenuClick={({ key }) =>
-                    handleOptionClick(staffItem.id, key)
-                  }
-                />
-              )}
-              handleClick={() => {
-                //TO-DO
+      </Header>
+      <Content>
+        {loading ? (
+          <Loading />
+        ) : (
+          <Layout>
+            <List
+              grid={{
+                gutter: 16,
+                xs: 1,
+                sm: 2,
+                md: 3,
+                lg: 3,
+                xl: 4,
+                xxl: 5,
               }}
+              dataSource={staff}
+              renderItem={(staffItem) => (
+                <List.Item>
+                  <CardComponent
+                    key={staffItem.id}
+                    title={staffItem.first_name + ' ' + staffItem.last_name}
+                    description={
+                      staffItem.seniority + ' ' + staffItem.specialization
+                    }
+                    avatar={staffItem.profile_picture}
+                    action={formatMessage(messages.seeAppointments)}
+                    Options={() => (
+                      <StaffCardOptions
+                        handleMenuClick={({ key }) =>
+                          handleOptionClick(staffItem.id, key)
+                        }
+                      />
+                    )}
+                    handleClick={() => {
+                      //TO-DO
+                    }}
+                  />
+                </List.Item>
+              )}
             />
-          ))}
-          <PaginationComponent
-            page={page}
-            count={count}
-            handlePageChange={(page) => dispatch(setStaffPage(page))}
-          />
-          <Modal
-            title={formatMessage(messages.deleteTitle)}
-            description={formatMessage(messages.deleteDescription, {
-              label: getStaffFirstAndLastName(),
-            })}
-            primaryAction={formatMessage(messages.delete)}
-            secondaryAction={formatMessage(messages.cancel)}
-            visible={staffForDelete}
-            handlePrimaryAction={handleDelete}
-            handleSecondaryAction={() => setStaffForDelete(null)}
-          />
-        </>
-      )}
-    </div>
+            <PaginationComponent
+              page={page}
+              count={count}
+              handlePageChange={(page) => dispatch(setStaffPage(page))}
+            />
+            <Modal
+              title={formatMessage(messages.deleteTitle)}
+              description={formatMessage(messages.deleteDescription, {
+                label: getStaffFirstAndLastName(),
+              })}
+              primaryAction={formatMessage(messages.delete)}
+              secondaryAction={formatMessage(messages.cancel)}
+              visible={staffForDelete}
+              handlePrimaryAction={handleDelete}
+              handleSecondaryAction={() => setStaffForDelete(null)}
+            />
+          </Layout>
+        )}
+      </Content>
+    </Layout>
   );
 };
 
