@@ -1,24 +1,38 @@
-import React from "react";
-import { useDispatch } from "react-redux";
-import { Button, Form, Input } from "antd";
-import { MailOutlined } from "@ant-design/icons";
-import { sendForgotPasswordEmail } from "redux/actions/Auth";
-import { motion } from "framer-motion";
-import { ErrorMessage, Formik } from "formik";
-import messages from "./messages";
-import { useIntl } from "react-intl";
-import { forgotPasswordSchema } from "utils/validations";
-
+import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { Button, Form, Input } from 'antd';
+import { MailOutlined } from '@ant-design/icons';
+import { sendForgotPasswordEmail } from 'redux/actions/Auth';
+import { motion } from 'framer-motion';
+import { ErrorMessage, Formik } from 'formik';
+import { useSelector } from 'react-redux';
+import messages from './messages';
+import { useIntl } from 'react-intl';
+import { forgotPasswordSchema } from 'utils/validations';
+import { makeIsSendEmailUser } from 'redux/selectors/Users';
+import {
+  success,
+  error,
+} from '../../../../components/shared-components/MessagesAlerts/index';
 export const ForgotPasswordForm = (props) => {
   const dispatch = useDispatch();
+  const isSent = useSelector(makeIsSendEmailUser());
 
-  const { loading, showMessage } = props;
+  const { showMessage } = props;
 
   const { formatMessage } = useIntl();
 
   const confirm = (values) => {
     dispatch(sendForgotPasswordEmail(values));
   };
+
+  useEffect(() => {
+    if (isSent == true) {
+      success(formatMessage(messages.successfulySentEmail));
+    } else if (isSent == false) {
+      error(formatMessage(messages.errorSentEmail));
+    }
+  }, [isSent]);
 
   return (
     <>
@@ -30,13 +44,13 @@ export const ForgotPasswordForm = (props) => {
         }}
       ></motion.div>
       <Formik
-        initialValues={{ email: '' }}
+        initialValues={{ email: props.email }}
         validationSchema={forgotPasswordSchema}
         onSubmit={(values) => {
           confirm(values);
         }}
       >
-        {({ values, handleChange, handleBlur, handleSubmit }) => (
+        {({ values, isValid, handleChange, handleBlur, handleSubmit }) => (
           <Form layout="vertical" name="login-form">
             <Form.Item label={formatMessage(messages.emailInputLabel)}>
               <Input
@@ -63,7 +77,7 @@ export const ForgotPasswordForm = (props) => {
                 type="primary"
                 htmlType="submit"
                 block
-                loading={loading}
+                disabled={!isValid}
               >
                 {formatMessage(messages.confirmButton)}
               </Button>

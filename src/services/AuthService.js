@@ -56,7 +56,9 @@ class AuthService extends ApiService {
 
   refreshToken = async () => {
     const token = this.getToken();
-    const { data } = await this.apiClient.post(ENDPOINTS.REFRESH_TOKEN, { refresh: token.refresh });
+    const { data } = await this.apiClient.post(ENDPOINTS.REFRESH_TOKEN, {
+      refresh: token.refresh,
+    });
     const refreshed = { access: data.access, refresh: token.refresh };
     this.createSession(refreshed);
     store.dispatch(setToken(refreshed));
@@ -95,6 +97,10 @@ class AuthService extends ApiService {
 
   createUserPassword = (password) =>
     this.apiClient.post(ENDPOINTS.CREATE_PASSWORD, password);
+
+  getUsers = () => {
+    this.apiClient.get(ENDPOINTS.GET_USERS);
+  };
 }
 
 const authService = new AuthService();
