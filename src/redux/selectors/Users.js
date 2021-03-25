@@ -26,9 +26,13 @@ const maskeSelectIsPasswordCreateRequired = () =>
       user?.password_changed_status === PASSWORD_STATUSES.EXPIRED
   );
 
+const makeIsSendEmailUser = () =>
+  createSelector(selectUsersDomain, (substate) => substate.isSent);
+
 export {
   makeSelectCurrentUser,
   makeSelectIsAuthenticated,
   makeSelectLoginDetails,
   maskeSelectIsPasswordCreateRequired,
+  makeIsSendEmailUser,
 };

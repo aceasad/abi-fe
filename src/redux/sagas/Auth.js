@@ -65,11 +65,10 @@ export function* forgotPasswordEmailSend() {
   yield takeEvery(SEND_FORGOT_PASSWORD_EMAIL, function* ({ email }) {
     try {
       const sendEmail = yield call(AuthService.sendForgotPasswordEmail, email);
-      yield put(push(ROUTES.LOGIN));
-      yield put(go());
+
       yield put(sendForgotPasswordEmailSuccess(sendEmail));
     } catch (err) {
-      yield put(sendForgotPasswordEmailError(err));
+      yield put(sendForgotPasswordEmailError(err.messages));
     }
   });
 }
