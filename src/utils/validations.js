@@ -13,6 +13,13 @@ export const forgotPasswordSchema = Yup.object().shape({
   email: Yup.string().email().required(),
 });
 
+export const clinicSchema = Yup.object().shape({
+  name: Yup.string().required(),
+  google_maps_link: Yup.string().required().url(),
+  phone_number: Yup.string().required(),
+  address: Yup.string().required(),
+});
+
 export const createPasswordSchema = Yup.object().shape({
   password: Yup.string()
     .matches(passwordFormat)
