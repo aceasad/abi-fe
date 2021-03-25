@@ -61,7 +61,7 @@ export const AppLayout = ({ navCollapsed, navType, location }) => {
             style={
               !isMobile
                 ? {
-                    marginTop: !isMobile ? '0' : '',
+                    marginTop: '0',
                     minHeight: 'calc(100vh - 60px)', // 60px is footer height.
                   }
                 : {}

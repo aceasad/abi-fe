@@ -120,12 +120,7 @@ export const HeaderNav = (props) => {
             {isNavTop && !isMobile ? null : (
               <div className="nav-left">
                 <Menu mode="horizontal">
-                  <Menu.Item
-                    key="0"
-                    onClick={() => {
-                      onToggle();
-                    }}
-                  >
+                  <Menu.Item key="0" onClick={onToggle}>
                     {navCollapsed || isMobile ? (
                       <MenuUnfoldOutlined className="nav-icon ml-2" />
                     ) : (
