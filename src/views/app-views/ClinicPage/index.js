@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Form, Input, Radio } from 'antd';
+import { Button, Form, Radio } from 'antd';
 import { Formik, Field } from 'formik';
 import { clinicSchema } from 'utils/validations';
 import { useDispatch } from 'react-redux';
@@ -16,18 +16,6 @@ const ClinicPage = () => {
   const [visibilityOfParkinSizeField, setVisibility] = useState(false);
 
   const { formatMessage } = useIntl();
-
-  const imageStyle = {
-    display: 'inline-block',
-    width: '150px',
-    height: '150px',
-    backgroundColor: 'lightgray',
-    borderRadius: '30%',
-    border: '10%',
-    backgroundRepeat: 'no-repeat',
-    backgroundPosition: 'center center',
-    backgroundSize: 'cover',
-  };
 
   return (
     <div className="container">
