@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
 import CardComponent from 'components/shared-components/Card';
@@ -9,15 +9,21 @@ import StaffCardOptions from './StaffCardOptions';
 import PaginationComponent from 'components/shared-components/Pagination';
 import { makeSelectStaff, makeSelectPagination } from 'redux/selectors/Staff';
 import Loading from 'components/shared-components/Loading';
+import Modal from 'components/shared-components/Modal';
+import { deleteStaff } from 'redux/actions/Staff';
+import { message } from 'antd';
 
 export const OPTION_KEYS = {
-  EDIT: 1,
-  DELETE: 2,
+  EDIT: '1',
+  DELETE: '2',
 };
 
-const StaffList = () => {
+const StaffList = ({ showCreate, editUser }) => {
+  const [staffForDelete, setStaffForDelete] = useState();
+
   const { count, page } = useSelector(makeSelectPagination());
   const { staff, loading } = useSelector(makeSelectStaff());
+
   const dispatch = useDispatch();
 
   const { formatMessage } = useIntl();
@@ -26,51 +32,84 @@ const StaffList = () => {
     dispatch(getStaff());
   }, []);
 
-  const handleOptionClick = (staffId, key) => {
+  const afterDelete = () => {
+    setStaffForDelete(null);
+    message.success(formatMessage(messages.deletedSuccess));
+  };
+
+  const handleDelete = () => {
+    dispatch(deleteStaff({ id: staffForDelete, afterDelete }));
+  };
+
+  const handleOptionClick = (data, key) => {
     // eslint-disable-next-line default-case
     switch (key) {
       case OPTION_KEYS.DELETE:
-        //TO-DO
+        setStaffForDelete(data);
         break;
       case OPTION_KEYS.EDIT:
-        //TO-DO
+        editUser(data);
         break;
     }
   };
 
-  if (loading) return <Loading />;
+  const getStaffFirstAndLastName = () => {
+    if (staffForDelete) {
+      const foundStaff = staff.find((s) => s.id === staffForDelete);
+      return foundStaff.first_name + ' ' + foundStaff.last_name;
+    }
+    return '';
+  };
 
   return (
     <div>
       <div>
         <h1>{formatMessage(messages.staff)}</h1>
-        <button>{formatMessage(messages.addNewStaff)}</button>
+        <button onClick={showCreate}>
+          {formatMessage(messages.addNewStaff)}
+        </button>
       </div>
-
-      {staff.map((staffItem) => (
-        <CardComponent
-          key={staffItem.id}
-          title={staffItem.first_name + ' ' + staffItem.last_name}
-          description={staffItem.seniority + ' ' + staffItem.specialization}
-          avatar={staffItem.profile_picture}
-          action={formatMessage(messages.seeAppointments)}
-          Options={() => (
-            <StaffCardOptions
-              handleMenuClick={({ key }) =>
-                handleOptionClick(staffItem.id, key)
-              }
+      {loading ? (
+        <Loading />
+      ) : (
+        <>
+          {staff.map((staffItem) => (
+            <CardComponent
+              key={staffItem.id}
+              title={staffItem.first_name + ' ' + staffItem.last_name}
+              description={staffItem.seniority + ' ' + staffItem.specialization}
+              avatar={staffItem.profile_picture}
+              action={formatMessage(messages.seeAppointments)}
+              Options={() => (
+                <StaffCardOptions
+                  handleMenuClick={({ key }) =>
+                    handleOptionClick(staffItem.id, key)
+                  }
+                />
+              )}
+              handleClick={() => {
+                //TO-DO
+              }}
             />
-          )}
-          handleClick={() => {
-            //TO-DO
-          }}
-        />
-      ))}
-      <PaginationComponent
-        page={page}
-        count={count}
-        handlePageChange={(page) => dispatch(setStaffPage(page))}
-      />
+          ))}
+          <PaginationComponent
+            page={page}
+            count={count}
+            handlePageChange={(page) => dispatch(setStaffPage(page))}
+          />
+          <Modal
+            title={formatMessage(messages.deleteTitle)}
+            description={formatMessage(messages.deleteDescription, {
+              label: getStaffFirstAndLastName(),
+            })}
+            primaryAction={formatMessage(messages.delete)}
+            secondaryAction={formatMessage(messages.cancel)}
+            visible={staffForDelete}
+            handlePrimaryAction={handleDelete}
+            handleSecondaryAction={() => setStaffForDelete(null)}
+          />
+        </>
+      )}
     </div>
   );
 };

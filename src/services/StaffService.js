@@ -2,6 +2,7 @@ import ApiService from './ApiService';
 
 const ENDPOINTS = {
   GET_STAFF: '/staffs/',
+  GET_STAFF_DETAILS: '/staffs/staff-details/',
 };
 
 export const DEFAULT_LIMIT = 10;
@@ -15,6 +16,14 @@ class StaffService extends ApiService {
         offset: (page - 1) * DEFAULT_LIMIT,
       },
     });
+  getStaffDetails = () => this.apiClient.get(ENDPOINTS.GET_STAFF_DETAILS);
+  createStaff = (payload) => this.apiClient.post(ENDPOINTS.GET_STAFF, payload);
+  updateStaff = (payload) =>
+    this.apiClient.put(ENDPOINTS.GET_STAFF + payload.get('id') + '/', payload);
+  getSingleStaff = (payload) =>
+    this.apiClient.get(ENDPOINTS.GET_STAFF + payload + '/');
+  deleteStaff = (payload) =>
+    this.apiClient.delete(ENDPOINTS.GET_STAFF + payload + '/');
 }
 
 const staffService = new StaffService();

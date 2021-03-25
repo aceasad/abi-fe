@@ -15,4 +15,24 @@ const makeSelectPagination = () =>
     page: substate.page,
   }));
 
-export { makeSelectStaff, makeSelectPagination };
+const makeSelectStaffDetails = () =>
+  createSelector(selectStaffDomain, (substate) => ({
+    seniorities: substate.seniorities,
+    specializations: substate.specializations,
+    ethnicities: substate.ethnicities,
+    loading: substate.loading,
+  }));
+
+const makeSelectStaffSingle = () =>
+  createSelector(selectStaffDomain, (substate) => substate.staffSingle);
+
+const makeSelectLoading = () =>
+  createSelector(selectStaffDomain, (substate) => substate.loading);
+
+export {
+  makeSelectStaff,
+  makeSelectPagination,
+  makeSelectStaffDetails,
+  makeSelectStaffSingle,
+  makeSelectLoading,
+};

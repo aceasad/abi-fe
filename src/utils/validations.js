@@ -25,10 +25,18 @@ export const createPasswordSchema = Yup.object().shape({
     .oneOf([Yup.ref('password')]),
 });
 
-const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 export const resetPasswordSchema = Yup.object().shape({
-  password: Yup.string().required().matches(passwordRegex),
+  password: Yup.string().required().matches(passwordFormat),
   passwordRepeat: Yup.string()
     .required()
-    .oneOf([Yup.ref("password")]),
+    .oneOf([Yup.ref('password')]),
+});
+
+export const staffValidationSchema = Yup.object().shape({
+  first_name: Yup.string().trim().required(),
+  last_name: Yup.string().trim().required(),
+  date_of_birth: Yup.string().required(),
+  ethnicity: Yup.string().required(),
+  specialization: Yup.string().required(),
+  seniority: Yup.string().required(),
 });
