@@ -1,7 +1,8 @@
 import React from 'react';
+import CalendarPage from '../CalendarPage';
 
 const index = () => {
-  return <div>Appointments Page</div>;
+  return <CalendarPage />;
 };
 
 export default index;
