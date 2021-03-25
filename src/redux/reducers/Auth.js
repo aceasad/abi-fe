@@ -8,8 +8,10 @@ import {
   SHOW_LOADING,
   SIGNIN_WITH_GOOGLE_AUTHENTICATED,
   SIGNIN_WITH_FACEBOOK_AUTHENTICATED,
+  RESET_PASSWORD_ERROR,
   SET_USER,
   SET_PASSWORD_CHANGED,
+  SET_TOKEN,
 } from '../constants/Auth';
 import { getLocalStorageItem } from 'utils/localStorage';
 import produce from 'immer';
@@ -65,11 +67,17 @@ const auth = (state = initState, action) =>
       case SET_USER:
         draft.user = action.payload;
         break;
+      case RESET_PASSWORD_ERROR:
+        draft.message = action.errorMessage.message;
+        break;
       case SET_PASSWORD_CHANGED:
         draft.user = {
           ...state.user,
           password_changed_status: PASSWORD_STATUSES.CHANGED,
         };
+        break;
+      case SET_TOKEN:
+        draft.token = action.payload.access;
         break;
     }
   });

@@ -1,7 +1,9 @@
 import languageReducer from 'containers/LanguageProvider/reducer';
 import { combineReducers } from 'redux';
 import Auth from './Auth';
+import Clinic from './Clinic';
 import Theme from './Theme';
+import Staff from './Staff';
 import { connectRouter } from 'connected-react-router';
 import { SIGNOUT_SUCCESS } from 'redux/constants/Auth';
 
@@ -11,6 +13,9 @@ export default (history) => {
     router: connectRouter(history),
     theme: Theme,
     auth: Auth,
+    clinic: Clinic,
+    staff: Staff,
+
     language: languageReducer,
   });
 

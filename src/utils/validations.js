@@ -13,6 +13,13 @@ export const forgotPasswordSchema = Yup.object().shape({
   email: Yup.string().email().required(),
 });
 
+export const clinicSchema = Yup.object().shape({
+  name: Yup.string().required(),
+  google_maps_link: Yup.string().required().url(),
+  phone_number: Yup.string().required(),
+  address: Yup.string().required(),
+});
+
 export const createPasswordSchema = Yup.object().shape({
   password: Yup.string()
     .matches(passwordFormat)
@@ -23,4 +30,12 @@ export const createPasswordSchema = Yup.object().shape({
     .min(passwordMinLength)
     .required()
     .oneOf([Yup.ref('password')]),
+});
+
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+export const resetPasswordSchema = Yup.object().shape({
+  password: Yup.string().required().matches(passwordRegex),
+  passwordRepeat: Yup.string()
+    .required()
+    .oneOf([Yup.ref("password")]),
 });

@@ -11,10 +11,14 @@ import {
   SEND_FORGOT_PASSWORD_EMAIL,
   SEND_FORGOT_PASSWORD_EMAIL_SUCCESS,
   SEND_FORGOT_PASSWORD_EMAIL_ERROR,
+  RESET_PASSWORD,
+  RESET_PASSWORD_SUCCESS,
+  RESET_PASSWORD_ERROR,
   SET_USER,
   SET_PASSWORD_CHANGED,
   FETCH_USER,
   CREATE_PASSWORD,
+  SET_TOKEN,
 } from '../constants/Auth';
 
 export const signIn = (payload) => {
@@ -86,7 +90,6 @@ export const hideAuthMessage = () => {
 export const showLoading = (payload) => {
   return {
     type: SHOW_LOADING,
-    payload,
   };
 };
 
@@ -111,6 +114,29 @@ export const sendForgotPasswordEmailError = (payload) => {
   };
 };
 
+export const resetPassword = (password, token, email) => {
+  return {
+    type: RESET_PASSWORD,
+    password,
+    token,
+    email,
+  };
+};
+
+export const resetPasswordSuccess = (password, token) => {
+  return {
+    type: RESET_PASSWORD_SUCCESS,
+    password,
+    token,
+  };
+};
+
+export const resetPasswordError = (errorMessage) => {
+  return {
+    type: RESET_PASSWORD_ERROR,
+    errorMessage,
+  };
+};
 export const createPassword = (payload) => {
   return {
     type: CREATE_PASSWORD,
@@ -121,5 +147,12 @@ export const createPassword = (payload) => {
 export const setPasswordChanged = () => {
   return {
     type: SET_PASSWORD_CHANGED,
+  };
+};
+
+export const setToken = (payload) => {
+  return {
+    type: SET_TOKEN,
+    payload,
   };
 };

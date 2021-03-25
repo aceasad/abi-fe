@@ -15,6 +15,7 @@ const FormField = ({
   ...props
 }) => {
   const InputField = secureField ? Input.Password : Input;
+
   const { formatMessage } = useIntl();
 
   const getLabel = () => {
