@@ -32,6 +32,10 @@ const StaffList = ({ showCreate, editUser }) => {
     dispatch(getStaff());
   }, []);
 
+  useEffect(() => {
+    if (staff.length === 0 && page > 1) dispatch(setStaffPage(page - 1));
+  }, [staff]);
+
   const afterDelete = () => {
     setStaffForDelete(null);
     message.success(formatMessage(messages.deletedSuccess));
