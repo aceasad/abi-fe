@@ -3,3 +3,8 @@ export const PASSWORD_STATUSES = {
   NOT_CHANGED: 'NCNG',
   CHANGED: 'CNG',
 };
+
+export const GENDER = {
+  MALE: 'MALE',
+  FEMALE: 'FEMALE',
+};

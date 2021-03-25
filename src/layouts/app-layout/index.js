@@ -56,7 +56,17 @@ export const AppLayout = ({ navCollapsed, navType, location }) => {
           className="app-layout"
           style={{ paddingLeft: getLayoutGutter() }}
         >
-          <div className={`app-content ${isNavTop ? 'layout-top-nav' : ''}`}>
+          <div
+            className={`app-content ${isNavTop ? 'layout-top-nav' : ''}`}
+            style={
+              !isMobile
+                ? {
+                    marginTop: '0',
+                    minHeight: 'calc(100vh - 60px)', // 60px is footer height.
+                  }
+                : {}
+            }
+          >
             <PageHeader
               display={currentRouteInfo?.breadcrumb}
               title={currentRouteInfo?.title}
