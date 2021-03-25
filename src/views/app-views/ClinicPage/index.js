@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { Button, Form, Input, Radio } from 'antd';
+import { Button, Form, Radio } from 'antd';
 import { Formik, Field } from 'formik';
 import { clinicSchema } from 'utils/validations';
 import { useDispatch } from 'react-redux';
 import messages from './messages';
 import FormField from 'components/shared-components/Form/FormField';
 import FormInputField from 'components/shared-components/Form/FormInputField';
-import FormImageField from 'components/shared-components/Form/FormImageField';
+import FormImageUpload from 'components/shared-components/Form/FormImageUpload';
 import { useIntl } from 'react-intl';
 import { updateClinic } from 'redux/actions/Clinic';
 import { NO, FREE, AVAILABLE } from '../../../constants/ClinicConstants';
@@ -16,18 +16,6 @@ const ClinicPage = () => {
   const [visibilityOfParkinSizeField, setVisibility] = useState(false);
 
   const { formatMessage } = useIntl();
-
-  const imageStyle = {
-    display: 'inline-block',
-    width: '150px',
-    height: '150px',
-    backgroundColor: 'lightgray',
-    borderRadius: '30%',
-    border: '10%',
-    backgroundRepeat: 'no-repeat',
-    backgroundPosition: 'center center',
-    backgroundSize: 'cover',
-  };
 
   return (
     <div className="container">
@@ -50,7 +38,7 @@ const ClinicPage = () => {
       >
         {({ setFieldValue, dirty, isValid, values, handleSubmit }) => (
           <Form layout="vertical" name="clinic-form" onSubmit={handleSubmit}>
-            <Field component={FormImageField} name={'photo'}></Field>
+            <Field component={FormImageUpload} name={'photo'}></Field>
 
             <Field
               component={FormField}

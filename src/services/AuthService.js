@@ -1,13 +1,15 @@
 import { getLocalStorageItem, setLocalStorageItem } from 'utils/localStorage';
 import ApiService from './ApiService';
+import store from 'redux/store';
+import { setToken } from 'redux/actions/Auth';
 
 const ENDPOINTS = {
   LOGIN: '/token/',
   FORGOT_PASSWORD: '/password_reset/',
   FORGOT_PASSWORD_CONFIRM: '/password_reset/confirm/',
   FETCH_USER: '/users/me/',
-  FETCH_USER: '/users/me/',
   CREATE_PASSWORD: '/users/create_password/',
+  REFRESH_TOKEN: '/token/refresh/',
 };
 
 class AuthService extends ApiService {
@@ -23,6 +25,7 @@ class AuthService extends ApiService {
       this.setAuthorizationHeader();
 
       this.api.setUnauthorizedCallback(this.destroySession.bind(this));
+      this.api.setRefreshTokenCallback(this.refreshToken.bind(this));
     }
   };
 
@@ -30,7 +33,7 @@ class AuthService extends ApiService {
     const token = this.getToken();
     if (token) {
       this.api.attachHeaders({
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token.access}`,
       });
     }
   };
@@ -51,9 +54,18 @@ class AuthService extends ApiService {
     return data;
   };
 
+  refreshToken = async () => {
+    const token = this.getToken();
+    const { data } = await this.apiClient.post(ENDPOINTS.REFRESH_TOKEN, { refresh: token.refresh });
+    const refreshed = { access: data.access, refresh: token.refresh };
+    this.createSession(refreshed);
+    store.dispatch(setToken(refreshed));
+    return data.access;
+  };
+
   getToken = () => {
     const token = getLocalStorageItem('token');
-    return token ? token.access : undefined;
+    return token ? token : undefined;
   };
 
   fetchUser = () => {

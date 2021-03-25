@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { UserOutlined } from '@ant-design/icons';
+
 const FormImageUpload = ({ field, form, label }) => {
   const [imagePreview, setImagePreview] = useState();
+
   useEffect(() => {
     const image = field.value;
     if (image && typeof image !== 'string')
@@ -12,8 +14,9 @@ const FormImageUpload = ({ field, form, label }) => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [field.value]);
+
   return (
-    <div>
+    <>
       <div>
         <input
           id={field.name}
@@ -38,7 +41,8 @@ const FormImageUpload = ({ field, form, label }) => {
           </label>
         </div>
       </div>
-    </div>
+    </>
   );
 };
+
 export default FormImageUpload;

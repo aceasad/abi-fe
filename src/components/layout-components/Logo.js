@@ -21,9 +21,9 @@ const getLogoWidthGutter = (props, isMobile) => {
     return 'auto';
   }
   if (navCollapsed) {
-    return `${SIDE_NAV_COLLAPSED_WIDTH}px`;
+    return `calc(${SIDE_NAV_COLLAPSED_WIDTH}px - 22px)`; // 22px arrow on the right width.
   } else {
-    return `${SIDE_NAV_WIDTH}px`;
+    return `calc(${SIDE_NAV_WIDTH}px - 22px)`; // 22px arrow on the right width.
   }
 };
 
@@ -46,7 +46,7 @@ const getLogoDisplay = (isMobile, mobileLogo) => {
   if (isMobile && !mobileLogo) {
     return 'd-none';
   } else {
-    return 'logo';
+    return 'logo p-3';
   }
 };
 
@@ -60,7 +60,7 @@ export const Logo = (props) => {
       <img
         src={getLogo(props)}
         alt={`${APP_NAME} logo`}
-        style={{ width: '60%', height: '60%', objectFit: 'contain' }}
+        className="logo-image"
       />
     </div>
   );
