@@ -6,7 +6,7 @@ import { setStaffPage, getStaff } from 'redux/actions/Staff';
 
 import messages from './messages';
 import StaffCardOptions from './StaffCardOptions';
-import PaginationComponent from 'components/shared-components/Pagination';
+import PaginationComponent from 'components/custom-components/Pagination';
 import { makeSelectStaff, makeSelectPagination } from 'redux/selectors/Staff';
 import Loading from 'components/shared-components/Loading';
 import Modal from 'components/shared-components/Modal';

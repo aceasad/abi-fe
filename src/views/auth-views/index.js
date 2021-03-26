@@ -12,28 +12,28 @@ export const AppViews = () => {
         <PublicRoute
           exact
           path={`${AUTH_PREFIX_PATH}/login`}
-          component={lazy(() => import(`./authentication/login`))}
+          component={lazy(() => import(`./LoginPage`))}
         />
         <Route
           path={`${AUTH_PREFIX_PATH}/forgot-password`}
-          component={lazy(() => import(`./authentication/forgot-password`))}
+          component={lazy(() => import(`./ForgotPasswordPage`))}
         />
         <Route
           path={`${AUTH_PREFIX_PATH}/not-found`}
-          component={lazy(() => import(`./errors/page-not-found`))}
+          component={lazy(() => import(`./errors/PageNotFound`))}
         />
         <Route
           path={`${AUTH_PREFIX_PATH}/something-went-wrong`}
-          component={lazy(() => import(`./errors/something-went-wrong`))}
+          component={lazy(() => import(`./errors/SomethingWentWrong`))}
         />
         <ResetPasswordRoute
           exact
           path={`${AUTH_PREFIX_PATH}/create-password`}
-          component={lazy(() => import(`./authentication/create-password`))}
+          component={lazy(() => import(`./CreatePasswordPage`))}
         />
         <Route
           path={`${AUTH_PREFIX_PATH}/reset-password/:token/:email`}
-          component={lazy(() => import(`./authentication/reset-password-page`))}
+          component={lazy(() => import(`./ResetPasswordPage`))}
         />
         <Redirect
           from={`${AUTH_PREFIX_PATH}`}

@@ -11,7 +11,7 @@ import {
 import Icon from 'components/util-components/Icon';
 import { signOut } from 'redux/actions/Auth';
 import { useIntl } from 'react-intl';
-import messages from 'views/auth-views/components/LoginForm/messages';
+import messages from 'containers/Forms/LoginForm/messages';
 
 const menuItem = [
   {
