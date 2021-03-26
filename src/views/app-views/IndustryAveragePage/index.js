@@ -10,17 +10,20 @@ import {
   getIndustryAverage,
 } from 'redux/actions/IndustryAverage';
 import { useSelector } from 'react-redux';
-import { industryAverageSelector } from '../../../redux/selectors/IndustryAverage';
+import {
+  industryAverageSelector,
+  isLoadingIndustryAverageSelector,
+} from '../../../redux/selectors/IndustryAverage';
 
 const IndustryAverage = () => {
   const dispatch = useDispatch();
   const { formatMessage } = useIntl();
   const industryAverage = useSelector(industryAverageSelector());
+  const isLoading = useSelector(isLoadingIndustryAverageSelector());
   let initialValues =
     industryAverage !== null
       ? industryAverage[0]
       : {
-          id: 0,
           cost_of_missed_appointments: 0,
           did_not_attend: 0,
           uptake: 0,
@@ -30,8 +33,8 @@ const IndustryAverage = () => {
           number_of_women_screened_in_past_3_y: 0,
         };
   useEffect(() => {
-    dispatch(getIndustryAverage());
-  }, []);
+    if (!isLoading) dispatch(getIndustryAverage());
+  }, [isLoading]);
 
   return (
     <div>
