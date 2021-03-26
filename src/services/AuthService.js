@@ -97,10 +97,6 @@ class AuthService extends ApiService {
 
   createUserPassword = (password) =>
     this.apiClient.post(ENDPOINTS.CREATE_PASSWORD, password);
-
-  getUsers = () => {
-    this.apiClient.get(ENDPOINTS.GET_USERS);
-  };
 }
 
 const authService = new AuthService();
