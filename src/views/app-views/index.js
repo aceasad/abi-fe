@@ -27,7 +27,7 @@ export const AppViews = () => {
         />
         <Route
           path={`${APP_PREFIX_PATH}/conversation`}
-          component={lazy(() => import(`./ConversationPage`))}
+          component={lazy(() => import(`./ChatPage`))}
         />
         <Route
           path={`${APP_PREFIX_PATH}/settings`}
@@ -38,8 +38,8 @@ export const AppViews = () => {
           component={lazy(() => import(`./ClinicPage`))}
         />
         <Route
-          path={`${APP_PREFIX_PATH}/conversations`}
-          component={lazy(() => import(`./ChatPage`))}
+          path={`${APP_PREFIX_PATH}/industry_average`}
+          component={lazy(() => import(`./IndustryAveragePage`))}
         />
         <Redirect
           from={`${APP_PREFIX_PATH}`}
