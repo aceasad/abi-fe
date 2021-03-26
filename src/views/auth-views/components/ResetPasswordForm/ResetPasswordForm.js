@@ -19,7 +19,7 @@ const ResetPasswordForm = (match) => {
   const { formatMessage } = useIntl();
 
   useEffect(() => {
-    if (isReset == true) {
+    if (isReset) {
       success(formatMessage(messages.passwordSuccessfullyChanged));
     }
   }, [isReset]);
