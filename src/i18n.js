@@ -1,4 +1,4 @@
-const enTranslationMessages = require('./translations/en.json');
+const enTranslationMessages = require('lang/locales/en_US.json');
 
 const DEFAULT_LOCALE = 'en';
 
