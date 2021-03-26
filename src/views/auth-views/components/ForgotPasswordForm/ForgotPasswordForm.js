@@ -1,13 +1,13 @@
-import React from "react";
-import { useDispatch } from "react-redux";
-import { Button, Form, Input } from "antd";
-import { MailOutlined } from "@ant-design/icons";
-import { sendForgotPasswordEmail } from "redux/actions/Auth";
-import { motion } from "framer-motion";
-import { ErrorMessage, Formik } from "formik";
-import messages from "./messages";
-import { useIntl } from "react-intl";
-import { forgotPasswordSchema } from "utils/validations";
+import React from 'react';
+import { useDispatch } from 'react-redux';
+import { Button, Form, Input } from 'antd';
+import { MailOutlined } from '@ant-design/icons';
+import { sendForgotPasswordEmail } from 'redux/actions/Auth';
+import { motion } from 'framer-motion';
+import { ErrorMessage, Formik } from 'formik';
+import messages from './messages';
+import { useIntl } from 'react-intl';
+import { forgotPasswordSchema } from 'utils/validations';
 
 export const ForgotPasswordForm = (props) => {
   const dispatch = useDispatch();
@@ -23,6 +23,7 @@ export const ForgotPasswordForm = (props) => {
   return (
     <>
       <motion.div
+        className="authentication-motion-message"
         initial={{ opacity: 0, marginBottom: 0 }}
         animate={{
           opacity: showMessage ? 1 : 0,

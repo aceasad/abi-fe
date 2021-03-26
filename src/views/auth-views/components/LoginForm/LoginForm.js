@@ -65,6 +65,7 @@ export const LoginForm = ({ redirect, allowRedirect }) => {
   return (
     <>
       <motion.div
+        className="authentication-motion-message"
         initial={{ opacity: 0, marginBottom: 0 }}
         animate={{
           opacity: showMessage ? 1 : 0,
