@@ -14,11 +14,9 @@ import {
   success,
   error,
 } from '../../../../components/shared-components/MessagesAlerts/index';
-export const ForgotPasswordForm = (props) => {
+export const ForgotPasswordForm = ({ email, showMessage }) => {
   const dispatch = useDispatch();
   const isSent = useSelector(makeIsSendEmailUser());
-
-  const { showMessage } = props;
 
   const { formatMessage } = useIntl();
 
@@ -35,6 +33,7 @@ export const ForgotPasswordForm = (props) => {
   return (
     <>
       <motion.div
+        className="authentication-motion-message"
         initial={{ opacity: 0, marginBottom: 0 }}
         animate={{
           opacity: showMessage ? 1 : 0,
@@ -42,7 +41,7 @@ export const ForgotPasswordForm = (props) => {
         }}
       ></motion.div>
       <Formik
-        initialValues={{ email: props.email }}
+        initialValues={{ email: email }}
         validationSchema={forgotPasswordSchema}
         onSubmit={(values) => {
           confirm(values);
