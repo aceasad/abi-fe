@@ -33,6 +33,7 @@ export const ForgotPasswordForm = ({ email, showMessage }) => {
   return (
     <>
       <motion.div
+        className="authentication-motion-message"
         initial={{ opacity: 0, marginBottom: 0 }}
         animate={{
           opacity: showMessage ? 1 : 0,
