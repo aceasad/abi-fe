@@ -15,6 +15,7 @@ const initialState = {
 
 const industryAverage = (state = initialState, action) =>
   produce(state, (draft) => {
+    // eslint-disable-next-line default-case
     switch (action.type) {
       case UPDATED_INDUSTRY_AVERAGE_SUCCESS:
         draft.isUpdated = true;
@@ -27,8 +28,10 @@ const industryAverage = (state = initialState, action) =>
         break;
       case GET_INDUSTRY_AVERAGE_ERROR:
         draft.message = action.message;
+        break;
       case SET_LOADING:
         draft.message = action.flag;
+        break;
     }
   });
 export default industryAverage;

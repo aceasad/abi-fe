@@ -79,7 +79,6 @@ const auth = (state = initState, action) =>
         draft.message = action.errorMessage.message;
         draft.isReset = false;
         break;
-        break;
       case SET_PASSWORD_CHANGED:
         draft.user = {
           ...state.user,

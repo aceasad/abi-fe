@@ -59,4 +59,8 @@ export default defineMessages({
     id: `${scope}.error.google_maps_link`,
     defaultMessage: 'Google maps link',
   },
+  create: {
+    id: `${scope}.text.create`,
+    defaultMessage: 'Create',
+  },
 });
