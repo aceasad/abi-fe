@@ -1,9 +1,9 @@
-import PageHeader from 'components/shared-components/PageHeader';
+import PageHeaderComponent from 'components/shared-components/PageHeaderComponent';
 import { Formik, Field } from 'formik';
 import React, { useEffect } from 'react';
 import { useIntl } from 'react-intl';
 import messages from './messages';
-import { Form } from 'antd';
+import { Row, Col, Form, Card, Typography } from 'antd';
 import FormField from 'components/shared-components/Form/FormField';
 import FormDatePicker from 'components/shared-components/Form/FormDatePicker';
 import { staffValidationSchema } from 'utils/validations';
@@ -13,6 +13,9 @@ import { getStaffDetails } from 'redux/actions/Staff';
 import { makeSelectStaffDetails } from 'redux/selectors/Staff';
 import FormRadio from 'components/shared-components/Form/FormRadio';
 import FormImageUpload from 'components/shared-components/Form/FormImageUpload';
+import Layout, { Content } from 'antd/lib/layout/layout';
+
+const { Title } = Typography;
 
 const StaffForm = ({
   showList,
@@ -33,7 +36,7 @@ const StaffForm = ({
   }, []);
 
   return (
-    <div>
+    <Layout>
       <Formik
         initialValues={initialState}
         validationSchema={staffValidationSchema}
@@ -43,7 +46,7 @@ const StaffForm = ({
       >
         {({ values, handleSubmit, dirty, isValid }) => (
           <>
-            <PageHeader
+            <PageHeaderComponent
               title={label}
               handleSecondaryClick={showList}
               primaryAction={formatMessage(messages.submit)}
@@ -51,84 +54,119 @@ const StaffForm = ({
               handlePrimaryClick={handleSubmit}
               disablePrimary={!dirty || !isValid || loading}
             />
-            <Form layout="vertical" name="login-form">
-              <h2>{formatMessage(messages.personalDetails)}</h2>
-              <Field component={FormImageUpload} name="profile_picture" />
-              <Field
-                component={FormField}
-                label={formatMessage(messages.firstName)}
-                name="first_name"
-                errorTexts={{
-                  label: formatMessage(messages.firstName),
-                }}
-                autoFocus
-              />
-              <Field
-                component={FormField}
-                label={formatMessage(messages.lastName)}
-                name="last_name"
-                errorTexts={{
-                  label: formatMessage(messages.lastName),
-                }}
-              />
-              <Field
-                label={formatMessage(messages.dateOfBirth)}
-                maxDate={new Date()}
-                component={FormDatePicker}
-                name="date_of_birth"
-              />
-              <Field
-                component={FormSelect}
-                name="ethnicity"
-                options={ethnicities}
-                optionField="name"
-                defaultOption={
-                  ethnicities &&
-                  ethnicities.find(
-                    (ethnicity) => ethnicity.id == values.ethnicity
-                  )
-                }
-                label={formatMessage(messages.ethnicity)}
-              />
-              <Field
-                name="gender"
-                component={FormRadio}
-                options={genderChoices}
-                optionField="name"
-                label={formatMessage(messages.gender)}
-              />
-              <Field
-                component={FormSelect}
-                name="specialization"
-                options={specializations}
-                optionField="name"
-                defaultOption={
-                  specializations &&
-                  specializations.find(
-                    (specialization) =>
-                      specialization.id == values.specialization
-                  )
-                }
-                label={formatMessage(messages.specialization)}
-              />
-              <Field
-                component={FormSelect}
-                name="seniority"
-                options={seniorities}
-                optionField="name"
-                defaultOption={
-                  seniorities &&
-                  seniorities.find(
-                    (seniority) => seniority.id == values.seniority
-                  )
-                }
-                label={formatMessage(messages.seniority)}
-              />
-            </Form>
+            <Content className="stff-new-content">
+              <Card className="pb-3 pt-3">
+                <Form layout="vertical" name="login-form" className="ml-sm-5">
+                  <Row justify="end" className="mb-5 mt-5" justify="center">
+                    <Col xs={6}>
+                      <Field
+                        component={FormImageUpload}
+                        name="profile_picture"
+                      />
+                    </Col>
+                  </Row>
+                  <Row justify="end" gutter={16}>
+                    <Col xs={24} lg={6}>
+                      <Title type="secondary" level={2} className="mt-4">
+                        {formatMessage(messages.personalDetails)}
+                      </Title>
+                    </Col>
+                    <Col xs={24} lg={6}>
+                      <Field
+                        component={FormField}
+                        label={formatMessage(messages.firstName)}
+                        name="first_name"
+                        errorTexts={{
+                          label: formatMessage(messages.firstName),
+                        }}
+                        autoFocus
+                      />
+                    </Col>
+                    <Col xs={24} lg={6}>
+                      <Field
+                        component={FormField}
+                        label={formatMessage(messages.lastName)}
+                        name="last_name"
+                        errorTexts={{
+                          label: formatMessage(messages.lastName),
+                        }}
+                      />
+                    </Col>
+                    <Col xs={24} lg={6}>
+                      <Field
+                        label={formatMessage(messages.dateOfBirth)}
+                        maxDate={new Date()}
+                        component={FormDatePicker}
+                        name="date_of_birth"
+                      />
+                    </Col>
+                  </Row>
+                  <Row justify="end" gutter={16}>
+                    <Col xs={24} lg={6}>
+                      <Field
+                        component={FormSelect}
+                        name="ethnicity"
+                        options={ethnicities}
+                        optionField="name"
+                        defaultOption={
+                          ethnicities &&
+                          ethnicities.find(
+                            (ethnicity) => ethnicity.id == values.ethnicity
+                          )
+                        }
+                        label={formatMessage(messages.ethnicity)}
+                      />
+                    </Col>
+                    <Col xs={24} lg={12}>
+                      <Field
+                        name="gender"
+                        component={FormRadio}
+                        options={genderChoices}
+                        optionField="name"
+                        label={formatMessage(messages.gender)}
+                      />
+                    </Col>
+                  </Row>
+                  <Row justify="end" gutter={16}>
+                    <Col xs={24} lg={12}>
+                      <Field
+                        component={FormSelect}
+                        name="specialization"
+                        options={specializations}
+                        optionField="name"
+                        defaultOption={
+                          specializations &&
+                          specializations.find(
+                            (specialization) =>
+                              specialization.id == values.specialization
+                          )
+                        }
+                        label={formatMessage(messages.specialization)}
+                      />
+                    </Col>
+                    <Col xs={24} lg={6}>
+                      <Field
+                        component={FormSelect}
+                        name="seniority"
+                        options={seniorities}
+                        optionField="name"
+                        defaultOption={
+                          seniorities &&
+                          seniorities.find(
+                            (seniority) => seniority.id == values.seniority
+                          )
+                        }
+                        label={formatMessage(messages.seniority)}
+                      />
+                    </Col>
+                  </Row>
+                </Form>
+              </Card>
+            </Content>
           </>
         )}
       </Formik>
-    </div>
+    </Layout>
   );
 };
 
