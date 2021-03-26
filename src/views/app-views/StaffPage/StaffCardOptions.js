@@ -3,25 +3,33 @@ import { Menu, Dropdown } from 'antd';
 import { useIntl } from 'react-intl';
 import messages from './messages';
 import { OPTION_KEYS } from './StaffList';
+import { EllipsisOutlined } from '@ant-design/icons';
 
 function StaffCardOptions({ styles = {}, handleMenuClick }) {
   const { formatMessage } = useIntl();
 
+  const dropdownMenu = (
+    <Menu onClick={handleMenuClick}>
+      <Menu.Item key={OPTION_KEYS.EDIT}>
+        {formatMessage(messages.edit)}
+      </Menu.Item>
+      <Menu.Item key={OPTION_KEYS.DELETE}>
+        {formatMessage(messages.delete)}
+      </Menu.Item>
+    </Menu>
+  );
+
   return (
-    <div style={styles}>
-      <Dropdown.Button
-        overlay={
-          <Menu onClick={handleMenuClick}>
-            <Menu.Item key={OPTION_KEYS.EDIT}>
-              {formatMessage(messages.edit)}
-            </Menu.Item>
-            <Menu.Item key={OPTION_KEYS.DELETE}>
-              {formatMessage(messages.delete)}
-            </Menu.Item>
-          </Menu>
-        }
-      />
-    </div>
+    <Dropdown
+      overlay={dropdownMenu}
+      placement="bottomRight"
+      trigger={['click']}
+      className="ant-card-staff-options"
+    >
+      <div className="ellipsis-dropdown align-self-center">
+        <EllipsisOutlined />
+      </div>
+    </Dropdown>
   );
 }
 
