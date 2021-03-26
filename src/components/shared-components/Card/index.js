@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, Avatar } from 'antd';
+import { Card, Avatar, Button } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 
 function CardComponent({
@@ -12,23 +12,16 @@ function CardComponent({
 }) {
   return (
     <Card
-      style={{ width: 240 }}
+      className="text-center"
       cover={
-        <div>
+        <div className="ant-card-staff-header">
           <Options />
-          <Avatar size={64} src={avatar} icon={<UserOutlined />} />
+          <Avatar size={96} src={avatar} icon={<UserOutlined />} />
         </div>
       }
+      actions={[<Button onClick={handleClick}>{action}</Button>]}
     >
-      <Card.Meta
-        title={<div>{title}</div>}
-        description={
-          <div>
-            <p>{description}</p>
-            {action && <button onClick={handleClick}>{action}</button>}
-          </div>
-        }
-      />
+      <Card.Meta title={title} description={description} />
     </Card>
   );
 }
