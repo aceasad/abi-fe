@@ -1,9 +1,11 @@
 import React from 'react';
-import { Menu, Dropdown } from 'antd';
+import { Menu, Dropdown, Form, Select } from 'antd';
 import { CaretDownOutlined } from '@ant-design/icons';
 import messages from 'views/app-views/StaffPage/messages';
 import { useIntl } from 'react-intl';
 import { ErrorMessage } from 'formik';
+
+const { Option } = Select;
 
 const FormSelect = ({
   defaultOption,
@@ -14,13 +16,14 @@ const FormSelect = ({
   optionField,
   placeholder,
   errorTexts,
+  name,
 }) => {
   const { formatMessage } = useIntl();
 
-  const placeholderLabel = placeholder || formatMessage(messages.selectOption);
+  const placeholderText = placeholder || formatMessage(messages.selectOption);
 
-  const handleSelected = ({ key }) => {
-    setFieldValue(field.name, key);
+  const handleSelected = (value) => {
+    setFieldValue(field.name, value);
   };
 
   const menu = (
@@ -37,24 +40,28 @@ const FormSelect = ({
     });
 
   return (
-    <div>
-      {label && <label>{label}</label>}
-      <Dropdown
-        overlay={menu}
-        trigger={['click']}
+    <Form.Item label={label}>
+      <Select
+        placeholder={
+          defaultOption ? defaultOption[optionField] : placeholderText
+        }
+        onChange={handleSelected}
         onClick={() => setFieldTouched(field.name, true)}
       >
-        <span>
-          {defaultOption ? defaultOption[optionField] : placeholderLabel}{' '}
-          <CaretDownOutlined />
-        </span>
-      </Dropdown>
-      <ErrorMessage name={field.name}>
-        {errorTexts
-          ? (msg) => formatMessage(msg, errorTexts)
-          : defaultErrorMessage}
-      </ErrorMessage>
-    </div>
+        {options.map((item) => (
+          <Option key={item.id} value={item.id}>
+            {item[optionField]}
+          </Option>
+        ))}
+      </Select>
+      <div className="authentication-error">
+        <ErrorMessage name={field.name}>
+          {errorTexts
+            ? (msg) => formatMessage(msg, errorTexts)
+            : defaultErrorMessage}
+        </ErrorMessage>
+      </div>
+    </Form.Item>
   );
 };
 

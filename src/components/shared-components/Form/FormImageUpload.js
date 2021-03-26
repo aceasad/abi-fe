@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { UserOutlined } from '@ant-design/icons';
+import { UserOutlined, UpOutlined } from '@ant-design/icons';
+import { Badge, Avatar } from 'antd';
 
 const FormImageUpload = ({ field, form, label }) => {
   const [imagePreview, setImagePreview] = useState();
@@ -16,7 +17,7 @@ const FormImageUpload = ({ field, form, label }) => {
   }, [field.value]);
 
   return (
-    <>
+    <div className="form-image-upload-container">
       <input
         id={field.name}
         type="file"
@@ -26,19 +27,28 @@ const FormImageUpload = ({ field, form, label }) => {
           form.setFieldValue(field.name, e.target.files[0]);
           e.target.value = null;
         }}
-        className="mb-2"
+        style={{ position: 'absolute' }}
+        className="invisible"
       />
-      <label htmlFor={field.name}>
-        {label}
-        <div>
-          {imagePreview ? (
-            <img src={imagePreview} alt="Upload" style={{ height: '5rem' }} />
-          ) : (
-            <UserOutlined />
-          )}
-        </div>
+      <label htmlFor={field.name} className="cursor-pointer">
+        <Badge className="form-image-upload-badge" count={<UpOutlined />}>
+          <Avatar
+            size={96}
+            icon={
+              imagePreview ? (
+                <img
+                  src={imagePreview}
+                  alt="Upload"
+                  className="form-image-upload-image"
+                />
+              ) : (
+                <UserOutlined />
+              )
+            }
+          />
+        </Badge>
       </label>
-    </>
+    </div>
   );
 };
 
