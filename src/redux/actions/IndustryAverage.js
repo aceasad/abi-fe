@@ -5,6 +5,7 @@ import {
   UPDATED_INDUSTRY_AVERAGE,
   UPDATED_INDUSTRY_AVERAGE_ERROR,
   UPDATED_INDUSTRY_AVERAGE_SUCCESS,
+  SET_LOADING,
 } from '../constants/IndustryAverage';
 export const updateIndustryAverage = (values) => {
   return {
@@ -44,5 +45,12 @@ export const getIndustryAverageError = (message) => {
   return {
     type: GET_INDUSTRY_AVERAGE_ERROR,
     message,
+  };
+};
+
+export const setLoading = (flag) => {
+  return {
+    type: SET_LOADING,
+    flag,
   };
 };

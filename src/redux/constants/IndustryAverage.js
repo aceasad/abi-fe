@@ -1,8 +1,10 @@
-export const UPDATED_INDUSTRY_AVERAGE = 'updated_industry_average';
-export const UPDATED_INDUSTRY_AVERAGE_ERROR = 'updated_industry_average_error';
+export const UPDATED_INDUSTRY_AVERAGE = 'UPDATED_INDUSTRY_AVERAGE';
+export const UPDATED_INDUSTRY_AVERAGE_ERROR = 'UPDATED_INDUSTRY_AVERAGE_ERROR';
 export const UPDATED_INDUSTRY_AVERAGE_SUCCESS =
-  'updated_industry_average_success';
+  'UPDATED_INDUSTRY_AVERAGE_SUCCESS';
 
-export const GET_INDUSTRY_AVERAGE = 'get_industry_average';
-export const GET_INDUSTRY_AVERAGE_SUCCESS = 'get_industry_average_success';
-export const GET_INDUSTRY_AVERAGE_ERROR = 'get_industry_average_error';
+export const GET_INDUSTRY_AVERAGE = 'GET_INDUSTRY_AVERAGE';
+export const GET_INDUSTRY_AVERAGE_SUCCESS = 'GET_INDUSTRY_AVERAGE_SUCCESS';
+export const GET_INDUSTRY_AVERAGE_ERROR = 'GET_INDUSTRY_AVERAGE_ERROR';
+
+export const SET_LOADING = 'SET_LOADING';

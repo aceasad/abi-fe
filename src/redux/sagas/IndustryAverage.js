@@ -6,6 +6,7 @@ import {
 } from '../../redux/constants/IndustryAverage';
 import {
   updateIndustryAverageSuccess,
+  setLoading,
   updateIndustryAverageError,
   getIndustryAverageSuccess,
   getIndustryAverageError,
@@ -14,6 +15,7 @@ import {
 export function* updateIndustryAverageSaga() {
   yield takeEvery(UPDATED_INDUSTRY_AVERAGE, function* ({ values }) {
     try {
+      yield put(setLoading(true));
       const { response } = yield call(
         industryAverage.updateIndustryAverge,
         values
@@ -21,6 +23,8 @@ export function* updateIndustryAverageSaga() {
       yield put(updateIndustryAverageSuccess(response));
     } catch (exception) {
       put(updateIndustryAverageError(exception.message));
+    } finally {
+      yield put(setLoading(false));
     }
   });
 }
@@ -28,10 +32,13 @@ export function* updateIndustryAverageSaga() {
 export function* getIndustryAverage() {
   yield takeEvery(GET_INDUSTRY_AVERAGE, function* () {
     try {
+      yield put(setLoading(true));
       const { data } = yield call(industryAverage.getIndustryAverage);
       yield put(getIndustryAverageSuccess(data));
     } catch (exception) {
       yield put(getIndustryAverageError(exception.message));
+    } finally {
+      yield put(setLoading(false));
     }
   });
 }

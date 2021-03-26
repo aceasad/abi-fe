@@ -3,9 +3,15 @@ import {
   UPDATED_INDUSTRY_AVERAGE_ERROR,
   GET_INDUSTRY_AVERAGE_SUCCESS,
   GET_INDUSTRY_AVERAGE_ERROR,
+  SET_LOADING,
 } from '../constants/IndustryAverage';
 import produce from 'immer';
-const initialState = { isUpdated: false, message: null, industryAverage: null };
+const initialState = {
+  isUpdated: false,
+  loading: false,
+  message: null,
+  industryAverage: null,
+};
 
 const industryAverage = (state = initialState, action) =>
   produce(state, (draft) => {
@@ -21,6 +27,8 @@ const industryAverage = (state = initialState, action) =>
         break;
       case GET_INDUSTRY_AVERAGE_ERROR:
         draft.message = action.message;
+      case SET_LOADING:
+        draft.message = action.flag;
     }
   });
 export default industryAverage;
