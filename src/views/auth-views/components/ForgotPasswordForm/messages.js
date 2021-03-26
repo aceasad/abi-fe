@@ -11,4 +11,12 @@ export default defineMessages({
     id: `${scope}.button.confirm_button`,
     defaultMessage: 'Confirm',
   },
+  successfulySentEmail: {
+    id: `${scope}.text.successfuly_sent`,
+    defaultMessage: 'Email sent successfully',
+  },
+  errorSentEmail: {
+    id: `${scope}.text.error_sent`,
+    defaultMessage: "User with this email doesn't exists",
+  },
 });
