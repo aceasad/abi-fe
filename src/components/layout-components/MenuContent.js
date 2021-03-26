@@ -37,7 +37,9 @@ const SideNavContent = (props) => {
     localization,
     onMobileNavToggle,
   } = props;
+
   const isMobile = !utils.getBreakPoint(useBreakpoint()).includes('lg');
+
   const closeMobileNav = () => {
     if (isMobile) {
       onMobileNavToggle(false);
@@ -105,7 +107,7 @@ const SideNavContent = (props) => {
             ) : null}
           </Menu.Item>
         )
-      )}
+      )}{' '}
     </Menu>
   );
 };
