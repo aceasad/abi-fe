@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Form, Input, Radio, Row, Col, message } from 'antd';
+import { Button, Form, Input, Radio, Row, Col, Card, message } from 'antd';
 import { Formik, Field } from 'formik';
 import { clinicSchema } from 'utils/validations';
 import { useDispatch } from 'react-redux';
@@ -29,7 +29,7 @@ const ClinicPage = ({ clinicData = null }) => {
   };
 
   return (
-    <div className="container">
+    <Card className="p-3">
       <Formik
         initialValues={{
           photo: clinicData?.photo || null,
@@ -47,8 +47,8 @@ const ClinicPage = ({ clinicData = null }) => {
       >
         {({ setFieldValue, dirty, isValid, values, handleSubmit }) => (
           <Form layout="vertical" name="clinic-form" onSubmit={handleSubmit}>
-            <Row className="mb-4">
-              <Col>
+            <Row justify="center" className="mb-5 mt-4">
+              <Col span={6}>
                 <Field component={FormImageUpload} name={'photo'}></Field>
               </Col>
             </Row>
@@ -62,7 +62,6 @@ const ClinicPage = ({ clinicData = null }) => {
                   errorTexts={{
                     label: formatMessage(messages.error_input_label_name),
                   }}
-                  autoFocus
                 />
               </Col>
             </Row>
@@ -77,7 +76,6 @@ const ClinicPage = ({ clinicData = null }) => {
                       messages.error_input_label_phone_number
                     ),
                   }}
-                  autoFocus
                 />
               </Col>
               <Col span={16}>
@@ -88,7 +86,6 @@ const ClinicPage = ({ clinicData = null }) => {
                   errorTexts={{
                     label: formatMessage(messages.error_input_label_address),
                   }}
-                  autoFocus
                 />
               </Col>
             </Row>
@@ -103,7 +100,6 @@ const ClinicPage = ({ clinicData = null }) => {
                       messages.error_input_label_google_maps_link
                     ),
                   }}
-                  autoFocus
                 />
               </Col>
             </Row>
@@ -139,7 +135,6 @@ const ClinicPage = ({ clinicData = null }) => {
                       name={'parking_size'}
                       type={'number'}
                       min={1}
-                      autoFocus
                     />
                   </Form.Item>
                 ) : null}
@@ -152,7 +147,6 @@ const ClinicPage = ({ clinicData = null }) => {
                     component={FormInputField}
                     name={'start_of_work'}
                     type={'time'}
-                    autoFocus
                   />
                 </Col>
                 <Col md={4} md={1} className="text-center">
@@ -163,7 +157,6 @@ const ClinicPage = ({ clinicData = null }) => {
                     component={FormInputField}
                     name={'end_of_work'}
                     type={'time'}
-                    autoFocus
                   />
                 </Col>
               </Row>
@@ -186,7 +179,7 @@ const ClinicPage = ({ clinicData = null }) => {
           </Form>
         )}
       </Formik>
-    </div>
+    </Card>
   );
 };
 

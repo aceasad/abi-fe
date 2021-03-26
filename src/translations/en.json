@@ -11,6 +11,8 @@
   "forgot_password_page.button.confirm_button": "Confirm",
   "forgot_password_page.input_label.email": "Email Address",
   "forgot_password_page.link.terms_and_conditions": "Terms and conditions",
+  "forgot_password_page.text.successfuly_sent": "Email sent successfully",
+  "forgot_password_page.text.error_sent": "User with this email doesn't exists",
   "forgot_password_page.link.privacy_policy": "Privacy policy",
   "forgot_password_page.text.forgotten_password_title": "Forgotten password",
   "forgot_password_page.text.forgotten_password_paragraph": "Please enter the email you use to sign in to Abi. We'll then send you an email with the instructions to follow.",

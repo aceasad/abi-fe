@@ -1,23 +1,48 @@
-import { defineMessages } from "react-intl";
+import { defineMessages } from 'react-intl';
 
-export const scope = "reset_password_page";
+export const scope = 'reset_password_page';
 
 export default defineMessages({
   passwordInputLabel: {
     id: `${scope}.input_label.password`,
-    defaultMessage: "password",
+    defaultMessage: 'Password',
   },
   passwordRepeatInputLabel: {
     id: `${scope}.input_label.passwordRepeat`,
-    defaultMessage: "password confirm",
+    defaultMessage: 'Password confirm',
   },
   confirmButton: {
     id: `${scope}.button.confirm_button`,
-    defaultMessage: "Confirm",
+    defaultMessage: 'Confirm',
   },
   matches_password: {
     id: `${scope}.matches.password`,
+    defaultMessage: 'Password must be in valid format',
+  },
+  minimumCharacters: {
+    id: `${scope}.note.min_characters`,
+    defaultMessage: 'At least {min} characters',
+  },
+  upperAndLowerMixture: {
+    id: `${scope}.note.upper_and_lower_mix`,
+    defaultMessage: 'A mixture of both uppercase and lowercase letters',
+  },
+  lettersAndNumberMixture: {
+    id: `${scope}.note.char_and_letter_mix`,
+    defaultMessage: 'A mixture of letters and numbers',
+  },
+  specialCharacters: {
+    id: `${scope}.note.special_characters`,
     defaultMessage:
-      "Password must contain at least 8 characters,one upper letter,one number and one special character.",
+      'Inclusion of at least one special character, e.g., ! @ # ? ]',
+  },
+  specialCharactersExcluded: {
+    id: `${scope}.note.special_characters_excluded`,
+    defaultMessage:
+      'Note: do not use < or > in your password, as both can cause problems in Web browsers',
+  },
+  passwordSuccessfullyChanged: {
+    id: `${scope}.text.successfully_changed_password`,
+    defaultMessage: 'Password successfully changed.',
   },
 });
