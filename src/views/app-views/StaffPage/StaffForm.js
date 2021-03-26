@@ -54,9 +54,9 @@ const StaffForm = ({
               handlePrimaryClick={handleSubmit}
               disablePrimary={!dirty || !isValid || loading}
             />
-            <Content className="stff-new-content">
+            <Content className="p-4">
               <Card className="pb-3 pt-3">
-                <Form layout="vertical" name="login-form" className="ml-sm-5">
+                <Form layout="vertical" name="login-form" className="ml-sm-3">
                   <Row justify="end" className="mb-5 mt-5" justify="center">
                     <Col xs={6}>
                       <Field
