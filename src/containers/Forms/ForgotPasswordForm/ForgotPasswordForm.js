@@ -10,10 +10,7 @@ import messages from './messages';
 import { useIntl } from 'react-intl';
 import { forgotPasswordSchema } from 'utils/validations';
 import { makeIsSendEmailUser } from 'redux/selectors/Users';
-import {
-  success,
-  error,
-} from '../../../../components/shared-components/MessagesAlerts/index';
+import { success } from 'components/shared-components/MessagesAlerts/index';
 export const ForgotPasswordForm = ({ email, showMessage }) => {
   const dispatch = useDispatch();
   const isSent = useSelector(makeIsSendEmailUser());

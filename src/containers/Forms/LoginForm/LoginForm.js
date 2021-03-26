@@ -6,16 +6,16 @@ import { signIn } from 'redux/actions/Auth';
 import { useHistory } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Formik, Field } from 'formik';
-import { loginSchema } from '../../../../utils/validations';
-import '../../../../assets/sass/views/auth/login.scss';
+import { loginSchema } from 'utils/validations';
+import 'assets/sass/views/auth/login.scss';
 import messages from './messages';
 import { useIntl } from 'react-intl';
 import { ROUTES } from 'routes';
 import { passwordMinLength } from 'constants/Validation';
-import FormField from 'components/shared-components/Form/FormField';
+import FormField from 'components/custom-components/Form/FormField';
 import { makeSelectLoginDetails } from 'redux/selectors/Users';
 
-export const LoginForm = ({ redirect, allowRedirect }) => {
+export const LoginForm = () => {
   let history = useHistory();
   const dispatch = useDispatch();
   const { loading, message, showMessage, token } = useSelector(
@@ -28,8 +28,8 @@ export const LoginForm = ({ redirect, allowRedirect }) => {
   };
 
   useEffect(() => {
-    if (token && allowRedirect) {
-      history.push(redirect);
+    if (token) {
+      history.push(ROUTES.DASHBOARD);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);

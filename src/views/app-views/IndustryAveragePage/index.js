@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Formik, Field } from 'formik';
 import { Button, Form, Row, Col, Typography, Layout, Card } from 'antd';
-import FormInputField from 'components/shared-components/Form/FormField';
+import FormInputField from 'components/custom-components/Form/FormField';
 import messages from './messages';
 import { useDispatch } from 'react-redux';
 import { useIntl } from 'react-intl';
