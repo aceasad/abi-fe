@@ -12,7 +12,6 @@ import { makeSelectLoading } from 'redux/selectors/Auth';
 
 const ChangePassword = () => {
   const dispatch = useDispatch();
-
   const loading = useSelector(makeSelectLoading());
 
   const showSuccess = () =>
@@ -28,9 +27,6 @@ const ChangePassword = () => {
     });
 
   const handleSubmit = (changePasswordData, { resetForm }) => {
-    console.log(changePasswordData);
-    // TO DO - BE
-    // ....
     dispatch(
       changePassword({
         data: {
