@@ -57,6 +57,13 @@ const pagesNavTree = [
     breadcrumb: false,
     submenu: [],
   },
+  {
+    key: "conversations",
+    path: `${APP_PREFIX_PATH}/conversations`,
+    title: "Conversations",
+    breadcrumb: false,
+    submenu: [],
+  },
 ];
 
 const navigationConfig = [...pagesNavTree];
