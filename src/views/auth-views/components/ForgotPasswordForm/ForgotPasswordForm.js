@@ -41,11 +41,9 @@ export const ForgotPasswordForm = ({ email, showMessage }) => {
         }}
       ></motion.div>
       <Formik
-        initialValues={{ email: email }}
+        initialValues={{ email }}
         validationSchema={forgotPasswordSchema}
-        onSubmit={(values) => {
-          confirm(values);
-        }}
+        onSubmit={confirm}
       >
         {({ values, isValid, handleChange, handleBlur, handleSubmit }) => (
           <Form layout="vertical" name="login-form">
