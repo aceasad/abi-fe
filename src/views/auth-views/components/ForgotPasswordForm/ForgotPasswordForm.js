@@ -29,8 +29,6 @@ export const ForgotPasswordForm = (props) => {
   useEffect(() => {
     if (isSent == true) {
       success(formatMessage(messages.successfulySentEmail));
-    } else if (isSent == false) {
-      error(formatMessage(messages.errorSentEmail));
     }
   }, [isSent]);
 
