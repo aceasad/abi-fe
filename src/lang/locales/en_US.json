@@ -212,5 +212,11 @@
   "staff_page.text.deleted_success": "Staff Deleted",
   "staff_page.text.update_staff": "Update Staff",
   "user_menu.user_settings": "User Settings",
-  "user_menu.company_settings": "Company Settings"
+  "user_menu.company_settings": "Company Settings",
+
+  "reset_password_page.note.min_characters": "At least {min} characters",
+  "reset_password_page.note.upper_and_lower_mix": "A mixture of both uppercase and lowercase letters",
+  "reset_password_page.note.char_and_letter_mix": "A mixture of letters and numbers",
+  "reset_password_page.note.special_characters": "Inclusion of at least one special character, e.g., ! @ # ? ]",
+  "lreset_password_page.note.special_characters_excluded": "Note: do not use < or > in your password, as both can cause problems in Web browsers"
 }
