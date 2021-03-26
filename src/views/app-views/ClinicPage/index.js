@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { Button, Form, Input, Radio, Row, Col, Card } from 'antd';
+import { Button, Form, Radio, Row, Col, Card } from 'antd';
 import { Formik, Field } from 'formik';
 import { clinicSchema } from 'utils/validations';
 import { useDispatch } from 'react-redux';
 import messages from './messages';
-import FormField from 'components/shared-components/Form/FormField';
-import FormInputField from 'components/shared-components/Form/FormInputField';
-import FormImageUpload from 'components/shared-components/Form/FormImageUpload';
+import FormField from 'components/custom-components/Form/FormField';
+import FormInputField from 'components/custom-components/Form/FormInputField';
+import FormImageUpload from 'components/custom-components/Form/FormImageUpload';
 import { useIntl } from 'react-intl';
 import { updateClinic } from 'redux/actions/Clinic';
 import { NO, FREE, AVAILABLE } from '../../../constants/ClinicConstants';
@@ -37,7 +37,7 @@ const ClinicPage = () => {
           dispatch(updateClinic(values));
         }}
       >
-        {({ setFieldValue, dirty, isValid, values, handleSubmit }) => (
+        {({ dirty, isValid, values, handleSubmit }) => (
           <Form layout="vertical" name="clinic-form" onSubmit={handleSubmit}>
             <Row justify="center" className="mb-5 mt-4">
               <Col span={6}>
@@ -141,7 +141,7 @@ const ClinicPage = () => {
                     type={'time'}
                   />
                 </Col>
-                <Col md={4} md={1} className="text-center">
+                <Col md={4} className="text-center">
                   <MinusOutlined className="mt-3 text-primary" />
                 </Col>
                 <Col xs={10} md={6}>
@@ -163,7 +163,7 @@ const ClinicPage = () => {
                     disabled={!dirty || !isValid}
                     onClick={() => handleSubmit(values)}
                   >
-                    Create
+                    {formatMessage(messages.create)}
                   </Button>
                 </Form.Item>
               </Col>

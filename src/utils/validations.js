@@ -1,12 +1,20 @@
 import Yup from './yupValidations';
 import { passwordFormat, passwordMinLength } from 'constants/Validation';
 
+const passwordValidation = Yup.string()
+  .matches(passwordFormat)
+  .min(passwordMinLength)
+  .required();
+
+const passwordRepeatValidation = Yup.string()
+  .matches(passwordFormat)
+  .min(passwordMinLength)
+  .required()
+  .oneOf([Yup.ref('password')]);
+
 export const loginSchema = Yup.object().shape({
   username: Yup.string().email().required(),
-  password: Yup.string()
-    .matches(passwordFormat)
-    .min(passwordMinLength)
-    .required(),
+  password: passwordValidation,
 });
 
 export const forgotPasswordSchema = Yup.object().shape({
@@ -21,22 +29,13 @@ export const clinicSchema = Yup.object().shape({
 });
 
 export const createPasswordSchema = Yup.object().shape({
-  password: Yup.string()
-    .matches(passwordFormat)
-    .min(passwordMinLength)
-    .required(),
-  passwordRepeat: Yup.string()
-    .matches(passwordFormat)
-    .min(passwordMinLength)
-    .required()
-    .oneOf([Yup.ref('password')]),
+  password: passwordValidation,
+  passwordRepeat: passwordRepeatValidation,
 });
 
 export const resetPasswordSchema = Yup.object().shape({
-  password: Yup.string().required().matches(passwordFormat),
-  passwordRepeat: Yup.string()
-    .required()
-    .oneOf([Yup.ref('password')]),
+  password: passwordValidation,
+  passwordRepeat: passwordRepeatValidation,
 });
 
 export const staffValidationSchema = Yup.object().shape({
