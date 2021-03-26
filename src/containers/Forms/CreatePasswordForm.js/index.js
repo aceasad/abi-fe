@@ -6,12 +6,12 @@ import { createPassword } from 'redux/actions/Auth';
 
 import { Formik, Field } from 'formik';
 import { createPasswordSchema } from 'utils/validations';
-import '../../../../assets/sass/views/auth/login.scss';
+import 'assets/sass/views/auth/login.scss';
 import messages from './messages';
 import { useIntl } from 'react-intl';
 
 import { passwordMinLength } from 'constants/Validation';
-import FormField from 'components/shared-components/Form/FormField';
+import FormField from 'components/custom-components/Form/FormField';
 import { makeSelectLoginDetails } from 'redux/selectors/Users';
 
 export const CreatePassowrdForm = () => {

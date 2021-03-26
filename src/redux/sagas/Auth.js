@@ -21,11 +21,11 @@ import {
   signOutSuccess,
   showLoading,
 } from '../actions/Auth';
-import { push, go } from 'connected-react-router';
+import { push } from 'connected-react-router';
 
 import AuthService from 'services/AuthService';
 import { ROUTES } from 'routes';
-import messages from 'views/auth-views/components/LoginForm/messages';
+import messages from 'containers/Forms/LoginForm/messages';
 import { clearLocalStorage } from 'utils/localStorage';
 import changePasswordMessages from 'views/app-views/SettingsPage/messages';
 

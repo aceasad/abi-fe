@@ -4,12 +4,12 @@ import { Button, Form } from 'antd';
 import messages from './messages';
 import { useDispatch, useSelector } from 'react-redux';
 import { useIntl } from 'react-intl';
-import FormField from 'components/shared-components/Form/FormField';
+import FormField from 'components/custom-components/Form/FormField';
 import { useParams } from 'react-router-dom';
-import { resetPassword } from '../../../../redux/actions/Auth';
+import { resetPassword } from 'redux/actions/Auth';
 import { passwordMinLength } from 'constants/Validation';
 import { makeIsResetPassword } from 'redux/selectors/Users';
-import { success } from '../../../../components/shared-components/MessagesAlerts/index';
+import { success } from 'components/shared-components/MessagesAlerts/index';
 const { resetPasswordSchema } = require('utils/validations');
 
 const ResetPasswordForm = (match) => {
