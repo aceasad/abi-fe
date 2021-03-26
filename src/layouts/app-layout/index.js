@@ -53,7 +53,7 @@ export const AppLayout = ({ navCollapsed, navType, location }) => {
           <SideNav routeInfo={currentRouteInfo} />
         ) : null}
         <Layout
-          className="app-layout"
+          className="app-layout app-content-no-padding"
           style={{ paddingLeft: getLayoutGutter() }}
         >
           <div

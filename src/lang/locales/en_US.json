@@ -164,9 +164,16 @@
   "forgot_password_page.link.privacy_policy": "Privacy policy",
   "forgot_password_page.text.forgotten_password_title": "Forgotten password",
   "forgot_password_page.text.forgotten_password_paragraph": "Please enter the email you use to sign in to Abi. We'll then send you an email with the instructions to follow.",
+
   "create_password_page.text.create_password_title": "Create password",
   "create_password_page.input_label.password": "Repeat password",
   "create_password_page.text.password_expired": "Password has expired",
+
+  "reset_password_page.text.reset_password_title": "Reset Password",
+  "reset_password_page.input_label.password": "New Password",
+  "reset_password_page.input_label.passwordRepeat": "Repeat Password",
+  "reset_password_page.button.confirm_button": "Save Password",
+  "reset_password_page.matches.password": "Password must contain at least 8 characters, one upper letter, one number and one special character.",
 
   "global.session_expired": "Your session has expired",
   "global.validations.email": "{label} must be a valid email",
@@ -213,5 +220,11 @@
   "industry_average_page.coverage": "Coverage",
   "industry_average_page.number_of_women_screened_after_sending_invites": "Number of women screened after sending invites",
   "industry_average_page.number_of_women_eligible_for_screening": "Number of women eligible for screening",
-  "industry_average_page.number_of_women_screened_in_the_past_3_years": "Number of women screened in the past 3 years"
+  "industry_average_page.number_of_women_screened_in_the_past_3_years": "Number of women screened in the past 3 years",
+
+  "reset_password_page.note.min_characters": "At least {min} characters",
+  "reset_password_page.note.upper_and_lower_mix": "A mixture of both uppercase and lowercase letters",
+  "reset_password_page.note.char_and_letter_mix": "A mixture of letters and numbers",
+  "reset_password_page.note.special_characters": "Inclusion of at least one special character, e.g., ! @ # ? ]",
+  "reset_password_page.note.special_characters_excluded": "Note: do not use < or > in your password, as both can cause problems in Web browsers"
 }

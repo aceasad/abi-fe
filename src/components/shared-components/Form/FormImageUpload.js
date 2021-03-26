@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { UserOutlined } from '@ant-design/icons';
+import { UserOutlined, UpOutlined } from '@ant-design/icons';
+import { Badge, Avatar } from 'antd';
 
 const FormImageUpload = ({ field, form, label }) => {
   const [imagePreview, setImagePreview] = useState();
@@ -16,32 +17,38 @@ const FormImageUpload = ({ field, form, label }) => {
   }, [field.value]);
 
   return (
-    <>
-      <div>
-        <input
-          id={field.name}
-          type="file"
-          accept="image/*"
-          name={field.name}
-          onChange={(e) => {
-            form.setFieldValue(field.name, e.target.files[0]);
-            e.target.value = null;
-          }}
-        />
-        <div>
-          <label htmlFor={field.name}>
-            {label}
-            <div>
-              {imagePreview ? (
-                <img src={imagePreview} alt="Upload" />
+    <div className="form-image-upload-container">
+      <input
+        id={field.name}
+        type="file"
+        accept="image/*"
+        name={field.name}
+        onChange={(e) => {
+          form.setFieldValue(field.name, e.target.files[0]);
+          e.target.value = null;
+        }}
+        style={{ position: 'absolute' }}
+        className="invisible"
+      />
+      <label htmlFor={field.name} className="cursor-pointer">
+        <Badge className="form-image-upload-badge" count={<UpOutlined />}>
+          <Avatar
+            size={96}
+            icon={
+              imagePreview ? (
+                <img
+                  src={imagePreview}
+                  alt="Upload"
+                  className="form-image-upload-image"
+                />
               ) : (
                 <UserOutlined />
-              )}
-            </div>
-          </label>
-        </div>
-      </div>
-    </>
+              )
+            }
+          />
+        </Badge>
+      </label>
+    </div>
   );
 };
 

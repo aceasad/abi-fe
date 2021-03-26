@@ -1,0 +1,31 @@
+.form-image-upload-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .form-image-upload-image {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+  }
+}
+
+.form-image-upload-badge {
+  &.ant-badge {
+    .ant-scroll-number-custom-component {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      top: unset;
+      bottom: @margin-md;
+      right: @margin-md;
+      transform: translate(50%, 50%);
+      height: 2rem;
+      width: 2rem;
+      border-radius: 50%;
+      background: @primary-color;
+      color: @white;
+    }
+  }
+}
