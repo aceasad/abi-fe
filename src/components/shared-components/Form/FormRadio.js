@@ -1,5 +1,5 @@
 import React from 'react';
-import { Radio } from 'antd';
+import { Radio, Form } from 'antd';
 
 const FormRadio = ({
   field,
@@ -9,9 +9,7 @@ const FormRadio = ({
   label,
 }) => {
   return (
-    <div>
-      {label && <label>{label}</label>}
-
+    <Form.Item label={label}>
       <Radio.Group
         onChange={(e) => setFieldValue(field.name, e.target.value)}
         value={field.value}
@@ -22,7 +20,7 @@ const FormRadio = ({
           </Radio>
         ))}
       </Radio.Group>
-    </div>
+    </Form.Item>
   );
 };
 

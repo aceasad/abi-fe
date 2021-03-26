@@ -21,9 +21,9 @@ const getLogoWidthGutter = (props, isMobile) => {
     return 'auto';
   }
   if (navCollapsed) {
-    return `calc(${SIDE_NAV_COLLAPSED_WIDTH}px - 22px)`; // 22px arrow on the right width.
+    return `calc(${SIDE_NAV_COLLAPSED_WIDTH}px - 23px)`; // 23px arrow on the right width.
   } else {
-    return `calc(${SIDE_NAV_WIDTH}px - 22px)`; // 22px arrow on the right width.
+    return `calc(${SIDE_NAV_WIDTH}px - 23px)`; // 23px arrow on the right width.
   }
 };
 
