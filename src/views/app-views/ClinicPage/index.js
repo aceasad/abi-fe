@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Form, Input, Radio, Row, Col } from 'antd';
+import { Button, Form, Input, Radio, Row, Col, message } from 'antd';
 import { Formik, Field } from 'formik';
 import { clinicSchema } from 'utils/validations';
 import { useDispatch } from 'react-redux';
@@ -12,30 +12,38 @@ import { updateClinic } from 'redux/actions/Clinic';
 import { NO, FREE, AVAILABLE } from '../../../constants/ClinicConstants';
 import { MinusOutlined } from '@ant-design/icons';
 
-const ClinicPage = () => {
+const ClinicPage = ({ clinicData = null }) => {
   const dispatch = useDispatch();
   const [visibilityOfParkinSizeField, setVisibility] = useState(false);
 
   const { formatMessage } = useIntl();
 
+  const handleSubmit = (values, { resetForm }) => {
+    if (clinicData) {
+      console.log({ ...values });
+      message.success({ content: 'Clinic Updated!', duration: 2 });
+      resetForm();
+    } else {
+      dispatch(updateClinic(values));
+    }
+  };
+
   return (
     <div className="container">
       <Formik
         initialValues={{
-          photo: null,
-          name: '',
-          phone_number: '',
-          address: '',
-          google_maps_link: '',
-          parking_availability: null,
-          parking_size: 0,
-          start_of_work: null,
-          end_of_work: null,
+          photo: clinicData?.photo || null,
+          name: clinicData?.name || '',
+          phone_number: clinicData?.phone_number || '',
+          address: clinicData?.address || '',
+          google_maps_link: clinicData?.google_maps_link || '',
+          parking_availability: clinicData?.parking_availability || null,
+          parking_size: clinicData?.parking_size || 0,
+          start_of_work: clinicData?.start_of_work || null,
+          end_of_work: clinicData?.end_of_work || null,
         }}
         validationSchema={clinicSchema}
-        onSubmit={(values) => {
-          dispatch(updateClinic(values));
-        }}
+        onSubmit={handleSubmit}
       >
         {({ setFieldValue, dirty, isValid, values, handleSubmit }) => (
           <Form layout="vertical" name="clinic-form" onSubmit={handleSubmit}>
@@ -168,7 +176,7 @@ const ClinicPage = () => {
                     name="create"
                     type="primary"
                     disabled={!dirty || !isValid}
-                    onClick={() => handleSubmit(values)}
+                    onClick={handleSubmit}
                   >
                     Create
                   </Button>

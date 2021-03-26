@@ -47,3 +47,19 @@ export const staffValidationSchema = Yup.object().shape({
   specialization: Yup.string().required(),
   seniority: Yup.string().required(),
 });
+
+export const changePasswordSchema = Yup.object().shape({
+  oldPassword: Yup.string()
+    .matches(passwordFormat)
+    .min(passwordMinLength)
+    .required(),
+  newPassword: Yup.string()
+    .matches(passwordFormat)
+    .min(passwordMinLength)
+    .required(),
+  newPasswordConfirm: Yup.string()
+    .matches(passwordFormat)
+    .min(passwordMinLength)
+    .required()
+    .oneOf([Yup.ref('newPassword')]),
+});

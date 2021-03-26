@@ -41,4 +41,12 @@ export default defineMessages({
     id: `${scope}.text.change_password_btn_title`,
     defaultMessage: 'Change password',
   },
+  passwordChanged: {
+    id: `${scope}.text.password_changed`,
+    defaultMessage: 'Password has been changed!',
+  },
+  changePasswordError: {
+    id: `${scope}.error.password_change_error`,
+    defaultMessage: 'Failed to change password',
+  },
 });

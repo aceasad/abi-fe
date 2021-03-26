@@ -19,7 +19,7 @@ const FormField = ({
   const { formatMessage } = useIntl();
 
   const getLabel = () => {
-    if (label) {
+    if (Label) {
       return <Label />;
     }
     return label;

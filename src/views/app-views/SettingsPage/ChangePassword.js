@@ -1,19 +1,47 @@
-import React, { Component } from 'react';
-import { Form, Button, Input, Row, Col, message } from 'antd';
+import React from 'react';
+import { Form, Button, Row, Col, message } from 'antd';
 import { Field, Formik } from 'formik';
 import FormField from 'components/shared-components/Form/FormField';
 import messages from './messages';
 import { useIntl } from 'react-intl';
 import { LockOutlined } from '@ant-design/icons';
+import { changePasswordSchema } from 'utils/validations';
 import { useDispatch, useSelector } from 'react-redux';
-import { makeSelectLoginDetails } from 'redux/selectors/Users';
+import { changePassword } from 'redux/actions/Auth';
+import { makeSelectLoading } from 'redux/selectors/Auth';
 
 const ChangePassword = () => {
   const dispatch = useDispatch();
 
-  const handleSubmit = (changePasswordData) => {
+  const loading = useSelector(makeSelectLoading());
+
+  const showSuccess = () =>
+    message.success({
+      content: 'Password Changed!',
+      duration: 2,
+    });
+
+  const showError = () =>
+    message.error({
+      content: 'Invalid old password. Try again.',
+      duration: 2,
+    });
+
+  const handleSubmit = (changePasswordData, { resetForm }) => {
     console.log(changePasswordData);
-    // TO DO
+    // TO DO - BE
+    // ....
+    dispatch(
+      changePassword({
+        data: {
+          old_password: changePasswordData.oldPassword,
+          new_password: changePasswordData.newPassword,
+        },
+        showSuccess,
+        showError,
+        resetForm,
+      })
+    );
   };
   const passwordMinLength = 8;
   const { formatMessage } = useIntl();
@@ -37,13 +65,14 @@ const ChangePassword = () => {
         <Col xs={24} sm={24} md={24} lg={8}>
           <Formik
             initialValues={{
-              old_password: '',
-              new_password: '',
-              new_password_confirm: '',
+              oldPassword: '',
+              newPassword: '',
+              newPasswordConfirm: '',
             }}
             onSubmit={handleSubmit}
+            validationSchema={changePasswordSchema}
           >
-            {({ values, handleSubmit, dirty, isValid }) => (
+            {({ handleSubmit, dirty, isValid }) => (
               <Form>
                 <Field
                   component={FormField}
@@ -89,10 +118,10 @@ const ChangePassword = () => {
                     type="primary"
                     htmlType="submit"
                     block
-                    disabled={!dirty || !isValid}
-                    onClick={() => handleSubmit(values)}
+                    disabled={loading || !dirty || !isValid}
+                    onClick={handleSubmit}
                   >
-                    {formatMessage(messages.changePassword)}
+                    {formatMessage(messages.changePasswordBtn)}
                   </Button>
                 </Form.Item>
               </Form>
