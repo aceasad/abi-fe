@@ -205,5 +205,13 @@
   "staff_page.text.deleted_success": "Staff Deleted",
   "staff_page.text.update_staff": "Update Staff",
   "user_menu.user_settings": "User Settings",
-  "user_menu.company_settings": "Company Settings"
+  "user_menu.company_settings": "Company Settings",
+
+  "industry_average_page.input_label.cost_of_missed_appointments": "Cost of missed appointments",
+  "industry_average_page.input_label.did_not_attend": "Did not attend",
+  "industry_average_page.uptake": "Uptake",
+  "industry_average_page.coverage": "Coverage",
+  "industry_average_page.number_of_women_screened_after_sending_invites": "Number of women screened after sending invites",
+  "industry_average_page.number_of_women_eligible_for_screening": "Number of women eligible for screening",
+  "industry_average_page.number_of_women_screened_in_the_past_3_years": "Number of women screened in the past 3 years"
 }
