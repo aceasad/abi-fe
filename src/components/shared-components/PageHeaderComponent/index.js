@@ -14,7 +14,7 @@ const PageHeaderComponent = ({
   disablePrimary,
 }) => {
   return (
-    <Header className="ant-layout-page-header">
+    <Header className="ant-layout-page-header shadow-sm">
       <Title className="mb-0">{title}</Title>
       <div>
         <Button
