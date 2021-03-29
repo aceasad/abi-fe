@@ -18,6 +18,20 @@ import {
 const { Header, Content } = Layout;
 const { Title } = Typography;
 
+const FormImputField = (props) => (
+  <Row>
+    <Col span={props.span}>
+      <Field
+        component={props.component}
+        label={props.label}
+        name={props.name}
+        type={props.type}
+        min={props.min}
+      />
+    </Col>
+  </Row>
+);
+
 const IndustryAverage = () => {
   const dispatch = useDispatch();
   const { formatMessage } = useIntl();
@@ -57,52 +71,40 @@ const IndustryAverage = () => {
               <Form layout="vertical" name="login-form">
                 <Row gutter={64} align="bottom">
                   <Col span={10}>
-                    <Row>
-                      <Col span={24}>
-                        <Field
-                          component={FormInputField}
-                          label={formatMessage(
-                            messages.cost_of_missed_appointments
-                          )}
-                          name={'cost_of_missed_appointments'}
-                          type={'number'}
-                          min={0}
-                        />
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col span={24}>
-                        <Field
-                          component={FormInputField}
-                          label={formatMessage(messages.did_not_attend)}
-                          name={'did_not_attend'}
-                          type={'number'}
-                          min={0}
-                        />
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col span={24}>
-                        <Field
-                          component={FormInputField}
-                          label={formatMessage(messages.uptake)}
-                          name={'uptake'}
-                          type={'number'}
-                          min={0}
-                        />
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col span={24}>
-                        <Field
-                          component={FormInputField}
-                          label={formatMessage(messages.coverage)}
-                          name={'coverage'}
-                          type={'number'}
-                          min={0}
-                        />
-                      </Col>
-                    </Row>
+                    <FormImputField
+                      span={24}
+                      component={FormInputField}
+                      label={formatMessage(
+                        messages.cost_of_missed_appointments
+                      )}
+                      name={'cost_of_missed_appointments'}
+                      type={'number'}
+                      min={0}
+                    />
+                    <FormImputField
+                      span={24}
+                      component={FormInputField}
+                      label={formatMessage(messages.did_not_attend)}
+                      name={'did_not_attend'}
+                      type={'number'}
+                      min={0}
+                    />
+                    <FormImputField
+                      span={24}
+                      component={FormInputField}
+                      label={formatMessage(messages.uptake)}
+                      name={'uptake'}
+                      type={'number'}
+                      min={0}
+                    />
+                    <FormImputField
+                      span={24}
+                      component={FormInputField}
+                      label={formatMessage(messages.coverage)}
+                      name={'coverage'}
+                      type={'number'}
+                      min={0}
+                    />
                   </Col>
                   <Col span={10}>
                     <Row>
@@ -112,46 +114,36 @@ const IndustryAverage = () => {
                         </Title>
                       </Col>
                     </Row>
-                    <Row>
-                      <Col span={24}>
-                        <Field
-                          component={FormInputField}
-                          label={formatMessage(
-                            messages.number_of_women_screened_after_sending_invites
-                          )}
-                          name={'number_of_women_screened_after_invite'}
-                          type={'number'}
-                          min={0}
-                        />
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col span={24}>
-                        <Field
-                          component={FormInputField}
-                          label={formatMessage(
-                            messages.number_of_women_eligible_for_screening
-                          )}
-                          name={'number_of_women_eligible_for_screen'}
-                          type={'number'}
-                          min={0}
-                        />
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col span={24}>
-                        {' '}
-                        <Field
-                          component={FormInputField}
-                          label={formatMessage(
-                            messages.number_of_women_screened_in_the_past_3_years
-                          )}
-                          name={'number_of_women_screened_in_past_3_y'}
-                          type={'number'}
-                          min={0}
-                        />
-                      </Col>
-                    </Row>
+                    <FormImputField
+                      span={24}
+                      component={FormInputField}
+                      label={formatMessage(
+                        messages.number_of_women_screened_after_sending_invites
+                      )}
+                      name={'number_of_women_screened_after_invite'}
+                      type={'number'}
+                      min={0}
+                    />
+                    <FormImputField
+                      span={24}
+                      component={FormInputField}
+                      label={formatMessage(
+                        messages.number_of_women_eligible_for_screening
+                      )}
+                      name={'number_of_women_eligible_for_screen'}
+                      type={'number'}
+                      min={0}
+                    />
+                    <FormImputField
+                      span={24}
+                      component={FormInputField}
+                      label={formatMessage(
+                        messages.number_of_women_screened_in_the_past_3_years
+                      )}
+                      name={'number_of_women_screened_in_past_3_y'}
+                      type={'number'}
+                      min={0}
+                    />
                   </Col>
                 </Row>
 
