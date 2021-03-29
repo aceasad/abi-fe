@@ -14,23 +14,10 @@ import {
   industryAverageSelector,
   isLoadingIndustryAverageSelector,
 } from '../../../redux/selectors/IndustryAverage';
+import IndustryAverageFormField from './IndustryAverageFormField';
 
 const { Header, Content } = Layout;
 const { Title } = Typography;
-
-const FormImputField = (props) => (
-  <Row>
-    <Col span={props.span}>
-      <Field
-        component={props.component}
-        label={props.label}
-        name={props.name}
-        type={props.type}
-        min={props.min}
-      />
-    </Col>
-  </Row>
-);
 
 const IndustryAverage = () => {
   const dispatch = useDispatch();
@@ -71,7 +58,7 @@ const IndustryAverage = () => {
               <Form layout="vertical" name="login-form">
                 <Row gutter={64} align="bottom">
                   <Col span={10}>
-                    <FormImputField
+                    <IndustryAverageFormField
                       span={24}
                       component={FormInputField}
                       label={formatMessage(
@@ -81,7 +68,7 @@ const IndustryAverage = () => {
                       type={'number'}
                       min={0}
                     />
-                    <FormImputField
+                    <IndustryAverageFormField
                       span={24}
                       component={FormInputField}
                       label={formatMessage(messages.did_not_attend)}
@@ -89,7 +76,7 @@ const IndustryAverage = () => {
                       type={'number'}
                       min={0}
                     />
-                    <FormImputField
+                    <IndustryAverageFormField
                       span={24}
                       component={FormInputField}
                       label={formatMessage(messages.uptake)}
@@ -97,7 +84,7 @@ const IndustryAverage = () => {
                       type={'number'}
                       min={0}
                     />
-                    <FormImputField
+                    <IndustryAverageFormField
                       span={24}
                       component={FormInputField}
                       label={formatMessage(messages.coverage)}
@@ -114,7 +101,7 @@ const IndustryAverage = () => {
                         </Title>
                       </Col>
                     </Row>
-                    <FormImputField
+                    <IndustryAverageFormField
                       span={24}
                       component={FormInputField}
                       label={formatMessage(
@@ -124,7 +111,7 @@ const IndustryAverage = () => {
                       type={'number'}
                       min={0}
                     />
-                    <FormImputField
+                    <IndustryAverageFormField
                       span={24}
                       component={FormInputField}
                       label={formatMessage(
@@ -134,7 +121,7 @@ const IndustryAverage = () => {
                       type={'number'}
                       min={0}
                     />
-                    <FormImputField
+                    <IndustryAverageFormField
                       span={24}
                       component={FormInputField}
                       label={formatMessage(
