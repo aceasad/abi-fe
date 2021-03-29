@@ -65,11 +65,9 @@ export function* forgotPasswordEmailSend() {
   yield takeEvery(SEND_FORGOT_PASSWORD_EMAIL, function* ({ email }) {
     try {
       const sendEmail = yield call(AuthService.sendForgotPasswordEmail, email);
-      yield put(push(ROUTES.LOGIN));
-      yield put(go());
       yield put(sendForgotPasswordEmailSuccess(sendEmail));
     } catch (err) {
-      yield put(sendForgotPasswordEmailError(err));
+      yield put(sendForgotPasswordEmailError(err.messages));
     }
   });
 }
@@ -77,14 +75,8 @@ export function* forgotPasswordEmailSend() {
 export function* resetPassword() {
   yield takeEvery(RESET_PASSWORD, function* ({ password, token }) {
     try {
-      const { response } = yield call(
-        AuthService.resetPassword,
-        password,
-        token
-      );
-      yield put(push(ROUTES.LOGIN));
-      yield put(go());
-      yield put(resetPasswordSuccess(response));
+      yield call(AuthService.resetPassword, password, token);
+      yield put(resetPasswordSuccess());
     } catch (err) {
       yield put(resetPasswordError(err));
     }

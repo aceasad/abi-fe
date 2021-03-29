@@ -1,4 +1,4 @@
-import { DatePicker } from 'antd';
+import { DatePicker, Form } from 'antd';
 import { DATE_FORMAT_MM_DD_YYYY } from 'constants/DateConstant';
 import moment from 'moment';
 import React from 'react';
@@ -11,8 +11,7 @@ const FormDatePicker = ({
   maxDate,
 }) => {
   return (
-    <div>
-      {label && <label>{label}</label>}
+    <Form.Item label={label}>
       <DatePicker
         onChange={(_, str) => {
           setFieldValue(field.name, str);
@@ -24,7 +23,7 @@ const FormDatePicker = ({
         )}
         format={DATE_FORMAT_MM_DD_YYYY}
       />
-    </div>
+    </Form.Item>
   );
 };
 

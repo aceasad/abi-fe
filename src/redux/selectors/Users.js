@@ -35,10 +35,18 @@ const makeSelectIsForceClinicRequired = () =>
       user.is_organization_owner
   );
 
+const makeIsSendEmailUser = () =>
+  createSelector(selectUsersDomain, (substate) => substate.isSent);
+
+const makeIsResetPassword = () =>
+  createSelector(selectUsersDomain, (substate) => substate.isReset);
+
 export {
   makeSelectCurrentUser,
   makeSelectIsAuthenticated,
   makeSelectLoginDetails,
   maskeSelectIsPasswordCreateRequired,
   makeSelectIsForceClinicRequired,
+  makeIsSendEmailUser,
+  makeIsResetPassword,
 };

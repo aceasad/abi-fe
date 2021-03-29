@@ -1,6 +1,7 @@
 import languageReducer from 'containers/LanguageProvider/reducer';
 import { combineReducers } from 'redux';
 import Auth from './Auth';
+import IndustryAverage from './IndustryAverage';
 import Clinic from './Clinic';
 import Theme from './Theme';
 import Staff from './Staff';
@@ -13,6 +14,7 @@ export default (history) => {
     router: connectRouter(history),
     theme: Theme,
     auth: Auth,
+    industryAverage: IndustryAverage,
     clinic: Clinic,
     staff: Staff,
 

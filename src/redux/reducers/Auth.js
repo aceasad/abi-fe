@@ -12,6 +12,9 @@ import {
   SET_USER,
   SET_PASSWORD_CHANGED,
   SET_TOKEN,
+  SEND_FORGOT_PASSWORD_EMAIL_SUCCESS,
+  SEND_FORGOT_PASSWORD_EMAIL_ERROR,
+  RESET_PASSWORD_SUCCESS,
 } from '../constants/Auth';
 import { getLocalStorageItem } from 'utils/localStorage';
 import produce from 'immer';
@@ -22,6 +25,8 @@ const initState = {
   message: '',
   showMessage: false,
   redirect: '',
+  isSent: null,
+  isReset: null,
   token: getLocalStorageItem(AUTH_TOKEN)?.access,
   user: null,
 };
@@ -67,8 +72,13 @@ const auth = (state = initState, action) =>
       case SET_USER:
         draft.user = action.payload;
         break;
+      case RESET_PASSWORD_SUCCESS:
+        draft.isReset = true;
+        break;
       case RESET_PASSWORD_ERROR:
         draft.message = action.errorMessage.message;
+        draft.isReset = false;
+        break;
         break;
       case SET_PASSWORD_CHANGED:
         draft.user = {
@@ -79,6 +89,12 @@ const auth = (state = initState, action) =>
       case SET_TOKEN:
         draft.token = action.payload.access;
         break;
+      case SEND_FORGOT_PASSWORD_EMAIL_SUCCESS:
+        draft.isSent = true;
+        break;
+      case SEND_FORGOT_PASSWORD_EMAIL_ERROR:
+        draft.message = action.message;
+        draft.isSent = false;
     }
   });
 
