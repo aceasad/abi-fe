@@ -227,6 +227,9 @@
   "change_password_page.text.password_changed": "Password has been changed!",
   "change_password_page.error.password_change_error": "Failed to change password",
   "change_password_page.text.change_password_menu_label": "Change Password",
+  "change_password_page.validation.valid_password": "Password must be in valid format",
+  "change_password_page.validation.matches.password": "Password must contain at least 8 characters, one upper letter, one number and one special character.",
+  "change_password_page.error.invalid_old_password": "Invalid old password",
 
   "edit_clinic_page.text.edit_clinic_menu_label": "Edit Clinic",
   

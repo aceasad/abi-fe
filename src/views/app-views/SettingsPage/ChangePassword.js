@@ -1,28 +1,41 @@
-import React from 'react';
-import { Form, Button, Row, Col, message } from 'antd';
-import { Field, Formik } from 'formik';
-import FormField from 'components/shared-components/Form/FormField';
-import messages from './messages';
-import { useIntl } from 'react-intl';
 import { LockOutlined } from '@ant-design/icons';
-import { changePasswordSchema } from 'utils/validations';
+import { Button, Col, Form, message, Row } from 'antd';
+import FormField from 'components/custom-components/Form/FormField';
+import ValidPasswordFormatTooltip from 'components/custom-components/Tooltips/ValidPasswordFormatTooltip';
+import { passwordMinLength } from 'constants/Validation';
+import { Field, Formik } from 'formik';
+import React from 'react';
+import { useIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
 import { changePassword } from 'redux/actions/Auth';
+import { setInvalidOldPasswordError } from 'redux/actions/Error';
 import { makeSelectLoading } from 'redux/selectors/Auth';
+import { makeSelectInvalidOldPasswordError } from 'redux/selectors/Error';
+import { changePasswordSchema } from 'utils/validations';
+import messages from './messages';
 
 const ChangePassword = () => {
   const dispatch = useDispatch();
+  const { formatMessage } = useIntl();
+
   const loading = useSelector(makeSelectLoading());
+  const invalidOldPasswordError = useSelector(
+    makeSelectInvalidOldPasswordError()
+  );
+
+  const hideInvalidPasswordError = () => {
+    if (invalidOldPasswordError) dispatch(setInvalidOldPasswordError(false));
+  };
 
   const showSuccess = () =>
     message.success({
-      content: 'Password Changed!',
+      content: formatMessage(messages.passwordChanged),
       duration: 2,
     });
 
   const showError = () =>
     message.error({
-      content: 'Invalid old password. Try again.',
+      content: formatMessage(messages.changePasswordError),
       duration: 2,
     });
 
@@ -30,8 +43,8 @@ const ChangePassword = () => {
     dispatch(
       changePassword({
         data: {
-          old_password: changePasswordData.oldPassword,
-          new_password: changePasswordData.newPassword,
+          old_password: changePasswordData.oldPassword.trim(),
+          new_password: changePasswordData.newPassword.trim(),
         },
         showSuccess,
         showError,
@@ -39,24 +52,12 @@ const ChangePassword = () => {
       })
     );
   };
-  const passwordMinLength = 8;
-  const { formatMessage } = useIntl();
-
-  const validPasswordFormat = (
-    <div>
-      <div>
-        {formatMessage(messages.minimumCharacters, { min: passwordMinLength })}
-      </div>
-      <div>{formatMessage(messages.upperAndLowerMixture)}</div>
-      <div>{formatMessage(messages.lettersAndNumberMixture)}</div>
-      <div>{formatMessage(messages.specialCharacters)}</div>
-      <div>{formatMessage(messages.specialCharactersExcluded)}</div>
-    </div>
-  );
 
   return (
     <>
-      <h2 className="mb-4">Change Password</h2>
+      <h2 className="mb-4">
+        {formatMessage(messages.changePasswordMenuLabel)}
+      </h2>
       <Row>
         <Col xs={24} sm={24} md={24} lg={8}>
           <Formik
@@ -73,40 +74,48 @@ const ChangePassword = () => {
                 <Field
                   component={FormField}
                   label={formatMessage(messages.oldPasswordInputLabel)}
-                  tooltipText={validPasswordFormat}
+                  tooltipText={ValidPasswordFormatTooltip}
                   name={'oldPassword'}
                   prefix={<LockOutlined className="text-primary" />}
                   secureField
                   errorTexts={{
                     label: formatMessage(messages.oldPasswordInputLabel),
-                    minValue: 8,
-                    matchesLabel: 'Invalid password',
+                    minValue: passwordMinLength,
+                    matchesLabel: formatMessage(messages.passwordValidFormat),
                   }}
+                  onFocus={hideInvalidPasswordError}
                 />
+
+                {invalidOldPasswordError && (
+                  <p className="authentication-error">
+                    {formatMessage(messages.invalidOldPassword)}
+                  </p>
+                )}
                 <Field
                   component={FormField}
                   label={formatMessage(messages.newPasswordInputLabel)}
-                  tooltipText={validPasswordFormat}
+                  tooltipText={ValidPasswordFormatTooltip}
                   name={'newPassword'}
                   prefix={<LockOutlined className="text-primary" />}
                   secureField
                   errorTexts={{
                     label: formatMessage(messages.newPasswordInputLabel),
-                    minValue: 8,
-                    matchesLabel: 'Invalid password',
+                    minValue: passwordMinLength,
+                    matchesLabel: formatMessage(messages.passwordValidFormat),
                   }}
                 />
                 <Field
                   component={FormField}
                   label={formatMessage(messages.newPasswordConfirmInputLabel)}
-                  tooltipText={validPasswordFormat}
+                  tooltipText={ValidPasswordFormatTooltip}
                   name={'newPasswordConfirm'}
                   prefix={<LockOutlined className="text-primary" />}
                   secureField
                   errorTexts={{
                     label: formatMessage(messages.newPasswordConfirmInputLabel),
-                    minValue: 8,
-                    matchesLabel: 'Invalid password',
+                    minValue: passwordMinLength,
+                    matchesLabel: formatMessage(messages.passwordValidFormat),
+                    value: formatMessage(messages.newPasswordInputLabel),
                   }}
                 />
                 <Form.Item className="mt-sm-5">

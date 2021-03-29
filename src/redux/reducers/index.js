@@ -5,6 +5,7 @@ import IndustryAverage from './IndustryAverage';
 import Clinic from './Clinic';
 import Theme from './Theme';
 import Staff from './Staff';
+import Error from './Error';
 import { connectRouter } from 'connected-react-router';
 import { SIGNOUT_SUCCESS } from 'redux/constants/Auth';
 
@@ -17,6 +18,7 @@ export default (history) => {
     industryAverage: IndustryAverage,
     clinic: Clinic,
     staff: Staff,
+    error: Error,
 
     language: languageReducer,
   });

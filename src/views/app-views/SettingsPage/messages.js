@@ -54,6 +54,14 @@ export default defineMessages({
     id: `${changePassword}.text.change_password_menu_label`,
     defaultMessage: 'Change Password',
   },
+  passwordValidFormat: {
+    id: `${changePassword}.validation.valid_password`,
+    defaultMessage: 'Password must be in valid format',
+  },
+  invalidOldPassword: {
+    id: `${changePassword}.error.invalid_old_password`,
+    defaultMessage: 'Invalid old password',
+  },
   editClinicMenuLabel: {
     id: `${editClinic}.text.edit_clinic_menu_label`,
     defaultMessage: 'Edit Clinic',
