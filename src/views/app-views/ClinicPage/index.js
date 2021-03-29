@@ -17,6 +17,7 @@ const ClinicPage = () => {
   const [visibilityOfParkinSizeField, setVisibility] = useState(false);
 
   const { formatMessage } = useIntl();
+
   return (
     <Card className="p-3">
       <Formik

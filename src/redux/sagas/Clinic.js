@@ -1,7 +1,5 @@
 import { UPDATE_CLINIC } from '../constants/Clinic';
 import { takeEvery, put, call, all, fork } from 'redux-saga/effects';
-import { push, go } from 'connected-react-router';
-import { ROUTES } from 'routes';
 import clinicService from '../../services/ClinicService';
 import { updateClinicSuccess, updateClinicError } from '../actions/Clinic';
 
@@ -10,8 +8,6 @@ export function* updateClinicSaga() {
     try {
       const { response } = yield call(clinicService.updateClinic, values);
       yield put(updateClinicSuccess(response));
-      yield put(push(ROUTES.DASHBOARD));
-      yield put(go());
     } catch (exception) {
       put(updateClinicError(exception));
     }

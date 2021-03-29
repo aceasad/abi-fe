@@ -26,15 +26,6 @@ const maskeSelectIsPasswordCreateRequired = () =>
       user?.password_changed_status === PASSWORD_STATUSES.EXPIRED
   );
 
-const makeSelectIsForceClinicRequired = () =>
-  createSelector(
-    selectUsersDomain,
-    ({ user }) =>
-      user?.password_changed_status === PASSWORD_STATUSES.CHANGED &&
-      user.first_login &&
-      user.is_organization_owner
-  );
-
 const makeIsSendEmailUser = () =>
   createSelector(selectUsersDomain, (substate) => substate.isSent);
 
@@ -48,5 +39,4 @@ export {
   maskeSelectIsPasswordCreateRequired,
   makeIsSendEmailUser,
   makeIsResetPassword,
-  makeSelectIsForceClinicRequired,
 };

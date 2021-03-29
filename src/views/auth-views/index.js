@@ -31,7 +31,6 @@ export const AppViews = () => {
           path={`${AUTH_PREFIX_PATH}/create-password`}
           component={lazy(() => import(`./authentication/create-password`))}
         />
-
         <Route
           path={`${AUTH_PREFIX_PATH}/reset-password/:token/:email`}
           component={lazy(() => import(`./authentication/reset-password-page`))}
