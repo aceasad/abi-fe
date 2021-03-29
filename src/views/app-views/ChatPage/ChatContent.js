@@ -1,6 +1,6 @@
-import React from "react";
-import { Route, Switch } from "react-router-dom";
-import Conversation from "./Conversation";
+import React from 'react';
+import { Route, Switch } from 'react-router-dom';
+import Conversation from './Conversation';
 
 const ConversationEmpty = () => (
   <div className="chat-content-empty">
