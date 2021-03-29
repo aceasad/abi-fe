@@ -6,4 +6,5 @@ export const ROUTES = {
   CONTACTS: `${APP_PREFIX_PATH}/contacts`,
   DASHBOARD: `/`,
   CREATE_PASSWORD: `${AUTH_PREFIX_PATH}/create-password`,
+  FIRST_CLINIC_UPDATE: `${APP_PREFIX_PATH}/first-clinic-update`,
 };
