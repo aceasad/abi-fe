@@ -5,6 +5,7 @@ import { ROUTES } from 'routes';
 import {
   makeSelectCurrentUser,
   makeSelectIsAuthenticated,
+  makeSelectIsForceClinicRequired,
   maskeSelectIsPasswordCreateRequired,
 } from '../../redux/selectors/Users';
 import Loading from 'components/shared-components/Loading';
@@ -15,15 +16,26 @@ export function PrivateRoute({ component: Component, type, ...rest }) {
   const isPasswordCreateRequired = useSelector(
     maskeSelectIsPasswordCreateRequired()
   );
+  const isForceClinicRequired = useSelector(makeSelectIsForceClinicRequired());
 
   const getComponentByPasswordStatus = (props) => {
     if (isPasswordCreateRequired)
       return <Redirect to={ROUTES.CREATE_PASSWORD} />;
     return <Component {...props} />;
   };
+  console.log(isForceClinicRequired);
+  const getComponentByPasswordAndClinicUpdateStatus = (props) => {
+    if (isPasswordCreateRequired) {
+      return <Redirect to={ROUTES.CREATE_PASSWORD} />;
+    } else if (isForceClinicRequired) {
+      return <Redirect to={ROUTES.FIRST_CLINIC_UPDATE} />;
+    }
+
+    return <Component {...props} />;
+  };
 
   const getComponent = (props) =>
-    !user ? <Loading /> : getComponentByPasswordStatus(props);
+    !user ? <Loading /> : getComponentByPasswordAndClinicUpdateStatus(props);
 
   return (
     <Route

@@ -2,6 +2,7 @@ import React, { lazy, Suspense } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import Loading from 'components/shared-components/Loading';
 import { APP_PREFIX_PATH } from 'configs/AppConfig';
+import ForceClinicRoute from 'routes/ForceClinicRoute';
 import PrivateRoute from 'routes/PrivateRoute';
 
 export const AppViews = () => {
@@ -33,14 +34,12 @@ export const AppViews = () => {
           path={`${APP_PREFIX_PATH}/settings`}
           component={lazy(() => import(`./SettingsPage`))}
         />
-        <Route
-          path={`${APP_PREFIX_PATH}/clinic`}
-          component={lazy(() => import(`./ClinicPage`))}
-        />
+
         <Route
           path={`${APP_PREFIX_PATH}/industry_average`}
           component={lazy(() => import(`./IndustryAveragePage`))}
         />
+
         <Redirect
           from={`${APP_PREFIX_PATH}`}
           to={`${APP_PREFIX_PATH}/overview`}

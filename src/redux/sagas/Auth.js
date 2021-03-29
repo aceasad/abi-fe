@@ -89,7 +89,6 @@ export function* createUserPassword() {
       yield put(showLoading(true));
       yield call(AuthService.createUserPassword, payload);
       yield put(setPasswordChanged());
-      yield put(push(ROUTES.DASHBOARD));
     } catch (err) {
       yield put(showAuthMessage(messages.createPasswordError));
     } finally {

@@ -20,8 +20,9 @@ const IndustryAverage = () => {
   const { formatMessage } = useIntl();
   const industryAverage = useSelector(industryAverageSelector());
   const isLoading = useSelector(isLoadingIndustryAverageSelector());
+
   let initialValues =
-    industryAverage !== null
+    industryAverage != null && industryAverage.length > 0
       ? industryAverage[0]
       : {
           cost_of_missed_appointments: 0,
