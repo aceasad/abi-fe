@@ -126,11 +126,11 @@
   "sidenav.docs.documentation": "Documentation",
   "sidenav.docs.changelog": "Changelog",
 
-  "clinic_page.input_label.clinic_name": "*Clinic name",
-  "clinic_page.input_label.phone_number": "*Phone number",
-  "clinic_page.input_label.address": "*Address",
-  "clinic_page.input_label.google_maps_link": "*Google maps link",
-  "clinic_page.input_label.parking_availability": "*Parking availability",
+  "clinic_page.input_label.clinic_name": "Clinic name",
+  "clinic_page.input_label.phone_number": "Phone number",
+  "clinic_page.input_label.address": "Address",
+  "clinic_page.input_label.google_maps_link": "Google maps link",
+  "clinic_page.input_label.parking_availability": "Parking availability",
   "clinic_page.input_label.parking_free": "Free",
   "clinic_page.input_label.parking_no": "No parking",
   "clinic_page.input_label.parking_available": "Parking available",
@@ -139,8 +139,9 @@
   "clinic_page.error.name": "Name",
   "clinic_page.error.phone_number": "Phone number",
   "clinic_page.error.address": "Address",
-  "clinic_page.error.google_maps_link": "Google maps link",
+  "clinic_page.error.google_maps_link": "Google maps link is url",
   "clinic_page.text.create": "Create",
+  "clinic_page.text.logout": "Logout",
 
   "login_page.button.login": "Log In",
   "login_page.input_label.email": "Email Address",
@@ -188,6 +189,7 @@
   "global.text.submit": "Submit",
   "global.text.save": "Save",
   "global.text.cancel": "Cancel",
+  "global.text.search": "Search",
 
   "staff_page.text.see_appointments": "See Appointments",
   "staff_page.text.staff": "Staff",
@@ -228,5 +230,14 @@
   "industry_average_page.input_label.number_of_women_screened_after_sending_invites": "Number of patients screened after sending invites",
   "industry_average_page.input_label.number_of_women_eligible_for_screening": "Number of patients eligible for screening",
   "industry_average_page.input_label.number_of_women_screened_in_the_past_3_years": "Number of patients screened in the past 3 years",
-  "industry_average_page.error.number_max_digit": "Number must be max 16 characters, if float max 6 digits after point and 10 before."
+  "industry_average_page.error.number_max_digit": "Number must be max 16 characters, if float max 6 digits after point and 10 before.",
+
+  "patients_page.option.details": "Patient Details",
+  "patients_page.option.delete": "Delete Patient",
+  "patients_page.header.title": "Patients",
+  "patients_page.button.new": "New Patient",
+  "patients_page.text.first_name": "First Name",
+  "patients_page.text.last_name": "Last Name",
+  "patients_page.text.phone_number": "Phone Number",
+  "patients_page.text.last_appointment": "Last Appointment"
 }

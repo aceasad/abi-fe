@@ -4,7 +4,8 @@ import Auth from './Auth';
 import Clinic from './Clinic';
 import Staff from './Staff';
 import IndustryAverage from './IndustryAverage';
+import Patient from './Patient';
 
 export default function* rootSaga(getState) {
-  yield all([Auth(), Staff(), Clinic(), IndustryAverage()]);
+  yield all([Auth(), Staff(), Clinic(), IndustryAverage(), Patient()]);
 }
