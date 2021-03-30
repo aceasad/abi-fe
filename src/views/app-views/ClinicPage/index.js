@@ -86,6 +86,7 @@ const ClinicPage = ({ localization = true }) => {
                             label: formatMessage(
                               messages.error_input_label_name
                             ),
+                            maxValue: formatMessage(messages.max),
                           }}
                         />
                       </Col>
@@ -100,6 +101,7 @@ const ClinicPage = ({ localization = true }) => {
                             label: formatMessage(
                               messages.error_input_label_phone_number
                             ),
+                            maxValue: formatMessage(messages.max),
                           }}
                         />
                       </Col>
@@ -112,6 +114,7 @@ const ClinicPage = ({ localization = true }) => {
                             label: formatMessage(
                               messages.error_input_label_address
                             ),
+                            maxValue: formatMessage(messages.max),
                           }}
                         />
                       </Col>
@@ -123,9 +126,11 @@ const ClinicPage = ({ localization = true }) => {
                           label={formatMessage(messages.google_maps_link)}
                           name={'google_maps_link'}
                           errorTexts={{
-                            label: formatMessage(
+                            label: formatMessage(messages.google_maps_link),
+                            matchesLabel: formatMessage(
                               messages.error_input_label_google_maps_link
                             ),
+                            maxValue: formatMessage(messages.max_google_link),
                           }}
                         />
                       </Col>

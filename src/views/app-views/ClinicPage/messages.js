@@ -1,5 +1,5 @@
 import { defineMessages } from 'react-intl';
-
+import { MAX, MAX_GOOGLE_LINK } from '../../../constants/ClinicConstants';
 export const scope = 'clinic_page';
 
 export default defineMessages({
@@ -57,11 +57,19 @@ export default defineMessages({
   },
   error_input_label_google_maps_link: {
     id: `${scope}.error.google_maps_link`,
-    defaultMessage: 'Google maps link',
+    defaultMessage: 'Google maps link is url',
   },
   create: {
     id: `${scope}.text.create`,
     defaultMessage: 'Create',
+  },
+  max: {
+    id: `${scope}.text.max`,
+    defaultMessage: MAX,
+  },
+  max_google_link: {
+    id: `${scope}.text.max_google_link`,
+    defaultMessage: MAX_GOOGLE_LINK,
   },
   logout: {
     id: `${scope}.text.logout`,
