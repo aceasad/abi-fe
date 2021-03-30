@@ -43,7 +43,7 @@ const dummyData = [
 ];
 
 const ProductList = ({ localization = true }) => {
-  let history = useHistory();
+  const history = useHistory();
   const [list, setList] = useState(dummyData);
   const [selectedRows, setSelectedRows] = useState([]);
 
@@ -147,7 +147,7 @@ const ProductList = ({ localization = true }) => {
             className="mr-4"
             placeholder="Search"
             prefix={<SearchOutlined />}
-            onChange={(e) => onSearch(e)}
+            onChange={onSearch}
           />
           <Button onClick={addProduct} type="primary">
             {localeString(localization, 'patient_list.button.new')}
