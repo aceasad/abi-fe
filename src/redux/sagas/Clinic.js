@@ -8,6 +8,8 @@ import {
   setIsLoading,
 } from '../actions/Clinic';
 import { setClinicError } from 'redux/actions/Error';
+import { push, go } from 'connected-react-router';
+import { ROUTES } from 'routes';
 
 export function* createClinicSaga() {
   yield takeEvery(CREATE_CLINIC, function* ({ payload }) {
@@ -15,6 +17,8 @@ export function* createClinicSaga() {
       const { data } = yield call(clinicService.createClinic, payload);
       yield put(setClinic(data));
       yield put(createClinicSuccess());
+      yield put(push(ROUTES.DASHBORAD));
+      yield put(go());
     } catch (exception) {
       yield put(createClinicError(exception));
     }
