@@ -12,10 +12,12 @@ import { updateClinic } from 'redux/actions/Clinic';
 import { NO, FREE, AVAILABLE } from '../../../constants/ClinicConstants';
 import { MinusOutlined } from '@ant-design/icons';
 import Layout, { Content, Header } from 'antd/lib/layout/layout';
+import localeString from 'utils/localeString';
+import { signOut } from '../../../redux/actions/Auth';
 
 const { Title } = Typography;
 
-const ClinicPage = () => {
+const ClinicPage = ({ localization = true }) => {
   const dispatch = useDispatch();
   const [visibilityOfParkinSizeField, setVisibility] = useState(false);
 
@@ -24,7 +26,17 @@ const ClinicPage = () => {
   return (
     <Layout>
       <Header className="ant-layout-page-header shadow-sm d-flex justify-content-sm-between">
-        <Title className="mb-sm-0">Create Clinic</Title>
+        <Title className="mb-sm-0">
+          {localeString(localization, 'clinic_page.header.title')}
+        </Title>
+        <Button
+          type="primary"
+          onClick={() => {
+            dispatch(signOut());
+          }}
+        >
+          {formatMessage(messages.logout)}
+        </Button>
       </Header>
       <Content>
         <Card className="m-4">
@@ -125,26 +137,35 @@ const ClinicPage = () => {
                           label={formatMessage(messages.parking_availability)}
                         >
                           <Radio.Group
+                            className="width-100"
                             onChange={(event) => {
                               setVisibility(event.target.value === AVAILABLE);
                               values.parking_availability = event.target.value;
                             }}
                           >
-                            <Radio value={NO}>
-                              {formatMessage(messages.parking_no)}
-                            </Radio>
-                            <Radio value={FREE}>
-                              {formatMessage(messages.parking_free)}
-                            </Radio>
-                            <Radio value={AVAILABLE}>
-                              {formatMessage(messages.parking_available)}
-                            </Radio>
+                            <Row>
+                              <Col span={8}>
+                                <Radio value={NO}>
+                                  {formatMessage(messages.parking_no)}
+                                </Radio>
+                              </Col>
+                              <Col span={8}>
+                                <Radio value={FREE}>
+                                  {formatMessage(messages.parking_free)}
+                                </Radio>
+                              </Col>
+                              <Col span={8}>
+                                <Radio value={AVAILABLE}>
+                                  {formatMessage(messages.parking_available)}
+                                </Radio>
+                              </Col>
+                            </Row>
                           </Radio.Group>
                         </Form.Item>
                       </Col>
                     </Row>
                     <Row>
-                      <Col span={6}>
+                      <Col offset={16} span={6}>
                         {visibilityOfParkinSizeField ? (
                           <Form.Item
                             label={formatMessage(messages.parking_size)}
@@ -161,7 +182,7 @@ const ClinicPage = () => {
                     </Row>
                     <Form.Item label={formatMessage(messages.working_hours)}>
                       <Row gutter={8}>
-                        <Col span={6}>
+                        <Col span={4}>
                           <Field
                             component={FormInputField}
                             name={'start_of_work'}
@@ -171,7 +192,7 @@ const ClinicPage = () => {
                         <Col span={2} className="text-center">
                           <MinusOutlined className="mt-3 text-primary" />
                         </Col>
-                        <Col span={6}>
+                        <Col span={4}>
                           <Field
                             component={FormInputField}
                             name={'end_of_work'}

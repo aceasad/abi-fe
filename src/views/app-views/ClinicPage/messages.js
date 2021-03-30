@@ -63,4 +63,8 @@ export default defineMessages({
     id: `${scope}.text.create`,
     defaultMessage: 'Create',
   },
+  logout: {
+    id: `${scope}.text.logout`,
+    defaultMessage: 'Logout',
+  },
 });
