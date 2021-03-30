@@ -59,12 +59,20 @@ export default defineMessages({
     id: `${scope}.error.google_maps_link`,
     defaultMessage: 'Google maps link',
   },
-  create: {
-    id: `${scope}.text.create`,
+  create_button: {
+    id: `${scope}.text.create_button`,
     defaultMessage: 'Create',
   },
   update_button: {
     id: `${scope}.text.update_button`,
     defaultMessage: 'Update',
+  },
+  update_success: {
+    id: `${scope}.text.update_success`,
+    defaultMessage: 'Successfull!',
+  },
+  update_error: {
+    id: `${scope}.text.update_error`,
+    defaultMessage: 'Something went wrong',
   },
 });

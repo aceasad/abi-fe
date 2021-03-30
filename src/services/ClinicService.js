@@ -1,7 +1,9 @@
 import ApiService from './ApiService';
 
 const ENDPOINTS = {
-  UPDATE_CLINIC: '/clinics/',
+  CREATE_CLINIC: '/clinics/',
+  UPDATE_CLINIC: '/clinics/:id/',
+  GET_CLINIC: '/clinics/',
 };
 
 export const create_clinic = (values) => {
@@ -15,10 +17,22 @@ export const create_clinic = (values) => {
 };
 
 class ClinicService extends ApiService {
-  updateClinic = (values) => {
+  createClinic = (values) => {
     const clinic = create_clinic(values);
-    const data = this.apiClient.post(ENDPOINTS.UPDATE_CLINIC, clinic);
+    const data = this.apiClient.post(ENDPOINTS.CREATE_CLINIC, clinic);
     return data;
+  };
+
+  updateClinic = (updatedClinic, id) => {
+    const clinic = create_clinic(updatedClinic);
+    return this.apiClient.put(
+      ENDPOINTS.UPDATE_CLINIC.replace(':id', id),
+      clinic
+    );
+  };
+
+  getClinic = () => {
+    return this.apiClient.get(ENDPOINTS.GET_CLINIC);
   };
 }
 const clinicService = new ClinicService();

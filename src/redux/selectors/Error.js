@@ -9,4 +9,7 @@ const makeSelectInvalidOldPasswordError = () =>
     (substate) => substate.invalidOldPasswordError
   );
 
-export { makeSelectInvalidOldPasswordError };
+const makeSelectUpdateClinicError = () =>
+  createSelector(selectErrorDomain, (substate) => substate.clinicError);
+
+export { makeSelectInvalidOldPasswordError, makeSelectUpdateClinicError };

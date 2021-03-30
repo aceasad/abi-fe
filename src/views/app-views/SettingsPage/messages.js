@@ -66,4 +66,12 @@ export default defineMessages({
     id: `${editClinic}.text.edit_clinic_menu_label`,
     defaultMessage: 'Edit Clinic',
   },
+  update_success: {
+    id: `${editClinic}.text.update_success`,
+    defaultMessage: 'Successfull!',
+  },
+  update_error: {
+    id: `${editClinic}.text.update_error`,
+    defaultMessage: 'Something went wrong',
+  },
 });
