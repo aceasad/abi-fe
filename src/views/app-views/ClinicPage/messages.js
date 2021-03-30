@@ -71,4 +71,8 @@ export default defineMessages({
     id: `${scope}.text.max_google_link`,
     defaultMessage: MAX_GOOGLE_LINK,
   },
+  logout: {
+    id: `${scope}.text.logout`,
+    defaultMessage: MAX_GOOGLE_LINK,
+  },
 });

@@ -11,7 +11,7 @@ import { useIntl } from 'react-intl';
 import { updateClinic } from 'redux/actions/Clinic';
 import { NO, FREE, AVAILABLE } from '../../../constants/ClinicConstants';
 import { MinusOutlined } from '@ant-design/icons';
-import { MAX, MAX_GOOGLE_LINK } from '../../../constants/ClinicConstants';
+import { signOut } from '../../../redux/actions/Auth';
 
 const ClinicPage = () => {
   const dispatch = useDispatch();
@@ -21,6 +21,13 @@ const ClinicPage = () => {
 
   return (
     <Card className="p-3">
+      <Button
+        onClick={() => {
+          dispatch(signOut());
+        }}
+      >
+        {formatMessage(messages.logout)}
+      </Button>
       <Formik
         initialValues={{
           photo: null,
