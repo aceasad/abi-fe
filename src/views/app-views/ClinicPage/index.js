@@ -72,7 +72,7 @@ const ClinicPage = ({ localization = true }) => {
                 <Row justify="center">
                   <Col span={6}>
                     <Title type="secondary" level={2} className="mt-4">
-                      Clinic Details
+                      {localeString(localization, 'clinic_page.side.title')}
                     </Title>
                   </Col>
                   <Col span={12}>
@@ -187,7 +187,7 @@ const ClinicPage = ({ localization = true }) => {
                     </Row>
                     <Form.Item label={formatMessage(messages.working_hours)}>
                       <Row gutter={8}>
-                        <Col span={4}>
+                        <Col span={6}>
                           <Field
                             component={FormInputField}
                             name={'start_of_work'}
@@ -197,7 +197,7 @@ const ClinicPage = ({ localization = true }) => {
                         <Col span={2} className="text-center">
                           <MinusOutlined className="mt-3 text-primary" />
                         </Col>
-                        <Col span={4}>
+                        <Col span={6}>
                           <Field
                             component={FormInputField}
                             name={'end_of_work'}
