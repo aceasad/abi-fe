@@ -189,6 +189,7 @@
   "global.text.save": "Save",
   "global.text.cancel": "Cancel",
   "global.text.search": "Search",
+  "global.text.delete": "Delete",
 
   "staff_page.text.see_appointments": "See Appointments",
   "staff_page.text.staff": "Staff",
@@ -237,5 +238,8 @@
   "patients_page.text.first_name": "First Name",
   "patients_page.text.last_name": "Last Name",
   "patients_page.text.phone_number": "Phone Number",
-  "patients_page.text.last_appointment": "Last Appointment"
+  "patients_page.text.last_appointment": "Last Appointment",
+  "patients_page.text.delete_patient": "Delete Patient",
+  "patients_page.text.delete_description": "Are you sure you want to delete {label}?",
+  "patients_page.text.delete_success": "Patient Deleted"
 }

@@ -15,6 +15,9 @@ class PatientService extends ApiService {
         search,
       },
     });
+
+  deletePatient = (id) =>
+    this.apiClient.delete(ENDPOINTS.GET_PATIENTS + id + '/');
 }
 
 const patientService = new PatientService();
