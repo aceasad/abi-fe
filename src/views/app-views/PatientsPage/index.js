@@ -1,122 +1,89 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import { useIntl } from 'react-intl';
+import { useDispatch, useSelector } from 'react-redux';
 import { Card, Table, Input, Button, Menu, Typography } from 'antd';
 import { EyeOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons';
+import Layout, { Content, Header } from 'antd/lib/layout/layout';
+
 import EllipsisDropdown from 'components/shared-components/EllipsisDropdown';
 import Flex from 'components/shared-components/Flex';
-import { useHistory } from 'react-router-dom';
-import utils from 'utils';
-import Layout, { Content, Header } from 'antd/lib/layout/layout';
-import moment from 'moment';
-import localeString from 'utils/localeString';
+import {
+  getPatients,
+  setPatientPage,
+  setOrder,
+  setPatientSearch,
+} from 'redux/actions/Patient';
+import messages from './messages';
+import { DEFAULT_PAGINATION_LIMIT } from 'constants/ApiConstant';
+import { makeSelectPatients } from 'redux/selectors/Patient';
 
-const { Title } = Typography;
+const ProductList = () => {
+  const [search, setSearch] = useState('');
 
-const dummyData = [
-  {
-    id: '1',
-    firstName: 'Slobodan',
-    lastName: 'Subotic',
-    phoneNumber: '100100',
-    lastAppointment: '2020-6-11',
-  },
-  {
-    id: '2',
-    firstName: 'Dejan',
-    lastName: 'Petrovic',
-    phoneNumber: '300300',
-    lastAppointment: '2019-12-08',
-  },
-  {
-    id: '3',
-    firstName: 'Ivana',
-    lastName: 'Nikolic',
-    phoneNumber: '200200',
-    lastAppointment: '2018-3-24',
-  },
-  {
-    id: '4',
-    firstName: 'Eleonora',
-    lastName: 'Miljkovic',
-    phoneNumber: '400400',
-    lastAppointment: '2021-02-1',
-  },
-];
-
-const ProductList = ({ localization = true }) => {
   const history = useHistory();
-  const [list, setList] = useState(dummyData);
-  const [selectedRows, setSelectedRows] = useState([]);
+  const dispatch = useDispatch();
+  const { formatMessage } = useIntl();
+
+  const { count, patients, loading } = useSelector(makeSelectPatients());
+
+  useEffect(() => {
+    dispatch(getPatients());
+  }, []);
 
   const dropdownMenu = (row) => (
     <Menu>
-      <Menu.Item onClick={() => viewDetails(row)}>
+      <Menu.Item
+        onClick={() => {
+          /* TO DO */
+        }}
+      >
         <Flex alignItems="center">
           <EyeOutlined />
-          <span className="ml-2">
-            {localeString(localization, 'patient_list.option.details')}
-          </span>
+          <span className="ml-2">{formatMessage(messages.patientDetails)}</span>
         </Flex>
       </Menu.Item>
-      <Menu.Item onClick={() => deleteRow(row)}>
+      <Menu.Item
+        onClick={() => {
+          /* TO DO */
+        }}
+      >
         <Flex alignItems="center">
           <DeleteOutlined />
-          <span className="ml-2">
-            {localeString(localization, 'patient_list.option.delete')}
-          </span>
+          <span className="ml-2">{formatMessage(messages.patientDelete)}</span>
         </Flex>
       </Menu.Item>
     </Menu>
   );
 
-  const addProduct = () => {
-    history.push(`/app/apps/ecommerce/add-product`);
-  };
-
-  const viewDetails = (row) => {
-    history.push(`/app/apps/ecommerce/edit-product/${row.id}`);
-  };
-
-  const deleteRow = (row) => {
-    const objKey = 'id';
-    let data = list;
-    if (selectedRows.length > 1) {
-      selectedRows.forEach((elm) => {
-        data = utils.deleteArrayRow(data, objKey, elm.id);
-        setList(data);
-        setSelectedRows([]);
-      });
-    } else {
-      data = utils.deleteArrayRow(data, objKey, row.id);
-      setList(data);
-    }
+  const createPatient = () => {
+    // TO DO
+    history.push('/');
   };
 
   const tableColumns = [
     {
-      title: localeString(localization, 'patient_list.title.first_name'),
-      dataIndex: 'firstName',
+      title: formatMessage(messages.firstName),
+      dataIndex: 'first_name',
       render: (firstName) => <span>{firstName}</span>,
-      sorter: (a, b) => utils.antdTableSorter(a, b, 'firstName'),
+      sorter: true,
     },
     {
-      title: localeString(localization, 'patient_list.title.last_name'),
-      dataIndex: 'lastName',
+      title: formatMessage(messages.lastName),
+      dataIndex: 'last_name',
       render: (lastName) => <span>{lastName}</span>,
-      sorter: (a, b) => utils.antdTableSorter(a, b, 'lastName'),
+      sorter: true,
     },
     {
-      title: localeString(localization, 'patient_list.title.phone_number'),
-      dataIndex: 'phoneNumber',
+      title: formatMessage(messages.phoneNumber),
+      dataIndex: 'phone_number',
       render: (phoneNumber) => <span>{phoneNumber}</span>,
-      sorter: (a, b) => utils.antdTableSorter(a, b, 'phoneNumber'),
+      sorter: true,
     },
     {
-      title: localeString(localization, 'patient_list.title.last_appointment'),
-      dataIndex: 'lastAppointment',
-      render: (lastAppointment) => (
-        <span>{moment(lastAppointment).format('MM/DD/YYYY')}</span>
-      ),
-      sorter: (a, b) => utils.antdTableSorter(a, b, 'lastAppointment'),
+      title: formatMessage(messages.lastAppointment),
+      dataIndex: 'last_appointment',
+      render: (lastAppointment) => <span>{lastAppointment || '-'}</span>,
     },
     {
       title: '',
@@ -129,28 +96,36 @@ const ProductList = ({ localization = true }) => {
     },
   ];
 
-  const onSearch = (e) => {
-    const value = e.currentTarget.value;
-    const searchArray = e.currentTarget.value ? list : dummyData;
-    const data = utils.wildCardSearch(searchArray, value);
-    setList(data);
+  const handleSearch = (e) => {
+    e.preventDefault();
+    dispatch(setPatientSearch(search));
+  };
+
+  const handlePaginationChange = (page) => {
+    dispatch(setPatientPage(page));
+  };
+
+  const handleChange = (_, __, sortInfo) => {
+    dispatch(setOrder(sortInfo));
   };
 
   return (
     <Layout>
       <Header className="ant-layout-page-header shadow-sm d-flex justify-content-sm-between">
-        <Title className="mb-sm-0">
-          {localeString(localization, 'patient_list.header.title')}
-        </Title>
-        <div className="d-flex">
-          <Input
-            className="mr-4"
-            placeholder="Search"
-            prefix={<SearchOutlined />}
-            onChange={onSearch}
-          />
-          <Button onClick={addProduct} type="primary">
-            {localeString(localization, 'patient_list.button.new')}
+        <Typography.Title className="mb-sm-0">
+          {formatMessage(messages.patientsTitle)}
+        </Typography.Title>
+        <div className="d-flex align-items-center">
+          <form className="mr-4" onSubmit={handleSearch}>
+            <Input
+              placeholder={formatMessage(messages.search)}
+              prefix={<SearchOutlined />}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </form>
+          <Button onClick={createPatient} type="primary">
+            {formatMessage(messages.newPatient)}
           </Button>
         </div>
       </Header>
@@ -159,8 +134,14 @@ const ProductList = ({ localization = true }) => {
           <div className="table-responsive">
             <Table
               columns={tableColumns}
-              dataSource={list}
-              pagination={{ defaultPageSize: 10 }}
+              onChange={handleChange}
+              dataSource={patients}
+              pagination={{
+                defaultPageSize: DEFAULT_PAGINATION_LIMIT,
+                total: count,
+                onChange: handlePaginationChange,
+              }}
+              loading={loading}
             />
           </div>
         </Card>

@@ -189,6 +189,7 @@
   "global.text.submit": "Submit",
   "global.text.save": "Save",
   "global.text.cancel": "Cancel",
+  "global.text.search": "Search",
 
   "staff_page.text.see_appointments": "See Appointments",
   "staff_page.text.staff": "Staff",
@@ -230,12 +231,12 @@
   "industry_average_page.input_label.number_of_women_eligible_for_screening": "Number of women eligible for screening",
   "industry_average_page.input_label.number_of_women_screened_in_the_past_3_years": "Number of women screened in the past 3 years",
 
-  "patient_list.option.details": "Patient Details",
-  "patient_list.option.delete": "Delete Patient",
-  "patient_list.header.title": "Patients",
-  "patient_list.button.new": "New Patient",
-  "patient_list.title.first_name": "First Name",
-  "patient_list.title.last_name": "Last Name",
-  "patient_list.title.phone_number": "Phone Number",
-  "patient_list.title.last_appointment": "Last Appointment"
+  "patients_page.option.details": "Patient Details",
+  "patients_page.option.delete": "Delete Patient",
+  "patients_page.header.title": "Patients",
+  "patients_page.button.new": "New Patient",
+  "patients_page.text.first_name": "First Name",
+  "patients_page.text.last_name": "Last Name",
+  "patients_page.text.phone_number": "Phone Number",
+  "patients_page.text.last_appointment": "Last Appointment"
 }
