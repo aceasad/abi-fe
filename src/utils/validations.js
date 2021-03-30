@@ -1,5 +1,9 @@
 import Yup from './yupValidations';
-import { passwordFormat, passwordMinLength } from 'constants/Validation';
+import {
+  passwordFormat,
+  passwordMinLength,
+  max16digits,
+} from 'constants/Validation';
 
 const passwordValidation = Yup.string()
   .matches(passwordFormat)
@@ -36,6 +40,22 @@ export const createPasswordSchema = Yup.object().shape({
 export const resetPasswordSchema = Yup.object().shape({
   password: passwordValidation,
   passwordRepeat: passwordRepeatValidation,
+});
+
+export const industryAveragesSchema = Yup.object().shape({
+  cost_of_missed_appointments: Yup.string().required().matches(max16digits),
+  did_not_attend: Yup.string().required().matches(max16digits),
+  uptake: Yup.string().required().matches(max16digits),
+  coverage: Yup.string().required().matches(max16digits),
+  number_of_women_screened_after_invite: Yup.string()
+    .required()
+    .matches(max16digits),
+  number_of_women_eligible_for_screen: Yup.string()
+    .required()
+    .matches(max16digits),
+  number_of_women_screened_in_past_3_y: Yup.string()
+    .required()
+    .matches(max16digits),
 });
 
 export const staffValidationSchema = Yup.object().shape({

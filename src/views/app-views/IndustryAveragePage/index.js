@@ -8,14 +8,18 @@ import { useIntl } from 'react-intl';
 import {
   updateIndustryAverage,
   getIndustryAverage,
+  createIndustryAverage,
+  updateIsUpdated,
 } from 'redux/actions/IndustryAverage';
 import { useSelector } from 'react-redux';
+import { success } from '../../../components/shared-components/MessagesAlerts/index';
 import {
   industryAverageSelector,
   isLoadingIndustryAverageSelector,
+  industryAverageIsUpdated,
 } from '../../../redux/selectors/IndustryAverage';
 import IndustryAverageFormField from './IndustryAverageFormField';
-
+import { industryAveragesSchema } from 'utils/validations';
 const { Header, Content } = Layout;
 const { Title } = Typography;
 
@@ -24,22 +28,31 @@ const IndustryAverage = () => {
   const { formatMessage } = useIntl();
   const industryAverage = useSelector(industryAverageSelector());
   const isLoading = useSelector(isLoadingIndustryAverageSelector());
+  const isUpdatedOrCreated = useSelector(industryAverageIsUpdated());
+
   let initialValues =
     industryAverage != null && industryAverage.length > 0
       ? industryAverage[0]
       : {
-          cost_of_missed_appointments: 0,
-          did_not_attend: 0,
-          uptake: 0,
-          coverage: 0,
-          number_of_women_screened_after_invite: 0,
-          number_of_women_eligible_for_screen: 0,
-          number_of_women_screened_in_past_3_y: 0,
+          cost_of_missed_appointments: '0.000000',
+          did_not_attend: '0.000000',
+          uptake: '0.000000',
+          coverage: '0.000000',
+          number_of_women_screened_after_invite: '0.000000',
+          number_of_women_eligible_for_screen: '0.000000',
+          number_of_women_screened_in_past_3_y: '0.000000',
         };
   useEffect(() => {
     if (!isLoading) dispatch(getIndustryAverage());
   }, [isLoading]);
 
+  useEffect(() => {
+    if (isUpdatedOrCreated) {
+      success(formatMessage(messages.save_or_updated));
+      dispatch(getIndustryAverage());
+      dispatch(updateIsUpdated());
+    }
+  }, [isUpdatedOrCreated]);
   return (
     <Layout>
       <Header className="ant-layout-page-header shadow-sm">
@@ -50,8 +63,13 @@ const IndustryAverage = () => {
           <Formik
             enableReinitialize
             initialValues={initialValues}
+            validationSchema={industryAveragesSchema}
             onSubmit={(values) => {
-              dispatch(updateIndustryAverage(values));
+              if (industryAverage.length > 0) {
+                dispatch(updateIndustryAverage(values));
+              } else {
+                dispatch(createIndustryAverage(values));
+              }
             }}
           >
             {({ values, handleSubmit, dirty, isValid }) => (
@@ -65,32 +83,50 @@ const IndustryAverage = () => {
                         messages.cost_of_missed_appointments
                       )}
                       name={'cost_of_missed_appointments'}
-                      type={'number'}
+                      type={'text'}
                       min={0}
+                      errorTexts={{
+                        label: formatMessage(
+                          messages.cost_of_missed_appointments
+                        ),
+                        matchesLabel: formatMessage(messages.number_max_digit),
+                      }}
                     />
                     <IndustryAverageFormField
                       span={24}
                       component={FormInputField}
                       label={formatMessage(messages.did_not_attend)}
                       name={'did_not_attend'}
-                      type={'number'}
+                      type={'text'}
                       min={0}
+                      errorTexts={{
+                        label: formatMessage(messages.did_not_attend),
+                        matchesLabel: formatMessage(messages.number_max_digit),
+                      }}
                     />
                     <IndustryAverageFormField
                       span={24}
                       component={FormInputField}
                       label={formatMessage(messages.uptake)}
                       name={'uptake'}
-                      type={'number'}
+                      type={'text'}
                       min={0}
+                      errorTexts={{
+                        label: formatMessage(messages.uptake),
+                        matchesLabel: formatMessage(messages.number_max_digit),
+                      }}
                     />
                     <IndustryAverageFormField
                       span={24}
                       component={FormInputField}
                       label={formatMessage(messages.coverage)}
                       name={'coverage'}
-                      type={'number'}
+                      type={'text'}
                       min={0}
+                      errorTexts={{
+                        label: formatMessage(messages.coverage),
+                        matchesLabel: formatMessage(messages.number_max_digit),
+                      }}
                     />
                   </Col>
                   <Col span={10}>
@@ -108,8 +144,14 @@ const IndustryAverage = () => {
                         messages.number_of_women_screened_after_sending_invites
                       )}
                       name={'number_of_women_screened_after_invite'}
-                      type={'number'}
+                      type={'text'}
                       min={0}
+                      errorTexts={{
+                        label: formatMessage(
+                          messages.number_of_women_screened_after_sending_invites
+                        ),
+                        matchesLabel: formatMessage(messages.number_max_digit),
+                      }}
                     />
                     <IndustryAverageFormField
                       span={24}
@@ -118,8 +160,14 @@ const IndustryAverage = () => {
                         messages.number_of_women_eligible_for_screening
                       )}
                       name={'number_of_women_eligible_for_screen'}
-                      type={'number'}
+                      type={'text'}
                       min={0}
+                      errorTexts={{
+                        label: formatMessage(
+                          messages.number_of_women_eligible_for_screening
+                        ),
+                        matchesLabel: formatMessage(messages.number_max_digit),
+                      }}
                     />
                     <IndustryAverageFormField
                       span={24}
@@ -128,8 +176,14 @@ const IndustryAverage = () => {
                         messages.number_of_women_screened_in_the_past_3_years
                       )}
                       name={'number_of_women_screened_in_past_3_y'}
-                      type={'number'}
+                      type={'text'}
                       min={0}
+                      errorTexts={{
+                        label: formatMessage(
+                          messages.number_of_women_screened_in_the_past_3_years
+                        ),
+                        matchesLabel: formatMessage(messages.number_max_digit),
+                      }}
                     />
                   </Col>
                 </Row>

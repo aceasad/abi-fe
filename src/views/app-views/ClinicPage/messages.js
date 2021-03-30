@@ -61,6 +61,6 @@ export default defineMessages({
   },
   create: {
     id: `${scope}.text.create`,
-    defaultMessage: 'Create',
+    defaultMessage: 'Save',
   },
 });
