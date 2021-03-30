@@ -189,6 +189,7 @@
   "global.text.submit": "Submit",
   "global.text.save": "Save",
   "global.text.cancel": "Cancel",
+  "global.text.search": "Search",
 
   "staff_page.text.see_appointments": "See Appointments",
   "staff_page.text.staff": "Staff",
@@ -258,5 +259,14 @@
   "patient_details.side.form.number_of_dependants": "Number of Dependants",
   "patient_details.side.form.employment_status": "Employment Status",
   "patient_details.side.form.educational_background": "Educationl Background",
-  "patient_details.side.form.insurance": "Insurance"
+  "patient_details.side.form.insurance": "Insurance",
+  
+  "patients_page.option.details": "Patient Details",
+  "patients_page.option.delete": "Delete Patient",
+  "patients_page.header.title": "Patients",
+  "patients_page.button.new": "New Patient",
+  "patients_page.text.first_name": "First Name",
+  "patients_page.text.last_name": "Last Name",
+  "patients_page.text.phone_number": "Phone Number",
+  "patients_page.text.last_appointment": "Last Appointment"
 }

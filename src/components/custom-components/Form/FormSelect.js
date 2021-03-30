@@ -1,6 +1,5 @@
 import React from 'react';
-import { Menu, Dropdown, Form, Select } from 'antd';
-import { CaretDownOutlined } from '@ant-design/icons';
+import { Form, Select } from 'antd';
 import messages from 'views/app-views/StaffPage/messages';
 import { useIntl } from 'react-intl';
 import { ErrorMessage } from 'formik';
@@ -16,7 +15,6 @@ const FormSelect = ({
   optionField,
   placeholder,
   errorTexts,
-  name,
 }) => {
   const { formatMessage } = useIntl();
 
@@ -25,14 +23,6 @@ const FormSelect = ({
   const handleSelected = (value) => {
     setFieldValue(field.name, value);
   };
-
-  const menu = (
-    <Menu onClick={handleSelected}>
-      {options.map((item) => (
-        <Menu.Item key={item.id}>{item[optionField]}</Menu.Item>
-      ))}
-    </Menu>
-  );
 
   const defaultErrorMessage = (msg) =>
     formatMessage(msg, {
