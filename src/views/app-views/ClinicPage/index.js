@@ -11,6 +11,7 @@ import { useIntl } from 'react-intl';
 import { updateClinic } from 'redux/actions/Clinic';
 import { NO, FREE, AVAILABLE } from '../../../constants/ClinicConstants';
 import { MinusOutlined } from '@ant-design/icons';
+import { signOut } from '../../../redux/actions/Auth';
 
 const ClinicPage = () => {
   const dispatch = useDispatch();
@@ -20,6 +21,13 @@ const ClinicPage = () => {
 
   return (
     <Card className="p-3">
+      <Button
+        onClick={() => {
+          dispatch(signOut());
+        }}
+      >
+        {formatMessage(messages.logout)}
+      </Button>
       <Formik
         initialValues={{
           photo: null,
@@ -53,6 +61,7 @@ const ClinicPage = () => {
                   name={'name'}
                   errorTexts={{
                     label: formatMessage(messages.error_input_label_name),
+                    maxValue: formatMessage(messages.max),
                   }}
                 />
               </Col>
@@ -67,6 +76,7 @@ const ClinicPage = () => {
                     label: formatMessage(
                       messages.error_input_label_phone_number
                     ),
+                    maxValue: formatMessage(messages.max),
                   }}
                 />
               </Col>
@@ -77,6 +87,7 @@ const ClinicPage = () => {
                   name={'address'}
                   errorTexts={{
                     label: formatMessage(messages.error_input_label_address),
+                    maxValue: formatMessage(messages.max),
                   }}
                 />
               </Col>
@@ -88,9 +99,11 @@ const ClinicPage = () => {
                   label={formatMessage(messages.google_maps_link)}
                   name={'google_maps_link'}
                   errorTexts={{
-                    label: formatMessage(
+                    label: formatMessage(messages.google_maps_link),
+                    matchesLabel: formatMessage(
                       messages.error_input_label_google_maps_link
                     ),
+                    maxValue: formatMessage(messages.max_google_link),
                   }}
                 />
               </Col>
@@ -103,8 +116,8 @@ const ClinicPage = () => {
                 >
                   <Radio.Group
                     onChange={(event) => {
-                      setVisibility(event.target.value === AVAILABLE);
                       values.parking_availability = event.target.value;
+                      setVisibility(event.target.value === AVAILABLE);
                     }}
                   >
                     <Radio value={NO}>

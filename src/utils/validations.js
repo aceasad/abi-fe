@@ -1,6 +1,6 @@
 import Yup from './yupValidations';
 import { passwordFormat, passwordMinLength } from 'constants/Validation';
-
+import { MAX, MAX_GOOGLE_LINK } from '../constants/ClinicConstants';
 const passwordValidation = Yup.string()
   .matches(passwordFormat)
   .min(passwordMinLength)
@@ -22,10 +22,11 @@ export const forgotPasswordSchema = Yup.object().shape({
 });
 
 export const clinicSchema = Yup.object().shape({
-  name: Yup.string().required(),
-  google_maps_link: Yup.string().required().url(),
-  phone_number: Yup.string().required(),
-  address: Yup.string().required(),
+  name: Yup.string().required().max(MAX),
+  google_maps_link: Yup.string().required().url().max(MAX_GOOGLE_LINK),
+  phone_number: Yup.string().required().max(MAX),
+  address: Yup.string().required().max(MAX),
+  parking_availability: Yup.string().required(),
 });
 
 export const createPasswordSchema = Yup.object().shape({
