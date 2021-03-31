@@ -1,5 +1,4 @@
 import { createSelector } from 'reselect';
-import reducers from '../reducers';
 
 const selectIndustryAverageDomain = (state) => state.industryAverage;
 
