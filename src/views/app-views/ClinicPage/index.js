@@ -14,6 +14,7 @@ import { MinusOutlined } from '@ant-design/icons';
 import Layout, { Content, Header } from 'antd/lib/layout/layout';
 import localeString from 'utils/localeString';
 import { signOut } from '../../../redux/actions/Auth';
+import ColumnField from 'components/custom-components/Form/ColumnField';
 
 const { Title } = Typography;
 
@@ -64,11 +65,12 @@ const ClinicPage = ({ localization = true }) => {
                 onSubmit={handleSubmit}
               >
                 <Row justify="center" className="mb-5 mt-4">
-                  <Col span={6}>
-                    <Field component={FormImageUpload} name={'photo'}></Field>
-                  </Col>
+                  <ColumnField
+                    span={6}
+                    component={FormImageUpload}
+                    name={'photo'}
+                  />
                 </Row>
-
                 <Row justify="center">
                   <Col span={6}>
                     <Title type="secondary" level={2} className="mt-4">
@@ -77,63 +79,57 @@ const ClinicPage = ({ localization = true }) => {
                   </Col>
                   <Col span={12}>
                     <Row>
-                      <Col span={24}>
-                        <Field
-                          component={FormField}
-                          label={formatMessage(messages.clinic_name)}
-                          name={'name'}
-                          errorTexts={{
-                            label: formatMessage(
-                              messages.error_input_label_name
-                            ),
-                            maxValue: formatMessage(messages.max),
-                          }}
-                        />
-                      </Col>
+                      <ColumnField
+                        span={24}
+                        component={FormField}
+                        label={formatMessage(messages.clinic_name)}
+                        name={'name'}
+                        errorTexts={{
+                          label: formatMessage(messages.error_input_label_name),
+                          maxValue: formatMessage(messages.max),
+                        }}
+                      />
                     </Row>
                     <Row gutter={16}>
-                      <Col span={8}>
-                        <Field
-                          component={FormField}
-                          label={formatMessage(messages.phone_number)}
-                          name={'phone_number'}
-                          errorTexts={{
-                            label: formatMessage(
-                              messages.error_input_label_phone_number
-                            ),
-                            maxValue: formatMessage(messages.max),
-                          }}
-                        />
-                      </Col>
-                      <Col span={16}>
-                        <Field
-                          component={FormField}
-                          label={formatMessage(messages.address)}
-                          name={'address'}
-                          errorTexts={{
-                            label: formatMessage(
-                              messages.error_input_label_address
-                            ),
-                            maxValue: formatMessage(messages.max),
-                          }}
-                        />
-                      </Col>
+                      <ColumnField
+                        span={8}
+                        component={FormField}
+                        label={formatMessage(messages.phone_number)}
+                        name={'phone_number'}
+                        errorTexts={{
+                          label: formatMessage(
+                            messages.error_input_label_phone_number
+                          ),
+                          maxValue: formatMessage(messages.max),
+                        }}
+                      />
+                      <ColumnField
+                        span={16}
+                        component={FormField}
+                        label={formatMessage(messages.address)}
+                        name={'address'}
+                        errorTexts={{
+                          label: formatMessage(
+                            messages.error_input_label_address
+                          ),
+                          maxValue: formatMessage(messages.max),
+                        }}
+                      />
                     </Row>
                     <Row>
-                      <Col span={24}>
-                        <Field
-                          component={FormField}
-                          label={formatMessage(messages.google_maps_link)}
-                          name={'google_maps_link'}
-                          errorTexts={{
-                            label: formatMessage(messages.google_maps_link),
-                            matchesLabel: formatMessage(
-                              messages.error_input_label_google_maps_link
-                            ),
-                            maxValue: formatMessage(messages.max_google_link),
-                          }}
-                        />
-                      </Col>
+                      <Field
+                        span={24}
+                        component={FormField}
+                        label={formatMessage(messages.google_maps_link)}
+                        name={'google_maps_link'}
+                        errorTexts={{
+                          label: formatMessage(messages.google_maps_link),
+                          matchesLabel: formatMessage(
+                            messages.error_input_label_google_maps_link
+                          ),
+                          maxValue: formatMessage(messages.max_google_link),
+                        }}
+                      />
                     </Row>
                     <Row>
                       <Col span={24}>
@@ -187,26 +183,23 @@ const ClinicPage = ({ localization = true }) => {
                     </Row>
                     <Form.Item label={formatMessage(messages.working_hours)}>
                       <Row gutter={8}>
-                        <Col span={6}>
-                          <Field
-                            component={FormInputField}
-                            name={'start_of_work'}
-                            type={'time'}
-                          />
-                        </Col>
+                        <Field
+                          span={6}
+                          component={FormInputField}
+                          name={'start_of_work'}
+                          type={'time'}
+                        />
                         <Col span={2} className="text-center">
                           <MinusOutlined className="mt-3 text-primary" />
                         </Col>
-                        <Col span={6}>
-                          <Field
-                            component={FormInputField}
-                            name={'end_of_work'}
-                            type={'time'}
-                          />
-                        </Col>
+                        <Field
+                          span={6}
+                          component={FormInputField}
+                          name={'end_of_work'}
+                          type={'time'}
+                        />
                       </Row>
                     </Form.Item>
-
                     <Row>
                       <Col>
                         <Form.Item>
