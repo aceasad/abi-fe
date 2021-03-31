@@ -7,8 +7,15 @@ import {
   SET_PATIENT_SEARCH,
   DELETE_PATIENT,
 } from 'redux/constants/Patient';
-import { setPatientLoading, setPatients } from 'redux/actions/Patient';
-import { makeSelectPatientRequestData } from '../selectors/Patient';
+import {
+  setPatientLoading,
+  setPatientPage,
+  setPatients,
+} from 'redux/actions/Patient';
+import {
+  makeSelectPatientRequestData,
+  makeSelectLastOnThePage,
+} from '../selectors/Patient';
 
 function* getPatients() {
   try {
@@ -24,10 +31,12 @@ function* getPatients() {
 
 function* deletePatient({ payload }) {
   try {
+    const { isLast, page } = yield select(makeSelectLastOnThePage());
     yield put(setPatientLoading(true));
     yield call(patientService.deletePatient, payload.data);
     yield payload.afterDelete();
-    yield getPatients();
+    if (isLast) yield put(setPatientPage(page - 1));
+    else yield getPatients();
   } catch (err) {
   } finally {
     yield put(setPatientLoading(false));

@@ -28,7 +28,7 @@ const ProductList = () => {
   const dispatch = useDispatch();
   const { formatMessage } = useIntl();
 
-  const { count, patients, loading } = useSelector(makeSelectPatients());
+  const { count, patients, loading, page } = useSelector(makeSelectPatients());
 
   useEffect(() => {
     dispatch(getPatients());
@@ -147,12 +147,13 @@ const ProductList = () => {
             <Table
               columns={tableColumns}
               onChange={handleChange}
-              dataSource={patients}
+              dataSource={patients.map((pat) => ({ ...pat, key: pat.id }))}
               pagination={{
                 defaultPageSize: DEFAULT_PAGINATION_LIMIT,
                 total: count,
                 onChange: handlePaginationChange,
                 hideOnSinglePage: true,
+                current: page,
               }}
               loading={loading}
             />
