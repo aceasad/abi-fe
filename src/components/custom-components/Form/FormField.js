@@ -1,7 +1,7 @@
-import React from "react";
-import { ErrorMessage } from "formik";
-import { Form, Input, Tooltip } from "antd";
-import { useIntl } from "react-intl";
+import React from 'react';
+import { ErrorMessage } from 'formik';
+import { Form, Input, Tooltip } from 'antd';
+import { useIntl } from 'react-intl';
 
 const FormField = ({
   form: { handleBlur, handleChange },
@@ -12,6 +12,7 @@ const FormField = ({
   label,
   labelBlock,
   tooltipText,
+  required,
   ...props
 }) => {
   const InputField = secureField ? Input.Password : Input;
@@ -31,8 +32,9 @@ const FormField = ({
 
   const FormItem = (
     <Form.Item
-      className={labelBlock ? "label-block" : ""}
+      className={labelBlock ? 'label-block' : ''}
       label={getLabel()}
+      required={required}
     >
       <InputField
         name={field.name}
