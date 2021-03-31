@@ -71,7 +71,7 @@ const StaffList = ({ showCreate, editUser }) => {
 
   return (
     <Layout>
-      <Header className="ant-layout-page-header shadow-sm d-flex justify-content-sm-between">
+      <Header className="ant-layout-page-header border-bottom d-flex justify-content-sm-between">
         <Title className="mb-sm-0">{formatMessage(messages.staff)}</Title>
         <Button type="primary" onClick={showCreate}>
           {formatMessage(messages.addNewStaff)}

@@ -42,7 +42,7 @@ const IndustryAverage = () => {
 
   return (
     <Layout>
-      <Header className="ant-layout-page-header shadow-sm">
+      <Header className="ant-layout-page-header border-bottom">
         <Title className="mb-sm-0">Industry Average</Title>
       </Header>
       <Content>

@@ -15,7 +15,7 @@ const PatientHeader = ({
   const { formatMessage } = useIntl();
 
   return (
-    <Header className="ant-layout-page-header shadow-sm d-flex justify-content-sm-between">
+    <Header className="ant-layout-page-header border-bottom d-flex justify-content-sm-between">
       <Title className="mb-sm-0">{title}</Title>
       <div>
         <Button
