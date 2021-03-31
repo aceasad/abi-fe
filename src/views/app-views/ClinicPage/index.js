@@ -26,7 +26,7 @@ const ClinicPage = ({ localization = true }) => {
 
   return (
     <Layout>
-      <Header className="ant-layout-page-header shadow-sm d-flex justify-content-sm-between">
+      <Header className="ant-layout-page-header border-bottom d-flex justify-content-sm-between">
         <Title className="mb-sm-0">
           {localeString(localization, 'clinic_page.header.title')}
         </Title>

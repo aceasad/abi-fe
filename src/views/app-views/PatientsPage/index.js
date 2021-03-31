@@ -123,7 +123,7 @@ const ProductList = () => {
 
   return (
     <Layout>
-      <Header className="ant-layout-page-header shadow-sm d-flex justify-content-sm-between">
+      <Header className="ant-layout-page-header border-bottom d-flex justify-content-sm-between">
         <Typography.Title className="mb-sm-0">
           {formatMessage(messages.patientsTitle)}
         </Typography.Title>
