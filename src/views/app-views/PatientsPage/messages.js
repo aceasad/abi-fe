@@ -40,4 +40,24 @@ export default defineMessages({
     id: `${scope}.option.delete`,
     defaultMessage: 'Delete Patient',
   },
+  delete: {
+    id: `${commonScope}.text.delete`,
+    defaultMessage: 'Delete',
+  },
+  cancel: {
+    id: `${commonScope}.text.cancel`,
+    defaultMessage: 'Cancel',
+  },
+  deleteTitle: {
+    id: `${scope}.text.delete_patient`,
+    defaultMessage: 'Delete Patient',
+  },
+  deleteDescription: {
+    id: `${scope}.text.delete_description`,
+    defaultMessage: 'Are you sure you want to delete {label}?',
+  },
+  patientDeleted: {
+    id: `${scope}.text.delete_success`,
+    defaultMessage: 'Patient Deleted',
+  },
 });
