@@ -261,7 +261,10 @@
   "patient_details.side.form.employment_status": "Employment Status",
   "patient_details.side.form.educational_background": "Educationl Background",
   "patient_details.side.form.insurance": "Insurance",
-  
+  "patient_details.error.phone_format": "Phone must be in valid format",
+  "patient_details.text.patient_created": "Patient Created",
+  "patient_details.text.patient_updated": "Patient Updated",
+
   "patients_page.option.details": "Patient Details",
   "patients_page.option.delete": "Delete Patient",
   "patients_page.header.title": "Patients",
@@ -272,5 +275,6 @@
   "patients_page.text.last_appointment": "Last Appointment",
   "patients_page.text.delete_patient": "Delete Patient",
   "patients_page.text.delete_description": "Are you sure you want to delete {label}?",
-  "patients_page.text.delete_success": "Patient Deleted"
+  "patients_page.text.delete_success": "Patient Deleted",
+  "patients_page.text.edit_patient": "Edit Patient"
 }

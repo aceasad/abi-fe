@@ -1,20 +1,37 @@
 import { Button, Typography } from 'antd';
 import { Header } from 'antd/lib/layout/layout';
 import React from 'react';
-import localeString from 'utils/localeString';
+import { useIntl } from 'react-intl';
+import messages from './messages';
 
 const { Title } = Typography;
 
-const PatientHeader = ({ title, localization }) => {
+const PatientHeader = ({
+  title,
+  secondaryAction,
+  primaryAction,
+  primaryDisabled,
+}) => {
+  const { formatMessage } = useIntl();
+
   return (
     <Header className="ant-layout-page-header shadow-sm d-flex justify-content-sm-between">
       <Title className="mb-sm-0">{title}</Title>
       <div>
-        <Button type="primary" danger className="mr-3">
-          {localeString(localization, 'patient_details.cancel')}
+        <Button
+          type="primary"
+          danger
+          className="mr-3"
+          onClick={secondaryAction}
+        >
+          {formatMessage(messages.cancel)}
         </Button>
-        <Button type="primary">
-          {localeString(localization, 'patient_details.save')}
+        <Button
+          type="primary"
+          onClick={primaryAction}
+          disabled={primaryDisabled}
+        >
+          {formatMessage(messages.save)}
         </Button>
       </div>
     </Header>
