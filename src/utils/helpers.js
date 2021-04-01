@@ -6,3 +6,10 @@ export const prepareFormData = (obj) =>
 
 export const camelCaseToSnakeCase = (str) =>
   str.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
+
+export const filterEmptyObjectFeilds = (obj) =>
+  Object.keys(obj).reduce(
+    (accumulator, key) =>
+      obj[key] !== '' ? { ...accumulator, [key]: obj[key] } : accumulator,
+    {}
+  );

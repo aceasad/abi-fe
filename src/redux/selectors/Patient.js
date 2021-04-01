@@ -28,8 +28,28 @@ const makeSelectLastOnThePage = () =>
     page: substate.page,
   }));
 
+const makeSelectPatientDetails = () =>
+  createSelector(selectPatientsDomain, (substate) => ({
+    education: substate.education,
+    employment: substate.employment,
+    material_status: substate.material_status,
+    ethnicities: substate.ethnicities,
+  }));
+
+const makeSelectPatientSingle = () =>
+  createSelector(selectPatientsDomain, (substate) => ({
+    loading: substate.loading,
+    patient: substate.singlePatient,
+  }));
+
+const makeSelectPatientLoading = () =>
+  createSelector(selectPatientsDomain, (substate) => substate.loading);
+
 export {
   makeSelectPatients,
   makeSelectPatientRequestData,
   makeSelectLastOnThePage,
+  makeSelectPatientDetails,
+  makeSelectPatientSingle,
+  makeSelectPatientLoading,
 };

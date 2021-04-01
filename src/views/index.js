@@ -10,8 +10,6 @@ import { APP_PREFIX_PATH, AUTH_PREFIX_PATH } from 'configs/AppConfig';
 import { PrivateRoute } from 'routes/PrivateRoute';
 import ForceClinicRoute from '../routes/ForceClinicRoute';
 import { ROUTES } from 'routes';
-import CreatePatient from './app-views/PatientsPage/CreatePatient';
-import UpdatePatient from './app-views/PatientsPage/UpdatePatient';
 
 export const Views = ({ location, locale }) => {
   const currentAppLocale = AppLocale[locale];
@@ -27,16 +25,7 @@ export const Views = ({ location, locale }) => {
             <Redirect to={APP_PREFIX_PATH} />
           </Route>
           <Route path={AUTH_PREFIX_PATH} component={AuthLayout} />
-          <Route
-            exact
-            path={`${APP_PREFIX_PATH}/new-patient`}
-            component={CreatePatient}
-          />
-          <Route
-            exact
-            path={`${APP_PREFIX_PATH}/edit-patient`}
-            component={UpdatePatient}
-          />
+
           <Suspense fallback={() => <h1>LOADING</h1>}>
             <ForceClinicRoute
               exact
