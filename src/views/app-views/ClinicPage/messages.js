@@ -73,6 +73,6 @@ export default defineMessages({
   },
   logout: {
     id: `${scope}.text.logout`,
-    defaultMessage: MAX_GOOGLE_LINK,
+    defaultMessage: 'Logout',
   },
 });

@@ -9,9 +9,10 @@ const FormDatePicker = ({
   form: { setFieldValue },
   defaultDate,
   maxDate,
+  required,
 }) => {
   return (
-    <Form.Item label={label}>
+    <Form.Item label={label} required={required}>
       <DatePicker
         onChange={(_, str) => {
           setFieldValue(field.name, str);

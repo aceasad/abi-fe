@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
-import { Card, Table, Input, Button, Menu, Typography } from 'antd';
+import { Card, Table, Input, Button, Menu, Typography, message } from 'antd';
 import { EyeOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons';
 import Layout, { Content, Header } from 'antd/lib/layout/layout';
 
@@ -13,19 +13,22 @@ import {
   setPatientPage,
   setOrder,
   setPatientSearch,
+  deletePatient,
 } from 'redux/actions/Patient';
 import messages from './messages';
 import { DEFAULT_PAGINATION_LIMIT } from 'constants/ApiConstant';
 import { makeSelectPatients } from 'redux/selectors/Patient';
+import Modal from 'components/shared-components/Modal';
 
 const ProductList = () => {
   const [search, setSearch] = useState('');
+  const [patientForDelete, setPatientForDelete] = useState(null);
 
   const history = useHistory();
   const dispatch = useDispatch();
   const { formatMessage } = useIntl();
 
-  const { count, patients, loading } = useSelector(makeSelectPatients());
+  const { count, patients, loading, page } = useSelector(makeSelectPatients());
 
   useEffect(() => {
     dispatch(getPatients());
@@ -45,7 +48,7 @@ const ProductList = () => {
       </Menu.Item>
       <Menu.Item
         onClick={() => {
-          /* TO DO */
+          setPatientForDelete(row);
         }}
       >
         <Flex alignItems="center">
@@ -109,9 +112,18 @@ const ProductList = () => {
     dispatch(setOrder(sortInfo));
   };
 
+  const afterDelete = () => {
+    setPatientForDelete(null);
+    message.success(formatMessage(messages.patientDeleted));
+  };
+
+  const handleDelete = () => {
+    dispatch(deletePatient({ data: patientForDelete.id, afterDelete }));
+  };
+
   return (
     <Layout>
-      <Header className="ant-layout-page-header shadow-sm d-flex justify-content-sm-between">
+      <Header className="ant-layout-page-header border-bottom d-flex justify-content-sm-between">
         <Typography.Title className="mb-sm-0">
           {formatMessage(messages.patientsTitle)}
         </Typography.Title>
@@ -135,17 +147,32 @@ const ProductList = () => {
             <Table
               columns={tableColumns}
               onChange={handleChange}
-              dataSource={patients}
+              dataSource={patients.map((pat) => ({ ...pat, key: pat.id }))}
               pagination={{
                 defaultPageSize: DEFAULT_PAGINATION_LIMIT,
                 total: count,
                 onChange: handlePaginationChange,
+                hideOnSinglePage: true,
+                current: page,
               }}
               loading={loading}
             />
           </div>
         </Card>
       </Content>
+      <Modal
+        title={formatMessage(messages.deleteTitle)}
+        description={formatMessage(messages.deleteDescription, {
+          label: patientForDelete
+            ? patientForDelete.first_name + ' ' + patientForDelete.last_name
+            : '',
+        })}
+        primaryAction={formatMessage(messages.delete)}
+        secondaryAction={formatMessage(messages.cancel)}
+        visible={patientForDelete}
+        handlePrimaryAction={handleDelete}
+        handleSecondaryAction={() => setPatientForDelete(null)}
+      />
     </Layout>
   );
 };

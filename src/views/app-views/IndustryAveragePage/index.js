@@ -18,8 +18,8 @@ import {
   isLoadingIndustryAverageSelector,
   industryAverageIsUpdated,
 } from '../../../redux/selectors/IndustryAverage';
-import IndustryAverageFormField from './IndustryAverageFormField';
 import { industryAveragesSchema } from 'utils/validations';
+import RowColumnField from 'components/custom-components/Form/RowColumnField';
 const { Header, Content } = Layout;
 const { Title } = Typography;
 
@@ -30,6 +30,13 @@ const IndustryAverage = () => {
   const isLoading = useSelector(isLoadingIndustryAverageSelector());
   const isUpdatedOrCreated = useSelector(industryAverageIsUpdated());
 
+  const handleSubmit = (values, length) => {
+    if (length > 0) {
+      dispatch(updateIndustryAverage(values));
+    } else {
+      dispatch(createIndustryAverage(values));
+    }
+  };
   let initialValues =
     industryAverage != null && industryAverage.length > 0
       ? industryAverage[0]
@@ -55,7 +62,7 @@ const IndustryAverage = () => {
   }, [isUpdatedOrCreated]);
   return (
     <Layout>
-      <Header className="ant-layout-page-header shadow-sm">
+      <Header className="ant-layout-page-header border-bottom">
         <Title className="mb-sm-0">Industry Average</Title>
       </Header>
       <Content>
@@ -65,18 +72,14 @@ const IndustryAverage = () => {
             initialValues={initialValues}
             validationSchema={industryAveragesSchema}
             onSubmit={(values) => {
-              if (industryAverage.length > 0) {
-                dispatch(updateIndustryAverage(values));
-              } else {
-                dispatch(createIndustryAverage(values));
-              }
+              handleSubmit(values, industryAverage.length);
             }}
           >
             {({ values, handleSubmit, dirty, isValid }) => (
               <Form layout="vertical" name="login-form">
                 <Row gutter={64} align="bottom">
                   <Col span={10}>
-                    <IndustryAverageFormField
+                    <RowColumnField
                       span={24}
                       component={FormInputField}
                       label={formatMessage(
@@ -92,7 +95,7 @@ const IndustryAverage = () => {
                         matchesLabel: formatMessage(messages.number_max_digit),
                       }}
                     />
-                    <IndustryAverageFormField
+                    <RowColumnField
                       span={24}
                       component={FormInputField}
                       label={formatMessage(messages.did_not_attend)}
@@ -104,7 +107,7 @@ const IndustryAverage = () => {
                         matchesLabel: formatMessage(messages.number_max_digit),
                       }}
                     />
-                    <IndustryAverageFormField
+                    <RowColumnField
                       span={24}
                       component={FormInputField}
                       label={formatMessage(messages.uptake)}
@@ -116,7 +119,7 @@ const IndustryAverage = () => {
                         matchesLabel: formatMessage(messages.number_max_digit),
                       }}
                     />
-                    <IndustryAverageFormField
+                    <RowColumnField
                       span={24}
                       component={FormInputField}
                       label={formatMessage(messages.coverage)}
@@ -137,7 +140,7 @@ const IndustryAverage = () => {
                         </Title>
                       </Col>
                     </Row>
-                    <IndustryAverageFormField
+                    <RowColumnField
                       span={24}
                       component={FormInputField}
                       label={formatMessage(
@@ -153,7 +156,7 @@ const IndustryAverage = () => {
                         matchesLabel: formatMessage(messages.number_max_digit),
                       }}
                     />
-                    <IndustryAverageFormField
+                    <RowColumnField
                       span={24}
                       component={FormInputField}
                       label={formatMessage(
@@ -169,7 +172,7 @@ const IndustryAverage = () => {
                         matchesLabel: formatMessage(messages.number_max_digit),
                       }}
                     />
-                    <IndustryAverageFormField
+                    <RowColumnField
                       span={24}
                       component={FormInputField}
                       label={formatMessage(

@@ -2,7 +2,7 @@ import React from 'react';
 import { Field } from 'formik';
 import { Row, Col } from 'antd';
 
-const IndustryAverageFormField = ({ span, ...props }) => (
+const RowColumnField = ({ span, ...props }) => (
   <Row>
     <Col span={span}>
       <Field {...props} />
@@ -10,4 +10,4 @@ const IndustryAverageFormField = ({ span, ...props }) => (
   </Row>
 );
 
-export default IndustryAverageFormField;
+export default RowColumnField;
