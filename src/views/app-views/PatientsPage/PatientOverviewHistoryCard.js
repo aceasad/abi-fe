@@ -5,38 +5,60 @@ import localeString from 'utils/localeString';
 const { Title, Text } = Typography;
 
 const PatientOverviewHistoryCard = ({ patientData, localization }) => {
+  const statusOptions = {
+    scheduled: 'Scheduled',
+    attended: 'Attended',
+    rescheduled: 'Rescheduled',
+    cancelled: 'Cancelled',
+  };
+
   const statusColor = (status) => {
     switch (status) {
-      case 'Scheduled':
+      case statusOptions.scheduled:
         return <Text className="text-primary">{status}</Text>;
-      case 'Attended':
+      case statusOptions.attended:
         return <Text type="success">{status}</Text>;
-      case 'Rescheduled':
+      case statusOptions.rescheduled:
         return <Text type="warning">{status}</Text>;
-      case 'Cancelled':
+      case statusOptions.cancelled:
         return <Text type="secondary">{status}</Text>;
     }
   };
 
   const columnsHistory = [
     {
-      title: 'Date',
+      title: localeString(
+        localization,
+        'patient_overview.table.column_title.date'
+      ),
       dataIndex: 'date',
     },
     {
-      title: 'Time',
+      title: localeString(
+        localization,
+        'patient_overview.table.column_title.time'
+      ),
       dataIndex: 'time',
     },
     {
-      title: 'Doctor',
+      title: localeString(
+        localization,
+        'patient_overview.table.column_title.doctor'
+      ),
       dataIndex: 'doctor',
     },
     {
-      title: 'Type',
+      title: localeString(
+        localization,
+        'patient_overview.table.column_title.type'
+      ),
       dataIndex: 'type',
     },
     {
-      title: 'Status',
+      title: localeString(
+        localization,
+        'patient_overview.table.column_title.status'
+      ),
       dataIndex: 'status',
       render: statusColor,
     },

@@ -3,10 +3,16 @@ import React from 'react';
 import PatientInfoListItem from './PatientInfoListItem';
 
 const PatientOverviewDetails = ({ fields, patient }) => {
+  const firstDivider = 4;
+  const secondDivider = 10;
+
+  const hasDivider = (index) =>
+    index === firstDivider || index === secondDivider;
+
   return (
     <>
       {fields.map((field, index) => {
-        if (index === 4 || index === 10) {
+        if (hasDivider(index)) {
           return (
             <div key={index}>
               <PatientInfoListItem>

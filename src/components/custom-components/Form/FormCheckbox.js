@@ -10,7 +10,7 @@ const FormCheckbox = ({
   isSubmit,
 }) => {
   const [isChecked, setIsChecked] = useState(checked);
-  const onChange = (e) => {
+  const onChange = () => {
     setIsChecked(!isChecked);
     setFieldValue(field.name, !isChecked);
     isSubmit && handleSubmit();

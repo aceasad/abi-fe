@@ -142,7 +142,7 @@ const PatientOverview = ({ localization = true }) => {
                   <Row gutter={[0, 16]} className="mb-4">
                     <Col span={24}>
                       <Field
-                        isSubmit={true}
+                        isSubmit
                         component={FormImageUpload}
                         name="profile_picture"
                       />
@@ -155,7 +155,7 @@ const PatientOverview = ({ localization = true }) => {
                     <Col span={24}>
                       <div className="border d-flex justify-content-center form-item-no-margin">
                         <Field
-                          isSubmit={true}
+                          isSubmit
                           name="whitelisted"
                           component={FormCheckbox}
                           label="Whitelisted"

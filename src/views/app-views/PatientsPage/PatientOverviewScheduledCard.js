@@ -6,38 +6,55 @@ import localeString from 'utils/localeString';
 const { Title, Text } = Typography;
 
 const PatientOverviewScheduledCard = ({ patientData, localization }) => {
-  const predictionColor = (prediction) => {
-    if (prediction === 'Likely to be missed')
-      return <Text type="danger">{prediction}</Text>;
-    return <Text type="success">{prediction}</Text>;
-  };
+  const predictionOption = 'Likely to be missed';
+
+  const renderPredictionText = (prediction) => (
+    <Text type={prediction === predictionOption ? 'danger' : 'success'}>
+      {prediction}
+    </Text>
+  );
 
   const columnsScheduled = [
     {
-      title: 'Date',
+      title: localeString(
+        localization,
+        'patient_overview.table.column_title.date'
+      ),
       dataIndex: 'date',
       sorter: (a, b) => a.date.length - b.date.length,
     },
     {
-      title: 'Time',
+      title: localeString(
+        localization,
+        'patient_overview.table.column_title.time'
+      ),
       dataIndex: 'time',
       sorter: (a, b) => a.time - b.time,
     },
     {
-      title: 'Doctor',
+      title: localeString(
+        localization,
+        'patient_overview.table.column_title.doctor'
+      ),
       dataIndex: 'doctor',
       sorter: (a, b) => a.doctor.length - b.doctor.length,
     },
     {
-      title: 'Type',
+      title: localeString(
+        localization,
+        'patient_overview.table.column_title.type'
+      ),
       dataIndex: 'type',
       sorter: (a, b) => a.type.length - b.type.length,
     },
     {
-      title: 'Prediction',
+      title: localeString(
+        localization,
+        'patient_overview.table.column_title.prediction'
+      ),
       dataIndex: 'prediction',
       sorter: (a, b) => a.prediction.length - b.prediction.length,
-      render: predictionColor,
+      render: renderPredictionText,
     },
   ];
 
