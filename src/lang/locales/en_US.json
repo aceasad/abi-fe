@@ -280,5 +280,18 @@
   "patients_page.text.delete_patient": "Delete Patient",
   "patients_page.text.delete_description": "Are you sure you want to delete {label}?",
   "patients_page.text.delete_success": "Patient Deleted",
-  "patients_page.text.edit_patient": "Edit Patient"
+  "patients_page.text.edit_patient": "Edit Patient",
+
+  "patient_overview.title": "Overview",
+  "patient_overview.back_to_patients": "Back to patients",
+  "patient_overview.button.messages": "Messages",
+  "patient_overview.button.new_appointment": "New Appointment",
+  "patient_overview.card_title.scheduled_appointments": "Scheduled Appointments",
+  "patient_overview.card_title.appointment_history": "Appointment History",
+  "patient_overview.table.column_title.date": "Date",
+  "patient_overview.table.column_title.time": "Time",
+  "patient_overview.table.column_title.doctor": "Doctor",
+  "patient_overview.table.column_title.type": "Type",
+  "patient_overview.table.column_title.prediction": "Prediction",
+  "patient_overview.table.column_title.status": "Status"
 }
