@@ -64,16 +64,17 @@ const ClinicPage = ({ localization = true }) => {
                 name="clinic-form"
                 onSubmit={handleSubmit}
               >
-                <Row justify="center" className="mb-5 mt-4">
+                <Row className="mb-5 mt-4">
                   <ColumnField
+                    offset={7}
                     span={6}
                     component={FormImageUpload}
                     name={'photo'}
                   />
                 </Row>
-                <Row justify="center">
+                <Row>
                   <Col span={6}>
-                    <Title type="secondary" level={2} className="mt-4">
+                    <Title type="secondary" level={2} className="mt-4 ml-2">
                       {localeString(localization, 'clinic_page.side.title')}
                     </Title>
                   </Col>
@@ -117,7 +118,7 @@ const ClinicPage = ({ localization = true }) => {
                       />
                     </Row>
                     <Row>
-                      <Field
+                      <ColumnField
                         span={24}
                         component={FormField}
                         label={formatMessage(messages.google_maps_link)}
