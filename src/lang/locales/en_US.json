@@ -293,5 +293,11 @@
   "patient_overview.table.column_title.doctor": "Doctor",
   "patient_overview.table.column_title.type": "Type",
   "patient_overview.table.column_title.prediction": "Prediction",
-  "patient_overview.table.column_title.status": "Status"
+  "patient_overview.table.column_title.status": "Status",
+
+  "chat_page.menu.user_info_label": "",
+  "chat_page.menu.mute_chat": "Mute Chat",
+  "chat_page.menu.delete_chat": "Delete Chat",
+  "chat_page.chat.type_a_message_placeholder": "Type a message..."
+
 }

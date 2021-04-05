@@ -1,3 +1,5 @@
+import { MESSAGE_TYPE, MESSAGE_FROM } from 'constants/ChatConstants';
+
 export const prepareFormData = (obj) =>
   Object.keys(obj).reduce((accumulator, currentValue) => {
     accumulator.append(camelCaseToSnakeCase(currentValue), obj[currentValue]);
@@ -22,3 +24,28 @@ export const mapNullObjectFeildsToString = (obj) =>
     }),
     {}
   );
+
+export const chatListItemStyle = (
+  chatListLength,
+  currentItem,
+  currentItemIndex,
+  selectedItemId
+) => {
+  const lastItem = currentItemIndex === chatListLength - 1 ? 'last' : '';
+  const selectedItem = currentItem.id === selectedItemId ? 'selected' : '';
+
+  return `chat-menu-list-item ${lastItem} ${selectedItem}`;
+};
+
+export const singleChatMessageStyle = (message) => {
+  const messageTypeStyle =
+    message.msgType === MESSAGE_TYPE.DATE ? 'datetime' : '';
+  const messageFromStyle =
+    message.from === MESSAGE_FROM.OPPOSITE
+      ? 'msg-recipient'
+      : message.from === MESSAGE_FROM.ME
+      ? 'msg-sent'
+      : '';
+
+  return `msg ${messageTypeStyle} ${messageFromStyle}`;
+};
