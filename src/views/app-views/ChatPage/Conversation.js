@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import ChatData from 'assets/data/chat.data.json';
 import { Avatar, Divider, Input, Form, Button, Menu } from 'antd';
 import {
@@ -17,6 +17,7 @@ import { MESSAGE_TYPE, MESSAGE_FROM } from 'constants/ChatConstants';
 import { useIntl } from 'react-intl';
 import messages from './messages';
 import { useParams } from 'react-router-dom';
+import { singleChatMessageStyle } from 'utils/helpers';
 
 const Conversation = () => {
   const formRef = useRef();
@@ -25,7 +26,7 @@ const Conversation = () => {
 
   const id = parseInt(params.id);
   const [info, setInfo] = useState({});
-  const [msgList, setMsgList] = useState([]);
+  const [messageList, setMessageList] = useState([]);
 
   const { formatMessage } = useIntl();
 
@@ -37,21 +38,21 @@ const Conversation = () => {
   const getConversation = (currentId) => {
     const data = ChatData.filter((chat) => chat.id === currentId);
     setInfo(data[0]);
-    setMsgList(data[0].msg);
+    setMessageList(data[0].msg);
   };
 
-  const getMsgType = (obj) => {
-    switch (obj.msgType) {
+  const getMessageType = ({ msgType, text }) => {
+    switch (msgType) {
       case MESSAGE_TYPE.TEXT:
-        return <span>{obj.text}</span>;
+        return <span>{text}</span>;
       case MESSAGE_TYPE.IMAGE:
-        return <img src={obj.text} alt={obj.text} />;
+        return <img src={text} alt={text} />;
       case MESSAGE_TYPE.FILE:
         return (
           <Flex alignItems="center" className="msg-file">
             <FileOutlined className="font-size-md" />
             <span className="ml-2 font-weight-semibold text-link pointer">
-              <u>{obj.text}</u>
+              <u>{text}</u>
             </span>
           </Flex>
         );
@@ -65,23 +66,19 @@ const Conversation = () => {
   };
 
   const onSend = (values) => {
-    if (values.newMsg) {
-      const newMsgData = {
+    if (values.newMessage) {
+      const newMessageData = {
         avatar: '',
         from: MESSAGE_FROM.ME,
         msgType: MESSAGE_TYPE.TEXT,
-        text: values.newMsg,
+        text: values.newMessage,
         time: '',
       };
       formRef.current.setFieldsValue({
-        newMsg: '',
+        newMessage: '',
       });
-      setMsgList([...msgList, newMsgData]);
+      setMessageList([...messageList, newMessageData]);
     }
-  };
-
-  const emptyClick = (e) => {
-    e.preventDefault();
   };
 
   const chatContentHeader = (name) => (
@@ -96,18 +93,10 @@ const Conversation = () => {
   const chatContentBody = (messages, id) => (
     <div className="chat-content-body">
       <Scrollbars ref={chatBodyRef} autoHide>
-        {messages.map((message, i) => (
+        {messages.map((message, index) => (
           <div
-            key={`msg-${id}-${i}`}
-            className={`msg ${
-              message.msgType === MESSAGE_TYPE.DATE ? 'datetime' : ''
-            } ${
-              message.from === MESSAGE_FROM.OPPOSITE
-                ? 'msg-recipient'
-                : message.from === MESSAGE_FROM.ME
-                ? 'msg-sent'
-                : ''
-            }`}
+            key={`msg-${id}-${index}`}
+            className={singleChatMessageStyle(message)}
           >
             {message.avatar ? (
               <div className="mr-2">
@@ -116,7 +105,7 @@ const Conversation = () => {
             ) : null}
             {message.text ? (
               <div className={`bubble ${!message.avatar ? 'ml-5' : ''}`}>
-                <div className="bubble-wrapper">{getMsgType(message)}</div>
+                <div className="bubble-wrapper">{getMessageType(message)}</div>
               </div>
             ) : null}
             {message.msgType === MESSAGE_TYPE.DATE ? (
@@ -131,26 +120,18 @@ const Conversation = () => {
   const chatContentFooter = () => (
     <div className="chat-content-footer">
       <Form name="msgInput" ref={formRef} onFinish={onSend} className="w-100">
-        <Form.Item name="newMsg" className="mb-0">
+        <Form.Item name="newMessage" className="mb-0">
           <Input
             autoComplete="off"
             placeholder={formatMessage(messages.typeAMessagePlaceholder)}
             suffix={
               <div className="d-flex align-items-center">
-                <a
-                  href="/#"
-                  className="text-dark font-size-lg mr-3"
-                  onClick={emptyClick}
-                >
+                <button className="text-dark font-size-lg mr-3">
                   <SmileOutlined />
-                </a>
-                <a
-                  href="/#"
-                  className="text-dark font-size-lg mr-3"
-                  onClick={emptyClick}
-                >
+                </button>
+                <button className="text-dark font-size-lg mr-3">
                   <PaperClipOutlined />
-                </a>
+                </button>
                 <Button
                   shape="circle"
                   type="primary"
@@ -168,22 +149,32 @@ const Conversation = () => {
     </div>
   );
 
+  const menuOptions = [
+    { Icon: UserOutlined, message: messages.userInfo, shouldDivide: false },
+    {
+      Icon: AudioMutedOutlined,
+      message: messages.muteChat,
+      shouldDivide: true,
+    },
+    {
+      Icon: DeleteOutlined,
+      message: messages.deleteChat,
+      shouldDivide: false,
+    },
+  ];
+
   const renderMenu = () => {
     return (
       <Menu>
-        <Menu.Item key="0">
-          <UserOutlined />
-          <span>{formatMessage(messages.userInfo)}</span>
-        </Menu.Item>
-        <Menu.Item key="1">
-          <AudioMutedOutlined />
-          <span>{formatMessage(messages.muteChat)}</span>
-        </Menu.Item>
-        <Menu.Divider />
-        <Menu.Item key="3">
-          <DeleteOutlined />
-          <span>{formatMessage(messages.deleteChat)}</span>
-        </Menu.Item>
+        {menuOptions.map((menu, index) => (
+          <Fragment>
+            <Menu.Item key={index.toString()}>
+              <menu.Icon />
+              <span>{formatMessage(menu.message)}</span>
+            </Menu.Item>
+            {menu.shouldDivide && <Menu.Divider />}
+          </Fragment>
+        ))}
       </Menu>
     );
   };
@@ -191,7 +182,7 @@ const Conversation = () => {
   return (
     <div className="chat-content">
       {chatContentHeader(info.name)}
-      {chatContentBody(msgList, id)}
+      {chatContentBody(messageList, id)}
       {chatContentFooter()}
     </div>
   );

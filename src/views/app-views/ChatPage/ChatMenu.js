@@ -7,6 +7,7 @@ import { SearchOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 import { useIntl } from 'react-intl';
 import messages from './messages';
+import { chatListItemStyle } from 'utils/helpers';
 
 const ChatMenu = ({ match, location }) => {
   const [chatList, setChatList] = useState(ChatData);
@@ -14,21 +15,18 @@ const ChatMenu = ({ match, location }) => {
   const { formatMessage } = useIntl();
 
   const openChat = (id) => {
-    const data = chatList.map((chat) => {
-      if (chat.id === id) {
-        chat.unread = 0;
-      }
-      return chat;
-    });
+    const data = chatList.map((chat) =>
+      chat.id === id ? { ...chat, unread: 0 } : chat
+    );
     setChatList(data);
     history.push(`${match.url}/${id}`);
   };
 
   const searchOnChange = (e) => {
     const query = e.target.value;
-    const data = ChatData.filter((item) => {
-      return query === '' ? item : item.name.toLowerCase().includes(query);
-    });
+    const data = ChatData.filter((item) =>
+      !query ? item : item.name.toLowerCase().includes(query)
+    );
     setChatList(data);
   };
 
@@ -44,13 +42,11 @@ const ChatMenu = ({ match, location }) => {
         />
       </div>
       <div className="chat-menu-list">
-        {chatList.map((item, i) => (
+        {chatList.map((item, index) => (
           <div
             key={`chat-item-${item.id}`}
             onClick={() => openChat(item.id)}
-            className={`chat-menu-list-item ${
-              i === chatList.length - 1 ? 'last' : ''
-            } ${item.id === id ? 'selected' : ''}`}
+            className={chatListItemStyle(chatList.length - 1, item, index, id)}
           >
             <AvatarStatus
               src={item.avatar}
