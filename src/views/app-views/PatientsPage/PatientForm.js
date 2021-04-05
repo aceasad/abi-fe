@@ -66,7 +66,7 @@ const PatientForm = ({
                     </Col>
 
                     <Col span={12}>
-                      <Row gutter={16}>
+                      <Row gutter={16} align="bottom">
                         <ColumnField
                           span={8}
                           component={FormField}
@@ -97,7 +97,7 @@ const PatientForm = ({
                           required
                         />
                       </Row>
-                      <Row gutter={16}>
+                      <Row gutter={16} align="bottom">
                         <ColumnField
                           span={8}
                           component={FormSelect}
@@ -132,7 +132,7 @@ const PatientForm = ({
                           min={0}
                         />
                       </Row>
-                      <Row gutter={16}>
+                      <Row gutter={16} align="bottom">
                         <ColumnField
                           span={8}
                           component={FormSelect}
@@ -159,7 +159,7 @@ const PatientForm = ({
                     </Col>
 
                     <Col span={12}>
-                      <Row gutter={16}>
+                      <Row gutter={16} align="bottom">
                         <ColumnField
                           component={FormField}
                           label={formatMessage(messages.phoneNumber)}
@@ -195,7 +195,7 @@ const PatientForm = ({
                     </Col>
 
                     <Col span={12}>
-                      <Row gutter={16}>
+                      <Row gutter={16} align="bottom">
                         <ColumnField
                           span={8}
                           component={FormSelect}
@@ -219,7 +219,7 @@ const PatientForm = ({
                           min={0}
                         />
                       </Row>
-                      <Row gutter={16}>
+                      <Row gutter={16} align="bottom">
                         <ColumnField
                           span={8}
                           component={FormSelect}
@@ -249,7 +249,7 @@ const PatientForm = ({
                           label={formatMessage(messages.education)}
                         />
                       </Row>
-                      <Row gutter={16}>
+                      <Row gutter={16} align="bottom">
                         <Col span={16}>
                           <Field
                             component={FormField}
