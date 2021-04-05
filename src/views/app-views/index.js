@@ -28,7 +28,7 @@ export const AppViews = () => {
         />
         <Route
           path={`${APP_PREFIX_PATH}/conversation`}
-          component={lazy(() => import(`./ConversationPage`))}
+          component={lazy(() => import(`./ChatPage`))}
         />
         <Route
           path={`${APP_PREFIX_PATH}/settings`}
