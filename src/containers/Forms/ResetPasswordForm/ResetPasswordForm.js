@@ -12,7 +12,7 @@ import { makeIsResetPassword } from 'redux/selectors/Users';
 import { success } from 'components/shared-components/MessagesAlerts/index';
 const { resetPasswordSchema } = require('utils/validations');
 
-const ResetPasswordForm = (match) => {
+const ResetPasswordForm = () => {
   const dispatch = useDispatch();
   const isReset = useSelector(makeIsResetPassword());
   const { token } = useParams();

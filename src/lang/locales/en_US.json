@@ -179,7 +179,7 @@
   "reset_password_page.input_label.password": "New Password",
   "reset_password_page.input_label.passwordRepeat": "Repeat Password",
   "reset_password_page.button.confirm_button": "Save Password",
-  "reset_password_page.matches.password": "Password must contain at least 8 characters, one upper letter, one number and one special character.",
+  "reset_password_page.matches.password": "Password must be in valid format",
 
   "global.session_expired": "Your session has expired",
   "global.validations.email": "{label} must be a valid email",
