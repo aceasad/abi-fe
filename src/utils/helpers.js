@@ -13,3 +13,12 @@ export const filterEmptyObjectFeilds = (obj) =>
       obj[key] !== '' ? { ...accumulator, [key]: obj[key] } : accumulator,
     {}
   );
+
+export const mapNullObjectFeildsToString = (obj) =>
+  Object.keys(obj).reduce(
+    (accumulator, key) => ({
+      ...accumulator,
+      [key]: obj[key] === null ? '' : obj[key],
+    }),
+    {}
+  );
