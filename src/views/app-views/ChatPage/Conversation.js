@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ChatData from 'assets/data/chat.data.json';
 import { Avatar, Divider, Input, Form, Button, Menu } from 'antd';
 import {
@@ -13,65 +13,40 @@ import {
 import { Scrollbars } from 'react-custom-scrollbars';
 import Flex from 'components/shared-components/Flex';
 import EllipsisDropdown from 'components/shared-components/EllipsisDropdown';
+import { MESSAGE_TYPE, MESSAGE_FROM } from 'constants/ChatConstants';
+import { useIntl } from 'react-intl';
+import messages from './messages';
+import { useParams } from 'react-router-dom';
 
-const menu = () => (
-  <Menu>
-    <Menu.Item key="0">
-      <UserOutlined />
-      <span>User Info</span>
-    </Menu.Item>
-    <Menu.Item key="1">
-      <AudioMutedOutlined />
-      <span>Mute Chat</span>
-    </Menu.Item>
-    <Menu.Divider />
-    <Menu.Item key="3">
-      <DeleteOutlined />
-      <span>Delete Chat</span>
-    </Menu.Item>
-  </Menu>
-);
+const Conversation = () => {
+  const formRef = useRef();
+  const chatBodyRef = useRef();
+  const params = useParams();
 
-export class Conversation extends React.Component {
-  formRef = React.createRef();
-  chatBodyRef = React.createRef();
+  const id = parseInt(params.id);
+  const [info, setInfo] = useState({});
+  const [msgList, setMsgList] = useState([]);
 
-  state = {
-    info: {},
-    msgList: [],
+  const { formatMessage } = useIntl();
+
+  useEffect(() => {
+    getConversation(id);
+    scrollToBottom();
+  }, [params.id]);
+
+  const getConversation = (currentId) => {
+    const data = ChatData.filter((chat) => chat.id === currentId);
+    setInfo(data[0]);
+    setMsgList(data[0].msg);
   };
 
-  componentDidMount() {
-    this.getConversation(this.getUserId());
-  }
-
-  componentDidUpdate(prevProps) {
-    if (this.props.location.pathname !== prevProps.location.pathname) {
-      this.getConversation(this.getUserId());
-    }
-    this.scrollToBottom();
-  }
-
-  getUserId() {
-    const { id } = this.props.match.params;
-    return parseInt(parseInt(id));
-  }
-
-  getConversation = (currentId) => {
-    const data = ChatData.filter((elm) => elm.id === currentId);
-    this.setState({
-      info: data[0],
-      msgList: data[0].msg,
-    });
-  };
-
-  getMsgType = (obj) => {
+  const getMsgType = (obj) => {
     switch (obj.msgType) {
-      case 'text':
+      case MESSAGE_TYPE.TEXT:
         return <span>{obj.text}</span>;
-      case 'image':
+      case MESSAGE_TYPE.IMAGE:
         return <img src={obj.text} alt={obj.text} />;
-      case 'file':
+      case MESSAGE_TYPE.FILE:
         return (
           <Flex alignItems="center" className="msg-file">
             <FileOutlined className="font-size-md" />
@@ -85,97 +60,94 @@ export class Conversation extends React.Component {
     }
   };
 
-  scrollToBottom = () => {
-    this.chatBodyRef.current.scrollToBottom();
+  const scrollToBottom = () => {
+    chatBodyRef.current.scrollToBottom();
   };
 
-  onSend = (values) => {
+  const onSend = (values) => {
     if (values.newMsg) {
       const newMsgData = {
         avatar: '',
-        from: 'me',
-        msgType: 'text',
+        from: MESSAGE_FROM.ME,
+        msgType: MESSAGE_TYPE.TEXT,
         text: values.newMsg,
         time: '',
       };
-      this.formRef.current.setFieldsValue({
+      formRef.current.setFieldsValue({
         newMsg: '',
       });
-      this.setState({
-        msgList: [...this.state.msgList, newMsgData],
-      });
+      setMsgList([...msgList, newMsgData]);
     }
   };
 
-  emptyClick = (e) => {
+  const emptyClick = (e) => {
     e.preventDefault();
   };
 
-  chatContentHeader = (name) => (
+  const chatContentHeader = (name) => (
     <div className="chat-content-header">
       <h4 className="mb-0">{name}</h4>
       <div>
-        <EllipsisDropdown menu={menu} />
+        <EllipsisDropdown menu={renderMenu} />
       </div>
     </div>
   );
 
-  chatContentBody = (props, id) => (
+  const chatContentBody = (messages, id) => (
     <div className="chat-content-body">
-      <Scrollbars ref={this.chatBodyRef} autoHide>
-        {props.map((elm, i) => (
+      <Scrollbars ref={chatBodyRef} autoHide>
+        {messages.map((message, i) => (
           <div
             key={`msg-${id}-${i}`}
-            className={`msg ${elm.msgType === 'date' ? 'datetime' : ''} ${
-              elm.from === 'opposite'
+            className={`msg ${
+              message.msgType === MESSAGE_TYPE.DATE ? 'datetime' : ''
+            } ${
+              message.from === MESSAGE_FROM.OPPOSITE
                 ? 'msg-recipient'
-                : elm.from === 'me'
+                : message.from === MESSAGE_FROM.ME
                 ? 'msg-sent'
                 : ''
             }`}
           >
-            {elm.avatar ? (
+            {message.avatar ? (
               <div className="mr-2">
-                <Avatar src={elm.avatar} />
+                <Avatar src={message.avatar} />
               </div>
             ) : null}
-            {elm.text ? (
-              <div className={`bubble ${!elm.avatar ? 'ml-5' : ''}`}>
-                <div className="bubble-wrapper">{this.getMsgType(elm)}</div>
+            {message.text ? (
+              <div className={`bubble ${!message.avatar ? 'ml-5' : ''}`}>
+                <div className="bubble-wrapper">{getMsgType(message)}</div>
               </div>
             ) : null}
-            {elm.msgType === 'date' ? <Divider>{elm.time}</Divider> : null}
+            {message.msgType === MESSAGE_TYPE.DATE ? (
+              <Divider>{message.time}</Divider>
+            ) : null}
           </div>
         ))}
       </Scrollbars>
     </div>
   );
 
-  chatContentFooter = () => (
+  const chatContentFooter = () => (
     <div className="chat-content-footer">
-      <Form
-        name="msgInput"
-        ref={this.formRef}
-        onFinish={this.onSend}
-        className="w-100"
-      >
+      <Form name="msgInput" ref={formRef} onFinish={onSend} className="w-100">
         <Form.Item name="newMsg" className="mb-0">
           <Input
             autoComplete="off"
-            placeholder="Type a message..."
+            placeholder={formatMessage(messages.typeAMessagePlaceholder)}
             suffix={
               <div className="d-flex align-items-center">
                 <a
                   href="/#"
                   className="text-dark font-size-lg mr-3"
-                  onClick={this.emptyClick}
+                  onClick={emptyClick}
                 >
                   <SmileOutlined />
                 </a>
                 <a
                   href="/#"
                   className="text-dark font-size-lg mr-3"
-                  onClick={this.emptyClick}
+                  onClick={emptyClick}
                 >
                   <PaperClipOutlined />
                 </a>
@@ -183,7 +155,7 @@ export class Conversation extends React.Component {
                   shape="circle"
                   type="primary"
                   size="small"
-                  onClick={this.onSend}
+                  onClick={onSend}
                   htmlType="submit"
                 >
                   <SendOutlined />
@@ -196,17 +168,33 @@ export class Conversation extends React.Component {
     </div>
   );
 
-  render() {
-    const { id } = this.props.match.params;
-    const { info, msgList } = this.state;
+  const renderMenu = () => {
     return (
-      <div className="chat-content">
-        {this.chatContentHeader(info.name)}
-        {this.chatContentBody(msgList, id)}
-        {this.chatContentFooter()}
-      </div>
+      <Menu>
+        <Menu.Item key="0">
+          <UserOutlined />
+          <span>{formatMessage(messages.userInfo)}</span>
+        </Menu.Item>
+        <Menu.Item key="1">
+          <AudioMutedOutlined />
+          <span>{formatMessage(messages.muteChat)}</span>
+        </Menu.Item>
+        <Menu.Divider />
+        <Menu.Item key="3">
+          <DeleteOutlined />
+          <span>{formatMessage(messages.deleteChat)}</span>
+        </Menu.Item>
+      </Menu>
     );
-  }
-}
+  };
+
+  return (
+    <div className="chat-content">
+      {chatContentHeader(info.name)}
+      {chatContentBody(msgList, id)}
+      {chatContentFooter()}
+    </div>
+  );
+};
 
 export default Conversation;

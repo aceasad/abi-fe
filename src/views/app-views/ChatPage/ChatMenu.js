@@ -5,18 +5,22 @@ import AvatarStatus from 'components/shared-components/AvatarStatus';
 import { COLOR_1 } from 'constants/ChartConstant';
 import { SearchOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
+import { useIntl } from 'react-intl';
+import messages from './messages';
 
 const ChatMenu = ({ match, location }) => {
-  const [list, setList] = useState(ChatData);
-  let history = useHistory();
+  const [chatList, setChatList] = useState(ChatData);
+  const history = useHistory();
+  const { formatMessage } = useIntl();
+
   const openChat = (id) => {
-    const data = list.map((elm) => {
-      if (elm.id === id) {
-        elm.unread = 0;
+    const data = chatList.map((chat) => {
+      if (chat.id === id) {
+        chat.unread = 0;
       }
-      return elm;
+      return chat;
     });
-    setList(data);
+    setChatList(data);
     history.push(`${match.url}/${id}`);
   };
 
@@ -25,7 +29,7 @@ const ChatMenu = ({ match, location }) => {
     const data = ChatData.filter((item) => {
       return query === '' ? item : item.name.toLowerCase().includes(query);
     });
-    setList(data);
+    setChatList(data);
   };
 
   const id = parseInt(location.pathname.match(/\/([^/]+)\/?$/)[1]);
@@ -34,18 +38,18 @@ const ChatMenu = ({ match, location }) => {
     <div className="chat-menu">
       <div className="chat-menu-toolbar">
         <Input
-          placeholder="Search"
+          placeholder={formatMessage(messages.searchPlaceholder)}
           onChange={searchOnChange}
           prefix={<SearchOutlined className="font-size-lg mr-2" />}
         />
       </div>
       <div className="chat-menu-list">
-        {list.map((item, i) => (
+        {chatList.map((item, i) => (
           <div
             key={`chat-item-${item.id}`}
             onClick={() => openChat(item.id)}
             className={`chat-menu-list-item ${
-              i === list.length - 1 ? 'last' : ''
+              i === chatList.length - 1 ? 'last' : ''
             } ${item.id === id ? 'selected' : ''}`}
           >
             <AvatarStatus
@@ -55,7 +59,7 @@ const ChatMenu = ({ match, location }) => {
             />
             <div className="text-right">
               <div className="chat-menu-list-item-time">{item.time}</div>
-              {item.unread === 0 ? (
+              {!item.unread ? (
                 <span></span>
               ) : (
                 <Badge
