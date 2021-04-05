@@ -1,205 +1,191 @@
-import React from 'react'
-import ChatData from "assets/data/chat.data.json"
+import React, { Fragment, useEffect, useRef, useState } from 'react';
+import ChatData from 'assets/data/chat.data.json';
 import { Avatar, Divider, Input, Form, Button, Menu } from 'antd';
-import { 
-	FileOutlined, 
-	SendOutlined, 
-	PaperClipOutlined, 
-	SmileOutlined, 
-	AudioMutedOutlined,
-	UserOutlined,
-	DeleteOutlined
+import {
+  FileOutlined,
+  SendOutlined,
+  PaperClipOutlined,
+  SmileOutlined,
+  AudioMutedOutlined,
+  UserOutlined,
+  DeleteOutlined,
 } from '@ant-design/icons';
 import { Scrollbars } from 'react-custom-scrollbars';
 import Flex from 'components/shared-components/Flex';
-import EllipsisDropdown from 'components/shared-components/EllipsisDropdown'
+import EllipsisDropdown from 'components/shared-components/EllipsisDropdown';
+import { MESSAGE_TYPE, MESSAGE_FROM } from 'constants/ChatConstants';
+import { useIntl } from 'react-intl';
+import messages from './messages';
+import { useParams } from 'react-router-dom';
+import { singleChatMessageStyle } from 'utils/helpers';
 
-const	menu = () => (
-	<Menu>
-		<Menu.Item key="0">
-			<UserOutlined />
-			<span>User Info</span>
-		</Menu.Item>
-		<Menu.Item key="1">
-			<AudioMutedOutlined />
-			<span>Mute Chat</span>
-		</Menu.Item>
-		<Menu.Divider />
-		<Menu.Item key="3">
-			<DeleteOutlined />
-			<span>Delete Chat</span>
-		</Menu.Item>
-	</Menu>
-);
+const Conversation = () => {
+  const formRef = useRef();
+  const chatBodyRef = useRef();
+  const params = useParams();
 
-export class Conversation extends React.Component {
-	formRef = React.createRef();
-	chatBodyRef = React.createRef()
+  const id = parseInt(params.id);
+  const [info, setInfo] = useState({});
+  const [messageList, setMessageList] = useState([]);
 
-	state = {
-		info: {},
-		msgList: [],
-	}
-	
-	componentDidMount() {
-		this.getConversation(this.getUserId())
-	}
+  const { formatMessage } = useIntl();
 
-	componentDidUpdate(prevProps) {
-		if (this.props.location.pathname !== prevProps.location.pathname) {
-			this.getConversation(this.getUserId())			
-		}
-		this.scrollToBottom()
-	}
-	
-	getUserId() {
-		const { id } = this.props.match.params
-		return parseInt(parseInt(id))
-	}
-	
+  useEffect(() => {
+    getConversation(id);
+    scrollToBottom();
+  }, [params.id]);
 
-	getConversation = currentId => {
-		const data = ChatData.filter(elm => elm.id === currentId)
-		this.setState({
-			info: data[0],
-			msgList: data[0].msg
-		})	
-	}
+  const getConversation = (currentId) => {
+    const data = ChatData.filter((chat) => chat.id === currentId);
+    setInfo(data[0]);
+    setMessageList(data[0].msg);
+  };
 
-	getMsgType = obj => {
-		switch (obj.msgType) {
-			case 'text':
-				return <span>{obj.text}</span>
-			case 'image':
-				return <img src={obj.text} alt={obj.text} />
-			case 'file':
-				return (
-				<Flex alignItems="center" className="msg-file">
-					<FileOutlined className="font-size-md"/>
-					<span className="ml-2 font-weight-semibold text-link pointer">
-						<u>{obj.text}</u>
-					</span>
-				</Flex>
-				)
-			default:
-				return null;
-		}
-	}
+  const getMessageType = ({ msgType, text }) => {
+    switch (msgType) {
+      case MESSAGE_TYPE.TEXT:
+        return <span>{text}</span>;
+      case MESSAGE_TYPE.IMAGE:
+        return <img src={text} alt={text} />;
+      case MESSAGE_TYPE.FILE:
+        return (
+          <Flex alignItems="center" className="msg-file">
+            <FileOutlined className="font-size-md" />
+            <span className="ml-2 font-weight-semibold text-link pointer">
+              <u>{text}</u>
+            </span>
+          </Flex>
+        );
+      default:
+        return null;
+    }
+  };
 
-	scrollToBottom = () => {
-		this.chatBodyRef.current.scrollToBottom()
-	}
+  const scrollToBottom = () => {
+    chatBodyRef.current.scrollToBottom();
+  };
 
-	onSend = values => {
-		if (values.newMsg) {
-			const newMsgData = {
-				avatar: "",
-				from: "me",
-				msgType: "text",
-				text: values.newMsg,
-				time: "",
-			}
-			this.formRef.current.setFieldsValue({
-				newMsg: ''
-			});
-			this.setState({
-				msgList: [...this.state.msgList, newMsgData]
-			})
-		}
-	};
-	
-	emptyClick = (e) => {
-    e.preventDefault();
-	};
-	
-	chatContentHeader = name => (
-		<div className="chat-content-header">
-			<h4 className="mb-0">{name}</h4>
-			<div>
-				<EllipsisDropdown menu={menu}/>
-			</div>
-		</div>
-	)
+  const onSend = (values) => {
+    if (values.newMessage) {
+      const newMessageData = {
+        avatar: '',
+        from: MESSAGE_FROM.ME,
+        msgType: MESSAGE_TYPE.TEXT,
+        text: values.newMessage,
+        time: '',
+      };
+      formRef.current.setFieldsValue({
+        newMessage: '',
+      });
+      setMessageList([...messageList, newMessageData]);
+    }
+  };
 
-	chatContentBody = (props, id) => (
-		<div className="chat-content-body">
-			<Scrollbars ref={this.chatBodyRef} autoHide>
-				{
-					props.map((elm, i) => (
-						<div 
-							key={`msg-${id}-${i}`} 
-							className={`msg ${elm.msgType === 'date'? 'datetime' : ''} ${elm.from === 'opposite'? 'msg-recipient' : elm.from === 'me'? 'msg-sent' : ''}`}
-						>
-							{
-								elm.avatar? 
-								<div className="mr-2">
-									<Avatar src={elm.avatar} />
-								</div>
-								:
-								null
-							}
-							{
-								elm.text?
-								<div className={`bubble ${!elm.avatar? 'ml-5' : ''}`}>
-									<div className="bubble-wrapper">
-										{this.getMsgType(elm)}
-									</div>
-								</div>
-								:
-								null
-							}
-							{
-								elm.msgType === 'date'?
-								<Divider>{elm.time}</Divider>
-								: 
-								null
-							}
-						</div>
-					))
-				}
-			</Scrollbars>
-		</div>
-	)
+  const chatContentHeader = (name) => (
+    <div className="chat-content-header">
+      <h4 className="mb-0">{name}</h4>
+      <div>
+        <EllipsisDropdown menu={renderMenu} />
+      </div>
+    </div>
+  );
 
-	chatContentFooter = () => (
-		<div className="chat-content-footer">
-			<Form name="msgInput" ref={this.formRef} onFinish={this.onSend} className="w-100">
-				<Form.Item name="newMsg" className="mb-0">
-					<Input 
-						autoComplete="off" 
-						placeholder="Type a message..."
-						suffix={
-							<div className="d-flex align-items-center">
-								<a href="/#"  className="text-dark font-size-lg mr-3" onClick={this.emptyClick}>
-									<SmileOutlined />
-								</a>
-								<a href="/#" className="text-dark font-size-lg mr-3" onClick={this.emptyClick}>
-									<PaperClipOutlined />
-								</a>
-								<Button shape="circle" type="primary" size="small" onClick={this.onSend} htmlType="submit">
-									<SendOutlined />
-								</Button>
-							</div>
-						}
-					/>
-				</Form.Item>
-			</Form>
-		</div>
-	)
+  const chatContentBody = (messages, id) => (
+    <div className="chat-content-body">
+      <Scrollbars ref={chatBodyRef} autoHide>
+        {messages.map((message, index) => (
+          <div
+            key={`msg-${id}-${index}`}
+            className={singleChatMessageStyle(message)}
+          >
+            {message.avatar ? (
+              <div className="mr-2">
+                <Avatar src={message.avatar} />
+              </div>
+            ) : null}
+            {message.text ? (
+              <div className={`bubble ${!message.avatar ? 'ml-5' : ''}`}>
+                <div className="bubble-wrapper">{getMessageType(message)}</div>
+              </div>
+            ) : null}
+            {message.msgType === MESSAGE_TYPE.DATE ? (
+              <Divider>{message.time}</Divider>
+            ) : null}
+          </div>
+        ))}
+      </Scrollbars>
+    </div>
+  );
 
+  const chatContentFooter = () => (
+    <div className="chat-content-footer">
+      <Form name="msgInput" ref={formRef} onFinish={onSend} className="w-100">
+        <Form.Item name="newMessage" className="mb-0">
+          <Input
+            autoComplete="off"
+            placeholder={formatMessage(messages.typeAMessagePlaceholder)}
+            suffix={
+              <div className="d-flex align-items-center">
+                <button className="text-dark font-size-lg mr-3">
+                  <SmileOutlined />
+                </button>
+                <button className="text-dark font-size-lg mr-3">
+                  <PaperClipOutlined />
+                </button>
+                <Button
+                  shape="circle"
+                  type="primary"
+                  size="small"
+                  onClick={onSend}
+                  htmlType="submit"
+                >
+                  <SendOutlined />
+                </Button>
+              </div>
+            }
+          />
+        </Form.Item>
+      </Form>
+    </div>
+  );
 
-	render() {
-		const { id } = this.props.match.params
-		const { info, msgList } = this.state
-		return (
-			<div className="chat-content">
-				{this.chatContentHeader(info.name)}
-				{this.chatContentBody(msgList, id)}
-				{this.chatContentFooter()}
-			</div>
-		)
-	}
-}
+  const menuOptions = [
+    { Icon: UserOutlined, message: messages.userInfo, shouldDivide: false },
+    {
+      Icon: AudioMutedOutlined,
+      message: messages.muteChat,
+      shouldDivide: true,
+    },
+    {
+      Icon: DeleteOutlined,
+      message: messages.deleteChat,
+      shouldDivide: false,
+    },
+  ];
 
+  const renderMenu = () => {
+    return (
+      <Menu>
+        {menuOptions.map((menu, index) => (
+          <Fragment>
+            <Menu.Item key={index.toString()}>
+              <menu.Icon />
+              <span>{formatMessage(menu.message)}</span>
+            </Menu.Item>
+            {menu.shouldDivide && <Menu.Divider />}
+          </Fragment>
+        ))}
+      </Menu>
+    );
+  };
 
-export default Conversation
+  return (
+    <div className="chat-content">
+      {chatContentHeader(info.name)}
+      {chatContentBody(messageList, id)}
+      {chatContentFooter()}
+    </div>
+  );
+};
+
+export default Conversation;

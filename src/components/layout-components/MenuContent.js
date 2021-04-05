@@ -107,7 +107,7 @@ const SideNavContent = (props) => {
             ) : null}
           </Menu.Item>
         )
-      )}{' '}
+      )}
     </Menu>
   );
 };

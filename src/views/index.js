@@ -25,6 +25,7 @@ export const Views = ({ location, locale }) => {
             <Redirect to={APP_PREFIX_PATH} />
           </Route>
           <Route path={AUTH_PREFIX_PATH} component={AuthLayout} />
+
           <Suspense fallback={() => <h1>LOADING</h1>}>
             <ForceClinicRoute
               exact

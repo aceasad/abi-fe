@@ -1,19 +1,32 @@
-import { DatePicker, Form } from 'antd';
-import { DATE_FORMAT_MM_DD_YYYY } from 'constants/DateConstant';
-import moment from 'moment';
 import React from 'react';
+import { useIntl } from 'react-intl';
+import { DatePicker, Form } from 'antd';
+import moment from 'moment';
+import { ErrorMessage } from 'formik';
+
+import { DATE_FORMAT_MM_DD_YYYY } from 'constants/DateConstant';
 
 const FormDatePicker = ({
   label,
   field,
-  form: { setFieldValue },
+  form: { setFieldValue, setFieldTouched },
   defaultDate,
   maxDate,
+  required,
+  errorTexts,
 }) => {
+  const { formatMessage } = useIntl();
+
+  const defaultErrorMessage = (msg) =>
+    formatMessage(msg, {
+      label,
+    });
+
   return (
-    <Form.Item label={label}>
+    <Form.Item label={label} required={required}>
       <DatePicker
         onChange={(_, str) => {
+          setFieldTouched(field.name, true);
           setFieldValue(field.name, str);
         }}
         disabledDate={(date) => (maxDate ? date.isAfter(maxDate) : false)}
@@ -23,6 +36,13 @@ const FormDatePicker = ({
         )}
         format={DATE_FORMAT_MM_DD_YYYY}
       />
+      <div className="authentication-error">
+        <ErrorMessage name={field.name}>
+          {errorTexts
+            ? (msg) => formatMessage(msg, errorTexts)
+            : defaultErrorMessage}
+        </ErrorMessage>
+      </div>
     </Form.Item>
   );
 };

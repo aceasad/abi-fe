@@ -1,11 +1,11 @@
 import languageReducer from 'containers/LanguageProvider/reducer';
 import { combineReducers } from 'redux';
-import Auth from './Auth';
-import IndustryAverage from './IndustryAverage';
-import Clinic from './Clinic';
-import Theme from './Theme';
-import Staff from './Staff';
-import Error from './Error';
+import auth from './Auth';
+import industryAverage from './IndustryAverage';
+import clinic from './Clinic';
+import theme from './Theme';
+import staff from './Staff';
+import patient from './Patient';
 import { connectRouter } from 'connected-react-router';
 import { SIGNOUT_SUCCESS } from 'redux/constants/Auth';
 
@@ -13,13 +13,12 @@ import { SIGNOUT_SUCCESS } from 'redux/constants/Auth';
 export default (history) => {
   const combinedReducer = combineReducers({
     router: connectRouter(history),
-    theme: Theme,
-    auth: Auth,
-    industryAverage: IndustryAverage,
-    clinic: Clinic,
-    staff: Staff,
-    error: Error,
-
+    theme,
+    auth,
+    industryAverage,
+    clinic,
+    staff,
+    patient,
     language: languageReducer,
   });
 

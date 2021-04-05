@@ -12,6 +12,7 @@ const FormField = ({
   label,
   labelBlock,
   tooltipText,
+  required,
   ...props
 }) => {
   const InputField = secureField ? Input.Password : Input;
@@ -30,7 +31,11 @@ const FormField = ({
     });
 
   const FormItem = (
-    <Form.Item className={labelBlock ? 'label-block' : ''} label={getLabel()}>
+    <Form.Item
+      className={labelBlock ? 'label-block' : ''}
+      label={getLabel()}
+      required={required}
+    >
       <InputField
         name={field.name}
         onChange={handleChange}

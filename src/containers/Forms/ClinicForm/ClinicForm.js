@@ -1,5 +1,5 @@
 import { MinusOutlined } from '@ant-design/icons';
-import { Button, Card, Col, Form, Radio, Row } from 'antd';
+import { Button, Card, Col, Form, Radio, Row, Typography } from 'antd';
 import FormField from 'components/custom-components/Form/FormField';
 import FormImageUpload from 'components/custom-components/Form/FormImageUpload';
 import FormInputField from 'components/custom-components/Form/FormInputField';
@@ -12,8 +12,18 @@ import { makeSelectIsLoading } from 'redux/selectors/Clinic';
 import { clinicSchema } from 'utils/validations';
 import { AVAILABLE, FREE, NO } from '../../../constants/ClinicConstants';
 import messages from './messages';
+import ColumnField from 'components/custom-components/Form/ColumnField';
+import localeString from 'utils/localeString';
+import { prepareFormData } from 'utils/helpers';
 
-const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
+const { Title } = Typography;
+
+const ClinicForm = ({
+  clinicData = null,
+  showSuccess,
+  showError,
+  localization = true,
+}) => {
   const { formatMessage } = useIntl();
   const dispatch = useDispatch();
   const loading = useSelector(makeSelectIsLoading());
@@ -23,22 +33,25 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
   );
 
   const handleSubmit = (values, { resetForm }) => {
+    const formData = prepareFormData({ ...values });
+    if (!(values.photo instanceof File)) formData.delete('photo');
+
     if (clinicData) {
       dispatch(
         updateClinic({
-          updatedClinic: { ...values },
+          updatedClinic: formData,
           clinicId: clinicData.id,
           showSuccess,
           showError,
         })
       );
     } else {
-      dispatch(createClinic(values));
+      dispatch(createClinic(formData));
     }
   };
 
   return (
-    <Card className="p-3">
+    <Card className="m-4">
       <Formik
         initialValues={{
           photo: clinicData?.photo?.thumbnail || null,
@@ -56,138 +69,159 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
       >
         {({ dirty, isValid, values, handleSubmit }) => (
           <Form layout="vertical" name="clinic-form" onSubmit={handleSubmit}>
-            <Row justify="center" className="mb-5 mt-4">
-              <Col span={6}>
-                <Field component={FormImageUpload} name={'photo'}></Field>
-              </Col>
+            <Row className="mb-5 mt-4">
+              <ColumnField
+                offset={7}
+                span={6}
+                component={FormImageUpload}
+                name={'photo'}
+              />
             </Row>
 
             <Row>
-              <Col span={24}>
-                <Field
-                  component={FormField}
-                  label={formatMessage(messages.clinic_name)}
-                  name={'name'}
-                  errorTexts={{
-                    label: formatMessage(messages.error_input_label_name),
-                  }}
-                />
+              <Col span={6}>
+                <Title type="secondary" level={2} className="mt-4 ml-2">
+                  {localeString(localization, 'clinic_page.side.title')}
+                </Title>
               </Col>
-            </Row>
-            <Row gutter={16}>
-              <Col span={8}>
-                <Field
-                  component={FormField}
-                  label={formatMessage(messages.phone_number)}
-                  name={'phone_number'}
-                  errorTexts={{
-                    label: formatMessage(
-                      messages.error_input_label_phone_number
-                    ),
-                  }}
-                />
-              </Col>
-              <Col span={16}>
-                <Field
-                  component={FormField}
-                  label={formatMessage(messages.address)}
-                  name={'address'}
-                  errorTexts={{
-                    label: formatMessage(messages.error_input_label_address),
-                  }}
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col span={24}>
-                <Field
-                  component={FormField}
-                  label={formatMessage(messages.google_maps_link)}
-                  name={'google_maps_link'}
-                  errorTexts={{
-                    label: formatMessage(
-                      messages.error_input_label_google_maps_link
-                    ),
-                  }}
-                />
-              </Col>
-            </Row>
-            <Row>
-              <Col span={18}>
-                <Form.Item
-                  name="radio-group"
-                  label={formatMessage(messages.parking_availability)}
-                >
-                  <Radio.Group
-                    defaultValue={values.parking_availability}
-                    onChange={(event) => {
-                      setVisibility(event.target.value === AVAILABLE);
-                      values.parking_availability = event.target.value;
+              <Col span={12}>
+                <Row>
+                  <ColumnField
+                    span={24}
+                    component={FormField}
+                    label={formatMessage(messages.clinic_name)}
+                    name={'name'}
+                    errorTexts={{
+                      label: formatMessage(messages.error_input_label_name),
+                      maxValue: formatMessage(messages.max),
                     }}
-                  >
-                    <Radio value={NO}>
-                      {formatMessage(messages.parking_no)}
-                    </Radio>
-                    <Radio value={FREE}>
-                      {formatMessage(messages.parking_free)}
-                    </Radio>
-                    <Radio value={AVAILABLE}>
-                      {formatMessage(messages.parking_available)}
-                    </Radio>
-                  </Radio.Group>
-                </Form.Item>
-              </Col>
-              <Col span={6}>
-                {visibilityOfParkinSizeField ? (
-                  <Form.Item label={formatMessage(messages.parking_size)}>
+                  />
+                </Row>
+                <Row gutter={16}>
+                  <ColumnField
+                    span={8}
+                    component={FormField}
+                    label={formatMessage(messages.phone_number)}
+                    name={'phone_number'}
+                    errorTexts={{
+                      label: formatMessage(
+                        messages.error_input_label_phone_number
+                      ),
+                      maxValue: formatMessage(messages.max),
+                    }}
+                  />
+                  <ColumnField
+                    span={16}
+                    component={FormField}
+                    label={formatMessage(messages.address)}
+                    name={'address'}
+                    errorTexts={{
+                      label: formatMessage(messages.error_input_label_address),
+                      maxValue: formatMessage(messages.max),
+                    }}
+                  />
+                </Row>
+                <Row>
+                  <ColumnField
+                    span={24}
+                    component={FormField}
+                    label={formatMessage(messages.google_maps_link)}
+                    name={'google_maps_link'}
+                    errorTexts={{
+                      label: formatMessage(messages.google_maps_link),
+                      matchesLabel: formatMessage(
+                        messages.error_input_label_google_maps_link
+                      ),
+                      maxValue: formatMessage(messages.max_google_link),
+                    }}
+                  />
+                </Row>
+                <Row>
+                  <Col span={24}>
+                    <Form.Item
+                      name="radio-group"
+                      label={formatMessage(messages.parking_availability)}
+                    >
+                      <Radio.Group
+                        className="width-100"
+                        defaultValue={values.parking_availability}
+                        onChange={(event) => {
+                          setVisibility(event.target.value === AVAILABLE);
+                          values.parking_availability = event.target.value;
+                        }}
+                      >
+                        <Row>
+                          <Col span={8}>
+                            <Radio value={NO}>
+                              {formatMessage(messages.parking_no)}
+                            </Radio>
+                          </Col>
+                          <Col span={8}>
+                            <Radio value={FREE}>
+                              {formatMessage(messages.parking_free)}
+                            </Radio>
+                          </Col>
+                          <Col span={8}>
+                            <Radio value={AVAILABLE}>
+                              {formatMessage(messages.parking_available)}
+                            </Radio>
+                          </Col>
+                        </Row>
+                      </Radio.Group>
+                    </Form.Item>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col offset={16} span={6}>
+                    {visibilityOfParkinSizeField ? (
+                      <Form.Item label={formatMessage(messages.parking_size)}>
+                        <Field
+                          component={FormInputField}
+                          name={'parking_size'}
+                          type={'number'}
+                          min={1}
+                        />
+                      </Form.Item>
+                    ) : null}
+                  </Col>
+                </Row>
+                <Form.Item label={formatMessage(messages.working_hours)}>
+                  <Row gutter={8}>
                     <Field
+                      span={6}
                       component={FormInputField}
-                      name={'parking_size'}
-                      type={'number'}
-                      min={1}
+                      name={'start_of_work'}
+                      type={'time'}
                     />
-                  </Form.Item>
-                ) : null}
-              </Col>
-            </Row>
-            <Form.Item label={formatMessage(messages.working_hours)}>
-              <Row gutter={8}>
-                <Col xs={10} md={6}>
-                  <Field
-                    component={FormInputField}
-                    name={'start_of_work'}
-                    type={'time'}
-                  />
-                </Col>
-                <Col md={4} className="text-center">
-                  <MinusOutlined className="mt-3 text-primary" />
-                </Col>
-                <Col xs={10} md={6}>
-                  <Field
-                    component={FormInputField}
-                    name={'end_of_work'}
-                    type={'time'}
-                  />
-                </Col>
-              </Row>
-            </Form.Item>
-
-            <Row>
-              <Col>
-                <Form.Item>
-                  <Button
-                    name="submit"
-                    type="primary"
-                    disabled={loading || !dirty || !isValid}
-                    onClick={handleSubmit}
-                  >
-                    {formatMessage(
-                      clinicData
-                        ? messages.update_button
-                        : messages.create_button
-                    )}
-                  </Button>
+                    <Col span={2} className="text-center">
+                      <MinusOutlined className="mt-3 text-primary" />
+                    </Col>
+                    <Field
+                      span={6}
+                      component={FormInputField}
+                      name={'end_of_work'}
+                      type={'time'}
+                    />
+                  </Row>
                 </Form.Item>
+                <Row>
+                  <Col>
+                    <Form.Item>
+                      <Button
+                        name="submit"
+                        type="primary"
+                        disabled={loading || !dirty || !isValid}
+                        onClick={handleSubmit}
+                      >
+                        {formatMessage(
+                          clinicData
+                            ? messages.update_button
+                            : messages.create_button
+                        )}
+                      </Button>
+                    </Form.Item>
+                  </Col>
+                </Row>
               </Col>
             </Row>
           </Form>

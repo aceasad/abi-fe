@@ -1,4 +1,5 @@
 import { defineMessages } from 'react-intl';
+import { MAX, MAX_GOOGLE_LINK } from 'constants/ClinicConstants';
 
 export const scope = 'clinic_page';
 
@@ -74,5 +75,17 @@ export default defineMessages({
   update_error: {
     id: `${scope}.text.update_error`,
     defaultMessage: 'Something went wrong',
+  },
+  max: {
+    id: `${scope}.text.max`,
+    defaultMessage: MAX,
+  },
+  max_google_link: {
+    id: `${scope}.text.max_google_link`,
+    defaultMessage: MAX_GOOGLE_LINK,
+  },
+  logout: {
+    id: `${scope}.text.logout`,
+    defaultMessage: 'Logout',
   },
 });

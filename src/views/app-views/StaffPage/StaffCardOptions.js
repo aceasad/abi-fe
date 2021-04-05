@@ -5,7 +5,7 @@ import messages from './messages';
 import { OPTION_KEYS } from './StaffList';
 import { EllipsisOutlined } from '@ant-design/icons';
 
-function StaffCardOptions({ styles = {}, handleMenuClick }) {
+function StaffCardOptions({ handleMenuClick }) {
   const { formatMessage } = useIntl();
 
   const dropdownMenu = (

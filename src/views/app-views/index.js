@@ -3,6 +3,7 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 import Loading from 'components/shared-components/Loading';
 import { APP_PREFIX_PATH } from 'configs/AppConfig';
 import PrivateRoute from 'routes/PrivateRoute';
+import PatientOverview from './PatientsPage/PatientOverview';
 
 export const AppViews = () => {
   return (
@@ -37,6 +38,12 @@ export const AppViews = () => {
         <Route
           path={`${APP_PREFIX_PATH}/industry_average`}
           component={lazy(() => import(`./IndustryAveragePage`))}
+        />
+
+        <Route
+          exact
+          path={`${APP_PREFIX_PATH}/patient-overview`}
+          component={PatientOverview}
         />
 
         <Redirect

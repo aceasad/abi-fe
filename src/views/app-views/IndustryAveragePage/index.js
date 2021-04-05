@@ -14,7 +14,7 @@ import {
   industryAverageSelector,
   isLoadingIndustryAverageSelector,
 } from '../../../redux/selectors/IndustryAverage';
-import IndustryAverageFormField from './IndustryAverageFormField';
+import RowColumnField from 'components/custom-components/Form/RowColumnField';
 
 const { Header, Content } = Layout;
 const { Title } = Typography;
@@ -42,7 +42,7 @@ const IndustryAverage = () => {
 
   return (
     <Layout>
-      <Header className="ant-layout-page-header shadow-sm">
+      <Header className="ant-layout-page-header border-bottom">
         <Title className="mb-sm-0">Industry Average</Title>
       </Header>
       <Content>
@@ -58,7 +58,7 @@ const IndustryAverage = () => {
               <Form layout="vertical" name="login-form">
                 <Row gutter={64} align="bottom">
                   <Col span={10}>
-                    <IndustryAverageFormField
+                    <RowColumnField
                       span={24}
                       component={FormInputField}
                       label={formatMessage(
@@ -68,7 +68,7 @@ const IndustryAverage = () => {
                       type={'number'}
                       min={0}
                     />
-                    <IndustryAverageFormField
+                    <RowColumnField
                       span={24}
                       component={FormInputField}
                       label={formatMessage(messages.did_not_attend)}
@@ -76,7 +76,7 @@ const IndustryAverage = () => {
                       type={'number'}
                       min={0}
                     />
-                    <IndustryAverageFormField
+                    <RowColumnField
                       span={24}
                       component={FormInputField}
                       label={formatMessage(messages.uptake)}
@@ -84,7 +84,7 @@ const IndustryAverage = () => {
                       type={'number'}
                       min={0}
                     />
-                    <IndustryAverageFormField
+                    <RowColumnField
                       span={24}
                       component={FormInputField}
                       label={formatMessage(messages.coverage)}
@@ -101,7 +101,7 @@ const IndustryAverage = () => {
                         </Title>
                       </Col>
                     </Row>
-                    <IndustryAverageFormField
+                    <RowColumnField
                       span={24}
                       component={FormInputField}
                       label={formatMessage(
@@ -111,7 +111,7 @@ const IndustryAverage = () => {
                       type={'number'}
                       min={0}
                     />
-                    <IndustryAverageFormField
+                    <RowColumnField
                       span={24}
                       component={FormInputField}
                       label={formatMessage(
@@ -121,7 +121,7 @@ const IndustryAverage = () => {
                       type={'number'}
                       min={0}
                     />
-                    <IndustryAverageFormField
+                    <RowColumnField
                       span={24}
                       component={FormInputField}
                       label={formatMessage(

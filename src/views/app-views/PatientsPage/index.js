@@ -1,7 +1,43 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
-const index = () => {
-  return <div>Patients Page</div>;
+import { getPatientDetails } from 'redux/actions/Patient';
+import CreatePatient from './CreatePatient';
+import PatientList from './PatientList';
+import UpdatePatient from './UpdatePatient';
+
+const PATIENT_PAGE = {
+  LIST: 1,
+  CREATE: 2,
+  EDIT: 3,
 };
+function Patients() {
+  const [patientPage, setPatientPage] = useState(PATIENT_PAGE.LIST);
+  const dispatch = useDispatch();
 
-export default index;
+  const showCreate = () => setPatientPage({ id: PATIENT_PAGE.CREATE });
+  const showList = () => setPatientPage({ id: PATIENT_PAGE.LIST });
+  const updatePatient = (data) =>
+    setPatientPage({ id: PATIENT_PAGE.EDIT, data });
+
+  useEffect(() => {
+    dispatch(getPatientDetails());
+  }, [dispatch]);
+
+  switch (patientPage.id) {
+    case PATIENT_PAGE.LIST:
+      return (
+        <PatientList showCreate={showCreate} updatePatient={updatePatient} />
+      );
+    case PATIENT_PAGE.CREATE:
+      return <CreatePatient showList={showList} />;
+    case PATIENT_PAGE.EDIT:
+      return <UpdatePatient showList={showList} patientId={patientPage.data} />;
+    default:
+      return (
+        <PatientList showCreate={showCreate} updatePatient={updatePatient} />
+      );
+  }
+}
+
+export default Patients;
