@@ -36,11 +36,6 @@ export const AppViews = () => {
         />
 
         <Route
-          path={`${APP_PREFIX_PATH}/industry_average`}
-          component={lazy(() => import(`./IndustryAveragePage`))}
-        />
-
-        <Route
           exact
           path={`${APP_PREFIX_PATH}/patient-overview`}
           component={PatientOverview}

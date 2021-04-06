@@ -1,5 +1,5 @@
 import { LockOutlined } from '@ant-design/icons';
-import { Button, Col, Form, message, Row } from 'antd';
+import { Button, Col, Form, message, Row, Typography } from 'antd';
 import FormField from 'components/custom-components/Form/FormField';
 import ValidPasswordFormatTooltip from 'components/custom-components/Tooltips/ValidPasswordFormatTooltip';
 import { passwordMinLength } from 'constants/Validation';
@@ -54,12 +54,12 @@ const ChangePassword = () => {
   };
 
   return (
-    <>
-      <h2 className="mb-4">
+    <div className="p-2">
+      <Typography.Title level={2} className="mb-4">
         {formatMessage(messages.changePasswordMenuLabel)}
-      </h2>
+      </Typography.Title>
       <Row>
-        <Col xs={24} sm={24} md={24} lg={8}>
+        <Col xs={24} sm={24} md={12} lg={10} xl={8}>
           <Formik
             initialValues={{
               oldPassword: '',
@@ -70,7 +70,7 @@ const ChangePassword = () => {
             validationSchema={changePasswordSchema}
           >
             {({ handleSubmit, dirty, isValid }) => (
-              <Form>
+              <Form layout="vertical">
                 <Field
                   component={FormField}
                   label={formatMessage(messages.oldPasswordInputLabel)}
@@ -134,7 +134,7 @@ const ChangePassword = () => {
           </Formik>
         </Col>
       </Row>
-    </>
+    </div>
   );
 };
 

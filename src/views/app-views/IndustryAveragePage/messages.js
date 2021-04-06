@@ -3,6 +3,10 @@ import { defineMessages } from 'react-intl';
 export const scope = 'industry_average_page';
 
 export default defineMessages({
+  title: {
+    id: `${scope}.title`,
+    defaultMessage: 'Industry Average',
+  },
   cost_of_missed_appointments: {
     id: `${scope}.input_label.cost_of_missed_appointments`,
     defaultMessage: 'Cost of missed appointments',

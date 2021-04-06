@@ -35,7 +35,7 @@ const SideContentMobile = (props) => {
 };
 
 export const InnerAppLayout = (props) => {
-  const { mainContent, pageHeader, sideContentGutter = true } = props;
+  const { mainContent, pageHeader, sideContentGutter = true, border } = props;
   const isMobile = !utils.getBreakPoint(useBreakpoint()).includes('lg');
   const [visible, setVisible] = useState(false);
 
@@ -48,7 +48,7 @@ export const InnerAppLayout = (props) => {
   };
 
   return (
-    <div className="inner-app-layout">
+    <div className={`${border ? 'border' : ''} inner-app-layout`}>
       {isMobile ? (
         <SideContentMobile
           visible={visible}

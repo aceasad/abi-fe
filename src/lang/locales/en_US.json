@@ -253,6 +253,7 @@
   "reset_password_page.note.special_characters": "Inclusion of at least one special character, e.g., ! @ # ? ]",
   "reset_password_page.note.special_characters_excluded": "Note: do not use < or > in your password, as both can cause problems in Web browsers",
 
+  "industry_average_page.title": "Industry Average",
   "industry_average_page.input_label.cost_of_missed_appointments": "Cost of missed appointments",
   "industry_average_page.input_label.did_not_attend": "Did not attend",
   "industry_average_page.input_label.uptake": "Uptake",
@@ -323,6 +324,7 @@
   "chat_page.menu.user_info_label": "",
   "chat_page.menu.mute_chat": "Mute Chat",
   "chat_page.menu.delete_chat": "Delete Chat",
-  "chat_page.chat.type_a_message_placeholder": "Type a message..."
+  "chat_page.chat.type_a_message_placeholder": "Type a message...",
 
+  "settings_page.title": "Settings"
 }
