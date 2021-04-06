@@ -17,17 +17,11 @@ const PageHeaderComponent = ({
     <Header className="ant-layout-page-header border-bottom">
       <Title className="mb-0">{title}</Title>
       <div>
-        <Button
-          type="primary"
-          danger
-          key="2"
-          className="mr-sm-3"
-          onClick={handleSecondaryClick}
-        >
+        <Button key="1" className="mr-sm-3" onClick={handleSecondaryClick}>
           {secondaryAction}
         </Button>
         <Button
-          key="1"
+          key="2"
           type="primary"
           onClick={handlePrimaryClick}
           disabled={disablePrimary}
