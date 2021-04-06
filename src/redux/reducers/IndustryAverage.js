@@ -31,6 +31,7 @@ const industryAverage = (state = initialState, action) =>
         break;
       case CREATED_INDUSTRY_AVERAGE_ERROR:
         draft.message = action.message;
+        break;
       case GET_INDUSTRY_AVERAGE_SUCCESS:
         draft.industryAverage = action.industryAverage;
         break;
