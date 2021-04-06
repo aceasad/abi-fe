@@ -10,7 +10,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { createClinic, updateClinic } from 'redux/actions/Clinic';
 import { makeSelectIsLoading } from 'redux/selectors/Clinic';
 import { clinicSchema } from 'utils/validations';
-import { AVAILABLE, FREE, NO } from '../../../constants/ClinicConstants';
+import {
+  AVAILABLE,
+  FREE,
+  NO,
+  MIN_PHONE_LENGTH,
+  MAX_PHONE_LENGTH,
+} from 'constants/ClinicConstants';
 import messages from './messages';
 import ColumnField from 'components/custom-components/Form/ColumnField';
 import localeString from 'utils/localeString';
@@ -32,7 +38,7 @@ const ClinicForm = ({
     clinicData?.parking_availability === AVAILABLE
   );
 
-  const handleSubmit = (values, { resetForm }) => {
+  const handleSubmit = (values) => {
     const formData = prepareFormData({ ...values });
     if (!(values.photo instanceof File)) formData.delete('photo');
 
@@ -59,15 +65,15 @@ const ClinicForm = ({
           phone_number: clinicData?.phone_number || '',
           address: clinicData?.address || '',
           google_maps_link: clinicData?.google_maps_link || '',
-          parking_availability: clinicData?.parking_availability || null,
+          parking_availability: clinicData?.parking_availability || NO,
           parking_size: clinicData?.parking_size || 0,
-          start_of_work: clinicData?.start_of_work || null,
-          end_of_work: clinicData?.end_of_work || null,
+          start_of_work: clinicData?.start_of_work || '',
+          end_of_work: clinicData?.end_of_work || '',
         }}
         validationSchema={clinicSchema}
         onSubmit={handleSubmit}
       >
-        {({ dirty, isValid, values, handleSubmit }) => (
+        {({ dirty, isValid, values, handleSubmit, setFieldValue }) => (
           <Form layout="vertical" name="clinic-form" onSubmit={handleSubmit}>
             <Row className="mb-5 mt-4">
               <ColumnField
@@ -89,10 +95,10 @@ const ClinicForm = ({
                   <ColumnField
                     span={24}
                     component={FormField}
-                    label={formatMessage(messages.clinic_name)}
+                    label={formatMessage(messages.clinicName)}
                     name={'name'}
                     errorTexts={{
-                      label: formatMessage(messages.error_input_label_name),
+                      label: formatMessage(messages.errorInputLabelName),
                       maxValue: formatMessage(messages.max),
                     }}
                   />
@@ -101,13 +107,13 @@ const ClinicForm = ({
                   <ColumnField
                     span={8}
                     component={FormField}
-                    label={formatMessage(messages.phone_number)}
+                    label={formatMessage(messages.phoneNumber)}
                     name={'phone_number'}
                     errorTexts={{
-                      label: formatMessage(
-                        messages.error_input_label_phone_number
-                      ),
-                      maxValue: formatMessage(messages.max),
+                      label: formatMessage(messages.phoneNumber),
+                      matchesLabel: formatMessage(messages.phoneNumberFormat),
+                      minValue: MIN_PHONE_LENGTH,
+                      maxValue: MAX_PHONE_LENGTH,
                     }}
                   />
                   <ColumnField
@@ -116,7 +122,7 @@ const ClinicForm = ({
                     label={formatMessage(messages.address)}
                     name={'address'}
                     errorTexts={{
-                      label: formatMessage(messages.error_input_label_address),
+                      label: formatMessage(messages.errorInputLabelAddress),
                       maxValue: formatMessage(messages.max),
                     }}
                   />
@@ -125,14 +131,14 @@ const ClinicForm = ({
                   <ColumnField
                     span={24}
                     component={FormField}
-                    label={formatMessage(messages.google_maps_link)}
+                    label={formatMessage(messages.googleMapsLink)}
                     name={'google_maps_link'}
                     errorTexts={{
-                      label: formatMessage(messages.google_maps_link),
+                      label: formatMessage(messages.googleMapsLink),
                       matchesLabel: formatMessage(
-                        messages.error_input_label_google_maps_link
+                        messages.errorInputLabelGoogleMapsLink
                       ),
-                      maxValue: formatMessage(messages.max_google_link),
+                      maxValue: formatMessage(messages.maxGoogleLink),
                     }}
                   />
                 </Row>
@@ -140,30 +146,33 @@ const ClinicForm = ({
                   <Col span={24}>
                     <Form.Item
                       name="radio-group"
-                      label={formatMessage(messages.parking_availability)}
+                      label={formatMessage(messages.parkingAvailability)}
                     >
                       <Radio.Group
                         className="width-100"
                         defaultValue={values.parking_availability}
                         onChange={(event) => {
                           setVisibility(event.target.value === AVAILABLE);
-                          values.parking_availability = event.target.value;
+                          setFieldValue(
+                            'parking_availability',
+                            event.target.value
+                          );
                         }}
                       >
                         <Row>
                           <Col span={8}>
                             <Radio value={NO}>
-                              {formatMessage(messages.parking_no)}
+                              {formatMessage(messages.parkingNo)}
                             </Radio>
                           </Col>
                           <Col span={8}>
                             <Radio value={FREE}>
-                              {formatMessage(messages.parking_free)}
+                              {formatMessage(messages.parkingFree)}
                             </Radio>
                           </Col>
                           <Col span={8}>
                             <Radio value={AVAILABLE}>
-                              {formatMessage(messages.parking_available)}
+                              {formatMessage(messages.parkingAvailable)}
                             </Radio>
                           </Col>
                         </Row>
@@ -174,9 +183,9 @@ const ClinicForm = ({
                 <Row>
                   <Col offset={16} span={6}>
                     {visibilityOfParkinSizeField ? (
-                      <Form.Item label={formatMessage(messages.parking_size)}>
+                      <Form.Item label={formatMessage(messages.parkingSize)}>
                         <Field
-                          component={FormInputField}
+                          component={FormField}
                           name={'parking_size'}
                           type={'number'}
                           min={1}
@@ -185,22 +194,28 @@ const ClinicForm = ({
                     ) : null}
                   </Col>
                 </Row>
-                <Form.Item label={formatMessage(messages.working_hours)}>
+                <Form.Item label={formatMessage(messages.workingHours)}>
                   <Row gutter={8}>
                     <Field
                       span={6}
-                      component={FormInputField}
-                      name={'start_of_work'}
-                      type={'time'}
+                      component={FormField}
+                      name="start_of_work"
+                      type="time"
+                      errorTexts={{
+                        label: formatMessage(messages.startOfWork),
+                      }}
                     />
                     <Col span={2} className="text-center">
                       <MinusOutlined className="mt-3 text-primary" />
                     </Col>
                     <Field
                       span={6}
-                      component={FormInputField}
-                      name={'end_of_work'}
-                      type={'time'}
+                      component={FormField}
+                      name="end_of_work"
+                      type="time"
+                      errorTexts={{
+                        label: formatMessage(messages.endOfWork),
+                      }}
                     />
                   </Row>
                 </Form.Item>
@@ -215,8 +230,8 @@ const ClinicForm = ({
                       >
                         {formatMessage(
                           clinicData
-                            ? messages.update_button
-                            : messages.create_button
+                            ? messages.updateButton
+                            : messages.createButton
                         )}
                       </Button>
                     </Form.Item>
