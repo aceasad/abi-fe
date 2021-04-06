@@ -75,9 +75,7 @@ const IndustryAverage = () => {
             enableReinitialize
             initialValues={initialValues}
             validationSchema={industryAveragesSchema}
-            onSubmit={(values) => {
-              handleSubmit(values);
-            }}
+            onSubmit={handleSubmit}
           >
             {({ values, handleSubmit, dirty, isValid }) => (
               <Form layout="vertical" name="login-form">

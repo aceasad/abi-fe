@@ -261,6 +261,7 @@
   "industry_average_page.input_label.number_of_women_eligible_for_screening": "Number of patients eligible for screening",
   "industry_average_page.input_label.number_of_women_screened_in_the_past_3_years": "Number of patients screened in the past 3 years",
   "industry_average_page.error.number_max_digit": "Number must be max 16 characters, if float max 6 digits after point and 10 before.",
+  "industry_average_page.text.save_or_updated": "Industry averages is successfully updated.",
 
   "patient_list.option.details": "Patient Details",
   "patient_list.option.delete": "Delete Patient",
