@@ -5,6 +5,9 @@ import {
   SET_PATIENT_ORDER,
   SET_PATIENT_PAGE,
   SET_PATIENT_SEARCH,
+  SET_PATIENT_DETAILS,
+  SET_PATIENT_SINGLE,
+  MODIFY_PATIENT,
 } from 'redux/constants/Patient';
 
 const initialState = {
@@ -15,6 +18,11 @@ const initialState = {
   field: '',
   order: '',
   search: '',
+  education: [],
+  employment: [],
+  material_status: [],
+  ethnicities: [],
+  singlePatient: null,
 };
 
 /* eslint-disable default-case */
@@ -37,6 +45,22 @@ const patient = (state = initialState, action) =>
         break;
       case SET_PATIENT_SEARCH:
         draft.search = action.payload;
+        break;
+      case SET_PATIENT_DETAILS:
+        draft.education = action.payload.education;
+        draft.employment = action.payload.employment;
+        draft.material_status = action.payload.material_status;
+        draft.ethnicities = action.payload.ethnicities;
+        break;
+      case SET_PATIENT_SINGLE:
+        draft.singlePatient = action.payload;
+        break;
+      case MODIFY_PATIENT:
+        draft.patients = state.patients.map((patient) =>
+          patient.id === action.payload.id
+            ? { ...patient, ...action.payload }
+            : patient
+        );
         break;
     }
   });

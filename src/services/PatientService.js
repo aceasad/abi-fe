@@ -3,6 +3,7 @@ import ApiService from './ApiService';
 
 const ENDPOINTS = {
   GET_PATIENTS: '/patients/',
+  GET_PATIENT_DETAILS: '/patients/patient-details/',
 };
 
 class PatientService extends ApiService {
@@ -18,6 +19,15 @@ class PatientService extends ApiService {
 
   deletePatient = (id) =>
     this.apiClient.delete(ENDPOINTS.GET_PATIENTS + id + '/');
+
+  getPatientDetails = () => this.apiClient.get(ENDPOINTS.GET_PATIENT_DETAILS);
+
+  createPatient = (data) => this.apiClient.post(ENDPOINTS.GET_PATIENTS, data);
+  getPatientSingle = (id) =>
+    this.apiClient.get(ENDPOINTS.GET_PATIENTS + id + '/');
+
+  updatePatient = (data) =>
+    this.apiClient.put(ENDPOINTS.GET_PATIENTS + data.id + '/', data);
 }
 
 const patientService = new PatientService();

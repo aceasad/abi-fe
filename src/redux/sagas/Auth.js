@@ -6,6 +6,7 @@ import {
   RESET_PASSWORD,
   FETCH_USER,
   CREATE_PASSWORD,
+  CHANGE_PASSWORD,
 } from '../constants/Auth';
 
 import {
@@ -26,6 +27,8 @@ import AuthService from 'services/AuthService';
 import { ROUTES } from 'routes';
 import messages from 'containers/Forms/LoginForm/messages';
 import { clearLocalStorage } from 'utils/localStorage';
+import changePasswordMessages from 'views/app-views/SettingsPage/messages';
+import { setInvalidOldPasswordError } from 'redux/actions/Error';
 
 export function* signIn() {
   yield takeEvery(SIGNIN, function* ({ payload }) {
@@ -97,6 +100,23 @@ export function* createUserPassword() {
   });
 }
 
+export function* changeUserPassword() {
+  yield takeEvery(CHANGE_PASSWORD, function* ({ payload }) {
+    try {
+      yield put(showLoading(true));
+      yield call(AuthService.changeUserPassword, payload.data);
+      yield put(setPasswordChanged());
+      yield payload.showSuccess();
+      yield payload.resetForm();
+    } catch (err) {
+      //yield payload.showError();
+      yield put(setInvalidOldPasswordError(true));
+    } finally {
+      yield put(showLoading(false));
+    }
+  });
+}
+
 export default function* rootSaga() {
   yield all([
     fork(signIn),
@@ -105,5 +125,6 @@ export default function* rootSaga() {
     fork(resetPassword),
     fork(userFetch),
     fork(createUserPassword),
+    fork(changeUserPassword),
   ]);
 }

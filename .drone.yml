@@ -1,0 +1,56 @@
+kind: pipeline
+name: abi-fe
+
+trigger:
+  branch:
+    - stage
+    - production
+  event:
+    - push
+
+volumes:
+  - name: docker_daemon
+    host:
+      path: /var/run/docker.sock
+  - name: docker_cache
+    host:
+      path: /mnt/drone-docker
+
+steps:
+  - name: build frontend
+    image: docker:dind
+    environment:
+      REGISTRY_USER:
+        from_secret: docker_username
+      REGISTRY_PASS:
+        from_secret: docker_password
+      APP_API_URL:
+        from_secret: app_api_url_${DRONE_BRANCH}
+    volumes:
+      - name: docker_cache
+        path: /var/lib/docker
+      - name: docker_daemon
+        path: /var/run/docker.sock
+    commands:
+      - sh ./docker/generate-env.sh ${DRONE_BRANCH}
+      - docker login -u $REGISTRY_USER -p $REGISTRY_PASS registry.vivifyideas.com
+      - docker build -t registry.vivifyideas.com/abi/frontend:${DRONE_BRANCH} --pull=true .
+      - docker push registry.vivifyideas.com/abi/frontend:${DRONE_BRANCH}
+      - docker image prune -f
+
+  - name: deploy
+    image: alpine
+    environment:
+      BRANCH: ${DRONE_BRANCH}
+    commands:
+      - apk add --no-cache curl
+      - sh deploy.sh
+
+  - name: slack
+    image: plugins/slack
+    when:
+      status: [success, failure]
+    settings:
+      webhook:
+        from_secret: slack_webhook
+      channel: abi

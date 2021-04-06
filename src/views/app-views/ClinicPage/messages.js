@@ -1,5 +1,5 @@
 import { defineMessages } from 'react-intl';
-import { MAX, MAX_GOOGLE_LINK } from '../../../constants/ClinicConstants';
+import { MAX, MAX_GOOGLE_LINK } from 'constants/ClinicConstants';
 export const scope = 'clinic_page';
 
 export default defineMessages({
@@ -62,6 +62,10 @@ export default defineMessages({
   create: {
     id: `${scope}.text.create`,
     defaultMessage: 'Save',
+  },
+  update_button: {
+    id: `${scope}.text.update_button`,
+    defaultMessage: 'Update',
   },
   max: {
     id: `${scope}.text.max`,

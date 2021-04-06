@@ -139,7 +139,12 @@
   "clinic_page.error.name": "Name",
   "clinic_page.error.phone_number": "Phone number",
   "clinic_page.error.address": "Address",
+  "clinic_page.text.create_button": "Create",
+  "clinic_page.text.update_button": "Update",
+  "clinic_page.text.update_success": "Successfull!",
+  "clinic_page.text.update_error": "Something went wrong",
   "clinic_page.error.google_maps_link": "Google maps link is url",
+  
   "clinic_page.text.create": "Create",
   "clinic_page.text.logout": "Logout",
   "clinic_page.header.title": "Clinic Settings",
@@ -179,7 +184,7 @@
   "reset_password_page.input_label.password": "New Password",
   "reset_password_page.input_label.passwordRepeat": "Repeat Password",
   "reset_password_page.button.confirm_button": "Save Password",
-  "reset_password_page.matches.password": "Password must contain at least 8 characters, one upper letter, one number and one special character.",
+  "reset_password_page.matches.password": "Password must be in valid format",
 
   "global.session_expired": "Your session has expired",
   "global.validations.email": "{label} must be a valid email",
@@ -221,6 +226,26 @@
   "staff_page.text.update_staff": "Update Staff",
   "user_menu.user_settings": "User Settings",
   "user_menu.company_settings": "Company Settings",
+
+  "change_password_page.input_label.newPasswordConfirm": "Confirm New Password",
+  "change_password_page.input_label.newPassword": "New Password",
+  "change_password_page.input_label.oldPassword": "Old Password",
+  "change_password_page.text.change_password_btn_title": "Change Password",
+  "change_password_page.note.min_characters": "At least {min} characters",
+  "change_password_page.note.upper_and_lower_mix": "A mixture of both uppercase and lowercase letters",
+  "change_password_page.note.char_and_letter_mix": "A mixture of letters and numbers",
+  "change_password_page.note.special_characters": "Inclusion of at least one special character, e.g., ! @ # ? ]",
+  "change_password_page.note.special_characters_excluded": "Note: do not use < or > in your password, as both can cause problems in Web browsers",
+  "change_password_page.text.password_changed": "Password has been changed!",
+  "change_password_page.error.password_change_error": "Failed to change password",
+  "change_password_page.text.change_password_menu_label": "Change Password",
+  "change_password_page.validation.valid_password": "Password must be in valid format",
+  "change_password_page.validation.matches.password": "Password must contain at least 8 characters, one upper letter, one number and one special character.",
+  "change_password_page.error.invalid_old_password": "Invalid old password",
+
+  "edit_clinic_page.text.edit_clinic_menu_label": "Edit Clinic",
+  "edit_clinic_page.text.update_success": "Successfull!",
+  "edit_clinic_page.text.update_error": "Something went wrong",
 
   "reset_password_page.note.min_characters": "At least {min} characters",
   "reset_password_page.note.upper_and_lower_mix": "A mixture of both uppercase and lowercase letters",
@@ -266,7 +291,10 @@
   "patient_details.side.form.employment_status": "Employment Status",
   "patient_details.side.form.educational_background": "Educationl Background",
   "patient_details.side.form.insurance": "Insurance",
-  
+  "patient_details.error.phone_format": "Phone must be in valid format",
+  "patient_details.text.patient_created": "Patient Created",
+  "patient_details.text.patient_updated": "Patient Updated",
+
   "patients_page.option.details": "Patient Details",
   "patients_page.option.delete": "Delete Patient",
   "patients_page.header.title": "Patients",
@@ -277,5 +305,25 @@
   "patients_page.text.last_appointment": "Last Appointment",
   "patients_page.text.delete_patient": "Delete Patient",
   "patients_page.text.delete_description": "Are you sure you want to delete {label}?",
-  "patients_page.text.delete_success": "Patient Deleted"
+  "patients_page.text.delete_success": "Patient Deleted",
+  "patients_page.text.edit_patient": "Edit Patient",
+
+  "patient_overview.title": "Overview",
+  "patient_overview.back_to_patients": "Back to patients",
+  "patient_overview.button.messages": "Messages",
+  "patient_overview.button.new_appointment": "New Appointment",
+  "patient_overview.card_title.scheduled_appointments": "Scheduled Appointments",
+  "patient_overview.card_title.appointment_history": "Appointment History",
+  "patient_overview.table.column_title.date": "Date",
+  "patient_overview.table.column_title.time": "Time",
+  "patient_overview.table.column_title.doctor": "Doctor",
+  "patient_overview.table.column_title.type": "Type",
+  "patient_overview.table.column_title.prediction": "Prediction",
+  "patient_overview.table.column_title.status": "Status",
+
+  "chat_page.menu.user_info_label": "",
+  "chat_page.menu.mute_chat": "Mute Chat",
+  "chat_page.menu.delete_chat": "Delete Chat",
+  "chat_page.chat.type_a_message_placeholder": "Type a message..."
+
 }

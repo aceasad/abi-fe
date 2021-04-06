@@ -33,7 +33,6 @@ export const HeaderNav = (props) => {
     currentTheme,
     localization = true,
   } = props;
-  const [searchActive, setSearchActive] = useState(false);
   const dispatch = useDispatch();
 
   const dropdownMenu = (
@@ -50,10 +49,6 @@ export const HeaderNav = (props) => {
       </Menu.Item>
     </Menu>
   );
-
-  const onSearchClose = () => {
-    setSearchActive(false);
-  };
 
   const onToggle = () => {
     if (!isMobile) {

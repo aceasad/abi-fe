@@ -10,6 +10,7 @@ const ENDPOINTS = {
   FETCH_USER: '/users/me/',
   CREATE_PASSWORD: '/users/create_password/',
   REFRESH_TOKEN: '/token/refresh/',
+  CHANGE_PASSWORD: '/users/me/change_password/',
 };
 
 class AuthService extends ApiService {
@@ -97,6 +98,9 @@ class AuthService extends ApiService {
 
   createUserPassword = (password) =>
     this.apiClient.post(ENDPOINTS.CREATE_PASSWORD, password);
+
+  changeUserPassword = (data) =>
+    this.apiClient.put(ENDPOINTS.CHANGE_PASSWORD, data);
 }
 
 const authService = new AuthService();

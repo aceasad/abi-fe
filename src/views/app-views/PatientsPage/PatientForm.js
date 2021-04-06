@@ -1,166 +1,151 @@
+import React from 'react';
+import { useIntl } from 'react-intl';
+import { useSelector } from 'react-redux';
 import { Field, Formik } from 'formik';
 import { Card, Col, Row, Typography } from 'antd';
 import Layout, { Content } from 'antd/lib/layout/layout';
-import React from 'react';
+import Form from 'antd/lib/form/Form';
+
 import PatientHeader from './PatientHeader';
 import FormField from 'components/custom-components/Form/FormField';
-import Form from 'antd/lib/form/Form';
 import FormDatePicker from 'components/custom-components/Form/FormDatePicker';
 import FormSelect from 'components/custom-components/Form/FormSelect';
-import localeString from 'utils/localeString';
 import ColumnField from 'components/custom-components/Form/ColumnField';
+import messages from './messages';
+import { makeSelectPatientDetails } from 'redux/selectors/Patient';
+import { patientSchema } from 'utils/validations';
+import { MAX } from 'constants/ClinicConstants';
 
 const { Title } = Typography;
 
-const options = [
-  { id: '1', name: 'Option 1' },
-  { id: '2', name: 'Option 2' },
-  { id: '3', name: 'Option 3' },
-];
+const PatientForm = ({
+  title,
+  showList,
+  handleSubmit,
+  genderChoices,
+  initialState,
+  loading,
+}) => {
+  const { formatMessage } = useIntl();
 
-const PatientForm = ({ title, localization }) => {
+  const { education, employment, material_status, ethnicities } = useSelector(
+    makeSelectPatientDetails()
+  );
+
+  const filterNumberInput = (e) =>
+    (e.keyCode === 69 ||
+      e.keyCode === 189 ||
+      e.keyCode === 190 ||
+      e.keyCode === 187) &&
+    e.preventDefault();
+
   return (
     <Layout>
       <Formik
-        initialValues={{
-          first_name: '',
-          last_name: '',
-          date_of_birth: '',
-          sex: '',
-          height: '',
-          weight: '',
-          ethinicity: '',
-          phone_number: '',
-          area_of_living: '',
-          marital_status: '',
-          number_of_dependents: '',
-          employment_status: '',
-          education_background: '',
-          insurance: '',
-        }}
+        enableReinitialize
+        initialValues={initialState}
+        onSubmit={handleSubmit}
+        validationSchema={patientSchema}
       >
-        {({ values }) => (
+        {({ values, dirty, isValid, handleSubmit }) => (
           <>
-            <PatientHeader title={title} localization={localization} />
-
+            <PatientHeader
+              title={title}
+              secondaryAction={showList}
+              primaryAction={handleSubmit}
+              primaryDisabled={!isValid || !dirty || loading}
+            />
             <Content>
               <Card className="m-4 p-4">
                 <Form layout="vertical">
                   <Row>
                     <Col span={6}>
                       <Title type="secondary" level={2} className="mt-4">
-                        {localeString(
-                          localization,
-                          'patient_details.side.title.personal'
-                        )}
+                        {formatMessage(messages.personalTitle)}
                       </Title>
                     </Col>
 
                     <Col span={12}>
-                      <Row gutter={16}>
+                      <Row gutter={16} align="bottom">
                         <ColumnField
                           span={8}
                           component={FormField}
-                          label={localeString(
-                            localization,
-                            'patient_details.side.form.first_name'
-                          )}
+                          label={formatMessage(messages.firstName)}
                           name="first_name"
                           errorTexts={{
-                            label: 'First name error.',
+                            label: formatMessage(messages.firstName),
+                            maxValue: MAX,
                           }}
-                          required={true}
+                          required
                         />
                         <ColumnField
                           span={8}
                           component={FormField}
-                          label={localeString(
-                            localization,
-                            'patient_details.side.form.last_name'
-                          )}
+                          label={formatMessage(messages.lastName)}
                           name="last_name"
                           errorTexts={{
-                            label: 'Last name error.',
+                            label: formatMessage(messages.lastName),
+                            maxValue: MAX,
                           }}
-                          required={true}
+                          required
                         />
                         <ColumnField
                           span={8}
                           component={FormDatePicker}
-                          label={localeString(
-                            localization,
-                            'patient_details.side.form.date_of_birth'
-                          )}
+                          label={formatMessage(messages.dateOfBirth)}
                           name="date_of_birth"
-                          errorTexts={{
-                            label: 'Date of birth error.',
-                          }}
-                          required={true}
+                          required
                         />
                       </Row>
-                      <Row gutter={16}>
+                      <Row gutter={16} align="bottom">
                         <ColumnField
                           span={8}
                           component={FormSelect}
-                          name="sex"
-                          options={options}
+                          name="gender"
+                          options={genderChoices}
                           optionField="name"
                           defaultOption={
-                            options &&
-                            options.find((option) => option.id == values.sex)
+                            genderChoices &&
+                            genderChoices.find(
+                              (option) => option.id == values.gender
+                            )
                           }
-                          label={localeString(
-                            localization,
-                            'patient_details.side.form.sex'
-                          )}
+                          label={formatMessage(messages.sex)}
                         />
 
                         <ColumnField
                           span={8}
                           component={FormField}
-                          label={localeString(
-                            localization,
-                            'patient_details.side.form.height'
-                          )}
+                          label={formatMessage(messages.height)}
                           name="height"
-                          errorTexts={{
-                            label: 'Height error.',
-                          }}
                           type={'number'}
+                          onKeyDown={filterNumberInput}
                           min={0}
                         />
                         <ColumnField
                           span={8}
                           component={FormField}
-                          label={localeString(
-                            localization,
-                            'patient_details.side.form.weight'
-                          )}
+                          label={formatMessage(messages.weight)}
                           name="weight"
-                          errorTexts={{
-                            label: 'Weight error.',
-                          }}
                           type={'number'}
+                          onKeyDown={filterNumberInput}
                           min={0}
                         />
                       </Row>
-                      <Row gutter={16}>
+                      <Row gutter={16} align="bottom">
                         <ColumnField
                           span={8}
                           component={FormSelect}
                           name="ethnicity"
-                          options={options}
+                          options={ethnicities}
                           optionField="name"
                           defaultOption={
-                            options &&
-                            options.find(
-                              (option) => option.id == values.ethinicity
+                            ethnicities &&
+                            ethnicities.find(
+                              (option) => option.id == values.ethnicity
                             )
                           }
-                          label={localeString(
-                            localization,
-                            'patient_details.side.form.ethnicity'
-                          )}
+                          label={formatMessage(messages.ethnicity)}
                         />
                       </Row>
                     </Col>
@@ -169,37 +154,33 @@ const PatientForm = ({ title, localization }) => {
                   <Row>
                     <Col span={6}>
                       <Title type="secondary" level={2} className="mt-4">
-                        {localeString(
-                          localization,
-                          'patient_details.side.title.contact'
-                        )}
+                        {formatMessage(messages.contact)}
                       </Title>
                     </Col>
 
                     <Col span={12}>
-                      <Row gutter={16}>
+                      <Row gutter={16} align="bottom">
                         <ColumnField
                           component={FormField}
-                          label={localeString(
-                            localization,
-                            'patient_details.side.form.phone_number'
-                          )}
+                          label={formatMessage(messages.phoneNumber)}
                           name="phone_number"
                           errorTexts={{
-                            label: 'Phone number error.',
+                            label: formatMessage(messages.phoneNumber),
+                            matchesLabel: formatMessage(
+                              messages.phoneNumberFormat
+                            ),
+                            maxValue: MAX,
                           }}
-                          required={true}
+                          required
                         />
                         <ColumnField
                           span={8}
                           component={FormField}
-                          label={localeString(
-                            localization,
-                            'patient_details.side.form.area_of_living'
-                          )}
+                          label={formatMessage(messages.areaOfLiving)}
                           name="area_of_living"
                           errorTexts={{
-                            label: 'Area of living error.',
+                            label: formatMessage(messages.areaOfLiving),
+                            maxValue: MAX,
                           }}
                         />
                       </Row>
@@ -209,92 +190,75 @@ const PatientForm = ({ title, localization }) => {
                   <Row>
                     <Col span={6}>
                       <Title type="secondary" level={2} className="mt-4">
-                        {localeString(
-                          localization,
-                          'patient_details.side.title.other'
-                        )}
+                        {formatMessage(messages.otherInfo)}
                       </Title>
                     </Col>
 
                     <Col span={12}>
-                      <Row gutter={16}>
+                      <Row gutter={16} align="bottom">
                         <ColumnField
                           span={8}
                           component={FormSelect}
-                          name="marital_status"
-                          options={options}
+                          name="material_status"
+                          options={material_status}
                           optionField="name"
                           defaultOption={
-                            options &&
-                            options.find(
-                              (option) => option.id == values.marital_status
+                            material_status &&
+                            material_status.find(
+                              (option) => option.id == values.material_status
                             )
                           }
-                          label={localeString(
-                            localization,
-                            'patient_details.side.form.marital_status'
-                          )}
+                          label={formatMessage(messages.materialStatus)}
                         />
                         <ColumnField
                           span={8}
                           component={FormField}
-                          label={'Number of dependents'}
-                          name="number_of_dependents"
-                          errorTexts={{
-                            label: 'Area of living error.',
-                          }}
+                          label={formatMessage(messages.numberOfDependants)}
+                          name="number_of_dependants"
+                          onKeyDown={filterNumberInput}
                           type={'number'}
                           min={0}
                         />
                       </Row>
-                      <Row gutter={16}>
+                      <Row gutter={16} align="bottom">
                         <ColumnField
                           span={8}
                           component={FormSelect}
-                          name="employment_status"
-                          options={options}
+                          name="employment"
+                          options={employment}
                           optionField="name"
                           defaultOption={
-                            options &&
-                            options.find(
-                              (options) => options.id == values.marital_status
+                            employment &&
+                            employment.find(
+                              (option) => option.id == values.employment
                             )
                           }
-                          label={localeString(
-                            localization,
-                            'patient_details.side.form.employment_status'
-                          )}
+                          label={formatMessage(messages.employmentStatus)}
                         />
                         <ColumnField
                           span={8}
                           component={FormSelect}
-                          name="education_background"
-                          options={options}
+                          name="education"
+                          options={education}
                           optionField="name"
                           defaultOption={
-                            options &&
-                            options.find(
-                              (options) =>
-                                options.id == values.education_background
+                            education &&
+                            education.find(
+                              (option) => option.id == values.education
                             )
                           }
-                          label={localeString(
-                            localization,
-                            'patient_details.side.form.educational_background'
-                          )}
+                          label={formatMessage(messages.education)}
                         />
                       </Row>
-                      <Row gutter={16}>
+                      <Row gutter={16} align="bottom">
                         <Col span={16}>
                           <Field
                             component={FormField}
-                            label={localeString(
-                              localization,
-                              'patient_details.side.form.insurance'
-                            )}
+                            label={formatMessage(messages.insurance)}
                             name="insurance"
                             errorTexts={{
-                              label: 'Insurance error.',
+                              label: formatMessage(messages.insurance),
+                              maxValue: MAX,
                             }}
                           />
                         </Col>

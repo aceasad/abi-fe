@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { UserOutlined, UpOutlined } from '@ant-design/icons';
 import { Badge, Avatar } from 'antd';
 
-const FormImageUpload = ({ field, form, label }) => {
-  const [imagePreview, setImagePreview] = useState();
+const FormImageUpload = ({ field, form, isSubmit }) => {
+  const [imagePreview, setImagePreview] = useState(field.value);
 
   useEffect(() => {
     const image = field.value;
@@ -26,6 +26,7 @@ const FormImageUpload = ({ field, form, label }) => {
         onChange={(e) => {
           form.setFieldValue(field.name, e.target.files[0]);
           e.target.value = null;
+          isSubmit && form.handleSubmit();
         }}
         style={{ position: 'absolute' }}
         className="invisible"

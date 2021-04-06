@@ -1,18 +1,31 @@
 import {
-  UPDATE_CLINIC_SUCCESS,
-  UPDATE_CLINIC_ERROR,
+  CREATE_CLINIC_SUCCESS,
+  CREATE_CLINIC_ERROR,
+  SET_CLINIC,
+  SET_IS_LOADING,
 } from '../constants/Clinic';
 import produce from 'immer';
-const initialState = { isUpdated: false, message: null };
+const initialState = {
+  isCreated: false,
+  message: null,
+  clinic: null,
+  loading: false,
+};
 
 const clinic = (state = initialState, action) =>
   produce(state, (draft) => {
     switch (action.type) {
-      case UPDATE_CLINIC_SUCCESS:
-        draft.isUpdated = true;
+      case CREATE_CLINIC_SUCCESS:
+        draft.isCreated = true;
         break;
-      case UPDATE_CLINIC_ERROR:
+      case CREATE_CLINIC_ERROR:
         draft.message = action.message;
+        break;
+      case SET_CLINIC:
+        draft.clinic = action.payload;
+        break;
+      case SET_IS_LOADING:
+        draft.loading = action.payload;
         break;
     }
   });
