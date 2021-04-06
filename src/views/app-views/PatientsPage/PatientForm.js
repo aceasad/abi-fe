@@ -215,6 +215,7 @@ const PatientForm = ({
                           component={FormField}
                           label={formatMessage(messages.numberOfDependants)}
                           name="number_of_dependants"
+                          onKeyDown={filterNumberInput}
                           type={'number'}
                           min={0}
                         />

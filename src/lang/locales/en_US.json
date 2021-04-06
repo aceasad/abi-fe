@@ -307,5 +307,10 @@
   "user_settings.form.title.edit_user": "Edit User",
   "user_settings.form.title.delete_user": "Delete User",
   "user_settings.form.titile.create_user": "Create a new user by entering their name, email address and password.",
-  "user_settings.modal.delete.description": "Are you sure you wish to delete {user}?"
+  "user_settings.modal.delete.description": "Are you sure you wish to delete {user}?",
+
+  "chat_page.menu.user_info_label": "",
+  "chat_page.menu.mute_chat": "Mute Chat",
+  "chat_page.menu.delete_chat": "Delete Chat",
+  "chat_page.chat.type_a_message_placeholder": "Type a message..."
 }
