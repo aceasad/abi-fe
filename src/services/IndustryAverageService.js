@@ -5,20 +5,20 @@ const ENDPOINTS = {
 };
 
 class IndustryAverageService extends ApiService {
-  updateIndustryAverge = (values) => {
-    return this.apiClient.put(
+  updateIndustryAverge = (values) =>
+    this.apiClient.put(
       ENDPOINTS.UPDATE_INDUSTRY_AVERAGE + values.id + '/',
-
       values
     );
-  };
-  createIndustryAverage = (values) => {
-    const data = this.apiClient.post(ENDPOINTS.UPDATE_INDUSTRY_AVERAGE, values);
-    return data;
-  };
+
+  createIndustryAverage = (values) =>
+    this.apiClient.post(ENDPOINTS.UPDATE_INDUSTRY_AVERAGE, values);
+
   getIndustryAverage = () => {
     return this.apiClient.get(ENDPOINTS.UPDATE_INDUSTRY_AVERAGE);
   };
 }
+
 const industryAverage = new IndustryAverageService();
+
 export default industryAverage;

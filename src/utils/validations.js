@@ -1,8 +1,8 @@
 import Yup from './yupValidations';
 import {
+  maxDigits,
   passwordFormat,
   passwordMinLength,
-  max16digits,
   phoneFormat,
 } from 'constants/Validation';
 import { MAX, MAX_GOOGLE_LINK } from '../constants/ClinicConstants';
@@ -46,19 +46,13 @@ export const resetPasswordSchema = Yup.object().shape({
 });
 
 export const industryAveragesSchema = Yup.object().shape({
-  cost_of_missed_appointments: Yup.string().required().matches(max16digits),
-  did_not_attend: Yup.string().required().matches(max16digits),
-  uptake: Yup.string().required().matches(max16digits),
-  coverage: Yup.string().required().matches(max16digits),
-  number_of_women_screened_after_invite: Yup.string()
-    .required()
-    .matches(max16digits),
-  number_of_women_eligible_for_screen: Yup.string()
-    .required()
-    .matches(max16digits),
-  number_of_women_screened_in_past_3_y: Yup.string()
-    .required()
-    .matches(max16digits),
+  cost_of_missed_appointments: Yup.string().max(maxDigits).required(),
+  did_not_attend: Yup.string().max(maxDigits).required(),
+  uptake: Yup.string().max(maxDigits).required(),
+  coverage: Yup.string().max(maxDigits).required(),
+  number_of_women_screened_after_invite: Yup.string().max(maxDigits).required(),
+  number_of_women_eligible_for_screen: Yup.string().max(maxDigits).required(),
+  number_of_women_screened_in_past_3_y: Yup.string().max(maxDigits).required(),
 });
 
 export const staffValidationSchema = Yup.object().shape({

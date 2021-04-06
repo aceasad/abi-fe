@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
-import { Formik, Field } from 'formik';
+import { Formik } from 'formik';
 import { Button, Form, Row, Col, Typography, Layout, Card } from 'antd';
 import FormInputField from 'components/custom-components/Form/FormField';
 import messages from './messages';
@@ -32,11 +32,9 @@ const IndustryAverage = () => {
 
   const handleSubmit = useCallback(
     (values) => {
-      if (industryAverage.length) {
-        dispatch(updateIndustryAverage(values));
-      } else {
-        dispatch(createIndustryAverage(values));
-      }
+      industryAverage.length
+        ? dispatch(updateIndustryAverage(values))
+        : dispatch(createIndustryAverage(values));
     },
     [dispatch, industryAverage]
   );
