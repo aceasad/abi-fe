@@ -4,6 +4,7 @@ import Loading from 'components/shared-components/Loading';
 import { APP_PREFIX_PATH } from 'configs/AppConfig';
 import PrivateRoute from 'routes/PrivateRoute';
 import PatientOverview from './PatientsPage/PatientOverview';
+import UserSettings from './UserSettings';
 
 export const AppViews = () => {
   return (
@@ -44,6 +45,12 @@ export const AppViews = () => {
           exact
           path={`${APP_PREFIX_PATH}/patient-overview`}
           component={PatientOverview}
+        />
+
+        <Route
+          exact
+          path={`${APP_PREFIX_PATH}/user-settings`}
+          component={UserSettings}
         />
 
         <Redirect

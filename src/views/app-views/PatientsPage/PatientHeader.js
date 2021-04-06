@@ -18,12 +18,7 @@ const PatientHeader = ({
     <Header className="ant-layout-page-header border-bottom d-flex justify-content-sm-between">
       <Title className="mb-sm-0">{title}</Title>
       <div>
-        <Button
-          type="primary"
-          danger
-          className="mr-3"
-          onClick={secondaryAction}
-        >
+        <Button className="mr-3" onClick={secondaryAction}>
           {formatMessage(messages.cancel)}
         </Button>
         <Button
