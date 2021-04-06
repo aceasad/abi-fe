@@ -233,43 +233,6 @@ const ClinicForm = ({
                   </Form.Item>
                 </Col>
               </Row>
-              <Form.Item label={formatMessage(messages.workingHours)}>
-                <Row gutter={8}>
-                  <Field
-                    span={6}
-                    component={FormInputField}
-                    name={'start_of_work'}
-                    type={'time'}
-                  />
-                  <Col span={2} className="text-center">
-                    <MinusOutlined className="mt-3 text-primary" />
-                  </Col>
-                  <Field
-                    span={6}
-                    component={FormInputField}
-                    name={'end_of_work'}
-                    type={'time'}
-                  />
-                </Row>
-              </Form.Item>
-              <Row>
-                <Col>
-                  <Form.Item>
-                    <Button
-                      name="submit"
-                      type="primary"
-                      disabled={loading || !dirty || !isValid}
-                      onClick={handleSubmit}
-                    >
-                      {formatMessage(
-                        clinicData
-                          ? messages.updateButton
-                          : messages.createButton
-                      )}
-                    </Button>
-                  </Form.Item>
-                </Col>
-              </Row>
             </Col>
           </Row>
         </Form>
