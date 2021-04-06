@@ -1,9 +1,15 @@
 import { defineMessages } from 'react-intl';
 
+export const settings = 'settings_page';
 export const changePassword = 'change_password_page';
 export const editClinic = 'edit_clinic_page';
+export const industryAverage = 'industry_average_page';
 
 export default defineMessages({
+  settingsTitle: {
+    id: `${settings}.title`,
+    defaultMessage: 'Settings',
+  },
   oldPasswordInputLabel: {
     id: `${changePassword}.input_label.oldPassword`,
     defaultMessage: 'Old Password',
@@ -73,5 +79,9 @@ export default defineMessages({
   update_error: {
     id: `${editClinic}.text.update_error`,
     defaultMessage: 'Something went wrong',
+  },
+  industryAverageMenuLabel: {
+    id: `${industryAverage}.title`,
+    defaultMessage: 'Industry Average',
   },
 });
