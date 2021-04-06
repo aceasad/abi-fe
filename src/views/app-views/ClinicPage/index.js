@@ -1,4 +1,4 @@
-import { Button, Typography } from 'antd';
+import { Button, Card, Typography } from 'antd';
 import Layout, { Content, Header } from 'antd/lib/layout/layout';
 import ClinicForm from 'containers/Forms/ClinicForm/ClinicForm';
 import React from 'react';
@@ -30,7 +30,9 @@ const ClinicPage = ({ localization = true }) => {
         </Button>
       </Header>
       <Content>
-        <ClinicForm />
+        <Card className="m-4">
+          <ClinicForm />
+        </Card>
       </Content>
     </Layout>
   );

@@ -64,150 +64,141 @@ const IndustryAverage = () => {
     }
   }, [isUpdatedOrCreated]);
   return (
-    <Layout>
-      <Header className="ant-layout-page-header border-bottom">
-        <Title className="mb-sm-0">Industry Average</Title>
-      </Header>
-      <Content>
-        <Card className="m-4 p-3">
-          <Formik
-            enableReinitialize
-            initialValues={initialValues}
-            validationSchema={industryAveragesSchema}
-            onSubmit={handleSubmit}
-          >
-            {({ values, handleSubmit, dirty, isValid }) => (
-              <Form layout="vertical" name="login-form">
-                <Row gutter={64} align="bottom">
-                  <Col span={10}>
-                    <RowColumnField
-                      span={24}
-                      component={FormInputField}
-                      label={formatMessage(
-                        messages.cost_of_missed_appointments
-                      )}
-                      name={'cost_of_missed_appointments'}
-                      type={'text'}
-                      min={0}
-                      errorTexts={{
-                        label: formatMessage(
-                          messages.cost_of_missed_appointments
-                        ),
-                        maxValue: maxDigits,
-                      }}
-                    />
-                    <RowColumnField
-                      span={24}
-                      component={FormInputField}
-                      label={formatMessage(messages.did_not_attend)}
-                      name={'did_not_attend'}
-                      type={'text'}
-                      min={0}
-                      errorTexts={{
-                        label: formatMessage(messages.did_not_attend),
-                        maxValue: maxDigits,
-                      }}
-                    />
-                    <RowColumnField
-                      span={24}
-                      component={FormInputField}
-                      label={formatMessage(messages.uptake)}
-                      name={'uptake'}
-                      type={'text'}
-                      min={0}
-                      errorTexts={{
-                        label: formatMessage(messages.uptake),
-                        maxValue: maxDigits,
-                      }}
-                    />
-                    <RowColumnField
-                      span={24}
-                      component={FormInputField}
-                      label={formatMessage(messages.coverage)}
-                      name={'coverage'}
-                      type={'text'}
-                      min={0}
-                      errorTexts={{
-                        label: formatMessage(messages.coverage),
-                        maxValue: maxDigits,
-                      }}
-                    />
-                  </Col>
-                  <Col span={10}>
-                    <Row>
-                      <Col span={24}>
-                        <Title level={4} type="secondary" className="mb-4">
-                          Screening Average
-                        </Title>
-                      </Col>
-                    </Row>
-                    <RowColumnField
-                      span={24}
-                      component={FormInputField}
-                      label={formatMessage(
-                        messages.number_of_women_screened_after_sending_invites
-                      )}
-                      name={'number_of_women_screened_after_invite'}
-                      type={'text'}
-                      min={0}
-                      errorTexts={{
-                        label: formatMessage(
-                          messages.number_of_women_screened_after_sending_invites
-                        ),
-                        maxValue: maxDigits,
-                      }}
-                    />
-                    <RowColumnField
-                      span={24}
-                      component={FormInputField}
-                      label={formatMessage(
-                        messages.number_of_women_eligible_for_screening
-                      )}
-                      name={'number_of_women_eligible_for_screen'}
-                      type={'text'}
-                      min={0}
-                      errorTexts={{
-                        label: formatMessage(
-                          messages.number_of_women_eligible_for_screening
-                        ),
-                        maxValue: maxDigits,
-                      }}
-                    />
-                    <RowColumnField
-                      span={24}
-                      component={FormInputField}
-                      label={formatMessage(
-                        messages.number_of_women_screened_in_the_past_3_years
-                      )}
-                      name={'number_of_women_screened_in_past_3_y'}
-                      type={'text'}
-                      min={0}
-                      errorTexts={{
-                        label: formatMessage(
-                          messages.number_of_women_screened_in_the_past_3_years
-                        ),
-                        maxValue: maxDigits,
-                      }}
-                    />
+    <div className="p-2">
+      <Title level={2} className="mb-4">
+        {formatMessage(messages.title)}
+      </Title>
+      <Formik
+        enableReinitialize
+        initialValues={initialValues}
+        validationSchema={industryAveragesSchema}
+        onSubmit={handleSubmit}
+      >
+        {({ values, handleSubmit, dirty, isValid }) => (
+          <Form layout="vertical" name="login-form">
+            <Row gutter={64} align="bottom">
+              <Col span={10}>
+                <RowColumnField
+                  span={24}
+                  component={FormInputField}
+                  label={formatMessage(messages.cost_of_missed_appointments)}
+                  name={'cost_of_missed_appointments'}
+                  type={'number'}
+                  min={0}
+                  errorTexts={{
+                    label: formatMessage(messages.cost_of_missed_appointments),
+                    maxValue: maxDigits,
+                  }}
+                />
+                <RowColumnField
+                  span={24}
+                  component={FormInputField}
+                  label={formatMessage(messages.did_not_attend)}
+                  name={'did_not_attend'}
+                  type={'number'}
+                  min={0}
+                  errorTexts={{
+                    label: formatMessage(messages.did_not_attend),
+                    maxValue: maxDigits,
+                  }}
+                />
+                <RowColumnField
+                  span={24}
+                  component={FormInputField}
+                  label={formatMessage(messages.uptake)}
+                  name={'uptake'}
+                  type={'number'}
+                  min={0}
+                  errorTexts={{
+                    label: formatMessage(messages.uptake),
+                    maxValue: maxDigits,
+                  }}
+                />
+                <RowColumnField
+                  span={24}
+                  component={FormInputField}
+                  label={formatMessage(messages.coverage)}
+                  name={'coverage'}
+                  type={'number'}
+                  min={0}
+                  errorTexts={{
+                    label: formatMessage(messages.coverage),
+                    maxValue: maxDigits,
+                  }}
+                />
+              </Col>
+              <Col span={10}>
+                <Row>
+                  <Col span={24}>
+                    <Title level={4} type="secondary" className="mb-4">
+                      Screening Average
+                    </Title>
                   </Col>
                 </Row>
-
-                <Form.Item>
-                  <Button
-                    name="create"
-                    type="primary"
-                    disabled={!dirty || !isValid}
-                    onClick={handleSubmit}
-                  >
-                    Create
-                  </Button>
-                </Form.Item>
-              </Form>
-            )}
-          </Formik>
-        </Card>
-      </Content>
-    </Layout>
+                <RowColumnField
+                  span={24}
+                  component={FormInputField}
+                  label={formatMessage(
+                    messages.number_of_women_screened_after_sending_invites
+                  )}
+                  name={'number_of_women_screened_after_invite'}
+                  type={'number'}
+                  min={0}
+                  errorTexts={{
+                    label: formatMessage(
+                      messages.number_of_women_screened_after_sending_invites
+                    ),
+                    maxValue: maxDigits,
+                  }}
+                />
+                <RowColumnField
+                  span={24}
+                  component={FormInputField}
+                  label={formatMessage(
+                    messages.number_of_women_eligible_for_screening
+                  )}
+                  name={'number_of_women_eligible_for_screen'}
+                  type={'number'}
+                  min={0}
+                  errorTexts={{
+                    label: formatMessage(
+                      messages.number_of_women_eligible_for_screening
+                    ),
+                    maxValue: maxDigits,
+                  }}
+                />
+                <RowColumnField
+                  span={24}
+                  component={FormInputField}
+                  label={formatMessage(
+                    messages.number_of_women_screened_in_the_past_3_years
+                  )}
+                  name={'number_of_women_screened_in_past_3_y'}
+                  type={'number'}
+                  min={0}
+                  errorTexts={{
+                    label: formatMessage(
+                      messages.number_of_women_screened_in_the_past_3_years
+                    ),
+                    maxValue: maxDigits,
+                  }}
+                />
+              </Col>
+            </Row>
+            <Form.Item>
+              <Button
+                name="create"
+                type="primary"
+                disabled={!dirty || !isValid}
+                onClick={handleSubmit}
+              >
+                Create
+              </Button>
+            </Form.Item>
+          </Form>
+        )}
+      </Formik>
+    </div>
   );
 };
 export default IndustryAverage;
