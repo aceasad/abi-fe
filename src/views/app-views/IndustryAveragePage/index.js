@@ -20,6 +20,7 @@ import {
 } from '../../../redux/selectors/IndustryAverage';
 import { industryAveragesSchema } from 'utils/validations';
 import RowColumnField from 'components/custom-components/Form/RowColumnField';
+import { maxDigits } from 'constants/Validation';
 const { Header, Content } = Layout;
 const { Title } = Typography;
 
@@ -92,7 +93,7 @@ const IndustryAverage = () => {
                         label: formatMessage(
                           messages.cost_of_missed_appointments
                         ),
-                        matchesLabel: formatMessage(messages.number_max_digit),
+                        maxValue: maxDigits,
                       }}
                     />
                     <RowColumnField
@@ -104,7 +105,7 @@ const IndustryAverage = () => {
                       min={0}
                       errorTexts={{
                         label: formatMessage(messages.did_not_attend),
-                        matchesLabel: formatMessage(messages.number_max_digit),
+                        maxValue: maxDigits,
                       }}
                     />
                     <RowColumnField
@@ -116,7 +117,7 @@ const IndustryAverage = () => {
                       min={0}
                       errorTexts={{
                         label: formatMessage(messages.uptake),
-                        matchesLabel: formatMessage(messages.number_max_digit),
+                        maxValue: maxDigits,
                       }}
                     />
                     <RowColumnField
@@ -128,7 +129,7 @@ const IndustryAverage = () => {
                       min={0}
                       errorTexts={{
                         label: formatMessage(messages.coverage),
-                        matchesLabel: formatMessage(messages.number_max_digit),
+                        maxValue: maxDigits,
                       }}
                     />
                   </Col>
@@ -153,7 +154,7 @@ const IndustryAverage = () => {
                         label: formatMessage(
                           messages.number_of_women_screened_after_sending_invites
                         ),
-                        matchesLabel: formatMessage(messages.number_max_digit),
+                        maxValue: maxDigits,
                       }}
                     />
                     <RowColumnField
@@ -169,7 +170,7 @@ const IndustryAverage = () => {
                         label: formatMessage(
                           messages.number_of_women_eligible_for_screening
                         ),
-                        matchesLabel: formatMessage(messages.number_max_digit),
+                        maxValue: maxDigits,
                       }}
                     />
                     <RowColumnField
@@ -185,7 +186,7 @@ const IndustryAverage = () => {
                         label: formatMessage(
                           messages.number_of_women_screened_in_the_past_3_years
                         ),
-                        matchesLabel: formatMessage(messages.number_max_digit),
+                        maxValue: maxDigits,
                       }}
                     />
                   </Col>
