@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { Formik, Field } from 'formik';
 import { Button, Form, Row, Col, Typography, Layout, Card } from 'antd';
 import FormInputField from 'components/custom-components/Form/FormField';
@@ -30,13 +30,17 @@ const IndustryAverage = () => {
   const isLoading = useSelector(isLoadingIndustryAverageSelector());
   const isUpdatedOrCreated = useSelector(industryAverageIsUpdated());
 
-  const handleSubmit = (values, length) => {
-    if (length > 0) {
-      dispatch(updateIndustryAverage(values));
-    } else {
-      dispatch(createIndustryAverage(values));
-    }
-  };
+  const handleSubmit = useCallback(
+    (values) => {
+      if (industryAverage.length) {
+        dispatch(updateIndustryAverage(values));
+      } else {
+        dispatch(createIndustryAverage(values));
+      }
+    },
+    [dispatch, industryAverage]
+  );
+
   let initialValues =
     industryAverage != null && industryAverage.length > 0
       ? industryAverage[0]
@@ -72,7 +76,7 @@ const IndustryAverage = () => {
             initialValues={initialValues}
             validationSchema={industryAveragesSchema}
             onSubmit={(values) => {
-              handleSubmit(values, industryAverage.length);
+              handleSubmit(values);
             }}
           >
             {({ values, handleSubmit, dirty, isValid }) => (
