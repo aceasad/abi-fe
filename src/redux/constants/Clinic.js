@@ -1,3 +1,8 @@
-export const UPDATE_CLINIC = "update_clinic";
-export const UPDATE_CLINIC_SUCCESS = "update_clinic_success";
-export const UPDATE_CLINIC_ERROR = "update_clinic_error";
+export const CREATE_CLINIC = 'CREATE_CLINIC';
+export const CREATE_CLINIC_SUCCESS = 'CREATE_CLINIC_SUCCESS';
+export const CREATE_CLINIC_ERROR = 'CREATE_CLINIC_ERROR';
+export const UPDATE_CLINIC = 'UPDATE_CLINIC';
+export const GET_CLINIC = 'GET_CLINIC';
+export const SET_CLINIC = 'SET_CLINIC';
+export const GET_IS_LOADING = 'GET_IS_LOADING';
+export const SET_IS_LOADING = 'SET_IS_LOADING';

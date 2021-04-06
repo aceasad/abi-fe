@@ -53,6 +53,22 @@ export const staffValidationSchema = Yup.object().shape({
   seniority: Yup.string().required(),
 });
 
+export const changePasswordSchema = Yup.object().shape({
+  oldPassword: Yup.string()
+    .matches(passwordFormat)
+    .min(passwordMinLength)
+    .required(),
+  newPassword: Yup.string()
+    .matches(passwordFormat)
+    .min(passwordMinLength)
+    .required(),
+  newPasswordConfirm: Yup.string()
+    .matches(passwordFormat)
+    .min(passwordMinLength)
+    .required()
+    .oneOf([Yup.ref('newPassword')]),
+});
+
 export const patientSchema = Yup.object().shape({
   first_name: Yup.string().trim().max(MAX).required(),
   last_name: Yup.string().trim().max(MAX).required(),

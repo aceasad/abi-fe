@@ -3,7 +3,7 @@ import { UserOutlined, UpOutlined } from '@ant-design/icons';
 import { Badge, Avatar } from 'antd';
 
 const FormImageUpload = ({ field, form, isSubmit }) => {
-  const [imagePreview, setImagePreview] = useState();
+  const [imagePreview, setImagePreview] = useState(field.value);
 
   useEffect(() => {
     const image = field.value;
