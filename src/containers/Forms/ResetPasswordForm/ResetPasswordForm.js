@@ -12,6 +12,22 @@ import { makeIsResetPassword } from 'redux/selectors/Users';
 import { success } from 'components/shared-components/MessagesAlerts/index';
 const { resetPasswordSchema } = require('utils/validations');
 
+export const ValidPasswordFormat = () => {
+  const { formatMessage } = useIntl();
+
+  return (
+    <div>
+      <div>
+        {formatMessage(messages.minimumCharacters, { min: passwordMinLength })}
+      </div>
+      <div>{formatMessage(messages.upperAndLowerMixture)}</div>
+      <div>{formatMessage(messages.lettersAndNumberMixture)}</div>
+      <div>{formatMessage(messages.specialCharacters)}</div>
+      <div>{formatMessage(messages.specialCharactersExcluded)}</div>
+    </div>
+  );
+};
+
 const ResetPasswordForm = () => {
   const dispatch = useDispatch();
   const isReset = useSelector(makeIsResetPassword());
@@ -23,17 +39,6 @@ const ResetPasswordForm = () => {
       success(formatMessage(messages.passwordSuccessfullyChanged));
     }
   }, [isReset]);
-  const ValidPasswordFormat = (
-    <div>
-      <div>
-        {formatMessage(messages.minimumCharacters, { min: passwordMinLength })}
-      </div>
-      <div>{formatMessage(messages.upperAndLowerMixture)}</div>
-      <div>{formatMessage(messages.lettersAndNumberMixture)}</div>
-      <div>{formatMessage(messages.specialCharacters)}</div>
-      <div>{formatMessage(messages.specialCharactersExcluded)}</div>
-    </div>
-  );
 
   const handleResetPassword = (values) => {
     dispatch(resetPassword(values.password, token));

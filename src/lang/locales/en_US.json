@@ -319,10 +319,23 @@
   "patient_overview.table.column_title.type": "Type",
   "patient_overview.table.column_title.prediction": "Prediction",
   "patient_overview.table.column_title.status": "Status",
+  
+  "user_settings.title": "User Settings",
+  "user_settings.superadmin": "superadmin",
+  "user_settings.form.name": "Name",
+  "user_settings.form.email": "Email Address",
+  "user_settings.form.password": "Password",
+  "user_settings.form.confirm_password": "Confirm Password",
+  "user_settings.form.button.confirm": "Confirm",
+  "user_settings.form.button.cancel": "Cancel",
+  "user_settings.form.button.new": "New User",
+  "user_settings.form.title.edit_user": "Edit User",
+  "user_settings.form.title.delete_user": "Delete User",
+  "user_settings.form.titile.create_user": "Create a new user by entering their name, email address and password.",
+  "user_settings.modal.delete.description": "Are you sure you wish to delete {user}?",
 
   "chat_page.menu.user_info_label": "",
   "chat_page.menu.mute_chat": "Mute Chat",
   "chat_page.menu.delete_chat": "Delete Chat",
   "chat_page.chat.type_a_message_placeholder": "Type a message..."
-
 }
