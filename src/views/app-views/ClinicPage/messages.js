@@ -61,7 +61,7 @@ export default defineMessages({
   },
   create: {
     id: `${scope}.text.create`,
-    defaultMessage: 'Create',
+    defaultMessage: 'Save',
   },
   update_button: {
     id: `${scope}.text.update_button`,
