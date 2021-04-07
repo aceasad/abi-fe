@@ -28,7 +28,6 @@ import { ROUTES } from 'routes';
 import messages from 'containers/Forms/LoginForm/messages';
 import { clearLocalStorage } from 'utils/localStorage';
 import changePasswordMessages from 'views/app-views/SettingsPage/messages';
-import { setInvalidOldPasswordError } from 'redux/actions/Error';
 
 export function* signIn() {
   yield takeEvery(SIGNIN, function* ({ payload }) {
@@ -109,8 +108,12 @@ export function* changeUserPassword() {
       yield payload.showSuccess();
       yield payload.resetForm();
     } catch (err) {
-      //yield payload.showError();
-      yield put(setInvalidOldPasswordError(true));
+      if (err?.response?.status === 409) {
+        yield call(payload.setErrors, {
+          oldPassword: changePasswordMessages.invalidOldPassword,
+        });
+      }
+      yield payload.showError();
     } finally {
       yield put(showLoading(false));
     }
