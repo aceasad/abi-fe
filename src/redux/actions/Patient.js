@@ -13,6 +13,16 @@ import {
   SET_PATIENT_SINGLE,
   UPDATE_PATIENT,
   MODIFY_PATIENT,
+  GET_PATIENT_OVERVIEW,
+  SET_SCHEDULED_APPOINTMENTS_LOADING,
+  SET_APPOINTMENT_HISTORY_LOADING,
+  SET_SCHEDULED_APPOINTMENTS,
+  SET_APPOINTMENT_HISTORY,
+  SET_SCHEDULED_PAGE,
+  SET_SCHEDULED_ORDER,
+  SET_HISTORY_PAGE,
+  CHANGE_PATIENT,
+  TOGGLE_PATIENT_WHITELIST,
 } from '../constants/Patient';
 
 export const getPatients = () => ({
@@ -81,4 +91,53 @@ export const editPatient = (payload) => ({
 export const modifyPatient = (payload) => ({
   type: MODIFY_PATIENT,
   payload,
+});
+
+export const getPatientOverview = (payload) => ({
+  type: GET_PATIENT_OVERVIEW,
+  payload,
+});
+
+export const setScheduledAppointmentsLoading = (payload) => ({
+  type: SET_SCHEDULED_APPOINTMENTS_LOADING,
+  payload,
+});
+
+export const setAppointmentHistoryLoading = (payload) => ({
+  type: SET_APPOINTMENT_HISTORY_LOADING,
+  payload,
+});
+
+export const setScheduledAppointments = (payload) => ({
+  type: SET_SCHEDULED_APPOINTMENTS,
+  payload,
+});
+
+export const setAppointmentHistory = (payload) => ({
+  type: SET_APPOINTMENT_HISTORY,
+  payload,
+});
+
+export const setScheduledPage = (payload) => ({
+  type: SET_SCHEDULED_PAGE,
+  payload,
+});
+
+export const setScheduledOrder = (payload) => ({
+  type: SET_SCHEDULED_ORDER,
+  payload,
+});
+
+export const setAppointmentHistoryPage = (payload) => ({
+  type: SET_HISTORY_PAGE,
+  payload,
+});
+
+export const changePatient = (payload) => ({
+  type: CHANGE_PATIENT,
+  payload,
+});
+
+export const togglePatientWhitelist = () => ({
+  type: TOGGLE_PATIENT_WHITELIST,
 });

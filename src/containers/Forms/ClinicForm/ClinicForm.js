@@ -81,11 +81,6 @@ const ClinicForm = ({
           </Row>
 
           <Row>
-            <Col span={8}>
-              <Title type="secondary" level={2} className="mt-4 ml-2">
-                {localeString(localization, 'clinic_page.side.title')}
-              </Title>
-            </Col>
             <Col sm={16} xl={12}>
               <Row>
                 <ColumnField

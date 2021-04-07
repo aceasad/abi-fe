@@ -5,106 +5,64 @@ import {
   EditOutlined,
   WhatsAppOutlined,
 } from '@ant-design/icons';
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useIntl } from 'react-intl';
 import FormImageUpload from 'components/custom-components/Form/FormImageUpload';
 import { Field, Formik } from 'formik';
 import Form from 'antd/lib/form/Form';
 import Flex from 'components/shared-components/Flex';
 import { Typography } from 'antd';
 import FormCheckbox from 'components/custom-components/Form/FormCheckbox';
-import localeString from 'utils/localeString';
 import PatientOverviewDetails from './PatientOverviewDetails';
 import PatientOverviewScheduledCard from './PatientOverviewScheduledCard';
 import PatientOverviewHistoryCard from './PatientOverviewHistoryCard';
+import { useDispatch, useSelector } from 'react-redux';
+import { changePatient, getPatientOverview } from 'redux/actions/Patient';
+import { makeSelectPatientOverview } from 'redux/selectors/Patient';
+import Loading from 'components/shared-components/Loading';
+import { PATIENT_PAGE } from './index';
+import { prepareFormData } from 'utils/helpers';
+import messages from './messages';
 
 const { Text, Title } = Typography;
 
-const patientDummy = {
-  first_name: 'John',
-  last_name: 'Doe',
-  date_of_birth: '19/02/1989',
-  sex: 'Male',
-  ethnicity: 'Caucasian',
-  height: '184cm',
-  weight: '86kg',
-  phone_number: '+381 123123',
-  area: 'New York',
-  marital_status: 'Never Married',
-  number_of_dependants: '0',
-  employment_status: 'Employed',
-  educational_background: 'Tertiary',
-  insurance: 'Cigna Connect 8550 1-Bronze',
-};
+const PatientOverview = ({ patientId, showList, updatePatient }) => {
+  const dispatch = useDispatch();
+  const { patient, loading, lastAppointment } = useSelector(
+    makeSelectPatientOverview()
+  );
+  const { formatMessage } = useIntl();
 
-const dummyDataScheduled = [
-  {
-    key: '1',
-    date: '20/01/2021',
-    time: '9:00 am',
-    doctor: 'Cheryl Huges (Senior DO)',
-    type: 'Routine',
-    prediction: 'Likely to be missed',
-  },
-  {
-    key: '2',
-    date: '20201/2021',
-    time: '5:00 pm',
-    doctor: 'Marm Downey (Senior Endocrinologist)',
-    type: 'Specialized',
-    prediction: 'Likely to be attended',
-  },
-];
+  const patientDetailsFields = {
+    date_of_birth: formatMessage(messages.dateOfBirth),
+    gender: formatMessage(messages.sex),
+    ethnicity: formatMessage(messages.ethnicity),
+    height: formatMessage(messages.height),
+    weight: formatMessage(messages.weight),
+    phone_number: formatMessage(messages.phoneNumber),
+    area_of_living: formatMessage(messages.areaOfLiving),
+    material_status: formatMessage(messages.materialStatus),
+    number_of_dependants: formatMessage(messages.numberOfDependants),
+    employment: formatMessage(messages.employmentStatus),
+    education: formatMessage(messages.education),
+    insurance: formatMessage(messages.insurance),
+    last_appointment: formatMessage(messages.lastAppointment),
+  };
 
-const dummyDataHistory = [
-  {
-    key: '1',
-    date: '20/01/2021',
-    time: '9:00 am',
-    doctor: 'Cheryl Huges (Senior DO)',
-    type: 'Routine',
-    status: 'Scheduled',
-  },
-  {
-    key: '2',
-    date: '20201/2021',
-    time: '5:00 pm',
-    doctor: 'Marm Downey (Senior Endocrinologist)',
-    type: 'Specialized',
-    status: 'Attended',
-  },
-  {
-    key: '3',
-    date: '20/01/2021',
-    time: '9:00 am',
-    doctor: 'Cheryl Huges (Senior DO)',
-    type: 'Routine',
-    status: 'Rescheduled',
-  },
-  {
-    key: '4',
-    date: '20201/2021',
-    time: '5:00 pm',
-    doctor: 'Marm Downey (Senior Endocrinologist)',
-    type: 'Specialized',
-    status: 'Cancelled',
-  },
-];
+  useEffect(() => {
+    dispatch(getPatientOverview({ id: patientId }));
+  }, [dispatch, patientId]);
 
-const PatientOverview = ({ localization = true }) => {
-  const patientDetailsFields = [
-    'date_of_birth',
-    'sex',
-    'ethnicity',
-    'height',
-    'weight',
-    'phone_number',
-    'area',
-    'marital_status',
-    'number_of_dependants',
-    'employment_status',
-    'educational_background',
-    'insurance',
-  ];
+  const handleSubmit = (values) => {
+    const preparedData = prepareFormData(values);
+    if (!(values.picture instanceof File)) preparedData.delete('picture');
+    dispatch(
+      changePatient({
+        id: patientId,
+        data: preparedData,
+      })
+    );
+  };
 
   return (
     <Layout>
@@ -117,58 +75,70 @@ const PatientOverview = ({ localization = true }) => {
                 alignItems="center"
                 className="mb-4"
               >
-                <div className="text-primary cursor-pointer">
+                <div className="text-primary cursor-pointer" onClick={showList}>
                   <LeftOutlined />
                   <Text underline className="text-primary ml-2">
-                    {localeString(
-                      localization,
-                      'patient_overview.back_to_patients'
-                    )}
+                    {formatMessage(messages.backToPatients)}
                   </Text>
                 </div>
-                <div className="cursor-pointer">
+                <div
+                  className="cursor-pointer"
+                  onClick={() => updatePatient(patientId, PATIENT_PAGE.PREVIEW)}
+                >
                   <EditOutlined />
                 </div>
               </Flex>
-              <Formik
-                initialValues={{
-                  profile_picture: '',
-                  whitelisted: '',
-                }}
-                // Console log to show that values are gathered.
-                onSubmit={(values) => console.log(values)}
-              >
-                <Form>
-                  <Row gutter={[0, 16]} className="mb-4">
-                    <Col span={24}>
-                      <Field
-                        isSubmit
-                        component={FormImageUpload}
-                        name="profile_picture"
-                      />
-                    </Col>
-                    <Col span={24}>
-                      <Title level={3} className="text-center">
-                        {patientDummy.first_name} {patientDummy.last_name}
-                      </Title>
-                    </Col>
-                    <Col span={24}>
-                      <div className="border d-flex justify-content-center form-item-no-margin">
-                        <Field
-                          isSubmit
-                          name="whitelisted"
-                          component={FormCheckbox}
-                          label="Whitelisted"
-                        />
-                      </div>
-                    </Col>
-                  </Row>
-                </Form>
-              </Formik>
-              <PatientOverviewDetails
-                fields={patientDetailsFields}
-                patient={patientDummy}
-              />
+              {!patient || loading ? (
+                <Loading />
+              ) : (
+                <>
+                  <Formik
+                    initialValues={{
+                      picture: patient.picture,
+                      whitelisted: patient.whitelisted,
+                    }}
+                    onSubmit={handleSubmit}
+                  >
+                    <Form>
+                      <Row gutter={[0, 16]} className="mb-4">
+                        <Col span={24}>
+                          <Field
+                            isSubmit
+                            component={FormImageUpload}
+                            name="picture"
+                          />
+                        </Col>
+                        <Col span={24}>
+                          <Title level={3} className="text-center">
+                            {patient.first_name} {patient.last_name}
+                          </Title>
+                        </Col>
+                        <Col span={24}>
+                          <div className="border d-flex justify-content-center form-item-no-margin">
+                            <Field
+                              isSubmit
+                              name="whitelisted"
+                              component={FormCheckbox}
+                              label="whitelisted"
+                            />
+                          </div>
+                        </Col>
+                      </Row>
+                    </Form>
+                  </Formik>
+                  <PatientOverviewDetails
+                    fields={patientDetailsFields}
+                    patient={{
+                      ...patient,
+                      education: patient?.education?.name,
+                      ethnicity: patient?.ethnicity?.name,
+                      material_status: patient?.material_status?.name,
+                      employment: patient?.employment?.name,
+                    }}
+                    lastAppointment={lastAppointment}
+                  />
+                </>
+              )}
             </Card>
           </Col>
 
@@ -180,29 +150,20 @@ const PatientOverview = ({ localization = true }) => {
                 className="ml-4 mr-4 mb-4"
               >
                 <Title level={2} className="mb-0">
-                  {localeString(localization, 'patient_overview.title')}
+                  {formatMessage(messages.overviewTittle)}
                 </Title>
                 <Badge count={7}>
                   <Button type="primary">
                     <WhatsAppOutlined />{' '}
                     <span>
-                      {localeString(
-                        localization,
-                        'patient_overview.button.messages'
-                      )}
+                      {formatMessage(messages.overviewButtonMessages)}
                     </span>
                   </Button>
                 </Badge>
               </Flex>
               <Content>
-                <PatientOverviewScheduledCard
-                  patientData={dummyDataScheduled}
-                  localization={localization}
-                />
-                <PatientOverviewHistoryCard
-                  patientData={dummyDataHistory}
-                  localization={localization}
-                />
+                <PatientOverviewScheduledCard patient={patient} />
+                <PatientOverviewHistoryCard patient={patient} />
               </Content>
             </Layout>
           </Col>
