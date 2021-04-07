@@ -1,88 +1,87 @@
-import { Button, Card, Table, Typography } from 'antd';
 import React from 'react';
-import localeString from 'utils/localeString';
+import { useDispatch, useSelector } from 'react-redux';
+import { makeSelectHistory } from 'redux/selectors/Patient';
+import { setAppointmentHistoryPage } from 'redux/actions/Patient';
+import { DEFAULT_PAGINATION_LIMIT } from 'constants/ApiConstant';
+import { Card, Table, Typography } from 'antd';
+import messages from './messages';
+import { useIntl } from 'react-intl';
 
 const { Title, Text } = Typography;
 
-const PatientOverviewHistoryCard = ({ patientData, localization }) => {
+export const statusColor = (status) => {
   const statusOptions = {
     scheduled: 'Scheduled',
     attended: 'Attended',
     rescheduled: 'Rescheduled',
     cancelled: 'Cancelled',
   };
+  switch (status) {
+    case statusOptions.scheduled:
+      return <Text className="text-primary">{status}</Text>;
+    case statusOptions.attended:
+      return <Text type="success">{status}</Text>;
+    case statusOptions.rescheduled:
+      return <Text type="warning">{status}</Text>;
+    case statusOptions.cancelled:
+      return <Text type="secondary">{status}</Text>;
+    default:
+      return <Text>{status}</Text>;
+  }
+};
 
-  const statusColor = (status) => {
-    switch (status) {
-      case statusOptions.scheduled:
-        return <Text className="text-primary">{status}</Text>;
-      case statusOptions.attended:
-        return <Text type="success">{status}</Text>;
-      case statusOptions.rescheduled:
-        return <Text type="warning">{status}</Text>;
-      case statusOptions.cancelled:
-        return <Text type="secondary">{status}</Text>;
-    }
-  };
+const PatientOverviewHistoryCard = ({ patient }) => {
+  const dispatch = useDispatch();
+  const { formatMessage } = useIntl();
+
+  const { items, loading, count, page } = useSelector(makeSelectHistory());
 
   const columnsHistory = [
     {
-      title: localeString(
-        localization,
-        'patient_overview.table.column_title.date'
-      ),
+      title: formatMessage(messages.columnTitleDate),
       dataIndex: 'date',
     },
     {
-      title: localeString(
-        localization,
-        'patient_overview.table.column_title.time'
-      ),
+      title: formatMessage(messages.columnTitleTime),
       dataIndex: 'time',
     },
     {
-      title: localeString(
-        localization,
-        'patient_overview.table.column_title.doctor'
-      ),
+      title: formatMessage(messages.columnTitleDoctor),
       dataIndex: 'doctor',
     },
     {
-      title: localeString(
-        localization,
-        'patient_overview.table.column_title.type'
-      ),
-      dataIndex: 'type',
+      title: formatMessage(messages.columnTitleType),
+      dataIndex: 'appointment_type',
     },
     {
-      title: localeString(
-        localization,
-        'patient_overview.table.column_title.status'
-      ),
+      title: formatMessage(messages.columnTitleStatus),
       dataIndex: 'status',
       render: statusColor,
     },
   ];
 
-  const onChangeHistory = (pagination, filters, sorter, extra) => {
-    // Implement on change logic here
-    console.log('params', pagination, filters, sorter, extra);
+  const handlePaginationChange = (page) => {
+    dispatch(setAppointmentHistoryPage({ page, id: patient.id }));
   };
 
   return (
     <Card>
       <div className="mb-3">
         <Title level={4} className="mb-0">
-          {localeString(
-            localization,
-            'patient_overview.card_title.appointment_history'
-          )}
+          {formatMessage(messages.cardTitleAppointmentHistory)}
         </Title>
       </div>
       <Table
         columns={columnsHistory}
-        dataSource={patientData}
-        onChange={onChangeHistory}
+        dataSource={items}
+        loading={loading}
+        pagination={{
+          defaultPageSize: DEFAULT_PAGINATION_LIMIT,
+          total: count,
+          onChange: handlePaginationChange,
+          hideOnSinglePage: true,
+          current: page,
+        }}
       />
     </Card>
   );

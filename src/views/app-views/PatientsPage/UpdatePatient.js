@@ -34,7 +34,11 @@ const UpdatePatient = ({ showList, patientId }) => {
 
   const handleSubmit = (values) => {
     dispatch(
-      editPatient({ data: filterEmptyObjectFeilds(values), afterUpdate })
+      editPatient({
+        id: patientId,
+        data: filterEmptyObjectFeilds(values),
+        afterUpdate,
+      })
     );
   };
 
@@ -51,6 +55,10 @@ const UpdatePatient = ({ showList, patientId }) => {
               date_of_birth: moment(patient.date_of_birth).format(
                 DATE_FORMAT_MM_DD_YYYY
               ),
+              education: patient?.education?.id,
+              ethnicity: patient?.ethnicity?.id,
+              material_status: patient?.material_status?.id,
+              employment: patient?.employment?.id,
             }
           : {
               first_name: '',

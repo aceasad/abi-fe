@@ -4,6 +4,8 @@ import ApiService from './ApiService';
 const ENDPOINTS = {
   GET_PATIENTS: '/patients/',
   GET_PATIENT_DETAILS: '/patients/patient-details/',
+  GET_SCHEDULED_APPOINTMENTS: '/appointments/scheduled-appointments/',
+  GET_APPOINTMENT_HISTORY: '/appointments/passed-appointments/',
 };
 
 class PatientService extends ApiService {
@@ -26,8 +28,28 @@ class PatientService extends ApiService {
   getPatientSingle = (id) =>
     this.apiClient.get(ENDPOINTS.GET_PATIENTS + id + '/');
 
-  updatePatient = (data) =>
-    this.apiClient.put(ENDPOINTS.GET_PATIENTS + data.id + '/', data);
+  updatePatient = (id, data) =>
+    this.apiClient.put(ENDPOINTS.GET_PATIENTS + id + '/', data);
+
+  getScheduledAppointments = (id, { field, page = 1 }) =>
+    this.apiClient.get(ENDPOINTS.GET_SCHEDULED_APPOINTMENTS + id + '/', {
+      params: {
+        ordering: field,
+        limit: DEFAULT_PAGINATION_LIMIT,
+        offset: (page - 1) * DEFAULT_PAGINATION_LIMIT,
+      },
+    });
+
+  getAppointmentHistory = (id, page) =>
+    this.apiClient.get(ENDPOINTS.GET_APPOINTMENT_HISTORY + id + '/', {
+      params: {
+        limit: DEFAULT_PAGINATION_LIMIT,
+        offset: (page - 1) * DEFAULT_PAGINATION_LIMIT,
+      },
+    });
+
+  updatePatientPart = (id, data) =>
+    this.apiClient.patch(ENDPOINTS.GET_PATIENTS + id + '/', data);
 }
 
 const patientService = new PatientService();

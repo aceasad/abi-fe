@@ -5,27 +5,27 @@ import reducers from '../reducers';
 const selectPatientsDomain = (state) => state.patient || reducers;
 
 const makeSelectPatients = () =>
-  createSelector(selectPatientsDomain, (substate) => ({
-    patients: substate.patients,
-    count: substate.count,
-    loading: substate.loading,
-    page: substate.page,
+  createSelector(selectPatientsDomain, ({ patients }) => ({
+    patients: patients.items,
+    count: patients.count,
+    loading: patients.loading,
+    page: patients.page,
   }));
 
 const makeSelectPatientRequestData = () =>
-  createSelector(selectPatientsDomain, (substate) => ({
-    order: substate.order,
-    field: substate.field,
-    page: substate.page,
-    search: substate.search,
+  createSelector(selectPatientsDomain, ({ patients }) => ({
+    order: patients.order,
+    field: patients.field,
+    page: patients.page,
+    search: patients.search,
   }));
 
 const makeSelectLastOnThePage = () =>
-  createSelector(selectPatientsDomain, (substate) => ({
+  createSelector(selectPatientsDomain, ({ patients }) => ({
     isLast:
-      substate.page !== 1 &&
-      substate.count - 1 <= (substate.page - 1) * DEFAULT_PAGINATION_LIMIT,
-    page: substate.page,
+      patients.page !== 1 &&
+      patients.count - 1 <= (patients.page - 1) * DEFAULT_PAGINATION_LIMIT,
+    page: patients.page,
   }));
 
 const makeSelectPatientDetails = () =>
@@ -37,13 +37,47 @@ const makeSelectPatientDetails = () =>
   }));
 
 const makeSelectPatientSingle = () =>
-  createSelector(selectPatientsDomain, (substate) => ({
-    loading: substate.loading,
-    patient: substate.singlePatient,
+  createSelector(selectPatientsDomain, ({ patients }) => ({
+    loading: patients.loading,
+    patient: patients.single,
   }));
 
 const makeSelectPatientLoading = () =>
-  createSelector(selectPatientsDomain, (substate) => substate.loading);
+  createSelector(selectPatientsDomain, ({ patients }) => patients.loading);
+
+const makeSelectPatientOverview = () =>
+  createSelector(selectPatientsDomain, ({ patients, appointmentHistory }) => ({
+    loading: patients.loading,
+    patient: patients.single,
+    lastAppointment: appointmentHistory.items.length
+      ? appointmentHistory.items[0].date
+      : null,
+  }));
+
+const makeSelectScheduledAppointments = () =>
+  createSelector(
+    selectPatientsDomain,
+    (substate) => substate.scheduledAppointments
+  );
+
+const makeSelectScheduledData = () =>
+  createSelector(selectPatientsDomain, ({ scheduledAppointments }) => ({
+    order: scheduledAppointments.order,
+    field: scheduledAppointments.field,
+    page: scheduledAppointments.page,
+  }));
+
+const makeSelectHistory = () =>
+  createSelector(
+    selectPatientsDomain,
+    (substate) => substate.appointmentHistory
+  );
+
+const makeSelectHistoryPage = () =>
+  createSelector(
+    selectPatientsDomain,
+    ({ appointmentHistory }) => appointmentHistory.page
+  );
 
 export {
   makeSelectPatients,
@@ -52,4 +86,9 @@ export {
   makeSelectPatientDetails,
   makeSelectPatientSingle,
   makeSelectPatientLoading,
+  makeSelectPatientOverview,
+  makeSelectScheduledAppointments,
+  makeSelectScheduledData,
+  makeSelectHistory,
+  makeSelectHistoryPage,
 };
