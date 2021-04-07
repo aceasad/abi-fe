@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { Menu, Layout, Divider, Dropdown } from 'antd';
+import { Menu, Layout, Button, Space } from 'antd';
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import Logo from './Logo';
 import { toggleCollapsedNav, onMobileNavToggle } from 'redux/actions/Theme';
@@ -9,16 +9,11 @@ import {
   SIDE_NAV_COLLAPSED_WIDTH,
   SIDE_NAV_WIDTH,
 } from 'constants/ThemeConstant';
+import { LogoutOutlined } from '@ant-design/icons';
 import utils from 'utils';
-import localeString from 'utils/localeString';
-import {
-  LeftOutlined,
-  RightOutlined,
-  EllipsisOutlined,
-} from '@ant-design/icons';
+import { useIntl } from 'react-intl';
 import { signOut } from 'redux/actions/Auth';
 import { useDispatch } from 'react-redux';
-import UserSettingsFormModal from 'containers/Forms/UserSettings/UserSettingsFormModal';
 
 const { Header } = Layout;
 
@@ -32,36 +27,9 @@ export const HeaderNav = (props) => {
     onMobileNavToggle,
     isMobile,
     currentTheme,
-    localization = true,
   } = props;
+  const { formatMessage } = useIntl();
   const dispatch = useDispatch();
-
-  const [userSettingsModalVisible, setUserSettingsModalVisible] = useState(
-    false
-  );
-
-  const openUserSettings = () => {
-    setUserSettingsModalVisible(true);
-  };
-
-  const closeUserSettings = () => {
-    setUserSettingsModalVisible(false);
-  };
-
-  const dropdownMenu = (
-    <Menu>
-      <Menu.Item key="0">
-        {localeString(localization, 'user_menu.company_settings')}
-      </Menu.Item>
-      <Menu.Item key="1" onClick={openUserSettings}>
-        {localeString(localization, 'user_menu.user_settings')}
-      </Menu.Item>
-      <Menu.Divider />
-      <Menu.Item key="2" onClick={() => dispatch(signOut())}>
-        {localeString(localization, 'login_page.text.log_out')}
-      </Menu.Item>
-    </Menu>
-  );
 
   const onToggle = () => {
     if (!isMobile) {
@@ -94,65 +62,36 @@ export const HeaderNav = (props) => {
   return (
     <Header
       className={`app-header ${navMode}`}
-      style={{
-        backgroundColor: headerNavColor,
-        width: !isMobile ? 'auto' : '',
-      }}
+      style={{ backgroundColor: headerNavColor }}
     >
       <div className={`app-header-wrapper ${isNavTop ? 'layout-top-nav' : ''}`}>
-        <Dropdown overlay={dropdownMenu} trigger={['click']}>
-          <a className="ant-dropdown-link" href="#">
-            <Logo logoType={navMode} />
-          </a>
-        </Dropdown>
-        <UserSettingsFormModal
-          title={localeString(
-            localization,
-            'user_settings.form.title.edit_user'
-          )}
-          isModalVisible={userSettingsModalVisible}
-          closeModal={closeUserSettings}
-        />
-        <Divider type="vertical" className="nav-divider" />
-        {!isMobile && (
-          <div
-            className="nav-collapse-button"
-            onClick={() => {
-              onToggle();
-            }}
-          >
-            {navCollapsed ? (
-              <RightOutlined className="text-primary" />
-            ) : (
-              <LeftOutlined className="text-primary" />
-            )}
+        <Logo logoType={navMode} />
+        <div className="nav" style={{ width: `calc(100% - ${getNavWidth()})` }}>
+          <div className="nav-left">
+            <Menu mode="horizontal">
+              {isNavTop && !isMobile ? null : (
+                <Menu.Item
+                  key="0"
+                  onClick={() => {
+                    onToggle();
+                  }}
+                >
+                  {navCollapsed || isMobile ? (
+                    <MenuUnfoldOutlined className="nav-icon" />
+                  ) : (
+                    <MenuFoldOutlined className="nav-icon" />
+                  )}
+                </Menu.Item>
+              )}
+            </Menu>
           </div>
-        )}
-        {isMobile && (
-          <div
-            className="nav"
-            style={{ width: `calc(100% - ${getNavWidth()})` }}
-          >
-            {isNavTop && !isMobile ? null : (
-              <div className="nav-left">
-                <Menu mode="horizontal">
-                  <Menu.Item key="0" onClick={onToggle}>
-                    {navCollapsed || isMobile ? (
-                      <MenuUnfoldOutlined className="nav-icon ml-2" />
-                    ) : (
-                      <MenuFoldOutlined className="nav-icon ml-2" />
-                    )}
-                  </Menu.Item>
-                </Menu>
-              </div>
-            )}
-            <Dropdown overlay={dropdownMenu} trigger={['click']}>
-              <div className="ellipsis-dropdown align-self-center mr-3">
-                <EllipsisOutlined />
-              </div>
-            </Dropdown>
-          </div>
-        )}
+          <Space className="nav-right">
+            <Button onClick={() => dispatch(signOut())}>
+              <LogoutOutlined />
+              {formatMessage({ id: 'login_page.text.log_out' })}
+            </Button>
+          </Space>
+        </div>
       </div>
     </Header>
   );

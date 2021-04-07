@@ -36,18 +36,6 @@ export const AppViews = () => {
           component={lazy(() => import(`./SettingsPage`))}
         />
 
-        <Route
-          exact
-          path={`${APP_PREFIX_PATH}/patient-overview`}
-          component={PatientOverview}
-        />
-
-        <Route
-          exact
-          path={`${APP_PREFIX_PATH}/user-settings`}
-          component={UserSettings}
-        />
-
         <Redirect
           from={`${APP_PREFIX_PATH}`}
           to={`${APP_PREFIX_PATH}/overview`}

@@ -53,20 +53,10 @@ export const AppLayout = ({ navCollapsed, navType, location }) => {
           <SideNav routeInfo={currentRouteInfo} />
         ) : null}
         <Layout
-          className="app-layout app-content-no-padding app-content-full-height"
+          className="app-layout"
           style={{ paddingLeft: getLayoutGutter() }}
         >
-          <div
-            className={`app-content ${isNavTop ? 'layout-top-nav' : ''}`}
-            style={
-              !isMobile
-                ? {
-                    marginTop: '0',
-                    minHeight: 'calc(100vh - 60px)', // 60px is footer height.
-                  }
-                : {}
-            }
-          >
+          <div className={`app-content ${isNavTop ? 'layout-top-nav' : ''}`}>
             <PageHeader
               display={currentRouteInfo?.breadcrumb}
               title={currentRouteInfo?.title}

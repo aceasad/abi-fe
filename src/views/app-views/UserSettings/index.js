@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { Card, Table, Tooltip, Typography, Button, Modal } from 'antd';
+import { Table, Tooltip, Typography, Button, Modal } from 'antd';
 import { FormOutlined, DeleteOutlined } from '@ant-design/icons';
-import Layout, { Content, Header } from 'antd/lib/layout/layout';
 import UserSettingsFormModal from 'containers/Forms/UserSettings/UserSettingsFormModal';
 import { useIntl } from 'react-intl';
+import Flex from 'components/shared-components/Flex';
 
-const { Text, Title } = Typography;
+const { Text } = Typography;
 const { confirm } = Modal;
 
 const dummyData = [
@@ -122,13 +122,13 @@ const UserSettings = () => {
     },
   ];
   return (
-    <Layout>
-      <Header className="ant-layout-page-header shadow-sm d-flex justify-content-sm-between">
-        <Title className="mb-sm-0">
+    <div className="p-2">
+      <Flex justifyContent="between">
+        <Typography.Title level={2} className="mb-4">
           {formatMessage({
             id: 'user_settings.title',
           })}
-        </Title>
+        </Typography.Title>
         <Button
           type="primary"
           onClick={() =>
@@ -143,18 +143,15 @@ const UserSettings = () => {
             id: 'user_settings.form.button.new',
           })}
         </Button>
-      </Header>
-      <Content>
-        <Card className="m-4 p-3">
-          <Table columns={tableColumns} dataSource={dummyData} rowKey="id" />
-          <UserSettingsFormModal
-            title={userModalTitle}
-            isModalVisible={userSettingsModalVisible}
-            closeModal={closeUserSettings}
-          />
-        </Card>
-      </Content>
-    </Layout>
+      </Flex>
+      <Table columns={tableColumns} dataSource={dummyData} rowKey="id" />
+
+      <UserSettingsFormModal
+        title={userModalTitle}
+        isModalVisible={userSettingsModalVisible}
+        closeModal={closeUserSettings}
+      />
+    </div>
   );
 };
 
