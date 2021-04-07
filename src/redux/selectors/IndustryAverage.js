@@ -7,6 +7,15 @@ const industryAverageSelector = () =>
     selectIndustryAverageDomain,
     (substate) => substate.industryAverage
   );
+
+const industryAverageIsUpdated = () =>
+  createSelector(selectIndustryAverageDomain, (substate) => substate.isUpdated);
+
 const isLoadingIndustryAverageSelector = () =>
   createSelector(selectIndustryAverageDomain, (substate) => substate.loading);
-export { industryAverageSelector, isLoadingIndustryAverageSelector };
+
+export {
+  industryAverageSelector,
+  isLoadingIndustryAverageSelector,
+  industryAverageIsUpdated,
+};
