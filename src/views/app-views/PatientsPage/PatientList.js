@@ -145,7 +145,7 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
         ]}
       />
       <Card>
-        <div className="table-responsive">
+        <div className="table-responsive ant-table-row-pointer">
           <Table
             onRow={(record) => ({
               onClick: () => showPreview(record.id),
