@@ -154,7 +154,6 @@
   "clinic_page.header.title": "Clinic Settings",
   "clinic_page.side.title": "Clinic Details",
 
-
   "login_page.button.login": "Log In",
   "login_page.input_label.email": "Email Address",
   "login_page.input_label.password": "Password",
@@ -323,7 +322,7 @@
   "patient_overview.table.column_title.type": "Type",
   "patient_overview.table.column_title.prediction": "Prediction",
   "patient_overview.table.column_title.status": "Status",
-  
+
   "user_settings.title": "User Settings",
   "user_settings.superadmin": "superadmin",
   "user_settings.form.name": "Name",
@@ -336,7 +335,7 @@
   "user_settings.form.title.edit_user": "Edit User",
   "user_settings.form.title.delete_user": "Delete User",
   "user_settings.form.titile.create_user": "Create a new user by entering their name, email address and password.",
-  "user_settings.modal.delete.description": "Are you sure you wish to delete {user}?",
+  "user_settings.modal.delete.description": "Are you sure you want to delete {user}?",
 
   "chat_page.menu.user_info_label": "",
   "chat_page.menu.mute_chat": "Mute Chat",

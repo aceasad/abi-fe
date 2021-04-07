@@ -6,6 +6,9 @@ import { Field, Formik } from 'formik';
 import React from 'react';
 import { ValidPasswordFormat } from '../ResetPasswordForm/ResetPasswordForm';
 import { useIntl } from 'react-intl';
+import messages from '../../../views/app-views/UserSettings/messages';
+import { userSchema } from 'utils/validations';
+import { passwordMinLength } from 'constants/Validation';
 
 const UserSettingsFormModal = ({ isModalVisible, closeModal, title }) => {
   const { formatMessage } = useIntl();
@@ -14,11 +17,12 @@ const UserSettingsFormModal = ({ isModalVisible, closeModal, title }) => {
     <Formik
       initialValues={{
         name: '',
-        email: '',
+        username: '',
         password: '',
-        passwordRepeat: '',
+        confirmPassword: '',
       }}
       onSubmit={(values) => console.log(values)}
+      validationSchema={userSchema}
     >
       {({ values, handleSubmit, dirty, isValid }) => (
         <Modal
@@ -28,7 +32,7 @@ const UserSettingsFormModal = ({ isModalVisible, closeModal, title }) => {
           closable={false}
           footer={[
             <Button key="back" onClick={closeModal}>
-              {formatMessage({ id: 'user_settings.form.button.cancel' })}
+              {formatMessage(messages.formCancelButton)}
             </Button>,
             <Button
               key="submit"
@@ -37,40 +41,45 @@ const UserSettingsFormModal = ({ isModalVisible, closeModal, title }) => {
               htmlType="submit"
               disabled={!dirty || !isValid}
             >
-              {formatMessage({ id: 'user_settings.form.button.confirm' })}
+              {formatMessage(messages.formConfirmationButton)}
             </Button>,
           ]}
         >
           <Form layout="vertical" name="login-form">
             <Field
-              label={formatMessage({ id: 'user_settings.form.name' })}
+              label={formatMessage(messages.formName)}
               component={FormField}
-              name={'name'}
-              errorTexts={'Error test here'}
+              name="name"
+              autoFocus
             />
             <Field
-              label={formatMessage({ id: 'user_settings.form.email' })}
+              label={formatMessage(messages.formEmail)}
               component={FormField}
-              name={'email'}
-              type="email"
-              errorTexts={'Error test here'}
+              name="username"
             />
             <Field
-              label={formatMessage({ id: 'user_settings.form.password' })}
+              label={formatMessage(messages.formPassword)}
               component={FormField}
-              name={'password'}
+              name="password"
               tooltipText={ValidPasswordFormat}
               secureField
-              errorTexts={'Error test here'}
+              errorTexts={{
+                label: formatMessage(messages.formPassword),
+                minValue: passwordMinLength,
+                matchesLabel: formatMessage(messages.passwordValidFormat),
+              }}
             />
             <Field
-              label={formatMessage({
-                id: 'user_settings.form.confirm_password',
-              })}
+              label={formatMessage(messages.formConfirmPassword)}
               component={FormField}
-              name={'passwordRepeat'}
+              name="confirmPassword"
               secureField
-              errorTexts={'Error test here'}
+              errorTexts={{
+                label: formatMessage(messages.formConfirmPassword),
+                minValue: passwordMinLength,
+                matchesLabel: formatMessage(messages.passwordValidFormat),
+                value: formatMessage(messages.formPassword),
+              }}
             />
           </Form>
         </Modal>

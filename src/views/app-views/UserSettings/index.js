@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, Table, Tooltip, Typography, Button, Modal } from 'antd';
 import { FormOutlined, DeleteOutlined } from '@ant-design/icons';
 import Layout, { Content, Header } from 'antd/lib/layout/layout';
 import UserSettingsFormModal from 'containers/Forms/UserSettings/UserSettingsFormModal';
 import { useIntl } from 'react-intl';
+import messages from './messages';
+import { useDispatch } from 'react-redux';
 
 const { Text, Title } = Typography;
 const { confirm } = Modal;
@@ -31,6 +33,12 @@ const dummyData = [
 
 const UserSettings = () => {
   const { formatMessage } = useIntl();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    // dispatch(getUs)
+  }, []);
+
   const [userSettingsModalVisible, setUserSettingsModalVisible] = useState(
     false
   );
@@ -47,19 +55,12 @@ const UserSettings = () => {
 
   const showDeleteConfirm = (element) => {
     confirm({
-      title: formatMessage(
-        {
-          id: 'user_settings.modal.delete.description',
-        },
-        { user: element.userName }
-      ),
-      okText: formatMessage({
-        id: 'user_settings.form.button.confirm',
+      title: formatMessage(messages.deleteConfirmation, {
+        user: element.userName,
       }),
+      okText: formatMessage(messages.formConfirmationButton),
       okType: 'danger',
-      cancelText: formatMessage({
-        id: 'user_settings.form.button.cancel',
-      }),
+      cancelText: formatMessage(messages.formCancelButton),
       onOk() {
         // Implement on confirm logic.
       },
@@ -68,12 +69,12 @@ const UserSettings = () => {
 
   const tableColumns = [
     {
-      title: formatMessage({ id: 'user_settings.form.name' }),
+      title: formatMessage(messages.formName),
       dataIndex: 'userName',
       key: 'userName',
     },
     {
-      title: formatMessage({ id: 'user_settings.form.email' }),
+      title: formatMessage(messages.formEmail),
       dataIndex: 'email',
       key: 'email',
     },
@@ -84,33 +85,21 @@ const UserSettings = () => {
         <div className="text-right">
           {elm.superuser ? (
             <Text strong className="text-primary mr-2">
-              {formatMessage({ id: 'user_settings.superadmin' })}
+              {formatMessage(messages.superadmin)}
             </Text>
           ) : (
-            <Tooltip
-              title={formatMessage({
-                id: 'user_settings.form.title.edit_user',
-              })}
-            >
+            <Tooltip title={formatMessage(messages.editUser)}>
               <Button
                 className="mr-2"
                 icon={<FormOutlined />}
                 onClick={() =>
-                  openUserSettings(
-                    formatMessage({
-                      id: 'user_settings.form.title.edit_user',
-                    })
-                  )
+                  openUserSettings(formatMessage(messages.editUser))
                 }
                 size="small"
               />
             </Tooltip>
           )}
-          <Tooltip
-            title={formatMessage({
-              id: 'user_settings.form.title.delete_user',
-            })}
-          >
+          <Tooltip title={formatMessage(messages.deleteUser)}>
             <Button
               icon={<DeleteOutlined />}
               onClick={() => showDeleteConfirm(elm)}
@@ -124,24 +113,12 @@ const UserSettings = () => {
   return (
     <Layout>
       <Header className="ant-layout-page-header shadow-sm d-flex justify-content-sm-between">
-        <Title className="mb-sm-0">
-          {formatMessage({
-            id: 'user_settings.title',
-          })}
-        </Title>
+        <Title className="mb-sm-0">{formatMessage(messages.title)}</Title>
         <Button
           type="primary"
-          onClick={() =>
-            openUserSettings(
-              formatMessage({
-                id: 'user_settings.form.titile.create_user',
-              })
-            )
-          }
+          onClick={() => openUserSettings(formatMessage(messages.createUser))}
         >
-          {formatMessage({
-            id: 'user_settings.form.button.new',
-          })}
+          {formatMessage(messages.buttonNew)}
         </Button>
       </Header>
       <Content>
