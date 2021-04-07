@@ -4,6 +4,7 @@ export const scope = 'patients_page';
 export const commonScope = 'global';
 export const detailScope = 'patient_details';
 export const staffScope = 'staff_page';
+export const patientOverviewScope = 'patient_overview';
 
 export default defineMessages({
   patientsTitle: {
@@ -145,5 +146,53 @@ export default defineMessages({
   patientUpdated: {
     id: `${detailScope}.text.patient_updated`,
     defaultMessage: 'Patient Updated',
+  },
+  backToPatients: {
+    id: `${patientOverviewScope}.back_to_patients`,
+    defaultMessage: 'Back to patietnts',
+  },
+  overviewTittle: {
+    id: `${patientOverviewScope}.title`,
+    defaultMessage: 'Patient overview',
+  },
+  overviewButtonMessages: {
+    id: `${patientOverviewScope}.button.messages`,
+    defaultMessage: 'Messages',
+  },
+  columnTitleDate: {
+    id: `${patientOverviewScope}.table.column_title.date`,
+    defaultMessage: 'Date',
+  },
+  columnTitleTime: {
+    id: `${patientOverviewScope}.table.column_title.time`,
+    defaultMessage: 'Time',
+  },
+  columnTitleDoctor: {
+    id: `${patientOverviewScope}.table.column_title.doctor`,
+    defaultMessage: 'Doctor',
+  },
+  columnTitleType: {
+    id: `${patientOverviewScope}.table.column_title.type`,
+    defaultMessage: 'Type',
+  },
+  columnTitlePrediction: {
+    id: `${patientOverviewScope}.table.column_title.prediction`,
+    defaultMessage: 'Prediction',
+  },
+  columnTitleStatus: {
+    id: `${patientOverviewScope}.table.column_title.status`,
+    defaultMessage: 'Status',
+  },
+  cardTitleScheduledAppointments: {
+    id: `${patientOverviewScope}.card_title.scheduled_appointments`,
+    defaultMessage: 'Scheduled Appointments',
+  },
+  cardTitleAppointmentHistory: {
+    id: `${patientOverviewScope}.card_title.appointment_history`,
+    defaultMessage: 'Appointment History',
+  },
+  buttonNewAppointment: {
+    id: `${patientOverviewScope}.button.new_appointment`,
+    defaultMessage: 'New Appointment',
   },
 });

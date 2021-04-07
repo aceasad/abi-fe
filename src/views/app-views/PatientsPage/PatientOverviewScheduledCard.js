@@ -1,12 +1,36 @@
 import { Button, Card, Table, Typography } from 'antd';
-import Flex from 'components/shared-components/Flex';
 import React from 'react';
-import localeString from 'utils/localeString';
+import { useIntl } from 'react-intl';
+import { useDispatch, useSelector } from 'react-redux';
+import { setScheduledOrder, setScheduledPage } from 'redux/actions/Patient';
+import { makeSelectScheduledAppointments } from 'redux/selectors/Patient';
+import messages from './messages';
+import Flex from 'components/shared-components/Flex';
+import { DEFAULT_PAGINATION_LIMIT, ORDERING } from 'constants/ApiConstant';
 
 const { Title, Text } = Typography;
 
-const PatientOverviewScheduledCard = ({ patientData, localization }) => {
+const prepareField = (order, field) => {
+  const base = order === ORDERING.DESC ? '-' : '';
+  switch (field) {
+    case 'doctor':
+      return `${base}doctor__first_name,${base}doctor_last_name`;
+    case 'date':
+      return `${base}start_datetime`;
+    case 'appointment_type':
+      return `${base}appointment_type__name`;
+    default:
+      return `${base}${field}`;
+  }
+};
+
+const PatientOverviewScheduledCard = ({ patient }) => {
   const predictionOption = 'Likely to be missed';
+  const dispatch = useDispatch();
+
+  const { items, loading, count, page } = useSelector(
+    makeSelectScheduledAppointments()
+  );
 
   const renderPredictionText = (prediction) => (
     <Text type={prediction === predictionOption ? 'danger' : 'success'}>
@@ -14,75 +38,74 @@ const PatientOverviewScheduledCard = ({ patientData, localization }) => {
     </Text>
   );
 
+  const handlePaginationChange = (page) => {
+    dispatch(setScheduledPage({ page, id: patient.id }));
+  };
+
+  const handleChange = (_, __, { order, field }, e) => {
+    if (e.action === 'sort')
+      dispatch(
+        setScheduledOrder({
+          id: patient.id,
+          order,
+          field: prepareField(order, field),
+        })
+      );
+  };
+
+  const { formatMessage } = useIntl();
+
   const columnsScheduled = [
     {
-      title: localeString(
-        localization,
-        'patient_overview.table.column_title.date'
-      ),
+      title: formatMessage(messages.columnTitleDate),
       dataIndex: 'date',
-      sorter: (a, b) => a.date.length - b.date.length,
+      sorter: true,
     },
     {
-      title: localeString(
-        localization,
-        'patient_overview.table.column_title.time'
-      ),
+      title: formatMessage(messages.columnTitleTime),
       dataIndex: 'time',
-      sorter: (a, b) => a.time - b.time,
+      sorter: false,
     },
     {
-      title: localeString(
-        localization,
-        'patient_overview.table.column_title.doctor'
-      ),
+      title: formatMessage(messages.columnTitleDoctor),
       dataIndex: 'doctor',
-      sorter: (a, b) => a.doctor.length - b.doctor.length,
+      sorter: true,
     },
     {
-      title: localeString(
-        localization,
-        'patient_overview.table.column_title.type'
-      ),
-      dataIndex: 'type',
-      sorter: (a, b) => a.type.length - b.type.length,
+      title: formatMessage(messages.columnTitleType),
+      dataIndex: 'appointment_type',
+      sorter: true,
     },
     {
-      title: localeString(
-        localization,
-        'patient_overview.table.column_title.prediction'
-      ),
+      title: formatMessage(messages.columnTitlePrediction),
       dataIndex: 'prediction',
-      sorter: (a, b) => a.prediction.length - b.prediction.length,
+      sorter: true,
       render: renderPredictionText,
     },
   ];
-
-  const onChangeScheduled = (pagination, filters, sorter, extra) => {
-    // Implement on change logic here
-    console.log('params', pagination, filters, sorter, extra);
-  };
 
   return (
     <Card>
       <Flex justifyContent="between" alignItems="center" className="mb-3">
         <Title level={4} className="mb-0">
-          {localeString(
-            localization,
-            'patient_overview.card_title.scheduled_appointments'
-          )}
+          {formatMessage(messages.cardTitleScheduledAppointments)}
         </Title>
         <Button ghost type="primary">
-          {localeString(
-            localization,
-            'patient_overview.button.new_appointment'
-          )}
+          {formatMessage(messages.buttonNewAppointment)}
         </Button>
       </Flex>
       <Table
         columns={columnsScheduled}
-        dataSource={patientData}
-        onChange={onChangeScheduled}
+        dataSource={items}
+        onChange={handleChange}
+        pagination={{
+          defaultPageSize: DEFAULT_PAGINATION_LIMIT,
+          total: count,
+          onChange: handlePaginationChange,
+          hideOnSinglePage: true,
+          current: page,
+        }}
+        loading={loading}
       />
     </Card>
   );

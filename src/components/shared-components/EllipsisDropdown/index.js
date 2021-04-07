@@ -9,6 +9,7 @@ const EllipsisDropdown = (props) => {
       overlay={props.menu}
       placement={props.placement}
       trigger={['click']}
+      onClick={(e) => e.stopPropagation()}
     >
       <div className="ellipsis-dropdown">
         <EllipsisOutlined />

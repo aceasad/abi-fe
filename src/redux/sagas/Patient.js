@@ -10,6 +10,11 @@ import {
   CREATE_PATIENT,
   GET_PATIENT_SINGLE,
   UPDATE_PATIENT,
+  GET_PATIENT_OVERVIEW,
+  SET_SCHEDULED_PAGE,
+  SET_SCHEDULED_ORDER,
+  SET_HISTORY_PAGE,
+  CHANGE_PATIENT,
 } from 'redux/constants/Patient';
 import {
   setPatientDetails,
@@ -18,10 +23,17 @@ import {
   setPatients,
   setSinglePatient,
   modifyPatient,
+  setAppointmentHistoryLoading,
+  setScheduledAppointmentsLoading,
+  setScheduledAppointments,
+  setAppointmentHistory,
+  togglePatientWhitelist,
 } from 'redux/actions/Patient';
 import {
   makeSelectPatientRequestData,
   makeSelectLastOnThePage,
+  makeSelectScheduledData,
+  makeSelectHistoryPage,
 } from '../selectors/Patient';
 
 function* getPatients() {
@@ -83,13 +95,62 @@ function* getPatientSingle({ payload }) {
 function* updatePatient({ payload }) {
   try {
     yield put(setPatientLoading(true));
-    yield call(patientService.updatePatient, payload.data);
+    yield call(patientService.updatePatient, payload.id, payload.data);
     yield payload.afterUpdate();
     yield put(modifyPatient(payload.data));
   } catch (err) {
   } finally {
     yield put(setPatientLoading(false));
   }
+}
+
+function* getScheduledAppointments({ payload }) {
+  try {
+    const requestData = yield select(makeSelectScheduledData());
+    yield put(setScheduledAppointmentsLoading(true));
+    const { data } = yield call(
+      patientService.getScheduledAppointments,
+      payload.id,
+      requestData
+    );
+    yield put(setScheduledAppointments(data));
+  } catch (err) {
+  } finally {
+    yield put(setScheduledAppointmentsLoading(false));
+  }
+}
+
+function* getAppointmentHistory({ payload }) {
+  try {
+    const page = yield select(makeSelectHistoryPage());
+    yield put(setAppointmentHistoryLoading(true));
+    const { data } = yield call(
+      patientService.getAppointmentHistory,
+      payload.id,
+      page
+    );
+    yield put(setAppointmentHistory(data));
+  } catch (err) {
+  } finally {
+    yield put(setAppointmentHistoryLoading(false));
+  }
+}
+
+function* getPatientOverview({ payload }) {
+  try {
+    yield all([
+      getPatientSingle({ payload: payload.id }),
+      getScheduledAppointments({ payload }),
+      getAppointmentHistory({ payload }),
+    ]);
+  } catch (err) {}
+}
+
+function* changePatient({ payload }) {
+  try {
+    yield call(patientService.updatePatientPart, payload.id, payload.data);
+    yield put(togglePatientWhitelist());
+  } catch (err) {}
 }
 
 export function* patientSaga() {
@@ -102,6 +163,11 @@ export function* patientSaga() {
   yield takeEvery(CREATE_PATIENT, createPatient);
   yield takeEvery(GET_PATIENT_SINGLE, getPatientSingle);
   yield takeEvery(UPDATE_PATIENT, updatePatient);
+  yield takeEvery(GET_PATIENT_OVERVIEW, getPatientOverview);
+  yield takeEvery(SET_SCHEDULED_PAGE, getScheduledAppointments);
+  yield takeEvery(SET_SCHEDULED_ORDER, getScheduledAppointments);
+  yield takeEvery(SET_HISTORY_PAGE, getAppointmentHistory);
+  yield takeEvery(CHANGE_PATIENT, changePatient);
 }
 
 export default function* rootSaga() {

@@ -15,6 +15,7 @@ const FormSelect = ({
   optionField,
   placeholder,
   errorTexts,
+  required,
 }) => {
   const { formatMessage } = useIntl();
 
@@ -30,7 +31,7 @@ const FormSelect = ({
     });
 
   return (
-    <Form.Item label={label}>
+    <Form.Item label={label} required={required}>
       <Select
         placeholder={
           defaultOption ? defaultOption[optionField] : placeholderText

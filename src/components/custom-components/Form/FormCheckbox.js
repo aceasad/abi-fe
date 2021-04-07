@@ -6,19 +6,16 @@ const FormCheckbox = ({
   field,
   form: { setFieldValue, handleSubmit },
   label,
-  checked = false,
   isSubmit,
 }) => {
-  const [isChecked, setIsChecked] = useState(checked);
   const onChange = () => {
-    setIsChecked(!isChecked);
-    setFieldValue(field.name, !isChecked);
+    setFieldValue(field.name, !field.value);
     isSubmit && handleSubmit();
   };
 
   return (
     <Form.Item label={label}>
-      <Checkbox onChange={onChange} checked={isChecked} />
+      <Checkbox onChange={onChange} checked={field.value} />
     </Form.Item>
   );
 };

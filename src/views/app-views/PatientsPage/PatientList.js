@@ -2,12 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
 import { Card, Table, Input, Button, Menu, Typography, message } from 'antd';
-import {
-  EditFilled,
-  EyeOutlined,
-  DeleteOutlined,
-  SearchOutlined,
-} from '@ant-design/icons';
+import { EditFilled, DeleteOutlined, SearchOutlined } from '@ant-design/icons';
 import Layout, { Content, Header } from 'antd/lib/layout/layout';
 
 import EllipsisDropdown from 'components/shared-components/EllipsisDropdown';
@@ -24,7 +19,7 @@ import { DEFAULT_PAGINATION_LIMIT } from 'constants/ApiConstant';
 import { makeSelectPatients } from 'redux/selectors/Patient';
 import Modal from 'components/shared-components/Modal';
 
-const PatientList = ({ showCreate, updatePatient }) => {
+const PatientList = ({ showCreate, updatePatient, showPreview }) => {
   const [search, setSearch] = useState('');
   const [patientForDelete, setPatientForDelete] = useState(null);
 
@@ -40,17 +35,8 @@ const PatientList = ({ showCreate, updatePatient }) => {
   const dropdownMenu = (row) => (
     <Menu>
       <Menu.Item
-        onClick={() => {
-          /* TO DO */
-        }}
-      >
-        <Flex alignItems="center">
-          <EyeOutlined />
-          <span className="ml-2">{formatMessage(messages.patientDetails)}</span>
-        </Flex>
-      </Menu.Item>
-      <Menu.Item
-        onClick={() => {
+        onClick={({ domEvent }) => {
+          domEvent.stopPropagation();
           updatePatient(row.id);
         }}
       >
@@ -60,7 +46,8 @@ const PatientList = ({ showCreate, updatePatient }) => {
         </Flex>
       </Menu.Item>
       <Menu.Item
-        onClick={() => {
+        onClick={({ domEvent }) => {
+          domEvent.stopPropagation();
           setPatientForDelete(row);
         }}
       >
@@ -153,6 +140,9 @@ const PatientList = ({ showCreate, updatePatient }) => {
         <Card className="m-4">
           <div className="table-responsive">
             <Table
+              onRow={(record) => ({
+                onClick: () => showPreview(record.id),
+              })}
               columns={tableColumns}
               onChange={handleChange}
               dataSource={patients.map((pat) => ({ ...pat, key: pat.id }))}
