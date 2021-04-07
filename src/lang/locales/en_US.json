@@ -246,7 +246,7 @@
   "change_password_page.validation.matches.password": "Password must contain at least 8 characters, one upper letter, one number and one special character.",
   "change_password_page.error.invalid_old_password": "Invalid old password",
 
-  "edit_clinic_page.text.edit_clinic_menu_label": "Edit Clinic",
+  "edit_clinic_page.text.edit_clinic_menu_label": "Clinic Details",
   "edit_clinic_page.text.update_success": "Successfull!",
   "edit_clinic_page.text.update_error": "Something went wrong",
 
