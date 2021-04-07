@@ -7,7 +7,10 @@ import messages from './messages';
 import PatientForm from './PatientForm';
 import { getSinglePatient, editPatient } from 'redux/actions/Patient';
 import { makeSelectPatientSingle } from 'redux/selectors/Patient';
-import { filterEmptyObjectFeilds } from 'utils/helpers';
+import {
+  filterEmptyObjectFeilds,
+  mapNullObjectFeildsToString,
+} from 'utils/helpers';
 import { message } from 'antd';
 import moment from 'moment';
 import { DATE_FORMAT_MM_DD_YYYY } from 'constants/DateConstant';
@@ -42,41 +45,41 @@ const UpdatePatient = ({ showList, patientId }) => {
     );
   };
 
+  const initialState = patient
+    ? {
+        ...mapNullObjectFeildsToString(patient),
+        date_of_birth: moment(patient.date_of_birth).format(
+          DATE_FORMAT_MM_DD_YYYY
+        ),
+        education: patient?.education?.id,
+        ethnicity: patient?.ethnicity?.id,
+        material_status: patient?.material_status?.id,
+        employment: patient?.employment?.id,
+      }
+    : {
+        first_name: '',
+        last_name: '',
+        date_of_birth: '',
+        gender: GENDER_CHOICES[0].id,
+        height: '',
+        weight: '',
+        ethnicity: '',
+        phone_number: '',
+        area_of_living: '',
+        material_status: '',
+        number_of_dependants: '',
+        employment: '',
+        education: '',
+        insurance: '',
+      };
+
   return (
     <PatientForm
       title={formatMessage(messages.editPatient)}
       showList={showList}
       handleSubmit={handleSubmit}
       loading={loading}
-      initialState={
-        patient
-          ? {
-              ...patient,
-              date_of_birth: moment(patient.date_of_birth).format(
-                DATE_FORMAT_MM_DD_YYYY
-              ),
-              education: patient?.education?.id,
-              ethnicity: patient?.ethnicity?.id,
-              material_status: patient?.material_status?.id,
-              employment: patient?.employment?.id,
-            }
-          : {
-              first_name: '',
-              last_name: '',
-              date_of_birth: '',
-              gender: GENDER_CHOICES[0].id,
-              height: '',
-              weight: '',
-              ethnicity: '',
-              phone_number: '',
-              area_of_living: '',
-              material_status: '',
-              number_of_dependants: '',
-              employment: '',
-              education: '',
-              insurance: '',
-            }
-      }
+      initialState={initialState}
       genderChoices={GENDER_CHOICES}
     />
   );

@@ -4,7 +4,12 @@ import {
   passwordMinLength,
   phoneFormat,
 } from 'constants/Validation';
-import { MAX, MAX_GOOGLE_LINK } from '../constants/ClinicConstants';
+import {
+  MAX,
+  MAX_GOOGLE_LINK_LENGTH,
+  MIN_PHONE_LENGTH,
+  MAX_PHONE_LENGTH,
+} from '../constants/ClinicConstants';
 
 const passwordValidation = Yup.string()
   .matches(passwordFormat)
@@ -27,11 +32,22 @@ export const forgotPasswordSchema = Yup.object().shape({
 });
 
 export const clinicSchema = Yup.object().shape({
-  name: Yup.string().required().max(MAX),
-  google_maps_link: Yup.string().required().url().max(MAX_GOOGLE_LINK),
-  phone_number: Yup.string().required().max(MAX),
-  address: Yup.string().required().max(MAX),
+  name: Yup.string().trim().required().max(MAX),
+  google_maps_link: Yup.string()
+    .trim()
+    .required()
+    .url()
+    .max(MAX_GOOGLE_LINK_LENGTH),
+  phone_number: Yup.string()
+    .trim()
+    .required()
+    .matches(phoneFormat)
+    .max(MAX_PHONE_LENGTH)
+    .min(MIN_PHONE_LENGTH),
+  address: Yup.string().trim().required().max(MAX),
   parking_availability: Yup.string().required(),
+  start_of_work: Yup.string().required(),
+  end_of_work: Yup.string().required(),
 });
 
 export const createPasswordSchema = Yup.object().shape({
@@ -51,6 +67,22 @@ export const staffValidationSchema = Yup.object().shape({
   ethnicity: Yup.string().required(),
   specialization: Yup.string().required(),
   seniority: Yup.string().required(),
+});
+
+export const changePasswordSchema = Yup.object().shape({
+  oldPassword: Yup.string()
+    .matches(passwordFormat)
+    .min(passwordMinLength)
+    .required(),
+  newPassword: Yup.string()
+    .matches(passwordFormat)
+    .min(passwordMinLength)
+    .required(),
+  newPasswordConfirm: Yup.string()
+    .matches(passwordFormat)
+    .min(passwordMinLength)
+    .required()
+    .oneOf([Yup.ref('newPassword')]),
 });
 
 export const patientSchema = Yup.object().shape({

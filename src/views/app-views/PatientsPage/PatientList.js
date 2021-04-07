@@ -103,8 +103,8 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
     dispatch(setPatientPage(page));
   };
 
-  const handleChange = (_, __, sortInfo) => {
-    dispatch(setOrder(sortInfo));
+  const handleChange = (_, __, sortInfo, e) => {
+    if (e.action === 'sort') dispatch(setOrder(sortInfo));
   };
 
   const afterDelete = () => {

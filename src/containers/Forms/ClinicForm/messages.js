@@ -1,13 +1,14 @@
 import { defineMessages } from 'react-intl';
 import { MAX, MAX_GOOGLE_LINK_LENGTH } from 'constants/ClinicConstants';
+
 export const scope = 'clinic_page';
 
 export default defineMessages({
-  clinic_name: {
+  clinicName: {
     id: `${scope}.input_label.clinic_name`,
     defaultMessage: 'Clinic Name',
   },
-  phone_number: {
+  phoneNumber: {
     id: `${scope}.input_label.phone_number`,
     defaultMessage: 'Phone number',
   },
@@ -15,68 +16,88 @@ export default defineMessages({
     id: `${scope}.input_label.address`,
     defaultMessage: 'Address',
   },
-  google_maps_link: {
+  googleMapsLink: {
     id: `${scope}.input_label.google_maps_link`,
     defaultMessage: 'Google maps link',
   },
-  parking_availability: {
+  parkingAvailability: {
     id: `${scope}.input_label.parking_availability`,
     defaultMessage: 'Parking availability',
   },
-  parking_free: {
+  parkingFree: {
     id: `${scope}.input_label.parking_free`,
     defaultMessage: 'Free',
   },
-  parking_no: {
+  parkingNo: {
     id: `${scope}.input_label.parking_no`,
     defaultMessage: 'No parking',
   },
-  parking_available: {
+  parkingAvailable: {
     id: `${scope}.input_label.parking_available`,
     defaultMessage: 'Parking available',
   },
-  working_hours: {
+  workingHours: {
     id: `${scope}.label.working_hours`,
     defaultMessage: 'Working hours',
   },
-  parking_size: {
+  parkingSize: {
     id: `${scope}.input_label.parkign_size`,
     defaultMessage: 'Parking size',
   },
-  error_input_label_name: {
+  errorInputLabelName: {
     id: `${scope}.error.name`,
     defaultMessage: 'Name',
   },
-  error_input_label_phone_number: {
+  errorInputLabelPhoneNumber: {
     id: `${scope}.error.phone_number`,
     defaultMessage: 'Phone number',
   },
-  error_input_label_address: {
+  errorInputLabelAddress: {
     id: `${scope}.error.address`,
     defaultMessage: 'Address',
   },
-  error_input_label_google_maps_link: {
+  errorInputLabelGoogleMapsLink: {
     id: `${scope}.error.google_maps_link`,
-    defaultMessage: 'Google maps link is url',
+    defaultMessage: 'Google maps link',
   },
-  create: {
-    id: `${scope}.text.create`,
+  createButton: {
+    id: `${scope}.text.create_button`,
     defaultMessage: 'Create',
   },
-  update_button: {
+  updateButton: {
     id: `${scope}.text.update_button`,
     defaultMessage: 'Update',
+  },
+  updateSuccess: {
+    id: `${scope}.text.update_success`,
+    defaultMessage: 'Successfull!',
+  },
+  updateError: {
+    id: `${scope}.text.update_error`,
+    defaultMessage: 'Something went wrong',
   },
   max: {
     id: `${scope}.text.max`,
     defaultMessage: MAX,
   },
-  max_google_link: {
+  maxGoogleLink: {
     id: `${scope}.text.max_google_link`,
     defaultMessage: MAX_GOOGLE_LINK_LENGTH,
   },
   logout: {
     id: `${scope}.text.logout`,
     defaultMessage: 'Logout',
+  },
+  phoneNumberFormat: {
+    id: `${scope}.validation.invalid_phone`,
+    defaultMessage: 'Phone number format is +xxxxxxxxxxxxxxx',
+  },
+  startOfWork: {
+    id: `${scope}.text.start_of_work`,
+    defaultMessage: 'Start of Work',
+  },
+  endOfWork: {
+    id: `${scope}.text.end_of_work`,
+    defaultMessage: 'End of Work',
   },
 });

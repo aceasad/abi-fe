@@ -111,7 +111,7 @@ const StaffForm = ({
                         defaultOption={
                           ethnicities &&
                           ethnicities.find(
-                            (ethnicity) => ethnicity.id == values.ethnicity
+                            (ethnicity) => ethnicity.id === values.ethnicity
                           )
                         }
                         label={formatMessage(messages.ethnicity)}
@@ -138,7 +138,7 @@ const StaffForm = ({
                           specializations &&
                           specializations.find(
                             (specialization) =>
-                              specialization.id == values.specialization
+                              specialization.id === values.specialization
                           )
                         }
                         label={formatMessage(messages.specialization)}
@@ -153,7 +153,7 @@ const StaffForm = ({
                         defaultOption={
                           seniorities &&
                           seniorities.find(
-                            (seniority) => seniority.id == values.seniority
+                            (seniority) => seniority.id === values.seniority
                           )
                         }
                         label={formatMessage(messages.seniority)}
