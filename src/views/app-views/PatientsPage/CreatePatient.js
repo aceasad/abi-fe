@@ -42,7 +42,7 @@ const CreatePatient = ({ showList }) => {
         first_name: '',
         last_name: '',
         date_of_birth: moment(new Date()).format(DATE_FORMAT_MM_DD_YYYY),
-        gender: GENDER_CHOICES[0].id,
+        gender: '',
         height: '',
         weight: '',
         ethnicity: '',

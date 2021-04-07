@@ -60,7 +60,7 @@ const UpdatePatient = ({ showList, patientId }) => {
         first_name: '',
         last_name: '',
         date_of_birth: '',
-        gender: GENDER_CHOICES[0].id,
+        gender: '',
         height: '',
         weight: '',
         ethnicity: '',

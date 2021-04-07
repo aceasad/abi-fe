@@ -111,6 +111,7 @@ const PatientForm = ({
                             )
                           }
                           label={formatMessage(messages.sex)}
+                          required
                         />
 
                         <ColumnField

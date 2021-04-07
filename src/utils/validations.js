@@ -88,6 +88,7 @@ export const changePasswordSchema = Yup.object().shape({
 export const patientSchema = Yup.object().shape({
   first_name: Yup.string().trim().max(MAX).required(),
   last_name: Yup.string().trim().max(MAX).required(),
+  gender: Yup.string().required(),
   date_of_birth: Yup.string().required(),
   height: Yup.number(),
   weight: Yup.number(),
