@@ -56,7 +56,7 @@ const PatientForm = ({
               primaryDisabled={!isValid || !dirty || loading}
             />
             <Content>
-              <Card className="m-4 p-4">
+              <Card className="p-4">
                 <Form layout="vertical">
                   <Row>
                     <Col span={6}>

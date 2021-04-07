@@ -1,8 +1,5 @@
 import React from 'react';
-import { Typography, Button } from 'antd';
-import { Header } from 'antd/lib/layout/layout';
-
-const { Title } = Typography;
+import { Button, PageHeader } from 'antd';
 
 const PageHeaderComponent = ({
   title,
@@ -14,22 +11,23 @@ const PageHeaderComponent = ({
   disablePrimary,
 }) => {
   return (
-    <Header className="ant-layout-page-header border-bottom">
-      <Title className="mb-0">{title}</Title>
-      <div>
-        <Button key="1" className="mr-sm-3" onClick={handleSecondaryClick}>
+    <PageHeader
+      className="p-0 mb-4"
+      title={title}
+      extra={[
+        <Button key="10" onClick={handleSecondaryClick}>
           {secondaryAction}
-        </Button>
+        </Button>,
         <Button
-          key="2"
+          key="1"
           type="primary"
           onClick={handlePrimaryClick}
           disabled={disablePrimary}
         >
           {primaryAction}
-        </Button>
-      </div>
-    </Header>
+        </Button>,
+      ]}
+    />
   );
 };
 

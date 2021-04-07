@@ -12,8 +12,7 @@ function CardComponent({
 }) {
   return (
     <Card
-      hoverable
-      className="text-center"
+      className="text-center overflow-hidden"
       cover={
         <div className="ant-card-staff-header">
           <Options />

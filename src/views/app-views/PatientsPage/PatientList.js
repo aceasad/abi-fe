@@ -1,10 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
-import { Card, Table, Input, Button, Menu, Typography, message } from 'antd';
+import {
+  Card,
+  Table,
+  Input,
+  Button,
+  Menu,
+  message,
+  PageHeader,
+  Space,
+} from 'antd';
 import { EditFilled, DeleteOutlined, SearchOutlined } from '@ant-design/icons';
-import Layout, { Content, Header } from 'antd/lib/layout/layout';
-
 import EllipsisDropdown from 'components/shared-components/EllipsisDropdown';
 import Flex from 'components/shared-components/Flex';
 import {
@@ -117,47 +124,46 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
   };
 
   return (
-    <Layout>
-      <Header className="ant-layout-page-header shadow-sm d-flex justify-content-sm-between">
-        <Typography.Title className="mb-sm-0">
-          {formatMessage(messages.patientsTitle)}
-        </Typography.Title>
-        <div className="d-flex align-items-center">
-          <form className="mr-4" onSubmit={handleSearch}>
-            <Input
-              placeholder={formatMessage(messages.search)}
-              prefix={<SearchOutlined />}
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </form>
-          <Button onClick={showCreate} type="primary">
-            {formatMessage(messages.newPatient)}
-          </Button>
+    <>
+      <PageHeader
+        className="p-0 mb-4"
+        title={formatMessage(messages.patientsTitle)}
+        extra={[
+          <Space key="0">
+            <form onSubmit={handleSearch}>
+              <Input
+                placeholder={formatMessage(messages.search)}
+                prefix={<SearchOutlined />}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </form>
+            <Button onClick={showCreate} type="primary">
+              {formatMessage(messages.newPatient)}
+            </Button>
+          </Space>,
+        ]}
+      />
+      <Card>
+        <div className="table-responsive">
+          <Table
+            onRow={(record) => ({
+              onClick: () => showPreview(record.id),
+            })}
+            columns={tableColumns}
+            onChange={handleChange}
+            dataSource={patients.map((pat) => ({ ...pat, key: pat.id }))}
+            pagination={{
+              defaultPageSize: DEFAULT_PAGINATION_LIMIT,
+              total: count,
+              onChange: handlePaginationChange,
+              hideOnSinglePage: true,
+              current: page,
+            }}
+            loading={loading}
+          />
         </div>
-      </Header>
-      <Content>
-        <Card className="m-4">
-          <div className="table-responsive">
-            <Table
-              onRow={(record) => ({
-                onClick: () => showPreview(record.id),
-              })}
-              columns={tableColumns}
-              onChange={handleChange}
-              dataSource={patients.map((pat) => ({ ...pat, key: pat.id }))}
-              pagination={{
-                defaultPageSize: DEFAULT_PAGINATION_LIMIT,
-                total: count,
-                onChange: handlePaginationChange,
-                hideOnSinglePage: true,
-                current: page,
-              }}
-              loading={loading}
-            />
-          </div>
-        </Card>
-      </Content>
+      </Card>
       <Modal
         title={formatMessage(messages.deleteTitle)}
         description={formatMessage(messages.deleteDescription, {
@@ -171,7 +177,7 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
         handlePrimaryAction={handleDelete}
         handleSecondaryAction={() => setPatientForDelete(null)}
       />
-    </Layout>
+    </>
   );
 };
 

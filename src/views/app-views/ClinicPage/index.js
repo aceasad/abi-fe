@@ -1,5 +1,4 @@
-import { Button, Card, Typography } from 'antd';
-import Layout, { Content, Header } from 'antd/lib/layout/layout';
+import { Button, Card, PageHeader, Typography } from 'antd';
 import ClinicForm from 'containers/Forms/ClinicForm/ClinicForm';
 import React from 'react';
 import { useIntl } from 'react-intl';
@@ -15,26 +14,25 @@ const ClinicPage = ({ localization = true }) => {
   const { formatMessage } = useIntl();
 
   return (
-    <Layout>
-      <Header className="ant-layout-page-header border-bottom d-flex justify-content-sm-between">
-        <Title className="mb-sm-0">
-          {localeString(localization, 'clinic_page.header.title')}
-        </Title>
-        <Button
-          type="primary"
-          onClick={() => {
-            dispatch(signOut());
-          }}
-        >
-          {formatMessage(messages.logout)}
-        </Button>
-      </Header>
-      <Content>
-        <Card className="m-4">
-          <ClinicForm />
-        </Card>
-      </Content>
-    </Layout>
+    <>
+      <PageHeader
+        title={localeString(localization, 'clinic_page.header.title')}
+        extra={[
+          <Button
+            key="0"
+            type="primary"
+            onClick={() => {
+              dispatch(signOut());
+            }}
+          >
+            {formatMessage(messages.logout)}
+          </Button>,
+        ]}
+      />
+      <Card>
+        <ClinicForm />
+      </Card>
+    </>
   );
 };
 
