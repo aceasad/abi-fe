@@ -55,6 +55,8 @@ const patient = (state = initialState, action) =>
         break;
       case SET_PATIENT_SEARCH:
         draft.patients = {
+          ...state.patients,
+          page: 1,
           search: action.payload,
         };
         break;
