@@ -44,6 +44,9 @@ const makeIsResetPassword = () =>
 const makeSelectLoading = () =>
   createSelector(selectAuthDomain, (substate) => substate.loading);
 
+const makeSelectIsOrganizationOwner = () =>
+  createSelector(selectAuthDomain, ({ user }) => user?.is_organization_owner);
+
 export {
   makeSelectLoading,
   makeSelectCurrentUser,
@@ -53,4 +56,5 @@ export {
   makeSelectIsForceClinicRequired,
   makeIsSendEmailUser,
   makeIsResetPassword,
+  makeSelectIsOrganizationOwner,
 };
