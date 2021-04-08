@@ -4,7 +4,7 @@ import messages from './messages';
 import { useIntl } from 'react-intl';
 import AuthFormWrapper from 'components/layout-components/AuthFormWrapper';
 import CreatePassowrdForm from 'containers/Forms/CreatePasswordForm.js/index.js';
-import { makeSelectCurrentUser } from 'redux/selectors/Users';
+import { makeSelectCurrentUser } from 'redux/selectors/Auth';
 import { PASSWORD_STATUSES } from 'constants/UserConstants';
 import { LogoutOutlined } from '@ant-design/icons';
 import { signOut } from 'redux/actions/Auth';

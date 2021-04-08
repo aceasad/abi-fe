@@ -1,122 +1,112 @@
-import React, { useState } from 'react';
-import { Table, Tooltip, Typography, Button, Modal } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Table, Tooltip, Typography, Button, Modal, message } from 'antd';
 import { FormOutlined, DeleteOutlined } from '@ant-design/icons';
-import UserSettingsFormModal from 'containers/Forms/UserSettings/UserSettingsFormModal';
 import { useIntl } from 'react-intl';
+import messages from './messages';
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteUser, getUsers, setUsersPage } from 'redux/actions/User';
+import { makeSelectUsers } from 'redux/selectors/Users';
+import { DEFAULT_PAGINATION_LIMIT } from 'constants/ApiConstant';
+import CreateUser from './CreateUser';
+import UpdateUser from './UpdateUser';
 import Flex from 'components/shared-components/Flex';
 
 const { Text } = Typography;
 const { confirm } = Modal;
 
-const dummyData = [
-  {
-    id: 1,
-    userName: 'Beau Davenport',
-    email: 'beaudavenport@atrium.com',
-    superuser: true,
-  },
-  {
-    id: 2,
-    userName: 'Rui Ford',
-    email: 'ruiford@atrium.com',
-    superuser: false,
-  },
-  {
-    id: 3,
-    userName: 'Chantal Ingram',
-    email: 'chantalingram@atrium.com',
-    superuser: false,
-  },
-];
+const USER_FORM = {
+  CREATE: 1,
+  UPDATE: 2,
+};
 
 const UserSettings = () => {
   const { formatMessage } = useIntl();
-  const [userSettingsModalVisible, setUserSettingsModalVisible] = useState(
-    false
-  );
-  const [userModalTitle, setUserModalTitle] = useState('');
+  const dispatch = useDispatch();
+  const { users, page, count, loading } = useSelector(makeSelectUsers());
 
-  const openUserSettings = (modalTitle) => {
-    setUserModalTitle(modalTitle);
-    setUserSettingsModalVisible(true);
-  };
+  useEffect(() => {
+    dispatch(getUsers());
+  }, [dispatch]);
 
-  const closeUserSettings = () => {
-    setUserSettingsModalVisible(false);
+  const [activeForm, setActiveForm] = useState();
+
+  const afterDelete = () => {
+    message.success(formatMessage(messages.userDeleted));
   };
 
   const showDeleteConfirm = (element) => {
     confirm({
-      title: formatMessage(
-        {
-          id: 'user_settings.modal.delete.description',
-        },
-        { user: element.userName }
-      ),
-      okText: formatMessage({
-        id: 'user_settings.form.button.confirm',
+      title: formatMessage(messages.deleteConfirmation, {
+        user: element.name,
       }),
+      okText: formatMessage(messages.formConfirmationButton),
       okType: 'danger',
-      cancelText: formatMessage({
-        id: 'user_settings.form.button.cancel',
-      }),
+      cancelText: formatMessage(messages.formCancelButton),
       onOk() {
-        // Implement on confirm logic.
+        dispatch(deleteUser({ id: element.id, afterDelete }));
       },
     });
   };
 
+  const closeUserForm = () => setActiveForm(null);
+
+  const getActiveUserForm = () => {
+    switch (activeForm?.id) {
+      case USER_FORM.UPDATE:
+        return (
+          <UpdateUser closeModal={closeUserForm} userId={activeForm.data} />
+        );
+      case USER_FORM.CREATE:
+        return <CreateUser closeModal={closeUserForm} />;
+      default:
+        return null;
+    }
+  };
+
+  const handlePaginationChange = (page) => {
+    dispatch(setUsersPage(page));
+  };
+
   const tableColumns = [
     {
-      title: formatMessage({ id: 'user_settings.form.name' }),
-      dataIndex: 'userName',
-      key: 'userName',
+      title: formatMessage(messages.formName),
+      dataIndex: 'name',
+      key: 'name',
     },
     {
-      title: formatMessage({ id: 'user_settings.form.email' }),
-      dataIndex: 'email',
-      key: 'email',
+      title: formatMessage(messages.formEmail),
+      dataIndex: 'username',
+      key: 'username',
     },
     {
       title: '',
       dataIndex: 'actions',
       render: (_, elm) => (
         <div className="text-right">
-          {elm.superuser ? (
+          {elm.is_organization_owner && (
             <Text strong className="text-primary mr-2">
-              {formatMessage({ id: 'user_settings.superadmin' })}
+              {formatMessage(messages.superadmin)}
             </Text>
-          ) : (
-            <Tooltip
-              title={formatMessage({
-                id: 'user_settings.form.title.edit_user',
-              })}
-            >
+          )}
+          <Tooltip title={formatMessage(messages.editUser)}>
+            <Button
+              className="mr-2"
+              icon={<FormOutlined />}
+              onClick={() =>
+                setActiveForm({ id: USER_FORM.UPDATE, data: elm.id })
+              }
+              size="small"
+            />
+          </Tooltip>
+          {!elm.is_organization_owner && (
+            <Tooltip title={formatMessage(messages.deleteUser)}>
               <Button
-                className="mr-2"
-                icon={<FormOutlined />}
-                onClick={() =>
-                  openUserSettings(
-                    formatMessage({
-                      id: 'user_settings.form.title.edit_user',
-                    })
-                  )
-                }
+                icon={<DeleteOutlined />}
+                onClick={() => showDeleteConfirm(elm)}
                 size="small"
               />
             </Tooltip>
           )}
-          <Tooltip
-            title={formatMessage({
-              id: 'user_settings.form.title.delete_user',
-            })}
-          >
-            <Button
-              icon={<DeleteOutlined />}
-              onClick={() => showDeleteConfirm(elm)}
-              size="small"
-            />
-          </Tooltip>
         </div>
       ),
     },
@@ -125,32 +115,30 @@ const UserSettings = () => {
     <div className="p-2">
       <Flex justifyContent="between">
         <Typography.Title level={2} className="mb-4">
-          {formatMessage({
-            id: 'user_settings.title',
-          })}
+          {formatMessage(messages.title)}
         </Typography.Title>
         <Button
           type="primary"
-          onClick={() =>
-            openUserSettings(
-              formatMessage({
-                id: 'user_settings.form.titile.create_user',
-              })
-            )
-          }
+          onClick={() => setActiveForm({ id: USER_FORM.CREATE })}
         >
-          {formatMessage({
-            id: 'user_settings.form.button.new',
-          })}
+          {formatMessage(messages.buttonNew)}
         </Button>
       </Flex>
-      <Table columns={tableColumns} dataSource={dummyData} rowKey="id" />
 
-      <UserSettingsFormModal
-        title={userModalTitle}
-        isModalVisible={userSettingsModalVisible}
-        closeModal={closeUserSettings}
+      <Table
+        columns={tableColumns}
+        rowKey="id"
+        dataSource={users.map((pat) => ({ ...pat, key: pat.id }))}
+        pagination={{
+          defaultPageSize: DEFAULT_PAGINATION_LIMIT,
+          total: count,
+          onChange: handlePaginationChange,
+          hideOnSinglePage: true,
+          current: page,
+        }}
+        loading={loading}
       />
+      {getActiveUserForm()}
     </div>
   );
 };
