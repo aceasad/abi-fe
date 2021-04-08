@@ -108,8 +108,8 @@
   "sidenav.pages.appointments": "Appointments",
   "sidenav.pages.patients": "Patients",
   "sidenav.pages.staff": "Staff",
-  "sidenav.pages.conversation": "Conversation",
-  "sidenav.pages.setting": "Setting",
+  "sidenav.pages.conversation": "Conversations",
+  "sidenav.pages.setting": "Settings",
 
   "sidenav.authentication": "Authentication",
   "sidenav.authentication.login.1": "Login 1",
