@@ -5,7 +5,7 @@ import {
   EditOutlined,
   WhatsAppOutlined,
 } from '@ant-design/icons';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import FormImageUpload from 'components/custom-components/Form/FormImageUpload';
 import { Field, Formik } from 'formik';
@@ -23,6 +23,7 @@ import Loading from 'components/shared-components/Loading';
 import { PATIENT_PAGE } from './index';
 import { prepareFormData } from 'utils/helpers';
 import messages from './messages';
+import Conversation from '../ChatPage/Conversation';
 
 const { Text, Title } = Typography;
 
@@ -31,6 +32,7 @@ const PatientOverview = ({ patientId, showList, updatePatient }) => {
   const { patient, loading, lastAppointment } = useSelector(
     makeSelectPatientOverview()
   );
+  const [showMessages, setShowMessages] = useState();
   const { formatMessage } = useIntl();
 
   const patientDetailsFields = {
@@ -143,29 +145,55 @@ const PatientOverview = ({ patientId, showList, updatePatient }) => {
           </Col>
 
           <Col span={17}>
-            <Layout>
-              <Flex
-                justifyContent="between"
-                alignItems="center"
-                className="ml-4 mr-4 mb-4"
-              >
-                <Title level={2} className="mb-0">
-                  {formatMessage(messages.overviewTittle)}
-                </Title>
-                <Badge count={7}>
-                  <Button type="primary">
-                    <WhatsAppOutlined />{' '}
-                    <span>
-                      {formatMessage(messages.overviewButtonMessages)}
-                    </span>
-                  </Button>
-                </Badge>
-              </Flex>
-              <Content>
-                <PatientOverviewScheduledCard patient={patient} />
-                <PatientOverviewHistoryCard patient={patient} />
-              </Content>
-            </Layout>
+            {showMessages ? (
+              <div className="chat inner-app-layout">
+                <div className="main-content">
+                  <Conversation
+                    showTitle={false}
+                    conversationId={1}
+                    isMenuVisible={false}
+                    BackAction={() => (
+                      <div
+                        className="cursor-pointer"
+                        onClick={() => setShowMessages(false)}
+                      >
+                        <LeftOutlined />
+                        <Text underline className="ml-2 text-uppercase">
+                          {formatMessage(messages.messages)}
+                        </Text>
+                      </div>
+                    )}
+                  />
+                </div>
+              </div>
+            ) : (
+              <Layout>
+                <Flex
+                  justifyContent="between"
+                  alignItems="center"
+                  className="ml-4 mr-4 mb-4"
+                >
+                  <Title level={2} className="mb-0">
+                    {formatMessage(messages.overviewTittle)}
+                  </Title>
+                  <Badge count={7}>
+                    <Button
+                      type="primary"
+                      onClick={() => setShowMessages(true)}
+                    >
+                      <WhatsAppOutlined />{' '}
+                      <span>
+                        {formatMessage(messages.overviewButtonMessages)}
+                      </span>
+                    </Button>
+                  </Badge>
+                </Flex>
+                <Content>
+                  <PatientOverviewScheduledCard patient={patient} />
+                  <PatientOverviewHistoryCard patient={patient} />
+                </Content>
+              </Layout>
+            )}
           </Col>
         </Row>
       </Content>
