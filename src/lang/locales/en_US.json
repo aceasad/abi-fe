@@ -108,8 +108,8 @@
   "sidenav.pages.appointments": "Appointments",
   "sidenav.pages.patients": "Patients",
   "sidenav.pages.staff": "Staff",
-  "sidenav.pages.conversation": "Conversation",
-  "sidenav.pages.setting": "Setting",
+  "sidenav.pages.conversation": "Conversations",
+  "sidenav.pages.setting": "Settings",
 
   "sidenav.authentication": "Authentication",
   "sidenav.authentication.login.1": "Login 1",
@@ -337,13 +337,18 @@
   "user_settings.form.button.new": "New User",
   "user_settings.form.title.edit_user": "Edit User",
   "user_settings.form.title.delete_user": "Delete User",
-  "user_settings.form.titile.create_user": "Create a new user by entering their name, email address and password.",
-  "user_settings.modal.delete.description": "Are you sure you wish to delete {user}?",
+  "user_settings.form.title.create_user": "Create a new user by entering their name, email address and password.",
+  "user_settings.modal.delete.description": "Are you sure you want to delete {user}?",
+  "user_settings.messages.success_created": "User Created",
+  "user_settings.messages.error_username_in_use": "User with given username already exists",
+  "user_settings.messages.success_updated": "User Updated",
+  "user_settings.messages.success_deleted": "User Deleted",
 
   "chat_page.menu.user_info_label": "",
   "chat_page.menu.mute_chat": "Mute Chat",
   "chat_page.menu.delete_chat": "Delete Chat",
   "chat_page.chat.type_a_message_placeholder": "Type a message...",
 
-  "settings_page.title": "Settings"
+  "settings_page.title": "Settings",
+  "settings_page.user_settings.title": "User Settings"
 }

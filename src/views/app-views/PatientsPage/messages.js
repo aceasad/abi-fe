@@ -109,7 +109,7 @@ export default defineMessages({
   },
   materialStatus: {
     id: `${detailScope}.side.form.marital_status`,
-    defaultMessage: 'Material Status',
+    defaultMessage: 'Maritial Status',
   },
   employmentStatus: {
     id: `${detailScope}.side.form.employment_status`,

@@ -5,7 +5,7 @@ import {
   BarChartOutlined,
   TeamOutlined,
 } from '@ant-design/icons';
-import { Menu, PageHeader } from 'antd';
+import { Menu } from 'antd';
 import { Link, Redirect, Route, Switch } from 'react-router-dom';
 import InnerAppLayout from 'layouts/inner-app-layout';
 import EditClinic from './EditClinic';
@@ -14,8 +14,10 @@ import messages from './messages';
 import { useIntl } from 'react-intl';
 import IndustryAverage from '../IndustryAveragePage';
 import UserSettings from '../UserSettings';
+import { useSelector } from 'react-redux';
+import { makeSelectIsOrganizationOwner } from 'redux/selectors/Auth';
 
-const SettingOption = ({ match, location }) => {
+const SettingOption = ({ match, location, isOrganizationOwner }) => {
   const { formatMessage } = useIntl();
 
   return (
@@ -39,16 +41,18 @@ const SettingOption = ({ match, location }) => {
         <span>{formatMessage(messages.industryAverageMenuLabel)}</span>
         <Link to={'industry-average'} />
       </Menu.Item>
-      <Menu.Item key={`${match.url}/user-settings`}>
-        <TeamOutlined />
-        <span>{formatMessage({ id: 'user_menu.user_settings' })}</span>
-        <Link to={'user-settings'} />
-      </Menu.Item>
+      {isOrganizationOwner && (
+        <Menu.Item key={`${match.url}/user-settings`}>
+          <TeamOutlined />
+          <span>{formatMessage(messages.userSettings)}</span>
+          <Link to={'user-settings'} />
+        </Menu.Item>
+      )}
     </Menu>
   );
 };
 
-const SettingContent = ({ match }) => {
+const SettingContent = ({ match, isOrganizationOwner }) => {
   return (
     <Switch>
       <Redirect exact from={`${match.url}`} to={`${match.url}/edit-clinic`} />
@@ -58,27 +62,27 @@ const SettingContent = ({ match }) => {
         path={`${match.url}/industry-average`}
         component={IndustryAverage}
       />
-      <Route path={`${match.url}/user-settings`} component={UserSettings} />
+      {isOrganizationOwner && (
+        <Route path={`${match.url}/user-settings`} component={UserSettings} />
+      )}
     </Switch>
   );
 };
 
 const SettingsPage = (props) => {
-  const { formatMessage } = useIntl();
+  const isOrganizationOwner = useSelector(makeSelectIsOrganizationOwner());
 
   return (
-    <>
-      <PageHeader
-        className="p-0 mb-4"
-        title={formatMessage(messages.settingsTitle)}
-      />
-      <InnerAppLayout
-        border
-        sideContentWidth={320}
-        sideContent={<SettingOption {...props} />}
-        mainContent={<SettingContent {...props} />}
-      />
-    </>
+    <InnerAppLayout
+      border
+      sideContentWidth={320}
+      sideContent={
+        <SettingOption {...props} isOrganizationOwner={isOrganizationOwner} />
+      }
+      mainContent={
+        <SettingContent {...props} isOrganizationOwner={isOrganizationOwner} />
+      }
+    />
   );
 };
 

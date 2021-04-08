@@ -1,52 +1,39 @@
+import { DEFAULT_PAGINATION_LIMIT } from 'constants/ApiConstant';
 import { createSelector } from 'reselect';
 import reducers from '../reducers';
-import { PASSWORD_STATUSES } from 'constants/UserConstants';
 
-const selectUsersDomain = (state) => state.auth || reducers;
+const selectUsersDomain = (state) => state.user || reducers;
 
-const makeSelectCurrentUser = () =>
-  createSelector(selectUsersDomain, (substate) => substate.user);
-
-const makeSelectIsAuthenticated = () =>
-  createSelector(selectUsersDomain, (substate) => Boolean(substate.token));
-
-const makeSelectLoginDetails = () =>
+const makeSelectUsers = () =>
   createSelector(selectUsersDomain, (substate) => ({
+    users: substate.items,
+    page: substate.page,
+    count: substate.count,
     loading: substate.loading,
-    message: substate.message,
-    showMessage: substate.showMessage,
-    token: substate.token,
   }));
 
-const maskeSelectIsPasswordCreateRequired = () =>
-  createSelector(
-    selectUsersDomain,
-    ({ user }) =>
-      user?.password_changed_status === PASSWORD_STATUSES.NOT_CHANGED ||
-      user?.password_changed_status === PASSWORD_STATUSES.EXPIRED
-  );
+const makeSelectUsersPage = () =>
+  createSelector(selectUsersDomain, (substate) => substate.page);
 
-const makeSelectIsForceClinicRequired = () =>
-  createSelector(
-    selectUsersDomain,
-    ({ user }) =>
-      user?.password_changed_status === PASSWORD_STATUSES.CHANGED &&
-      user.first_login &&
-      user.is_organization_owner
-  );
+const makeSelectSingleUserLoading = () =>
+  createSelector(selectUsersDomain, (substate) => substate.singleLoading);
 
-const makeIsSendEmailUser = () =>
-  createSelector(selectUsersDomain, (substate) => substate.isSent);
+const makeSelectSingleUser = () =>
+  createSelector(selectUsersDomain, (substate) => ({
+    user: substate.single,
+    loading: substate.singleLoading,
+  }));
 
-const makeIsResetPassword = () =>
-  createSelector(selectUsersDomain, (substate) => substate.isReset);
+const makeSelectLastOnThePage = () =>
+  createSelector(selectUsersDomain, ({ page, count }) => ({
+    isLast: page !== 1 && count - 1 <= (page - 1) * DEFAULT_PAGINATION_LIMIT,
+    page,
+  }));
 
 export {
-  makeSelectCurrentUser,
-  makeSelectIsAuthenticated,
-  makeSelectLoginDetails,
-  maskeSelectIsPasswordCreateRequired,
-  makeSelectIsForceClinicRequired,
-  makeIsSendEmailUser,
-  makeIsResetPassword,
+  makeSelectUsers,
+  makeSelectUsersPage,
+  makeSelectSingleUserLoading,
+  makeSelectSingleUser,
+  makeSelectLastOnThePage,
 };

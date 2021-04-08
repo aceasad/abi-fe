@@ -1,8 +1,7 @@
 import { MinusOutlined } from '@ant-design/icons';
-import { Button, Col, Form, Radio, Row, Typography } from 'antd';
+import { Button, Col, Form, Radio, Row, Space } from 'antd';
 import FormField from 'components/custom-components/Form/FormField';
 import FormImageUpload from 'components/custom-components/Form/FormImageUpload';
-import FormInputField from 'components/custom-components/Form/FormInputField';
 import { Field, Formik } from 'formik';
 import React, { useState } from 'react';
 import { useIntl } from 'react-intl';
@@ -19,17 +18,9 @@ import {
 } from 'constants/ClinicConstants';
 import messages from './messages';
 import ColumnField from 'components/custom-components/Form/ColumnField';
-import localeString from 'utils/localeString';
 import { prepareFormData } from 'utils/helpers';
 
-const { Title } = Typography;
-
-const ClinicForm = ({
-  clinicData = null,
-  showSuccess,
-  showError,
-  localization = true,
-}) => {
+const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
   const { formatMessage } = useIntl();
   const dispatch = useDispatch();
   const loading = useSelector(makeSelectIsLoading());
@@ -73,7 +64,12 @@ const ClinicForm = ({
       onSubmit={handleSubmit}
     >
       {({ dirty, isValid, values, handleSubmit, setFieldValue }) => (
-        <Form layout="vertical" name="clinic-form" onSubmit={handleSubmit}>
+        <Form
+          layout="vertical"
+          name="clinic-form"
+          onSubmit={handleSubmit}
+          className="p-2"
+        >
           <Row className="mb-5 mt-4">
             <Col sm={{ span: 6, offset: 10 }} xl={{ span: 6, offset: 9 }}>
               <Field component={FormImageUpload} name={'photo'} />
@@ -81,7 +77,7 @@ const ClinicForm = ({
           </Row>
 
           <Row>
-            <Col sm={16} xl={12}>
+            <Col sm={24} xl={18}>
               <Row>
                 <ColumnField
                   span={24}
@@ -133,8 +129,8 @@ const ClinicForm = ({
                   }}
                 />
               </Row>
-              <Row>
-                <Col span={24}>
+              <Row gutter={16}>
+                <Col>
                   <Form.Item
                     name="radio-group"
                     label={formatMessage(messages.parkingAvailability)}
@@ -150,29 +146,21 @@ const ClinicForm = ({
                         );
                       }}
                     >
-                      <Row>
-                        <Col span={8}>
-                          <Radio value={NO}>
-                            {formatMessage(messages.parkingNo)}
-                          </Radio>
-                        </Col>
-                        <Col span={8}>
-                          <Radio value={FREE}>
-                            {formatMessage(messages.parkingFree)}
-                          </Radio>
-                        </Col>
-                        <Col span={8}>
-                          <Radio value={AVAILABLE}>
-                            {formatMessage(messages.parkingAvailable)}
-                          </Radio>
-                        </Col>
-                      </Row>
+                      <Space>
+                        <Radio value={NO}>
+                          {formatMessage(messages.parkingNo)}
+                        </Radio>
+                        <Radio value={FREE}>
+                          {formatMessage(messages.parkingFree)}
+                        </Radio>
+                        <Radio value={AVAILABLE}>
+                          {formatMessage(messages.parkingAvailable)}
+                        </Radio>
+                      </Space>
                     </Radio.Group>
                   </Form.Item>
                 </Col>
-              </Row>
-              <Row>
-                <Col offset={16} span={6}>
+                <Col>
                   {visibilityOfParkinSizeField ? (
                     <Form.Item label={formatMessage(messages.parkingSize)}>
                       <Field

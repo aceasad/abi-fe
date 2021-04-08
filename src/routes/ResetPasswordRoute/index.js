@@ -6,7 +6,7 @@ import {
   makeSelectIsAuthenticated,
   maskeSelectIsPasswordCreateRequired,
   makeSelectCurrentUser,
-} from '../../redux/selectors/Users';
+} from 'redux/selectors/Auth';
 import Loading from 'components/shared-components/Loading';
 
 export function ResetPasswordRoute({ component: Component, type, ...rest }) {

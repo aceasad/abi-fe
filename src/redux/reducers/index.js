@@ -6,6 +6,7 @@ import clinic from './Clinic';
 import theme from './Theme';
 import staff from './Staff';
 import patient from './Patient';
+import user from './User';
 import { connectRouter } from 'connected-react-router';
 import { SIGNOUT_SUCCESS } from 'redux/constants/Auth';
 
@@ -19,6 +20,7 @@ export default (history) => {
     clinic,
     staff,
     patient,
+    user,
     language: languageReducer,
   });
 

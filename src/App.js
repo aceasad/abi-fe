@@ -5,7 +5,7 @@ import { ThemeSwitcherProvider } from 'react-css-theme-switcher';
 import { THEME_CONFIG } from './configs/AppConfig';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUser } from 'redux/actions/Auth';
-import { makeSelectIsAuthenticated } from 'redux/selectors/Users';
+import { makeSelectIsAuthenticated } from 'redux/selectors/Auth';
 
 const themes = {
   dark: `${process.env.PUBLIC_URL}/css/dark-theme.css`,

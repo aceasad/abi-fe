@@ -8,7 +8,7 @@ import FormField from 'components/custom-components/Form/FormField';
 import { useParams } from 'react-router-dom';
 import { resetPassword } from 'redux/actions/Auth';
 import { passwordMinLength } from 'constants/Validation';
-import { makeIsResetPassword } from 'redux/selectors/Users';
+import { makeIsResetPassword } from 'redux/selectors/Auth';
 import { success } from 'components/shared-components/MessagesAlerts/index';
 const { resetPasswordSchema } = require('utils/validations');
 
