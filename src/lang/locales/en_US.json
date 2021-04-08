@@ -154,7 +154,6 @@
   "clinic_page.header.title": "Clinic Settings",
   "clinic_page.side.title": "Clinic Details",
 
-
   "login_page.button.login": "Log In",
   "login_page.input_label.email": "Email Address",
   "login_page.input_label.password": "Password",
@@ -325,7 +324,8 @@
   "patient_overview.table.column_title.type": "Type",
   "patient_overview.table.column_title.prediction": "Prediction",
   "patient_overview.table.column_title.status": "Status",
-  
+  "patient_overview.messages": "Messages",
+
   "user_settings.title": "User Settings",
   "user_settings.superadmin": "superadmin",
   "user_settings.form.name": "Name",

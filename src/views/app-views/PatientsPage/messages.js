@@ -195,4 +195,8 @@ export default defineMessages({
     id: `${patientOverviewScope}.button.new_appointment`,
     defaultMessage: 'New Appointment',
   },
+  messages: {
+    id: `${patientOverviewScope}.messages`,
+    defaultMessage: 'Messages',
+  },
 });

@@ -19,12 +19,18 @@ import messages from './messages';
 import { useParams } from 'react-router-dom';
 import { singleChatMessageStyle } from 'utils/helpers';
 
-const Conversation = () => {
+const Conversation = ({
+  conversationId,
+  isMenuVisible = true,
+  title,
+  showTitle = true,
+  BackAction = false,
+}) => {
   const formRef = useRef();
   const chatBodyRef = useRef();
   const params = useParams();
 
-  const id = parseInt(params.id);
+  const id = parseInt(params.id || conversationId);
   const [info, setInfo] = useState({});
   const [messageList, setMessageList] = useState([]);
 
@@ -83,10 +89,13 @@ const Conversation = () => {
 
   const chatContentHeader = (name) => (
     <div className="chat-content-header">
-      <h4 className="mb-0">{name}</h4>
-      <div>
-        <EllipsisDropdown menu={renderMenu} />
-      </div>
+      {showTitle && <h4 className="mb-0">{name}</h4>}
+      {isMenuVisible && (
+        <div>
+          <EllipsisDropdown menu={renderMenu} />
+        </div>
+      )}
+      {BackAction && <BackAction />}
     </div>
   );
 
@@ -181,7 +190,7 @@ const Conversation = () => {
 
   return (
     <div className="chat-content">
-      {chatContentHeader(info.name)}
+      {chatContentHeader(title ? title : info.name)}
       {chatContentBody(messageList, id)}
       {chatContentFooter()}
     </div>
