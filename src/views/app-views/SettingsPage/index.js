@@ -2,17 +2,16 @@ import React from 'react';
 import {
   FormOutlined,
   LockOutlined,
-  UserOutlined,
-  HomeOutlined,
+  BarChartOutlined,
+  TeamOutlined,
 } from '@ant-design/icons';
-import { Menu, Typography } from 'antd';
+import { Menu, PageHeader } from 'antd';
 import { Link, Redirect, Route, Switch } from 'react-router-dom';
 import InnerAppLayout from 'layouts/inner-app-layout';
 import EditClinic from './EditClinic';
 import ChangePassword from './ChangePassword';
 import messages from './messages';
 import { useIntl } from 'react-intl';
-import Layout, { Content, Header } from 'antd/lib/layout/layout';
 import IndustryAverage from '../IndustryAveragePage';
 import UserSettings from '../UserSettings';
 
@@ -36,12 +35,12 @@ const SettingOption = ({ match, location }) => {
         <Link to={'change-password'} />
       </Menu.Item>
       <Menu.Item key={`${match.url}/industry-average`}>
-        <HomeOutlined />
+        <BarChartOutlined />
         <span>{formatMessage(messages.industryAverageMenuLabel)}</span>
         <Link to={'industry-average'} />
       </Menu.Item>
       <Menu.Item key={`${match.url}/user-settings`}>
-        <UserOutlined />
+        <TeamOutlined />
         <span>{formatMessage(messages.userSettings)}</span>
         <Link to={'user-settings'} />
       </Menu.Item>
@@ -68,21 +67,18 @@ const SettingsPage = (props) => {
   const { formatMessage } = useIntl();
 
   return (
-    <Layout>
-      <Header className="ant-layout-page-header border-bottom">
-        <Typography.Title className="mb-sm-0">
-          {formatMessage(messages.settingsTitle)}
-        </Typography.Title>
-      </Header>
-      <Content className="p-4">
-        <InnerAppLayout
-          border
-          sideContentWidth={320}
-          sideContent={<SettingOption {...props} />}
-          mainContent={<SettingContent {...props} />}
-        />
-      </Content>
-    </Layout>
+    <>
+      <PageHeader
+        className="p-0 mb-4"
+        title={formatMessage(messages.settingsTitle)}
+      />
+      <InnerAppLayout
+        border
+        sideContentWidth={320}
+        sideContent={<SettingOption {...props} />}
+        mainContent={<SettingContent {...props} />}
+      />
+    </>
   );
 };
 

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Table, Tooltip, Typography, Button, Modal, message } from 'antd';
+import { Table, Tooltip, Typography, Button, Modal, message } from 'antd';
 import { FormOutlined, DeleteOutlined } from '@ant-design/icons';
-import Layout, { Content, Header } from 'antd/lib/layout/layout';
 import { useIntl } from 'react-intl';
 import messages from './messages';
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,8 +9,9 @@ import { makeSelectUsers } from 'redux/selectors/Users';
 import { DEFAULT_PAGINATION_LIMIT } from 'constants/ApiConstant';
 import CreateUser from './CreateUser';
 import UpdateUser from './UpdateUser';
+import Flex from 'components/shared-components/Flex';
 
-const { Text, Title } = Typography;
+const { Text } = Typography;
 const { confirm } = Modal;
 
 const USER_FORM = {
@@ -112,35 +112,34 @@ const UserSettings = () => {
     },
   ];
   return (
-    <Layout>
-      <Header className="ant-layout-page-header shadow-sm d-flex justify-content-sm-between">
-        <Title className="mb-sm-0">{formatMessage(messages.title)}</Title>
+    <div className="p-2">
+      <Flex justifyContent="between">
+        <Typography.Title level={2} className="mb-4">
+          {formatMessage(messages.title)}
+        </Typography.Title>
         <Button
           type="primary"
           onClick={() => setActiveForm({ id: USER_FORM.CREATE })}
         >
           {formatMessage(messages.buttonNew)}
         </Button>
-      </Header>
-      <Content>
-        <Card className="m-4 p-3">
-          <Table
-            columns={tableColumns}
-            rowKey="id"
-            dataSource={users.map((pat) => ({ ...pat, key: pat.id }))}
-            pagination={{
-              defaultPageSize: DEFAULT_PAGINATION_LIMIT,
-              total: count,
-              onChange: handlePaginationChange,
-              hideOnSinglePage: true,
-              current: page,
-            }}
-            loading={loading}
-          />
-          {getActiveUserForm()}
-        </Card>
-      </Content>
-    </Layout>
+      </Flex>
+
+      <Table
+        columns={tableColumns}
+        rowKey="id"
+        dataSource={users.map((pat) => ({ ...pat, key: pat.id }))}
+        pagination={{
+          defaultPageSize: DEFAULT_PAGINATION_LIMIT,
+          total: count,
+          onChange: handlePaginationChange,
+          hideOnSinglePage: true,
+          current: page,
+        }}
+        loading={loading}
+      />
+      {getActiveUserForm()}
+    </div>
   );
 };
 

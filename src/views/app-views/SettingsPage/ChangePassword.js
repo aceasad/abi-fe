@@ -8,9 +8,7 @@ import React from 'react';
 import { useIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
 import { changePassword } from 'redux/actions/Auth';
-import { setInvalidOldPasswordError } from 'redux/actions/Error';
 import { makeSelectLoading } from 'redux/selectors/Auth';
-import { makeSelectInvalidOldPasswordError } from 'redux/selectors/Error';
 import { changePasswordSchema } from 'utils/validations';
 import messages from './messages';
 
@@ -19,13 +17,6 @@ const ChangePassword = () => {
   const { formatMessage } = useIntl();
 
   const loading = useSelector(makeSelectLoading());
-  const invalidOldPasswordError = useSelector(
-    makeSelectInvalidOldPasswordError()
-  );
-
-  const hideInvalidPasswordError = () => {
-    if (invalidOldPasswordError) dispatch(setInvalidOldPasswordError(false));
-  };
 
   const showSuccess = () =>
     message.success({
@@ -39,7 +30,7 @@ const ChangePassword = () => {
       duration: 2,
     });
 
-  const handleSubmit = (changePasswordData, { resetForm }) => {
+  const handleSubmit = (changePasswordData, { resetForm, setErrors }) => {
     dispatch(
       changePassword({
         data: {
@@ -49,6 +40,7 @@ const ChangePassword = () => {
         showSuccess,
         showError,
         resetForm,
+        setErrors,
       })
     );
   };
@@ -83,14 +75,8 @@ const ChangePassword = () => {
                     minValue: passwordMinLength,
                     matchesLabel: formatMessage(messages.passwordValidFormat),
                   }}
-                  onFocus={hideInvalidPasswordError}
                 />
 
-                {invalidOldPasswordError && (
-                  <p className="authentication-error">
-                    {formatMessage(messages.invalidOldPassword)}
-                  </p>
-                )}
                 <Field
                   component={FormField}
                   label={formatMessage(messages.newPasswordInputLabel)}

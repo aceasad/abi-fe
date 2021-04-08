@@ -6,7 +6,12 @@ import {
   UPDATED_INDUSTRY_AVERAGE_ERROR,
   UPDATED_INDUSTRY_AVERAGE_SUCCESS,
   SET_LOADING,
+  CREATED_INDUSTRY_AVERAGE,
+  CREATED_INDUSTRY_AVERAGE_SUCCESS,
+  CREATED_INDUSTRY_AVERAGE_ERROR,
+  UPDATE_IS_UPDATED,
 } from '../constants/IndustryAverage';
+
 export const updateIndustryAverage = (values) => {
   return {
     type: UPDATED_INDUSTRY_AVERAGE,
@@ -25,6 +30,27 @@ export const updateIndustryAverageError = (message) => {
   return {
     type: UPDATED_INDUSTRY_AVERAGE_ERROR,
     message,
+  };
+};
+
+export const createIndustryAverageSuccess = (response) => {
+  return {
+    type: CREATED_INDUSTRY_AVERAGE_SUCCESS,
+    response,
+  };
+};
+
+export const createIndustryAverageError = (message) => {
+  return {
+    type: CREATED_INDUSTRY_AVERAGE_ERROR,
+    message,
+  };
+};
+
+export const createIndustryAverage = (values) => {
+  return {
+    type: CREATED_INDUSTRY_AVERAGE,
+    values,
   };
 };
 
@@ -52,5 +78,11 @@ export const setLoading = (flag) => {
   return {
     type: SET_LOADING,
     flag,
+  };
+};
+
+export const updateIsUpdated = () => {
+  return {
+    type: UPDATE_IS_UPDATED,
   };
 };
