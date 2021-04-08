@@ -1,111 +1,112 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Table, Tooltip, Typography, Button, Modal } from 'antd';
+import { Card, Table, Tooltip, Typography, Button, Modal, message } from 'antd';
 import { FormOutlined, DeleteOutlined } from '@ant-design/icons';
 import Layout, { Content, Header } from 'antd/lib/layout/layout';
-import UserSettingsFormModal from 'containers/Forms/UserSettings/UserSettingsFormModal';
 import { useIntl } from 'react-intl';
 import messages from './messages';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteUser, getUsers, setUsersPage } from 'redux/actions/User';
+import { makeSelectUsers } from 'redux/selectors/Users';
+import { DEFAULT_PAGINATION_LIMIT } from 'constants/ApiConstant';
+import CreateUser from './CreateUser';
+import UpdateUser from './UpdateUser';
 
 const { Text, Title } = Typography;
 const { confirm } = Modal;
 
-const dummyData = [
-  {
-    id: 1,
-    userName: 'Beau Davenport',
-    email: 'beaudavenport@atrium.com',
-    superuser: true,
-  },
-  {
-    id: 2,
-    userName: 'Rui Ford',
-    email: 'ruiford@atrium.com',
-    superuser: false,
-  },
-  {
-    id: 3,
-    userName: 'Chantal Ingram',
-    email: 'chantalingram@atrium.com',
-    superuser: false,
-  },
-];
+const USER_FORM = {
+  CREATE: 1,
+  UPDATE: 2,
+};
 
 const UserSettings = () => {
   const { formatMessage } = useIntl();
   const dispatch = useDispatch();
+  const { users, page, count, loading } = useSelector(makeSelectUsers());
 
   useEffect(() => {
-    // dispatch(getUs)
-  }, []);
+    dispatch(getUsers());
+  }, [dispatch]);
 
-  const [userSettingsModalVisible, setUserSettingsModalVisible] = useState(
-    false
-  );
-  const [userModalTitle, setUserModalTitle] = useState('');
+  const [activeForm, setActiveForm] = useState();
 
-  const openUserSettings = (modalTitle) => {
-    setUserModalTitle(modalTitle);
-    setUserSettingsModalVisible(true);
-  };
-
-  const closeUserSettings = () => {
-    setUserSettingsModalVisible(false);
+  const afterDelete = () => {
+    message.success(formatMessage(messages.userDeleted));
   };
 
   const showDeleteConfirm = (element) => {
     confirm({
       title: formatMessage(messages.deleteConfirmation, {
-        user: element.userName,
+        user: element.name,
       }),
       okText: formatMessage(messages.formConfirmationButton),
       okType: 'danger',
       cancelText: formatMessage(messages.formCancelButton),
       onOk() {
-        // Implement on confirm logic.
+        dispatch(deleteUser({ id: element.id, afterDelete }));
       },
     });
+  };
+
+  const closeUserForm = () => setActiveForm(null);
+
+  const getActiveUserForm = () => {
+    switch (activeForm?.id) {
+      case USER_FORM.UPDATE:
+        return (
+          <UpdateUser closeModal={closeUserForm} userId={activeForm.data} />
+        );
+      case USER_FORM.CREATE:
+        return <CreateUser closeModal={closeUserForm} />;
+      default:
+        return null;
+    }
+  };
+
+  const handlePaginationChange = (page) => {
+    dispatch(setUsersPage(page));
   };
 
   const tableColumns = [
     {
       title: formatMessage(messages.formName),
-      dataIndex: 'userName',
-      key: 'userName',
+      dataIndex: 'name',
+      key: 'name',
     },
     {
       title: formatMessage(messages.formEmail),
-      dataIndex: 'email',
-      key: 'email',
+      dataIndex: 'username',
+      key: 'username',
     },
     {
       title: '',
       dataIndex: 'actions',
       render: (_, elm) => (
         <div className="text-right">
-          {elm.superuser ? (
+          {elm.is_organization_owner && (
             <Text strong className="text-primary mr-2">
               {formatMessage(messages.superadmin)}
             </Text>
-          ) : (
-            <Tooltip title={formatMessage(messages.editUser)}>
+          )}
+          <Tooltip title={formatMessage(messages.editUser)}>
+            <Button
+              className="mr-2"
+              icon={<FormOutlined />}
+              onClick={() =>
+                setActiveForm({ id: USER_FORM.UPDATE, data: elm.id })
+              }
+              size="small"
+            />
+          </Tooltip>
+          {!elm.is_organization_owner && (
+            <Tooltip title={formatMessage(messages.deleteUser)}>
               <Button
-                className="mr-2"
-                icon={<FormOutlined />}
-                onClick={() =>
-                  openUserSettings(formatMessage(messages.editUser))
-                }
+                icon={<DeleteOutlined />}
+                onClick={() => showDeleteConfirm(elm)}
                 size="small"
               />
             </Tooltip>
           )}
-          <Tooltip title={formatMessage(messages.deleteUser)}>
-            <Button
-              icon={<DeleteOutlined />}
-              onClick={() => showDeleteConfirm(elm)}
-              size="small"
-            />
-          </Tooltip>
         </div>
       ),
     },
@@ -116,19 +117,27 @@ const UserSettings = () => {
         <Title className="mb-sm-0">{formatMessage(messages.title)}</Title>
         <Button
           type="primary"
-          onClick={() => openUserSettings(formatMessage(messages.createUser))}
+          onClick={() => setActiveForm({ id: USER_FORM.CREATE })}
         >
           {formatMessage(messages.buttonNew)}
         </Button>
       </Header>
       <Content>
         <Card className="m-4 p-3">
-          <Table columns={tableColumns} dataSource={dummyData} rowKey="id" />
-          <UserSettingsFormModal
-            title={userModalTitle}
-            isModalVisible={userSettingsModalVisible}
-            closeModal={closeUserSettings}
+          <Table
+            columns={tableColumns}
+            rowKey="id"
+            dataSource={users.map((pat) => ({ ...pat, key: pat.id }))}
+            pagination={{
+              defaultPageSize: DEFAULT_PAGINATION_LIMIT,
+              total: count,
+              onChange: handlePaginationChange,
+              hideOnSinglePage: true,
+              current: page,
+            }}
+            loading={loading}
           />
+          {getActiveUserForm()}
         </Card>
       </Content>
     </Layout>

@@ -111,3 +111,13 @@ export const userSchema = Yup.object().shape({
     .required()
     .oneOf([Yup.ref('password')]),
 });
+
+export const updateUserSchema = Yup.object().shape({
+  name: Yup.string().trim().max(MAX).required(),
+  username: Yup.string().email().required(),
+  password: Yup.string().matches(passwordFormat).min(passwordMinLength),
+  confirmPassword: Yup.string()
+    .matches(passwordFormat)
+    .min(passwordMinLength)
+    .oneOf([Yup.ref('password')]),
+});

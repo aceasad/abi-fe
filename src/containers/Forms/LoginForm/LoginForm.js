@@ -13,7 +13,7 @@ import { useIntl } from 'react-intl';
 import { ROUTES } from 'routes';
 import { passwordMinLength } from 'constants/Validation';
 import FormField from 'components/custom-components/Form/FormField';
-import { makeSelectLoginDetails } from 'redux/selectors/Users';
+import { makeSelectLoginDetails } from 'redux/selectors/Auth';
 
 export const LoginForm = () => {
   let history = useHistory();

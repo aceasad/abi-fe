@@ -84,4 +84,8 @@ export default defineMessages({
     id: `${industryAverage}.title`,
     defaultMessage: 'Industry Average',
   },
+  userSettings: {
+    id: `${settings}.user_settings.title`,
+    defaultMessage: 'User Settings',
+  },
 });

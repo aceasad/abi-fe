@@ -1,5 +1,10 @@
 import React from 'react';
-import { FormOutlined, LockOutlined } from '@ant-design/icons';
+import {
+  FormOutlined,
+  LockOutlined,
+  UserOutlined,
+  HomeOutlined,
+} from '@ant-design/icons';
 import { Menu, Typography } from 'antd';
 import { Link, Redirect, Route, Switch } from 'react-router-dom';
 import InnerAppLayout from 'layouts/inner-app-layout';
@@ -9,6 +14,7 @@ import messages from './messages';
 import { useIntl } from 'react-intl';
 import Layout, { Content, Header } from 'antd/lib/layout/layout';
 import IndustryAverage from '../IndustryAveragePage';
+import UserSettings from '../UserSettings';
 
 const SettingOption = ({ match, location }) => {
   const { formatMessage } = useIntl();
@@ -30,9 +36,14 @@ const SettingOption = ({ match, location }) => {
         <Link to={'change-password'} />
       </Menu.Item>
       <Menu.Item key={`${match.url}/industry-average`}>
-        <LockOutlined />
+        <HomeOutlined />
         <span>{formatMessage(messages.industryAverageMenuLabel)}</span>
         <Link to={'industry-average'} />
+      </Menu.Item>
+      <Menu.Item key={`${match.url}/user-settings`}>
+        <UserOutlined />
+        <span>{formatMessage(messages.userSettings)}</span>
+        <Link to={'user-settings'} />
       </Menu.Item>
     </Menu>
   );
@@ -48,6 +59,7 @@ const SettingContent = ({ match }) => {
         path={`${match.url}/industry-average`}
         component={IndustryAverage}
       />
+      <Route path={`${match.url}/user-settings`} component={UserSettings} />
     </Switch>
   );
 };

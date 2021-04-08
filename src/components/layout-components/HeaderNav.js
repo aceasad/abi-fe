@@ -18,7 +18,6 @@ import {
 } from '@ant-design/icons';
 import { signOut } from 'redux/actions/Auth';
 import { useDispatch } from 'react-redux';
-import UserSettingsFormModal from 'containers/Forms/UserSettings/UserSettingsFormModal';
 
 const { Header } = Layout;
 
@@ -36,25 +35,10 @@ export const HeaderNav = (props) => {
   } = props;
   const dispatch = useDispatch();
 
-  const [userSettingsModalVisible, setUserSettingsModalVisible] = useState(
-    false
-  );
-
-  const openUserSettings = () => {
-    setUserSettingsModalVisible(true);
-  };
-
-  const closeUserSettings = () => {
-    setUserSettingsModalVisible(false);
-  };
-
   const dropdownMenu = (
     <Menu>
       <Menu.Item key="0">
         {localeString(localization, 'user_menu.company_settings')}
-      </Menu.Item>
-      <Menu.Item key="1" onClick={openUserSettings}>
-        {localeString(localization, 'user_menu.user_settings')}
       </Menu.Item>
       <Menu.Divider />
       <Menu.Item key="2" onClick={() => dispatch(signOut())}>
@@ -105,14 +89,6 @@ export const HeaderNav = (props) => {
             <Logo logoType={navMode} />
           </a>
         </Dropdown>
-        <UserSettingsFormModal
-          title={localeString(
-            localization,
-            'user_settings.form.title.edit_user'
-          )}
-          isModalVisible={userSettingsModalVisible}
-          closeModal={closeUserSettings}
-        />
         <Divider type="vertical" className="nav-divider" />
         {!isMobile && (
           <div

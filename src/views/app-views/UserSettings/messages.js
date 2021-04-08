@@ -5,15 +5,15 @@ export const passowrdScope = 'reset_password_page';
 
 export default defineMessages({
   deleteConfirmation: {
-    id: `${scope}.modal.delete.description'`,
+    id: `${scope}.modal.delete.description`,
     defaultMessage: 'Are you sure you want to delete {user}?',
   },
   formConfirmationButton: {
-    id: `${scope}.form.button.confirm'`,
+    id: `${scope}.form.button.confirm`,
     defaultMessage: 'Confirm',
   },
   formCancelButton: {
-    id: `${scope}.form.button.cancel'`,
+    id: `${scope}.form.button.cancel`,
     defaultMessage: 'Cancel',
   },
   formName: {
@@ -38,7 +38,8 @@ export default defineMessages({
   },
   createUser: {
     id: `${scope}.form.title.create_user`,
-    defaultMessage: 'Create User',
+    defaultMessage:
+      'Create a new user by entering their name, email address and password.',
   },
   title: {
     id: `${scope}.title`,
@@ -59,5 +60,21 @@ export default defineMessages({
   passwordValidFormat: {
     id: `${passowrdScope}.matches.password`,
     defaultMessage: 'Password must be in valid format',
+  },
+  userCreated: {
+    id: `${scope}.messages.success_created`,
+    defaultMessage: 'User Created',
+  },
+  usernameInUse: {
+    id: `${scope}.messages.error_username_in_use`,
+    defaultMessage: 'User with given username already exists',
+  },
+  userUpdated: {
+    id: `${scope}.messages.success_updated`,
+    defaultMessage: 'User Updated',
+  },
+  userDeleted: {
+    id: `${scope}.messages.success_deleted`,
+    defaultMessage: 'User Deleted',
   },
 });

@@ -7,7 +7,7 @@ import {
   makeSelectIsAuthenticated,
   makeSelectIsForceClinicRequired,
   maskeSelectIsPasswordCreateRequired,
-} from '../../redux/selectors/Users';
+} from 'redux/selectors/Auth';
 import Loading from 'components/shared-components/Loading';
 
 export function PrivateRoute({ component: Component, type, ...rest }) {
