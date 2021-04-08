@@ -5,7 +5,7 @@ import {
   BarChartOutlined,
   TeamOutlined,
 } from '@ant-design/icons';
-import { Menu, PageHeader } from 'antd';
+import { Menu } from 'antd';
 import { Link, Redirect, Route, Switch } from 'react-router-dom';
 import InnerAppLayout from 'layouts/inner-app-layout';
 import EditClinic from './EditClinic';
@@ -67,18 +67,12 @@ const SettingsPage = (props) => {
   const { formatMessage } = useIntl();
 
   return (
-    <>
-      <PageHeader
-        className="p-0 mb-4"
-        title={formatMessage(messages.settingsTitle)}
-      />
-      <InnerAppLayout
-        border
-        sideContentWidth={320}
-        sideContent={<SettingOption {...props} />}
-        mainContent={<SettingContent {...props} />}
-      />
-    </>
+    <InnerAppLayout
+      border
+      sideContentWidth={320}
+      sideContent={<SettingOption {...props} />}
+      mainContent={<SettingContent {...props} />}
+    />
   );
 };
 
