@@ -1,5 +1,4 @@
 import { Badge, Button, Card, Col, Row } from 'antd';
-import Layout, { Content } from 'antd/lib/layout/layout';
 import {
   LeftOutlined,
   EditOutlined,
@@ -67,137 +66,127 @@ const PatientOverview = ({ patientId, showList, updatePatient }) => {
   };
 
   return (
-    <Layout>
-      <Content className="m-4">
-        <Row gutter={16}>
-          <Col span={7}>
-            <Card>
-              <Flex
-                justifyContent="between"
-                alignItems="center"
-                className="mb-4"
+    <Row gutter={16}>
+      <Col span={7}>
+        <Card>
+          <Flex justifyContent="between" alignItems="center" className="mb-4">
+            <div className="text-primary cursor-pointer" onClick={showList}>
+              <LeftOutlined />
+              <Text underline className="text-primary ml-2">
+                {formatMessage(messages.backToPatients)}
+              </Text>
+            </div>
+            <div
+              className="cursor-pointer"
+              onClick={() => updatePatient(patientId, PATIENT_PAGE.PREVIEW)}
+            >
+              <EditOutlined />
+            </div>
+          </Flex>
+          {!patient || loading ? (
+            <Loading />
+          ) : (
+            <>
+              <Formik
+                initialValues={{
+                  picture: patient.picture,
+                  whitelisted: patient.whitelisted,
+                }}
+                onSubmit={handleSubmit}
               >
-                <div className="text-primary cursor-pointer" onClick={showList}>
-                  <LeftOutlined />
-                  <Text underline className="text-primary ml-2">
-                    {formatMessage(messages.backToPatients)}
-                  </Text>
-                </div>
-                <div
-                  className="cursor-pointer"
-                  onClick={() => updatePatient(patientId, PATIENT_PAGE.PREVIEW)}
-                >
-                  <EditOutlined />
-                </div>
-              </Flex>
-              {!patient || loading ? (
-                <Loading />
-              ) : (
-                <>
-                  <Formik
-                    initialValues={{
-                      picture: patient.picture,
-                      whitelisted: patient.whitelisted,
-                    }}
-                    onSubmit={handleSubmit}
-                  >
-                    <Form>
-                      <Row gutter={[0, 16]} className="mb-4">
-                        <Col span={24}>
-                          <Field
-                            isSubmit
-                            component={FormImageUpload}
-                            name="picture"
-                          />
-                        </Col>
-                        <Col span={24}>
-                          <Title level={3} className="text-center">
-                            {patient.first_name} {patient.last_name}
-                          </Title>
-                        </Col>
-                        <Col span={24}>
-                          <div className="border d-flex justify-content-center form-item-no-margin">
-                            <Field
-                              isSubmit
-                              name="whitelisted"
-                              component={FormCheckbox}
-                              label="whitelisted"
-                            />
-                          </div>
-                        </Col>
-                      </Row>
-                    </Form>
-                  </Formik>
-                  <PatientOverviewDetails
-                    fields={patientDetailsFields}
-                    patient={{
-                      ...patient,
-                      education: patient?.education?.name,
-                      ethnicity: patient?.ethnicity?.name,
-                      material_status: patient?.material_status?.name,
-                      employment: patient?.employment?.name,
-                    }}
-                    lastAppointment={lastAppointment}
-                  />
-                </>
-              )}
-            </Card>
-          </Col>
-
-          <Col span={17}>
-            {showMessages ? (
-              <div className="chat inner-app-layout">
-                <div className="main-content">
-                  <Conversation
-                    showTitle={false}
-                    conversationId={1}
-                    isMenuVisible={false}
-                    BackAction={() => (
-                      <div
-                        className="cursor-pointer"
-                        onClick={() => setShowMessages(false)}
-                      >
-                        <LeftOutlined />
-                        <Text underline className="ml-2 text-uppercase">
-                          {formatMessage(messages.messages)}
-                        </Text>
+                <Form>
+                  <Row gutter={[0, 16]} className="mb-4">
+                    <Col span={24}>
+                      <Field
+                        isSubmit
+                        component={FormImageUpload}
+                        name="picture"
+                      />
+                    </Col>
+                    <Col span={24}>
+                      <Title level={3} className="text-center">
+                        {patient.first_name} {patient.last_name}
+                      </Title>
+                    </Col>
+                    <Col span={24}>
+                      <div className="border d-flex justify-content-center form-item-no-margin">
+                        <Field
+                          isSubmit
+                          name="whitelisted"
+                          component={FormCheckbox}
+                          label="whitelisted"
+                        />
                       </div>
-                    )}
-                  />
-                </div>
-              </div>
-            ) : (
-              <Layout>
-                <Flex
-                  justifyContent="between"
-                  alignItems="center"
-                  className="ml-4 mr-4 mb-4"
-                >
-                  <Title level={2} className="mb-0">
-                    {formatMessage(messages.overviewTittle)}
-                  </Title>
-                  <Badge count={7}>
-                    <Button
-                      type="primary"
-                      onClick={() => setShowMessages(true)}
+                    </Col>
+                  </Row>
+                </Form>
+              </Formik>
+              <PatientOverviewDetails
+                fields={patientDetailsFields}
+                patient={{
+                  ...patient,
+                  education: patient?.education?.name,
+                  ethnicity: patient?.ethnicity?.name,
+                  material_status: patient?.material_status?.name,
+                  employment: patient?.employment?.name,
+                }}
+                lastAppointment={lastAppointment}
+              />
+            </>
+          )}
+        </Card>
+      </Col>
+
+      <Col span={17}>
+        {showMessages ? (
+          <>
+            <Title level={2} className="ml-3 mr-4 mb-4">
+              {formatMessage(messages.messages)}
+            </Title>
+            <div className="chat inner-app-layout">
+              <div className="main-content">
+                <Conversation
+                  showTitle={false}
+                  conversationId={1}
+                  isMenuVisible={false}
+                  BackAction={() => (
+                    <div
+                      className="cursor-pointer"
+                      onClick={() => setShowMessages(false)}
                     >
-                      <WhatsAppOutlined />{' '}
-                      <span>
-                        {formatMessage(messages.overviewButtonMessages)}
-                      </span>
-                    </Button>
-                  </Badge>
-                </Flex>
-                <Content>
-                  <PatientOverviewScheduledCard patient={patient} />
-                  <PatientOverviewHistoryCard patient={patient} />
-                </Content>
-              </Layout>
-            )}
-          </Col>
-        </Row>
-      </Content>
-    </Layout>
+                      <LeftOutlined />
+                      <Text className="ml-2">
+                        {formatMessage(messages.backToOverview)}
+                      </Text>
+                    </div>
+                  )}
+                />
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            <Flex
+              justifyContent="between"
+              alignItems="center"
+              className="ml-3 mr-4 mb-4"
+            >
+              <Title level={2} className="mb-0">
+                {formatMessage(messages.overviewTittle)}
+              </Title>
+              <Badge count={7}>
+                <Button type="primary" onClick={() => setShowMessages(true)}>
+                  <WhatsAppOutlined />{' '}
+                  <span>{formatMessage(messages.overviewButtonMessages)}</span>
+                </Button>
+              </Badge>
+            </Flex>
+            <PatientOverviewScheduledCard patient={patient} />
+            <PatientOverviewHistoryCard patient={patient} />
+          </>
+        )}
+      </Col>
+    </Row>
   );
 };
 

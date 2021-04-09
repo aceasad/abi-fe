@@ -325,6 +325,7 @@
   "patient_overview.table.column_title.prediction": "Prediction",
   "patient_overview.table.column_title.status": "Status",
   "patient_overview.messages": "Messages",
+  "patient_overview.back_to_overview": "Back to patient overview",
 
   "user_settings.title": "User Settings",
   "user_settings.superadmin": "superadmin",
