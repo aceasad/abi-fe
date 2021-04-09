@@ -74,10 +74,10 @@ export const getIndustryAverageError = (message) => {
   };
 };
 
-export const setLoading = (flag) => {
+export const setLoading = (payload) => {
   return {
     type: SET_LOADING,
-    flag,
+    payload,
   };
 };
 

@@ -10,7 +10,10 @@ import {
   createIndustryAverage,
 } from 'redux/actions/IndustryAverage';
 import { useSelector } from 'react-redux';
-import { industryAverageSelector } from '../../../redux/selectors/IndustryAverage';
+import {
+  industryAverageSelector,
+  makeSelectIndustryAverageLoading,
+} from 'redux/selectors/IndustryAverage';
 import { industryAveragesSchema } from 'utils/validations';
 import RowColumnField from 'components/custom-components/Form/RowColumnField';
 import { maxDigits } from 'constants/Validation';
@@ -23,6 +26,7 @@ const IndustryAverage = () => {
   const dispatch = useDispatch();
   const { formatMessage } = useIntl();
   const industryAverage = useSelector(industryAverageSelector());
+  const laoding = useSelector(makeSelectIndustryAverageLoading());
 
   const afterUpdate = () => {
     message.success(formatMessage(messages.save_or_updated));
@@ -199,7 +203,7 @@ const IndustryAverage = () => {
               <Button
                 name="create"
                 type="primary"
-                disabled={!dirty || !isValid}
+                disabled={!dirty || !isValid || laoding}
                 onClick={handleSubmit}
               >
                 {formatMessage(messages.save)}

@@ -9,6 +9,7 @@ import {
   UPDATE_IS_UPDATED,
 } from '../constants/IndustryAverage';
 import produce from 'immer';
+
 const initialState = {
   isUpdated: false,
   loading: false,
@@ -42,7 +43,7 @@ const industryAverage = (state = initialState, action) =>
         draft.isUpdated = null;
         break;
       case SET_LOADING:
-        draft.message = action.flag;
+        draft.loading = action.payload;
         break;
     }
   });
