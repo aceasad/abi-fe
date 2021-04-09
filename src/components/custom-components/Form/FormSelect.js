@@ -45,9 +45,8 @@ const FormSelect = ({
       help={showError()}
     >
       <Select
-        placeholder={
-          defaultOption ? defaultOption[optionField] : placeholderText
-        }
+        value={defaultOption && defaultOption[optionField]}
+        placeholder={placeholderText}
         onChange={handleSelected}
         onBlur={() => setFieldTouched(field.name, true)}
       >
