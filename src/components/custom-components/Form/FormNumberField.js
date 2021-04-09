@@ -1,23 +1,21 @@
 import React from 'react';
+import { InputNumber } from 'antd';
 import { ErrorMessage } from 'formik';
-import { Form, Input, Tooltip } from 'antd';
+import { Form, Tooltip } from 'antd';
 import { useIntl } from 'react-intl';
 
-const FormField = ({
-  form: { handleBlur, handleChange },
+function FormNumberField({
+  form: { handleBlur, setFieldValue },
   field,
   labelComponent: Label,
-  secureField,
   errorTexts,
   label,
   labelBlock,
   tooltipText,
   required,
-  numberField,
+  decimals = 0,
   ...props
-}) => {
-  const InputField = secureField ? Input.Password : Input;
-
+}) {
   const { formatMessage } = useIntl();
 
   const getLabel = () => {
@@ -31,15 +29,19 @@ const FormField = ({
       label,
     });
 
+  const handleNumberChange = (num) => {
+    setFieldValue(field.name, Number(num).toFixed(decimals));
+  };
+
   const FormItem = (
     <Form.Item
       className={labelBlock ? 'label-block' : ''}
       label={getLabel()}
       required={required}
     >
-      <InputField
+      <InputNumber
         name={field.name}
-        onChange={handleChange}
+        onChange={handleNumberChange}
         onBlur={handleBlur}
         value={field.value}
         {...props}
@@ -65,6 +67,6 @@ const FormField = ({
       )}
     </div>
   );
-};
+}
 
-export default FormField;
+export default FormNumberField;

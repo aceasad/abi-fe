@@ -3,7 +3,6 @@ import { useIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
 import { Field, Formik } from 'formik';
 import { Card, Col, Row, Typography } from 'antd';
-import Layout, { Content } from 'antd/lib/layout/layout';
 import Form from 'antd/lib/form/Form';
 
 import PatientHeader from './PatientHeader';
@@ -15,6 +14,7 @@ import messages from './messages';
 import { makeSelectPatientDetails } from 'redux/selectors/Patient';
 import { patientSchema } from 'utils/validations';
 import { MAX } from 'constants/ClinicConstants';
+import { filterNumberInput } from 'utils/helpers';
 
 const { Title } = Typography;
 
@@ -31,13 +31,6 @@ const PatientForm = ({
   const { education, employment, material_status, ethnicities } = useSelector(
     makeSelectPatientDetails()
   );
-
-  const filterNumberInput = (e) =>
-    (e.keyCode === 69 ||
-      e.keyCode === 189 ||
-      e.keyCode === 190 ||
-      e.keyCode === 187) &&
-    e.preventDefault();
 
   return (
     <Formik

@@ -6,24 +6,23 @@ import {
   CREATED_INDUSTRY_AVERAGE,
 } from '../../redux/constants/IndustryAverage';
 import {
-  updateIndustryAverageSuccess,
   setLoading,
   updateIndustryAverageError,
   getIndustryAverageSuccess,
   getIndustryAverageError,
-  createIndustryAverageSuccess,
   createIndustryAverageError,
-} from '../../redux/actions/IndustryAverage';
+} from 'redux/actions/IndustryAverage';
 
 export function* updateIndustryAverageSaga() {
-  yield takeEvery(UPDATED_INDUSTRY_AVERAGE, function* ({ values }) {
+  yield takeEvery(UPDATED_INDUSTRY_AVERAGE, function* ({ payload }) {
     try {
       yield put(setLoading(true));
-      const { response } = yield call(
+      const { data } = yield call(
         industryAverage.updateIndustryAverge,
-        values
+        payload.data
       );
-      yield put(updateIndustryAverageSuccess(response));
+      yield put(getIndustryAverageSuccess(data));
+      yield payload.afterUpdate();
     } catch (exception) {
       put(updateIndustryAverageError(exception.message));
     } finally {
@@ -33,14 +32,15 @@ export function* updateIndustryAverageSaga() {
 }
 
 export function* createIndustryAverageSaga() {
-  yield takeEvery(CREATED_INDUSTRY_AVERAGE, function* ({ values }) {
+  yield takeEvery(CREATED_INDUSTRY_AVERAGE, function* ({ payload }) {
     try {
       yield put(setLoading(true));
-      const { response } = yield call(
+      const { data } = yield call(
         industryAverage.createIndustryAverage,
-        values
+        payload.data
       );
-      yield put(createIndustryAverageSuccess(response));
+      yield put(getIndustryAverageSuccess(data));
+      yield payload.afterUpdate();
     } catch (exception) {
       put(createIndustryAverageError(exception.message));
     } finally {
