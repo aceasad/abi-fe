@@ -1,15 +1,14 @@
 import React from 'react';
 import { useIntl } from 'react-intl';
-import { DatePicker, Form } from 'antd';
+import { Form, TimePicker } from 'antd';
 import moment from 'moment';
-import { DATE_FORMAT_MM_DD_YYYY } from 'constants/DateConstant';
+import { TIME_FORMAT_HH_MM } from 'constants/DateConstant';
 
-const FormDatePicker = ({
+const FormTimePicker = ({
   label,
   field,
   form: { setFieldValue, setFieldTouched, touched, errors },
-  defaultDate,
-  maxDate,
+  defaulTime,
   required,
   errorTexts,
 }) => {
@@ -28,6 +27,11 @@ const FormDatePicker = ({
       ? formatMessage(errors[field.name], errorTexts)
       : defaultErrorMessage());
 
+  function onChange(_, timeString) {
+    setFieldTouched(field.name, true);
+    setFieldValue(field.name, timeString);
+  }
+
   return (
     <Form.Item
       label={label}
@@ -35,25 +39,20 @@ const FormDatePicker = ({
       validateStatus={triggerError() && 'error'}
       help={showError()}
     >
-      <DatePicker
-        onChange={(_, str) => {
-          setFieldTouched(field.name, true);
-          setFieldValue(field.name, str);
-        }}
-        disabledDate={(date) => (maxDate ? date.isAfter(maxDate) : false)}
+      <TimePicker
         defaultValue={moment(
-          field.value ? field.value : defaultDate,
-          DATE_FORMAT_MM_DD_YYYY
+          field.value ? field.value : defaulTime,
+          TIME_FORMAT_HH_MM
         )}
-        format={DATE_FORMAT_MM_DD_YYYY}
+        format={TIME_FORMAT_HH_MM}
+        onChange={onChange}
       />
     </Form.Item>
   );
 };
 
-FormDatePicker.defaultProps = {
-  defaultDate: new Date(),
-  maxDate: false,
+FormTimePicker.defaultProps = {
+  defaultTime: '00:00',
 };
 
-export default FormDatePicker;
+export default FormTimePicker;

@@ -2,14 +2,13 @@ import React from 'react';
 import { Form, Select } from 'antd';
 import messages from 'views/app-views/StaffPage/messages';
 import { useIntl } from 'react-intl';
-import { ErrorMessage } from 'formik';
 
 const { Option } = Select;
 
 const FormSelect = ({
   defaultOption,
   options,
-  form: { setFieldValue, setFieldTouched },
+  form: { setFieldValue, setFieldTouched, touched, errors },
   field,
   label,
   optionField,
@@ -25,19 +24,32 @@ const FormSelect = ({
     setFieldValue(field.name, value);
   };
 
-  const defaultErrorMessage = (msg) =>
-    formatMessage(msg, {
+  const defaultErrorMessage = () =>
+    formatMessage(errors[field.name], {
       label,
     });
 
+  const triggerError = () => touched[field.name] && errors[field.name];
+
+  const showError = () =>
+    triggerError() &&
+    (errorTexts
+      ? formatMessage(errors[field.name], errorTexts)
+      : defaultErrorMessage());
+
   return (
-    <Form.Item label={label} required={required}>
+    <Form.Item
+      label={label}
+      required={required}
+      validateStatus={triggerError() && 'error'}
+      help={showError()}
+    >
       <Select
         placeholder={
           defaultOption ? defaultOption[optionField] : placeholderText
         }
         onChange={handleSelected}
-        onClick={() => setFieldTouched(field.name, true)}
+        onBlur={() => setFieldTouched(field.name, true)}
       >
         {options.map((item) => (
           <Option key={item.id} value={item.id}>
@@ -45,13 +57,6 @@ const FormSelect = ({
           </Option>
         ))}
       </Select>
-      <div className="authentication-error">
-        <ErrorMessage name={field.name}>
-          {errorTexts
-            ? (msg) => formatMessage(msg, errorTexts)
-            : defaultErrorMessage}
-        </ErrorMessage>
-      </div>
     </Form.Item>
   );
 };
