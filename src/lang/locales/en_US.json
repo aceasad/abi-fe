@@ -350,5 +350,12 @@
   "chat_page.chat.type_a_message_placeholder": "Type a message...",
 
   "settings_page.title": "Settings",
-  "settings_page.user_settings.title": "User Settings"
+  "settings_page.user_settings.title": "User Settings",
+
+  "personal_details_page.text.title": "Personal Details",
+  "personal_details_page.text.label.name": "Name",
+  "personal_details_page.text.label.email": "Email",
+
+  "profile_settings_page.text.title": "Profile Settings",
+  "profile_settings_page.text.user_updated": "User Updated"
 }

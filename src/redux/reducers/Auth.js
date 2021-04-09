@@ -70,7 +70,7 @@ const auth = (state = initState, action) =>
         draft.token = action.token;
         break;
       case SET_USER:
-        draft.user = action.payload;
+        draft.user = { ...draft.user, ...action.payload };
         break;
       case RESET_PASSWORD_SUCCESS:
         draft.isReset = true;

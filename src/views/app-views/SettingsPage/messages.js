@@ -4,6 +4,9 @@ export const settings = 'settings_page';
 export const changePassword = 'change_password_page';
 export const editClinic = 'edit_clinic_page';
 export const industryAverage = 'industry_average_page';
+export const personalDetails = 'personal_details_page';
+export const global = 'global';
+export const profileSettings = 'profile_settings_page';
 
 export default defineMessages({
   settingsTitle: {
@@ -87,5 +90,29 @@ export default defineMessages({
   userSettings: {
     id: `${settings}.user_settings.title`,
     defaultMessage: 'User Settings',
+  },
+  personalDetailsTitle: {
+    id: `${personalDetails}.text.title`,
+    defautlMessage: 'Personal Details',
+  },
+  personalDetailsNameLabel: {
+    id: `${personalDetails}.text.label.name`,
+    defaultMessage: 'Name',
+  },
+  personalDetailsEmailLabel: {
+    id: `${personalDetails}.text.label.email`,
+    defaultMessage: 'Email',
+  },
+  personalDetailsSaveButton: {
+    id: `${global}.text.save`,
+    defaultMessage: 'Save',
+  },
+  profileSettingsTitle: {
+    id: `${profileSettings}.text.title`,
+    defaultMessage: 'Profile Settings',
+  },
+  userUpdated: {
+    id: `${profileSettings}.text.user_updated`,
+    defaultMessage: 'User Updated',
   },
 });

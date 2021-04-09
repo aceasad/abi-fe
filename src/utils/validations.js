@@ -17,14 +17,18 @@ const passwordValidation = Yup.string()
   .min(passwordMinLength)
   .required();
 
-const passwordRepeatValidation = Yup.string()
-  .matches(passwordFormat)
-  .min(passwordMinLength)
-  .required()
-  .oneOf([Yup.ref('password')]);
+const passwordRepeatValidation = (refField) =>
+  Yup.string()
+    .matches(passwordFormat)
+    .min(passwordMinLength)
+    .required()
+    .oneOf([Yup.ref(refField)]);
+
+const usernameSchema = Yup.string().email().required();
+const nameSchema = Yup.string().trim().max(MAX).required();
 
 export const loginSchema = Yup.object().shape({
-  username: Yup.string().email().required(),
+  username: usernameSchema,
   password: passwordValidation,
 });
 
@@ -33,7 +37,7 @@ export const forgotPasswordSchema = Yup.object().shape({
 });
 
 export const clinicSchema = Yup.object().shape({
-  name: Yup.string().trim().required().max(MAX),
+  name: nameSchema,
   google_maps_link: Yup.string()
     .trim()
     .required()
@@ -53,12 +57,12 @@ export const clinicSchema = Yup.object().shape({
 
 export const createPasswordSchema = Yup.object().shape({
   password: passwordValidation,
-  passwordRepeat: passwordRepeatValidation,
+  passwordRepeat: passwordRepeatValidation('password'),
 });
 
 export const resetPasswordSchema = Yup.object().shape({
   password: passwordValidation,
-  passwordRepeat: passwordRepeatValidation,
+  passwordRepeat: passwordRepeatValidation('password'),
 });
 
 export const industryAveragesSchema = Yup.object().shape({
@@ -81,14 +85,8 @@ export const staffValidationSchema = Yup.object().shape({
 });
 
 export const changePasswordSchema = Yup.object().shape({
-  oldPassword: Yup.string()
-    .matches(passwordFormat)
-    .min(passwordMinLength)
-    .required(),
-  newPassword: Yup.string()
-    .matches(passwordFormat)
-    .min(passwordMinLength)
-    .required(),
+  oldPassword: passwordValidation,
+  newPassword: passwordValidation,
   newPasswordConfirm: Yup.string()
     .matches(passwordFormat)
     .min(passwordMinLength)
@@ -110,25 +108,23 @@ export const patientSchema = Yup.object().shape({
 });
 
 export const userSchema = Yup.object().shape({
-  name: Yup.string().trim().max(MAX).required(),
-  username: Yup.string().email().required(),
-  password: Yup.string()
-    .matches(passwordFormat)
-    .min(passwordMinLength)
-    .required(),
-  confirmPassword: Yup.string()
-    .matches(passwordFormat)
-    .min(passwordMinLength)
-    .required()
-    .oneOf([Yup.ref('password')]),
+  name: nameSchema,
+  username: usernameSchema,
+  password: passwordValidation,
+  confirmPassword: passwordRepeatValidation('password'),
 });
 
 export const updateUserSchema = Yup.object().shape({
-  name: Yup.string().trim().max(MAX).required(),
-  username: Yup.string().email().required(),
+  name: nameSchema,
+  username: usernameSchema,
   password: Yup.string().matches(passwordFormat).min(passwordMinLength),
   confirmPassword: Yup.string()
     .matches(passwordFormat)
     .min(passwordMinLength)
     .oneOf([Yup.ref('password')]),
+});
+
+export const personalDetailsSchema = Yup.object().shape({
+  name: nameSchema,
+  username: usernameSchema,
 });

@@ -9,6 +9,7 @@ import {
   UPDATE_USER,
   GET_SINGLE_USER,
   SET_SINGLE_USER,
+  UPDATE_CURRENT_USER,
 } from '../constants/User';
 
 export const getUsers = () => ({
@@ -59,3 +60,10 @@ export const setSingleUser = (payload) => ({
   type: SET_SINGLE_USER,
   payload,
 });
+
+export const updateCurrentUser = (payload) => {
+  return {
+    type: UPDATE_CURRENT_USER,
+    payload,
+  };
+};

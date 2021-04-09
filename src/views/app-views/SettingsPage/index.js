@@ -9,7 +9,7 @@ import { Menu } from 'antd';
 import { Link, Redirect, Route, Switch } from 'react-router-dom';
 import InnerAppLayout from 'layouts/inner-app-layout';
 import EditClinic from './EditClinic';
-import ChangePassword from './ChangePassword';
+import ProfileSettings from './ProfileSettings';
 import messages from './messages';
 import { useIntl } from 'react-intl';
 import IndustryAverage from '../IndustryAveragePage';
@@ -31,15 +31,10 @@ const SettingOption = ({ match, location, isOrganizationOwner }) => {
         <span>{formatMessage(messages.editClinicMenuLabel)}</span>
         <Link to={'edit-clinic'} />
       </Menu.Item>
-      <Menu.Item key={`${match.url}/change-password`}>
+      <Menu.Item key={`${match.url}/profile-settings`}>
         <LockOutlined />
-        <span>{formatMessage(messages.changePasswordMenuLabel)}</span>
-        <Link to={'change-password'} />
-      </Menu.Item>
-      <Menu.Item key={`${match.url}/industry-average`}>
-        <BarChartOutlined />
-        <span>{formatMessage(messages.industryAverageMenuLabel)}</span>
-        <Link to={'industry-average'} />
+        <span>{formatMessage(messages.profileSettingsTitle)}</span>
+        <Link to={'profile-settings'} />
       </Menu.Item>
       {isOrganizationOwner && (
         <Menu.Item key={`${match.url}/user-settings`}>
@@ -48,6 +43,11 @@ const SettingOption = ({ match, location, isOrganizationOwner }) => {
           <Link to={'user-settings'} />
         </Menu.Item>
       )}
+      <Menu.Item key={`${match.url}/industry-average`}>
+        <BarChartOutlined />
+        <span>{formatMessage(messages.industryAverageMenuLabel)}</span>
+        <Link to={'industry-average'} />
+      </Menu.Item>
     </Menu>
   );
 };
@@ -57,7 +57,10 @@ const SettingContent = ({ match, isOrganizationOwner }) => {
     <Switch>
       <Redirect exact from={`${match.url}`} to={`${match.url}/edit-clinic`} />
       <Route path={`${match.url}/edit-clinic`} component={EditClinic} />
-      <Route path={`${match.url}/change-password`} component={ChangePassword} />
+      <Route
+        path={`${match.url}/profile-settings`}
+        component={ProfileSettings}
+      />
       <Route
         path={`${match.url}/industry-average`}
         component={IndustryAverage}
