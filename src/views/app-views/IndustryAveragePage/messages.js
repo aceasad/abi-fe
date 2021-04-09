@@ -42,7 +42,7 @@ export default defineMessages({
   },
   save_or_updated: {
     id: `${scope}.text.save_or_updated`,
-    defaultMessage: 'Industry averages is successfully updated',
+    defaultMessage: 'Industry average successfully updated',
   },
   save: {
     id: `${scope}.button.save`,
