@@ -8,7 +8,7 @@ import { message } from 'antd';
 import { updateStaff, getSingleStaff } from 'redux/actions/Staff';
 import { GENDER } from 'constants/UserConstants';
 import moment from 'moment';
-import { DATE_FORMAT_MM_DD_YYYY } from 'constants/DateConstant';
+import { DATE_FORMAT_DD_MMM_YYYY } from 'constants/DateConstant';
 import {
   makeSelectStaffSingle,
   makeSelectLoading,
@@ -49,14 +49,14 @@ const UpdateStaff = ({ showList, staffId }) => {
         ...singleStaff,
         profile_picture: singleStaff.profile_picture?.original || '',
         date_of_birth: moment(singleStaff.date_of_birth).format(
-          DATE_FORMAT_MM_DD_YYYY
+          DATE_FORMAT_DD_MMM_YYYY
         ),
       }
     : {
         id: staffId,
         first_name: '',
         last_name: '',
-        date_of_birth: moment(new Date()).format(DATE_FORMAT_MM_DD_YYYY),
+        date_of_birth: moment(new Date()).format(DATE_FORMAT_DD_MMM_YYYY),
         ethnicity: '',
         seniority: '',
         specialization: '',

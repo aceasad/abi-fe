@@ -2,7 +2,7 @@ import React from 'react';
 import { useIntl } from 'react-intl';
 import { DatePicker, Form } from 'antd';
 import moment from 'moment';
-import { DATE_FORMAT_MM_DD_YYYY } from 'constants/DateConstant';
+import { DATE_FORMAT_DD_MMM_YYYY } from 'constants/DateConstant';
 
 const FormDatePicker = ({
   label,
@@ -43,9 +43,9 @@ const FormDatePicker = ({
         disabledDate={(date) => (maxDate ? date.isAfter(maxDate) : false)}
         defaultValue={moment(
           field.value ? field.value : defaultDate,
-          DATE_FORMAT_MM_DD_YYYY
+          DATE_FORMAT_DD_MMM_YYYY
         )}
-        format={DATE_FORMAT_MM_DD_YYYY}
+        format={DATE_FORMAT_DD_MMM_YYYY}
       />
     </Form.Item>
   );
