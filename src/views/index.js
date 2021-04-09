@@ -7,7 +7,7 @@ import AppLocale from 'lang';
 import { IntlProvider } from 'react-intl';
 import { ConfigProvider } from 'antd';
 import { APP_PREFIX_PATH, AUTH_PREFIX_PATH } from 'configs/AppConfig';
-import { PrivateRoute } from 'routes/PrivateRoute';
+import PrivateRoute from 'routes/PrivateRoute';
 import ForceClinicRoute from '../routes/ForceClinicRoute';
 import { ROUTES } from 'routes';
 

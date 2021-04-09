@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Tooltip, Typography, Button, Modal, message } from 'antd';
+import {
+  Table,
+  Tooltip,
+  Typography,
+  Button,
+  Modal,
+  message,
+  Space,
+} from 'antd';
 import { FormOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useIntl } from 'react-intl';
 import messages from './messages';
@@ -83,30 +91,31 @@ const UserSettings = () => {
       dataIndex: 'actions',
       render: (_, elm) => (
         <div className="text-right">
-          {elm.is_organization_owner && (
-            <Text strong className="text-primary mr-2">
-              {formatMessage(messages.superadmin)}
-            </Text>
-          )}
-          <Tooltip title={formatMessage(messages.editUser)}>
-            <Button
-              className="mr-2"
-              icon={<FormOutlined />}
-              onClick={() =>
-                setActiveForm({ id: USER_FORM.UPDATE, data: elm.id })
-              }
-              size="small"
-            />
-          </Tooltip>
-          {!elm.is_organization_owner && (
-            <Tooltip title={formatMessage(messages.deleteUser)}>
+          <Space>
+            {elm.is_organization_owner && (
+              <Text strong className="text-primary">
+                {formatMessage(messages.superadmin)}
+              </Text>
+            )}
+            <Tooltip title={formatMessage(messages.editUser)}>
               <Button
-                icon={<DeleteOutlined />}
-                onClick={() => showDeleteConfirm(elm)}
+                icon={<FormOutlined />}
+                onClick={() =>
+                  setActiveForm({ id: USER_FORM.UPDATE, data: elm.id })
+                }
                 size="small"
               />
             </Tooltip>
-          )}
+            {!elm.is_organization_owner && (
+              <Tooltip title={formatMessage(messages.deleteUser)}>
+                <Button
+                  icon={<DeleteOutlined />}
+                  onClick={() => showDeleteConfirm(elm)}
+                  size="small"
+                />
+              </Tooltip>
+            )}
+          </Space>
         </div>
       ),
     },

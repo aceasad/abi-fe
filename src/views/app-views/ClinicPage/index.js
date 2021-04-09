@@ -29,7 +29,7 @@ const ClinicPage = ({ localization = true }) => {
           </Button>,
         ]}
       />
-      <Card>
+      <Card className="m-4">
         <ClinicForm />
       </Card>
     </>

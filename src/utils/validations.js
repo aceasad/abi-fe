@@ -130,5 +130,8 @@ export const updateUserSchema = Yup.object().shape({
   confirmPassword: Yup.string()
     .matches(passwordFormat)
     .min(passwordMinLength)
-    .oneOf([Yup.ref('password')]),
+    .oneOf([Yup.ref('password')])
+    .when('password', (password, schema) =>
+      !password ? schema : schema.required()
+    ),
 });

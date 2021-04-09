@@ -1,10 +1,9 @@
 import React from 'react';
-import { ErrorMessage } from 'formik';
 import { Form, Input, Tooltip } from 'antd';
 import { useIntl } from 'react-intl';
 
 const FormField = ({
-  form: { handleBlur, handleChange },
+  form: { handleBlur, handleChange, touched, errors },
   field,
   labelComponent: Label,
   secureField,
@@ -26,13 +25,24 @@ const FormField = ({
     }
     return label;
   };
-  const defaultErrorMessage = (msg) =>
-    formatMessage(msg, {
+
+  const defaultErrorMessage = () =>
+    formatMessage(errors[field.name], {
       label,
     });
 
+  const triggerError = () => touched[field.name] && errors[field.name];
+
+  const showError = () =>
+    triggerError() &&
+    (errorTexts
+      ? formatMessage(errors[field.name], errorTexts)
+      : defaultErrorMessage());
+
   const FormItem = (
     <Form.Item
+      validateStatus={triggerError() && 'error'}
+      help={showError()}
       className={labelBlock ? 'label-block' : ''}
       label={getLabel()}
       required={required}
@@ -44,13 +54,6 @@ const FormField = ({
         value={field.value}
         {...props}
       />
-      <div className="authentication-error">
-        <ErrorMessage name={field.name}>
-          {errorTexts
-            ? (msg) => formatMessage(msg, errorTexts)
-            : defaultErrorMessage}
-        </ErrorMessage>
-      </div>
     </Form.Item>
   );
 

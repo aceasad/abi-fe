@@ -10,7 +10,7 @@ import {
 } from 'redux/selectors/Auth';
 import Loading from 'components/shared-components/Loading';
 
-export function PrivateRoute({ component: Component, type, ...rest }) {
+const PrivateRoute = ({ component, ...rest }) => {
   const isAuthenticated = useSelector(makeSelectIsAuthenticated());
   const user = useSelector(makeSelectCurrentUser());
   const isPasswordCreateRequired = useSelector(
@@ -25,8 +25,7 @@ export function PrivateRoute({ component: Component, type, ...rest }) {
     } else if (isForceClinicRequired) {
       return <Redirect to={ROUTES.FIRST_CLINIC_UPDATE} />;
     }
-
-    return <Component {...props} />;
+    return component(props);
   };
 
   const getComponent = (props) =>
@@ -40,6 +39,6 @@ export function PrivateRoute({ component: Component, type, ...rest }) {
       }
     />
   );
-}
+};
 
 export default PrivateRoute;
