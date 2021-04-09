@@ -17,9 +17,11 @@ import {
   UPDATE_USER,
   DELETE_USER,
   GET_SINGLE_USER,
+  UPDATE_CURRENT_USER,
 } from 'redux/constants/User';
 import userService from 'services/UserService';
 import messages from 'views/app-views/UserSettings/messages';
+import { setUser, showLoading } from 'redux/actions/Auth';
 
 function* getUsers() {
   try {
@@ -82,6 +84,22 @@ function* getSingleUser({ payload }) {
     yield put(setUsersSingleLoading(false));
   }
 }
+
+function* updateCurrentUser({ payload }) {
+  try {
+    yield put(showLoading(true));
+    const { data } = yield call(userService.updateUser, payload.data);
+    yield payload.afterUpdate();
+    yield put(setUser(data));
+  } catch (err) {
+    if (err?.response?.status === 400) {
+      yield payload.setErrors({ username: messages.usernameInUse });
+    }
+  } finally {
+    yield put(showLoading(false));
+  }
+}
+
 export function* userSagas() {
   yield takeEvery(GET_USERS, getUsers);
   yield takeEvery(SET_USERS_PAGE, getUsers);
@@ -89,6 +107,7 @@ export function* userSagas() {
   yield takeEvery(DELETE_USER, deleteUser);
   yield takeEvery(UPDATE_USER, updateUser);
   yield takeEvery(GET_SINGLE_USER, getSingleUser);
+  yield takeEvery(UPDATE_CURRENT_USER, updateCurrentUser);
 }
 
 export default function* rootSaga() {
