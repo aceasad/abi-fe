@@ -94,7 +94,7 @@ const UserSettings = () => {
           <Space>
             {elm.is_organization_owner && (
               <Text strong className="text-primary">
-                {formatMessage(messages.superadmin)}
+                {formatMessage(messages.clinicAdmin)}
               </Text>
             )}
             <Tooltip title={formatMessage(messages.editUser)}>

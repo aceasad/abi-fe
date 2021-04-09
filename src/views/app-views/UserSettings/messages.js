@@ -24,9 +24,9 @@ export default defineMessages({
     id: `${scope}.form.email`,
     defaultMessage: 'Email',
   },
-  superadmin: {
-    id: `${scope}.superadmin`,
-    defaultMessage: 'superadmin',
+  clinicAdmin: {
+    id: `${scope}.clinic_admin`,
+    defaultMessage: 'clinic admin',
   },
   editUser: {
     id: `${scope}.form.title.edit_user`,
