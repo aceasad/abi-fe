@@ -4,6 +4,7 @@ const ENDPOINTS = {
   CREATE_CLINIC: '/clinics/',
   UPDATE_CLINIC: '/clinics/:id/',
   GET_CLINIC: '/clinics/',
+  GET_USERS_CLINIC: '/clinics/my-clinic',
 };
 
 class ClinicService extends ApiService {
@@ -19,7 +20,7 @@ class ClinicService extends ApiService {
   };
 
   getClinic = () => {
-    return this.apiClient.get(ENDPOINTS.GET_CLINIC);
+    return this.apiClient.get(ENDPOINTS.GET_USERS_CLINIC);
   };
 }
 const clinicService = new ClinicService();
