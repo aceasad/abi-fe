@@ -20,6 +20,7 @@ import messages from './messages';
 import ColumnField from 'components/custom-components/Form/ColumnField';
 import { prepareFormData } from 'utils/helpers';
 import { useLocation } from 'react-router-dom';
+import FormTimePicker from 'components/custom-components/Form/FormTimePicker';
 
 const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
   const { formatMessage } = useIntl();
@@ -160,7 +161,7 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
                   />
                 </Row>
                 <Row gutter={16}>
-                  <Col className="mb-1">
+                  <Col>
                     <Form.Item
                       name="radio-group"
                       label={formatMessage(messages.parkingAvailability)}
@@ -210,9 +211,8 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
                   <Row gutter={8}>
                     <Field
                       span={6}
-                      component={FormField}
+                      component={FormTimePicker}
                       name="start_of_work"
-                      type="time"
                       errorTexts={{
                         label: formatMessage(messages.startOfWork),
                       }}
@@ -222,9 +222,8 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
                     </Col>
                     <Field
                       span={6}
-                      component={FormField}
+                      component={FormTimePicker}
                       name="end_of_work"
-                      type="time"
                       errorTexts={{
                         label: formatMessage(messages.endOfWork),
                       }}
