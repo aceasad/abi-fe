@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect } from 'react';
 import { Formik } from 'formik';
-import { Button, Form, Row, Col, Typography, Layout, Card } from 'antd';
+import { Button, Form, Row, Col, Typography } from 'antd';
 import FormInputField from 'components/custom-components/Form/FormField';
 import messages from './messages';
 import { useDispatch } from 'react-redux';
@@ -21,7 +21,6 @@ import {
 import { industryAveragesSchema } from 'utils/validations';
 import RowColumnField from 'components/custom-components/Form/RowColumnField';
 import { maxDigits } from 'constants/Validation';
-const { Header, Content } = Layout;
 const { Title } = Typography;
 
 const IndustryAverage = () => {
@@ -76,8 +75,8 @@ const IndustryAverage = () => {
       >
         {({ values, handleSubmit, dirty, isValid }) => (
           <Form layout="vertical" name="login-form">
-            <Row gutter={64} align="bottom">
-              <Col span={10}>
+            <Row gutter={32} align="bottom">
+              <Col span={12}>
                 <RowColumnField
                   span={24}
                   component={FormInputField}
@@ -127,7 +126,7 @@ const IndustryAverage = () => {
                   }}
                 />
               </Col>
-              <Col span={10}>
+              <Col span={12}>
                 <Row>
                   <Col span={24}>
                     <Title level={4} type="secondary" className="mb-4">
