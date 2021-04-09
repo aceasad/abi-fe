@@ -44,4 +44,8 @@ export default defineMessages({
     id: `${scope}.text.save_or_updated`,
     defaultMessage: 'Industry averages is successfully updated',
   },
+  save: {
+    id: `${scope}.button.save`,
+    defaultMessage: 'Save',
+  },
 });

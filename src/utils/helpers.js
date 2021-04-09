@@ -25,6 +25,15 @@ export const mapNullObjectFeildsToString = (obj) =>
     {}
   );
 
+export const mapEmptyStingObjectFeildsToNull = (obj) =>
+  Object.keys(obj).reduce(
+    (accumulator, key) => ({
+      ...accumulator,
+      [key]: obj[key] === '' ? null : obj[key],
+    }),
+    {}
+  );
+
 export const chatListItemStyle = (
   chatListLength,
   currentItem,
@@ -49,3 +58,10 @@ export const singleChatMessageStyle = (message) => {
 
   return `msg ${messageTypeStyle} ${messageFromStyle}`;
 };
+
+export const filterNumberInput = (e) =>
+  (e.keyCode === 69 ||
+    e.keyCode === 189 ||
+    e.keyCode === 190 ||
+    e.keyCode === 187) &&
+  e.preventDefault();

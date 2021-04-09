@@ -2,6 +2,7 @@ import ApiService from './ApiService';
 
 const ENDPOINTS = {
   UPDATE_INDUSTRY_AVERAGE: '/industry_averages/',
+  GET_INDUSTRY_AVERAGE: '/industry_averages/organization/',
 };
 
 class IndustryAverageService extends ApiService {
@@ -15,7 +16,7 @@ class IndustryAverageService extends ApiService {
     this.apiClient.post(ENDPOINTS.UPDATE_INDUSTRY_AVERAGE, values);
 
   getIndustryAverage = () => {
-    return this.apiClient.get(ENDPOINTS.UPDATE_INDUSTRY_AVERAGE);
+    return this.apiClient.get(ENDPOINTS.GET_INDUSTRY_AVERAGE);
   };
 }
 

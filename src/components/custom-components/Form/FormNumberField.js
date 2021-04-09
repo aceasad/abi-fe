@@ -1,22 +1,21 @@
 import React from 'react';
-import { Form, Input, Tooltip } from 'antd';
+import { InputNumber } from 'antd';
+import { ErrorMessage } from 'formik';
+import { Form, Tooltip } from 'antd';
 import { useIntl } from 'react-intl';
 
-const FormField = ({
-  form: { handleBlur, handleChange, touched, errors },
+function FormNumberField({
+  form: { handleBlur, setFieldValue },
   field,
   labelComponent: Label,
-  secureField,
   errorTexts,
   label,
   labelBlock,
   tooltipText,
   required,
-  numberField,
+  decimals = 0,
   ...props
-}) => {
-  const InputField = secureField ? Input.Password : Input;
-
+}) {
   const { formatMessage } = useIntl();
 
   const getLabel = () => {
@@ -25,35 +24,35 @@ const FormField = ({
     }
     return label;
   };
-
-  const defaultErrorMessage = () =>
-    formatMessage(errors[field.name], {
+  const defaultErrorMessage = (msg) =>
+    formatMessage(msg, {
       label,
     });
 
-  const triggerError = () => touched[field.name] && errors[field.name];
-
-  const showError = () =>
-    triggerError() &&
-    (errorTexts
-      ? formatMessage(errors[field.name], errorTexts)
-      : defaultErrorMessage());
+  const handleNumberChange = (num) => {
+    setFieldValue(field.name, Number(num).toFixed(decimals));
+  };
 
   const FormItem = (
     <Form.Item
-      validateStatus={triggerError() && 'error'}
-      help={showError()}
       className={labelBlock ? 'label-block' : ''}
       label={getLabel()}
       required={required}
     >
-      <InputField
+      <InputNumber
         name={field.name}
-        onChange={handleChange}
+        onChange={handleNumberChange}
         onBlur={handleBlur}
         value={field.value}
         {...props}
       />
+      <div className="authentication-error">
+        <ErrorMessage name={field.name}>
+          {errorTexts
+            ? (msg) => formatMessage(msg, errorTexts)
+            : defaultErrorMessage}
+        </ErrorMessage>
+      </div>
     </Form.Item>
   );
 
@@ -68,6 +67,6 @@ const FormField = ({
       )}
     </div>
   );
-};
+}
 
-export default FormField;
+export default FormNumberField;

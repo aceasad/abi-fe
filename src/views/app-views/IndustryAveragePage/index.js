@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect } from 'react';
 import { Formik } from 'formik';
-import { Button, Form, Row, Col, Typography } from 'antd';
-import FormInputField from 'components/custom-components/Form/FormField';
+import { Button, Form, Row, Col, Typography, message } from 'antd';
 import messages from './messages';
 import { useDispatch } from 'react-redux';
 import { useIntl } from 'react-intl';
@@ -9,59 +8,50 @@ import {
   updateIndustryAverage,
   getIndustryAverage,
   createIndustryAverage,
-  updateIsUpdated,
 } from 'redux/actions/IndustryAverage';
 import { useSelector } from 'react-redux';
-import { success } from '../../../components/shared-components/MessagesAlerts/index';
-import {
-  industryAverageSelector,
-  isLoadingIndustryAverageSelector,
-  industryAverageIsUpdated,
-} from '../../../redux/selectors/IndustryAverage';
+import { industryAverageSelector } from '../../../redux/selectors/IndustryAverage';
 import { industryAveragesSchema } from 'utils/validations';
 import RowColumnField from 'components/custom-components/Form/RowColumnField';
 import { maxDigits } from 'constants/Validation';
+import { filterNumberInput } from 'utils/helpers';
+import FormNumberField from 'components/custom-components/Form/FormNumberField';
+
 const { Title } = Typography;
 
 const IndustryAverage = () => {
   const dispatch = useDispatch();
   const { formatMessage } = useIntl();
   const industryAverage = useSelector(industryAverageSelector());
-  const isLoading = useSelector(isLoadingIndustryAverageSelector());
-  const isUpdatedOrCreated = useSelector(industryAverageIsUpdated());
+
+  const afterUpdate = () => {
+    message.success(formatMessage(messages.save_or_updated));
+  };
 
   const handleSubmit = useCallback(
     (values) => {
-      industryAverage.length
-        ? dispatch(updateIndustryAverage(values))
-        : dispatch(createIndustryAverage(values));
+      industryAverage
+        ? dispatch(updateIndustryAverage({ data: values, afterUpdate }))
+        : dispatch(createIndustryAverage({ data: values, afterUpdate }));
     },
     [dispatch, industryAverage]
   );
 
-  let initialValues =
-    industryAverage != null && industryAverage.length > 0
-      ? industryAverage[0]
-      : {
-          cost_of_missed_appointments: '0.000000',
-          did_not_attend: '0.000000',
-          uptake: '0.000000',
-          coverage: '0.000000',
-          number_of_women_screened_after_invite: '0.000000',
-          number_of_women_eligible_for_screen: '0.000000',
-          number_of_women_screened_in_past_3_y: '0.000000',
-        };
+  let initialValues = industryAverage
+    ? industryAverage
+    : {
+        cost_of_missed_appointments: 0,
+        did_not_attend: 0,
+        uptake: 0,
+        coverage: 0,
+        number_of_women_screened_after_invite: 0,
+        number_of_women_eligible_for_screen: 0,
+        number_of_women_screened_in_past_3_y: 0,
+      };
   useEffect(() => {
-    if (!isLoading) dispatch(getIndustryAverage());
-  }, [isLoading]);
+    dispatch(getIndustryAverage());
+  }, []);
 
-  useEffect(() => {
-    if (isUpdatedOrCreated) {
-      success(formatMessage(messages.save_or_updated));
-      dispatch(getIndustryAverage());
-      dispatch(updateIsUpdated());
-    }
-  }, [isUpdatedOrCreated]);
   return (
     <div className="p-2">
       <Title level={2} className="mb-4">
@@ -70,20 +60,23 @@ const IndustryAverage = () => {
       <Formik
         enableReinitialize
         initialValues={initialValues}
-        validationSchema={industryAveragesSchema}
         onSubmit={handleSubmit}
+        validationSchema={industryAveragesSchema}
       >
-        {({ values, handleSubmit, dirty, isValid }) => (
+        {({ handleSubmit, dirty, isValid }) => (
           <Form layout="vertical" name="login-form">
             <Row gutter={32} align="bottom">
               <Col span={12}>
                 <RowColumnField
                   span={24}
-                  component={FormInputField}
+                  style={{ width: '100%' }}
+                  component={FormNumberField}
                   label={formatMessage(messages.cost_of_missed_appointments)}
                   name={'cost_of_missed_appointments'}
-                  type={'number'}
                   min={0}
+                  onKeyDown={filterNumberInput}
+                  step={0.1}
+                  decimals={1}
                   errorTexts={{
                     label: formatMessage(messages.cost_of_missed_appointments),
                     maxValue: maxDigits,
@@ -91,11 +84,14 @@ const IndustryAverage = () => {
                 />
                 <RowColumnField
                   span={24}
-                  component={FormInputField}
+                  style={{ width: '100%' }}
+                  component={FormNumberField}
                   label={formatMessage(messages.did_not_attend)}
                   name={'did_not_attend'}
-                  type={'number'}
                   min={0}
+                  onKeyDown={filterNumberInput}
+                  step={0.1}
+                  decimals={1}
                   errorTexts={{
                     label: formatMessage(messages.did_not_attend),
                     maxValue: maxDigits,
@@ -103,11 +99,14 @@ const IndustryAverage = () => {
                 />
                 <RowColumnField
                   span={24}
-                  component={FormInputField}
+                  style={{ width: '100%' }}
+                  component={FormNumberField}
                   label={formatMessage(messages.uptake)}
                   name={'uptake'}
-                  type={'number'}
                   min={0}
+                  onKeyDown={filterNumberInput}
+                  step={0.1}
+                  decimals={1}
                   errorTexts={{
                     label: formatMessage(messages.uptake),
                     maxValue: maxDigits,
@@ -115,11 +114,14 @@ const IndustryAverage = () => {
                 />
                 <RowColumnField
                   span={24}
-                  component={FormInputField}
+                  style={{ width: '100%' }}
+                  component={FormNumberField}
                   label={formatMessage(messages.coverage)}
                   name={'coverage'}
-                  type={'number'}
                   min={0}
+                  onKeyDown={filterNumberInput}
+                  step={0.1}
+                  decimals={1}
                   errorTexts={{
                     label: formatMessage(messages.coverage),
                     maxValue: maxDigits,
@@ -136,13 +138,16 @@ const IndustryAverage = () => {
                 </Row>
                 <RowColumnField
                   span={24}
-                  component={FormInputField}
+                  style={{ width: '100%' }}
+                  component={FormNumberField}
                   label={formatMessage(
                     messages.number_of_women_screened_after_sending_invites
                   )}
                   name={'number_of_women_screened_after_invite'}
-                  type={'number'}
                   min={0}
+                  onKeyDown={filterNumberInput}
+                  step={0.1}
+                  decimals={1}
                   errorTexts={{
                     label: formatMessage(
                       messages.number_of_women_screened_after_sending_invites
@@ -152,13 +157,16 @@ const IndustryAverage = () => {
                 />
                 <RowColumnField
                   span={24}
-                  component={FormInputField}
+                  style={{ width: '100%' }}
+                  component={FormNumberField}
                   label={formatMessage(
                     messages.number_of_women_eligible_for_screening
                   )}
                   name={'number_of_women_eligible_for_screen'}
-                  type={'number'}
                   min={0}
+                  onKeyDown={filterNumberInput}
+                  step={0.1}
+                  decimals={1}
                   errorTexts={{
                     label: formatMessage(
                       messages.number_of_women_eligible_for_screening
@@ -168,13 +176,16 @@ const IndustryAverage = () => {
                 />
                 <RowColumnField
                   span={24}
-                  component={FormInputField}
+                  style={{ width: '100%' }}
+                  component={FormNumberField}
                   label={formatMessage(
                     messages.number_of_women_screened_in_the_past_3_years
                   )}
                   name={'number_of_women_screened_in_past_3_y'}
-                  type={'number'}
                   min={0}
+                  onKeyDown={filterNumberInput}
+                  step={0.1}
+                  decimals={1}
                   errorTexts={{
                     label: formatMessage(
                       messages.number_of_women_screened_in_the_past_3_years
@@ -191,7 +202,7 @@ const IndustryAverage = () => {
                 disabled={!dirty || !isValid}
                 onClick={handleSubmit}
               >
-                Create
+                {formatMessage(messages.save)}
               </Button>
             </Form.Item>
           </Form>

@@ -12,10 +12,10 @@ import {
   UPDATE_IS_UPDATED,
 } from '../constants/IndustryAverage';
 
-export const updateIndustryAverage = (values) => {
+export const updateIndustryAverage = (payload) => {
   return {
     type: UPDATED_INDUSTRY_AVERAGE,
-    values,
+    payload,
   };
 };
 
@@ -47,10 +47,10 @@ export const createIndustryAverageError = (message) => {
   };
 };
 
-export const createIndustryAverage = (values) => {
+export const createIndustryAverage = (payload) => {
   return {
     type: CREATED_INDUSTRY_AVERAGE,
-    values,
+    payload,
   };
 };
 
