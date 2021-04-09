@@ -32,6 +32,7 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
   const location = useLocation();
 
   const editClinicSlug = '/edit-clinic';
+  const initialWorkTime = '00:00';
 
   const checkIsInSettingsPage = () =>
     location.pathname.endsWith(editClinicSlug);
@@ -74,8 +75,8 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
           google_maps_link: clinicData?.google_maps_link || '',
           parking_availability: clinicData?.parking_availability || NO,
           parking_size: clinicData?.parking_size || 0,
-          start_of_work: clinicData?.start_of_work || '',
-          end_of_work: clinicData?.end_of_work || '',
+          start_of_work: clinicData?.start_of_work || initialWorkTime,
+          end_of_work: clinicData?.end_of_work || initialWorkTime,
         }}
         validationSchema={clinicSchema}
         onSubmit={handleSubmit}
