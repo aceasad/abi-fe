@@ -13,7 +13,6 @@ import { getStaffDetails } from 'redux/actions/Staff';
 import { makeSelectStaffDetails } from 'redux/selectors/Staff';
 import FormRadio from 'components/custom-components/Form/FormRadio';
 import FormImageUpload from 'components/custom-components/Form/FormImageUpload';
-import Layout, { Content } from 'antd/lib/layout/layout';
 
 const { Title } = Typography;
 
