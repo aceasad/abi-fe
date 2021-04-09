@@ -199,4 +199,8 @@ export default defineMessages({
     id: `${patientOverviewScope}.messages`,
     defaultMessage: 'Messages',
   },
+  backToOverview: {
+    id: `${patientOverviewScope}.back_to_overview`,
+    defaultMessage: 'Back to patient overview',
+  },
 });
