@@ -37,7 +37,13 @@
 .staff-collapse {
     &.ant-collapse-item {
         .ant-collapse-header {
-            padding: @padding-sm;
+            padding: @padding-sm (@padding-lg * 2) @padding-sm @padding-md ;
+        }
+
+        .ant-collapse-content {
+            .ant-collapse-content-box {
+                padding: 0;
+            }
         }
     }
 }

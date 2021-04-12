@@ -43,7 +43,6 @@ const CalendarPage = () => {
 
   const monthCellRender = (value) => {
     let appointmentCount;
-    console.log(value.month());
     // Dummy data.
     if (value.month() === 0) {
       appointmentCount = 120;
@@ -67,7 +66,6 @@ const CalendarPage = () => {
       <Row gutter={32}>
         <Col xs={24} sm={24} md={16}>
           <Calendar
-            mode="year"
             onPanelChange={onPanelChange}
             onSelect={onSelect}
             value={selectedDate}

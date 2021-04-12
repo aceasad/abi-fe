@@ -1,12 +1,14 @@
 import React from 'react';
-import { Collapse } from 'antd';
+import { Badge, Collapse, List, Typography } from 'antd';
 import StaffPanelItem from './StaffPanelItem';
 
 const { Panel } = Collapse;
+const { Text } = Typography;
 
 const dummyData = [
   {
-    staffName: 'Mark Downey (General Practitioner)',
+    staffName: 'Mark Downey',
+    staffSpecialization: '(General Practitioner)',
     appointmentCount: 3,
     appointments: [
       { time: '9am-10am', patient: 'Raymond Philips', status: 1 },
@@ -15,7 +17,8 @@ const dummyData = [
     ],
   },
   {
-    staffName: 'Mark Downey (General Practitioner)',
+    staffName: 'Mark Downey',
+    staffSpecialization: '(General Practitioner)',
     appointmentCount: 3,
     appointments: [
       { time: '9am-10am', patient: 'Raymond Philips', status: 1 },
@@ -24,7 +27,8 @@ const dummyData = [
     ],
   },
   {
-    staffName: 'Mark Downey (General Practitioner)',
+    staffName: 'Mark Downey',
+    staffSpecialization: '(General Practitioner)',
     appointmentCount: 3,
     appointments: [
       { time: '9am-10am', patient: 'Raymond Philips', status: 1 },
@@ -33,20 +37,38 @@ const dummyData = [
     ],
   },
 ];
-console.log(dummyData);
 
 const CalendarCollapseList = () => {
-  const callback = (key) => {
-    console.log(key);
-  };
+  const collapseHeader = (data) => (
+    <div className="d-flex justify-content-between">
+      <div>
+        <Text strong className="text-primary">
+          {data.staffName}
+        </Text>
+        &nbsp;
+        <Text className="text-primary">{data.staffSpecialization}</Text>
+      </div>
+      <Badge count={data.appointmentCount} />
+    </div>
+  );
 
   return (
-    <Collapse onChange={callback} expandIconPosition="right">
+    <Collapse expandIconPosition="right">
       {dummyData.map((item, index) => (
-        <Panel className="staff-collapse" header={item.staffName} key={index}>
-          {item.appointments.map((item) => (
-            <StaffPanelItem data={item} />
-          ))}
+        <Panel
+          className="staff-collapse"
+          header={collapseHeader(item)}
+          key={index}
+        >
+          <List
+            itemLayout="horizontal"
+            dataSource={item.appointments}
+            renderItem={(item) => (
+              <List.Item>
+                <List.Item.Meta description={<StaffPanelItem data={item} />} />
+              </List.Item>
+            )}
+          />
         </Panel>
       ))}
     </Collapse>
