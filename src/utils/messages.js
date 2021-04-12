@@ -39,4 +39,8 @@ export default defineMessages({
     id: `${scope}.validations.matches`,
     defaultMessage: '{matchesLabel}',
   },
+  endTimeTimeGreatherThenStart: {
+    id: `${scope}.validations.end_greather_then_start`,
+    defaultMessage: 'End time must be greather than start time',
+  },
 });
