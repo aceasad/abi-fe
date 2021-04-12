@@ -13,13 +13,13 @@ const { Option } = Select;
 
 const OverviewPage = () => {
   const { formatMessage } = useIntl();
-  const filter = {
-    today: formatMessage(messages.selectToday),
-    week: formatMessage(messages.selectWeek),
-    month: formatMessage(messages.selectMonth),
-    year: formatMessage(messages.selectYear),
-  };
-  const [filterValue, setFilterValue] = useState(filter.today);
+  const filters = [
+    { value: 'today', label: formatMessage(messages.selectToday) },
+    { value: 'week', label: formatMessage(messages.selectWeek) },
+    { value: 'month', label: formatMessage(messages.selectMonth) },
+    { value: 'year', label: formatMessage(messages.selectYear) },
+  ];
+  const [filterValue, setFilterValue] = useState(filters[0].value);
 
   return (
     <>
@@ -30,13 +30,12 @@ const OverviewPage = () => {
           <Select
             key="0"
             style={{ width: 120 }}
-            onChange={(value) => setFilterValue(value)}
+            onChange={setFilterValue}
             value={filterValue}
           >
-            <Option value="today">{filter.today}</Option>
-            <Option value="week">{filter.week}</Option>
-            <Option value="month">{filter.month}</Option>
-            <Option value="year">{filter.year}</Option>
+            {filters.map((item) => (
+              <Option value={item.value}>{item.label}</Option>
+            ))}
           </Select>,
         ]}
       />
