@@ -197,6 +197,7 @@
   "global.validations.positive_number": "{label} must be positive number",
   "global.validations.greater_than_number": "{label} must be greather than {number}",
   "global.validations.matches": "{matchesLabel}",
+  "global.validations.end_greather_then_start": "End time must be greather than start time",
   "global.text.submit": "Submit",
   "global.text.save": "Save",
   "global.text.cancel": "Cancel",

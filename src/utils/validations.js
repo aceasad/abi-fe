@@ -11,6 +11,7 @@ import {
   MIN_PHONE_LENGTH,
   MAX_PHONE_LENGTH,
 } from '../constants/ClinicConstants';
+import messages from './messages';
 
 const passwordValidation = Yup.string()
   .matches(passwordFormat)
@@ -52,7 +53,14 @@ export const clinicSchema = Yup.object().shape({
   address: Yup.string().trim().required().max(MAX),
   parking_availability: Yup.string().required(),
   start_of_work: Yup.string().required(),
-  end_of_work: Yup.string().required(),
+  end_of_work: Yup.string()
+    .required()
+    .when('start_of_work', (start, schema) => {
+      return schema.test({
+        test: (end) => end > start,
+        message: messages.endTimeTimeGreatherThenStart,
+      });
+    }),
 });
 
 export const createPasswordSchema = Yup.object().shape({
