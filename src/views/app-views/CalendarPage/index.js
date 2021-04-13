@@ -1,42 +1,57 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Calendar, Card, Row, Col, Typography, Badge } from 'antd';
 import moment from 'moment';
 import { DATE_FORMAT_DD_MMM_YYYY } from 'constants/DateConstant';
 import Flex from 'components/shared-components/Flex';
 import CalendarCollapseList from './CalendarCollapseList';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  getDateAppointments,
+  getDoctorAppointments,
+} from 'redux/actions/Appointments';
+import { makeSelectDateAppointments } from 'redux/selectors/Appointment';
 
 const { Title } = Typography;
 
 const CalendarPage = () => {
-  const date = new Date();
-  const [selectedDate, setSelectedDate] = useState(
-    moment(date, DATE_FORMAT_DD_MMM_YYYY)
+  const dispatch = useDispatch();
+  const { dateAppointments, appointmentsCount } = useSelector(
+    makeSelectDateAppointments()
   );
 
-  const onPanelChange = (value, mode) => {
+  const [selectedDate, setSelectedDate] = useState(
+    moment(new Date(), DATE_FORMAT_DD_MMM_YYYY)
+  );
+
+  const onPanelChange = (value) => {
     setSelectedDate(value);
   };
 
   const onSelect = (value) => {
-    setSelectedDate(value);
+    if (!selectedDate.isSame(value)) {
+      setSelectedDate(value);
+      dispatch(getDoctorAppointments(value.format('YYYY-MM-DD')));
+    }
   };
 
+  const yearAndMonth = selectedDate.format('YYYY-MM-DD').slice(0, 7);
+
+  useEffect(() => {
+    const [year, month] = yearAndMonth.split('-');
+    dispatch(getDateAppointments({ year, month }));
+  }, [yearAndMonth]);
+
   const dateCellRender = (value) => {
-    let appointmentCount;
-    // Dummy data.
-    if (value.date() === 3) {
-      appointmentCount = 8;
-    }
-    if (value.date() === 19) {
-      appointmentCount = 12;
-    }
+    const appointmentCount = dateAppointments.find(
+      (item) => item.date === value.format('YYYY-MM-DD')
+    );
     return (
       <Flex
         justifyContent="end"
         alignItems="end"
         className="height-100 pb-3 pr-1"
       >
-        <Badge count={appointmentCount} />
+        <Badge count={appointmentCount?.total} />
       </Flex>
     );
   };
@@ -70,14 +85,22 @@ const CalendarPage = () => {
             onSelect={onSelect}
             value={selectedDate}
             className="abi-calendar"
+            mode="month"
             dateCellRender={dateCellRender}
             monthCellRender={monthCellRender}
           />
         </Col>
         <Col xs={24} sm={24} md={8}>
-          <Title level={3} className="mb-4 mt-5">
-            {selectedDate.format('dddd, MMMM Do, YYYY')}
-          </Title>
+          <Flex
+            justifyContent="between"
+            alignItems="center"
+            className="pb-3 pr-1"
+          >
+            <Title level={3} className="mb-4 mt-5">
+              {selectedDate.format('dddd, MMMM Do, YYYY')}
+            </Title>
+            <Badge count={appointmentsCount} overflowCount={1000} />
+          </Flex>
           <CalendarCollapseList />
         </Col>
       </Row>

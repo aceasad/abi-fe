@@ -1,77 +1,65 @@
 import React from 'react';
+import { useIntl } from 'react-intl';
 import { Badge, Collapse, List, Typography } from 'antd';
+
+import { makeSelectDoctorAppointments } from 'redux/selectors/Appointment';
 import StaffPanelItem from './StaffPanelItem';
+import { useSelector } from 'react-redux';
+import messages from './messages';
+import Loading from 'components/shared-components/Loading';
 
 const { Panel } = Collapse;
 const { Text } = Typography;
 
-const dummyData = [
-  {
-    staffName: 'Mark Downey',
-    staffSpecialization: '(General Practitioner)',
-    appointmentCount: 3,
-    appointments: [
-      { time: '9am-10am', patient: 'Raymond Philips', status: 1 },
-      { time: '10am-11am', patient: 'Theresa Dias', status: 2 },
-      { time: '11am-12am', patient: 'Beverly Cox', status: 1 },
-    ],
-  },
-  {
-    staffName: 'Mark Downey',
-    staffSpecialization: '(General Practitioner)',
-    appointmentCount: 3,
-    appointments: [
-      { time: '9am-10am', patient: 'Raymond Philips', status: 1 },
-      { time: '10am-11am', patient: 'Theresa Dias', status: 2 },
-      { time: '11am-12am', patient: 'Beverly Cox', status: 1 },
-    ],
-  },
-  {
-    staffName: 'Mark Downey',
-    staffSpecialization: '(General Practitioner)',
-    appointmentCount: 3,
-    appointments: [
-      { time: '9am-10am', patient: 'Raymond Philips', status: 1 },
-      { time: '10am-11am', patient: 'Theresa Dias', status: 2 },
-      { time: '11am-12am', patient: 'Beverly Cox', status: 1 },
-    ],
-  },
-];
-
 const CalendarCollapseList = () => {
+  const { doctorAppointments, loading } = useSelector(
+    makeSelectDoctorAppointments()
+  );
+  const { formatMessage } = useIntl();
+
   const collapseHeader = (data) => (
     <div className="d-flex justify-content-between">
       <div>
         <Text strong className="text-primary">
-          {data.staffName}
+          {data.doctor}
         </Text>
         &nbsp;
-        <Text className="text-primary">{data.staffSpecialization}</Text>
+        <Text className="text-primary">({data.specialization})</Text>
       </div>
-      <Badge count={data.appointmentCount} />
+      <Badge count={data.appointments.length} />
     </div>
   );
 
+  if (loading) return <Loading />;
+
   return (
-    <Collapse expandIconPosition="right">
-      {dummyData.map((item, index) => (
-        <Panel
-          className="staff-collapse"
-          header={collapseHeader(item)}
-          key={index}
-        >
-          <List
-            itemLayout="horizontal"
-            dataSource={item.appointments}
-            renderItem={(item) => (
-              <List.Item>
-                <List.Item.Meta description={<StaffPanelItem data={item} />} />
-              </List.Item>
-            )}
-          />
-        </Panel>
-      ))}
-    </Collapse>
+    <>
+      {doctorAppointments.length ? (
+        <Collapse expandIconPosition="right">
+          {doctorAppointments.map((item, index) => (
+            <Panel
+              className="staff-collapse"
+              header={collapseHeader(item)}
+              key={index}
+            >
+              <List
+                itemLayout="horizontal"
+                dataSource={item.appointments}
+                renderItem={(item) => (
+                  <List.Item>
+                    <List.Item.Meta
+                      description={<StaffPanelItem data={item} />}
+                    />
+                  </List.Item>
+                )}
+              />
+            </Panel>
+          ))}
+        </Collapse>
+      ) : (
+        <div>{formatMessage(messages.noAppointments)}</div>
+      )}
+    </>
   );
 };
 
