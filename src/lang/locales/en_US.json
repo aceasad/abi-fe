@@ -347,6 +347,8 @@
   "user_settings.messages.success_updated": "User Updated",
   "user_settings.messages.success_deleted": "User Deleted",
 
+  "chat_page.title": "Conversations",
+  "chat_page.button.mass_invites": "Mass Invites",
   "chat_page.menu.user_info_label": "",
   "chat_page.menu.mute_chat": "Mute Chat",
   "chat_page.menu.delete_chat": "Delete Chat",
