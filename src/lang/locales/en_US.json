@@ -362,6 +362,12 @@
   "profile_settings_page.text.title": "Profile Settings",
   "profile_settings_page.text.user_updated": "User Updated",
 
+  "appointments_page.title": "Appointments",
+  "appointments_page.button.export": "Export",
+  "appointments_page.button.new_appointment": "New Appointment",
+  "appointments_page.tooltip.miss": "Likely to miss an appointment",
+  "appointments_page.tooltip.attend": "Likely to attend an appointment",
+  
   "overview_page.title": "Overview",
   "overview_page.select.today": "Today",
   "overview_page.select.week": "Last 7 days",

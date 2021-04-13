@@ -1,294 +1,86 @@
-import React, { useState, useEffect } from 'react';
-import {
-  Calendar,
-  Badge,
-  Card,
-  Row,
-  Col,
-  Modal,
-  Form,
-  Input,
-  Select,
-  TimePicker,
-  Button,
-  Tooltip,
-} from 'antd';
+import React, { useState } from 'react';
+import { Calendar, Card, Row, Col, Typography, Badge } from 'antd';
 import moment from 'moment';
-import { CalendarOutlined, DeleteOutlined } from '@ant-design/icons';
+import { DATE_FORMAT_DD_MMM_YYYY } from 'constants/DateConstant';
+import Flex from 'components/shared-components/Flex';
+import CalendarCollapseList from './CalendarCollapseList';
 
-const m = new Date().getMonth();
-const y = new Date().getFullYear();
-
-const getDate = (date) => moment(new Date(y, m, date)).format('DD MMMM');
-
-const CalendarData = [
-  {
-    date: getDate(2),
-    event: [
-      {
-        title: 'Meeting',
-        bullet: 'cyan',
-        start: '11.00am',
-        end: '1.00pm',
-      },
-    ],
-  },
-  {
-    date: getDate(5),
-    event: [
-      {
-        title: 'Birthday Party',
-        bullet: 'cyan',
-        start: '11.00am',
-        end: '1.00pm',
-      },
-      {
-        title: 'Designer Meeting',
-        bullet: 'red',
-        start: '3.00pm',
-        end: '4.00pm',
-      },
-    ],
-  },
-  {
-    date: getDate(20),
-    event: [
-      {
-        title: 'Dave ceremony',
-        bullet: 'blue',
-        start: '2.00pm',
-        end: '5.00pm',
-      },
-    ],
-  },
-  {
-    date: getDate(25),
-    event: [
-      {
-        title: 'Project discussion',
-        bullet: 'gold',
-        start: '8.00pm',
-        end: '9.00pm',
-      },
-    ],
-  },
-];
-
-const { Option } = Select;
-
-const badgeColors = [
-  'pink',
-  'red',
-  'yellow',
-  'orange',
-  'cyan',
-  'green',
-  'blue',
-  'purple',
-  'geekblue',
-  'magenta',
-  'volcano',
-  'gold',
-  'lime',
-];
-
-const initialFormValues = {
-  title: '',
-  start: moment('00:00:00', 'HH:mm:ss'),
-  end: moment('00:00:00', 'HH:mm:ss'),
-  bullet: badgeColors[0],
-};
-
-const dateFormat = 'DD MMMM';
-
-const AgendaList = (props) => {
-  const { list, onDelete } = props;
-  return list.map((list) => (
-    <div key={list.date} className="calendar-list">
-      <h4>
-        <CalendarOutlined />
-        <span className="ml-2">{list.date}</span>
-      </h4>
-      {list.event.map((eventItem, i) => (
-        <div key={`${eventItem.title}-${i}`} className="calendar-list-item">
-          <div className="d-flex">
-            <Badge color={eventItem.bullet} />
-            <div>
-              <h5 className="mb-1">{eventItem.title}</h5>
-              <span className="text-muted">
-                {eventItem.start} - {eventItem.end}
-              </span>
-            </div>
-          </div>
-          <div className="calendar-list-item-delete">
-            <Tooltip title="Delete event">
-              <DeleteOutlined onClick={() => onDelete(list.date, i)} />
-            </Tooltip>
-          </div>
-        </div>
-      ))}
-    </div>
-  ));
-};
-
-const EventModal = ({ visible, addEvent, cancel }) => {
-  const [form] = Form.useForm();
-  const onSubmit = (values) => {
-    addEvent(values);
-  };
-
-  useEffect(() => {
-    form.setFieldsValue(initialFormValues);
-  });
-
-  return (
-    <Modal
-      title="New Event"
-      visible={visible}
-      footer={null}
-      destroyOnClose={true}
-      onCancel={cancel}
-    >
-      <Form
-        form={form}
-        layout="vertical"
-        name="new-event"
-        preserve={false}
-        onFinish={onSubmit}
-      >
-        <Form.Item name="title" label="Title">
-          <Input autoComplete="off" />
-        </Form.Item>
-        <Row gutter="16">
-          <Col span={12}>
-            <Form.Item name="start" label="Start">
-              <TimePicker className="w-100" />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item name="end" label="End">
-              <TimePicker className="w-100" />
-            </Form.Item>
-          </Col>
-        </Row>
-        <Form.Item name="bullet" label="Label">
-          <Select>
-            {badgeColors.map((elm) => (
-              <Option value={elm} key={elm}>
-                <Badge color={elm} />
-                <span className="text-capitalize font-weight-semibold">
-                  {elm}
-                </span>
-              </Option>
-            ))}
-          </Select>
-        </Form.Item>
-        <Form.Item className="text-right mb-0">
-          <Button type="primary" htmlType="submit">
-            Add Event
-          </Button>
-        </Form.Item>
-      </Form>
-    </Modal>
-  );
-};
+const { Title } = Typography;
 
 const CalendarPage = () => {
-  const [calendarList, setCalendarList] = useState(CalendarData);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(null);
+  const date = new Date();
+  const [selectedDate, setSelectedDate] = useState(
+    moment(date, DATE_FORMAT_DD_MMM_YYYY)
+  );
 
-  const cellRender = (value) => {
-    const listData = getListData(value.format(dateFormat));
-    return (
-      <ul className="calendar-event">
-        {listData.map((item, i) => (
-          <li key={`${item.title}-${i}`}>
-            <Badge color={item.bullet} text={item.title} />
-          </li>
-        ))}
-      </ul>
-    );
-  };
-
-  const getListData = (value) => {
-    let listData = [];
-    calendarList.forEach((elm) => {
-      if (elm.date === value) {
-        listData = elm.event;
-      }
-    });
-    return listData;
+  const onPanelChange = (value, mode) => {
+    setSelectedDate(value);
   };
 
   const onSelect = (value) => {
-    const selectedDate = value.format(dateFormat);
-    setModalVisible(true);
-    setSelectedDate(selectedDate);
+    setSelectedDate(value);
   };
 
-  const onDeleteEvent = (date, index) => {
-    const data = calendarList
-      .map((calendarList) => {
-        if (calendarList.date === date) {
-          calendarList.event = calendarList.event.filter((_, i) => i !== index);
-        }
-        return calendarList;
-      })
-      .filter((elm) => elm.event.length !== 0);
-    setCalendarList(data);
-  };
-
-  const onAddEvent = (values) => {
-    const data = [
-      {
-        title: values.title ? values.title : 'Untitled Event',
-        bullet: values.bullet,
-        start: values.start.format('HH:mm A'),
-        end: values.end.format('HH:mm A'),
-      },
-    ];
-    const newCalendarArr = calendarList;
-    const isExistingDate = newCalendarArr.find((x) => x.date === selectedDate);
-    if (isExistingDate) {
-      for (let elm of newCalendarArr) {
-        if (elm.date === selectedDate) {
-          elm.event = [...elm.event, ...data];
-        }
-      }
-    } else {
-      newCalendarArr.push({ date: selectedDate, event: data });
+  const dateCellRender = (value) => {
+    let appointmentCount;
+    // Dummy data.
+    if (value.date() === 3) {
+      appointmentCount = 8;
     }
-    const sortedNewCalendarArr = newCalendarArr.sort(
-      (a, b) => moment(a.date) - moment(b.date)
+    if (value.date() === 19) {
+      appointmentCount = 12;
+    }
+    return (
+      <Flex
+        justifyContent="end"
+        alignItems="end"
+        className="height-100 pb-3 pr-1"
+      >
+        <Badge count={appointmentCount} />
+      </Flex>
     );
-    setModalVisible(false);
-    setCalendarList(sortedNewCalendarArr);
   };
 
-  const onAddEventCancel = () => {
-    setModalVisible(false);
+  const monthCellRender = (value) => {
+    let appointmentCount;
+    // Dummy data.
+    if (value.month() === 0) {
+      appointmentCount = 120;
+    }
+    if (value.month() === 8) {
+      appointmentCount = 208;
+    }
+    return (
+      <Flex
+        justifyContent="end"
+        alignItems="end"
+        className="height-100 pb-3 pr-1"
+      >
+        <Badge count={appointmentCount} overflowCount={1000} />
+      </Flex>
+    );
   };
 
   return (
     <Card className="calendar mb-0">
-      <Row>
-        <Col xs={24} sm={24} md={9} lg={6}>
-          <h2 className="mb-4">Agenda</h2>
-          <AgendaList list={calendarList} onDelete={onDeleteEvent} />
-        </Col>
-        <Col xs={24} sm={24} md={15} lg={18}>
+      <Row gutter={32}>
+        <Col xs={24} sm={24} md={16}>
           <Calendar
-            onSelect={(val) => onSelect(val)}
-            dateCellRender={cellRender}
+            onPanelChange={onPanelChange}
+            onSelect={onSelect}
+            value={selectedDate}
+            className="abi-calendar"
+            dateCellRender={dateCellRender}
+            monthCellRender={monthCellRender}
           />
         </Col>
+        <Col xs={24} sm={24} md={8}>
+          <Title level={3} className="mb-4 mt-5">
+            {selectedDate.format('dddd, MMMM Do, YYYY')}
+          </Title>
+          <CalendarCollapseList />
+        </Col>
       </Row>
-      <EventModal
-        visible={modalVisible}
-        addEvent={onAddEvent}
-        cancel={onAddEventCancel}
-      />
     </Card>
   );
 };
