@@ -15,17 +15,15 @@ const PatientOverviewDetails = ({
 
   return (
     <>
-      {Object.keys(fields).map((field, index) =>
-        patient[field] ? (
-          <div key={index}>
-            <PatientInfoListItem>
-              {fields[field]}
-              {patient[field]}
-            </PatientInfoListItem>
-            {hasDivider(index) && <Divider className="mt-2 mb-2" />}
-          </div>
-        ) : null
-      )}
+      {Object.keys(fields).map((field, index) => (
+        <div key={index}>
+          <PatientInfoListItem className={!patient[field] ? 'd-none' : ''}>
+            {fields[field]}
+            {patient[field]}
+          </PatientInfoListItem>
+          {hasDivider(index) && <Divider className="mt-2 mb-2" />}
+        </div>
+      ))}
       {lastAppointment && (
         <PatientInfoListItem>
           {fields.last_appointment}
