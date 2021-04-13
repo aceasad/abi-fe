@@ -82,6 +82,7 @@ const StaffList = ({ showCreate, editUser }) => {
       ) : (
         <>
           <List
+            className="staff-list"
             grid={{
               gutter: 8,
               xs: 1,
