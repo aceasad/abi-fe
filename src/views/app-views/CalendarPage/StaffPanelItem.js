@@ -11,7 +11,9 @@ const StaffPanelItem = ({ data }) => {
 
   return (
     <Row className="pl-2">
-      <Col span={9}>{data.time}</Col>
+      <Col span={9}>
+        {`${data.start_datetime}-${data.end_datetime}`.toLowerCase()}
+      </Col>
       <Col span={15}>
         <Space>
           <Typography.Text strong>{data.patient}</Typography.Text>

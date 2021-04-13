@@ -6,7 +6,16 @@ import Staff from './Staff';
 import IndustryAverage from './IndustryAverage';
 import Patient from './Patient';
 import User from './User';
+import Appointment from './Appointment';
 
 export default function* rootSaga(getState) {
-  yield all([Auth(), Staff(), Clinic(), IndustryAverage(), Patient(), User()]);
+  yield all([
+    Auth(),
+    Staff(),
+    Clinic(),
+    IndustryAverage(),
+    Patient(),
+    User(),
+    Appointment(),
+  ]);
 }
