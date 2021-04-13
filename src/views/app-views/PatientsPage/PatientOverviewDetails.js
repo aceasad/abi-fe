@@ -21,7 +21,7 @@ const PatientOverviewDetails = ({
             {fields[field]}
             {patient[field]}
           </PatientInfoListItem>
-          {hasDivider(index) && <Divider className="mt-2 mb-2" />}
+          {hasDivider(index) && <Divider className="mt-2 mb-3" />}
         </div>
       ))}
       {lastAppointment && (
