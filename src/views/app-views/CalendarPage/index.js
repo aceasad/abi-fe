@@ -1,62 +1,62 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Calendar, Card, Row, Col, Typography, Badge } from 'antd';
 import moment from 'moment';
-import { DATE_FORMAT_DD_MMM_YYYY } from 'constants/DateConstant';
+import {
+  DATE_FORMAT_DD_MMM_YYYY,
+  DATE_FORMAT_LONG_DATE,
+  DATE_FORMAT_YYYY_MM_DD,
+} from 'constants/DateConstant';
 import Flex from 'components/shared-components/Flex';
 import CalendarCollapseList from './CalendarCollapseList';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  getDateAppointments,
+  getDoctorAppointments,
+} from 'redux/actions/Appointments';
+import { makeSelectDateAppointments } from 'redux/selectors/Appointment';
+import CalendarHeader from './CalendarHeader';
 
 const { Title } = Typography;
 
 const CalendarPage = () => {
-  const date = new Date();
-  const [selectedDate, setSelectedDate] = useState(
-    moment(date, DATE_FORMAT_DD_MMM_YYYY)
+  const dispatch = useDispatch();
+  const { dateAppointments, appointmentsCount } = useSelector(
+    makeSelectDateAppointments()
   );
 
-  const onPanelChange = (value, mode) => {
+  const [selectedDate, setSelectedDate] = useState(
+    moment(new Date(), DATE_FORMAT_DD_MMM_YYYY)
+  );
+
+  const onPanelChange = (value) => {
     setSelectedDate(value);
   };
 
   const onSelect = (value) => {
-    setSelectedDate(value);
+    if (!selectedDate.isSame(value)) {
+      setSelectedDate(value);
+      dispatch(getDoctorAppointments(value.format(DATE_FORMAT_YYYY_MM_DD)));
+    }
   };
+
+  const yearAndMonth = selectedDate.format(DATE_FORMAT_YYYY_MM_DD).slice(0, 7);
+
+  useEffect(() => {
+    const [year, month] = yearAndMonth.split('-');
+    dispatch(getDateAppointments({ year, month }));
+  }, [yearAndMonth]);
 
   const dateCellRender = (value) => {
-    let appointmentCount;
-    // Dummy data.
-    if (value.date() === 3) {
-      appointmentCount = 8;
-    }
-    if (value.date() === 19) {
-      appointmentCount = 12;
-    }
-    return (
-      <Flex
-        justifyContent="end"
-        alignItems="end"
-        className="height-100 pb-3 pr-1"
-      >
-        <Badge count={appointmentCount} />
-      </Flex>
+    const appointmentCount = dateAppointments.find(
+      (item) => item.date === value.format(DATE_FORMAT_YYYY_MM_DD)
     );
-  };
-
-  const monthCellRender = (value) => {
-    let appointmentCount;
-    // Dummy data.
-    if (value.month() === 0) {
-      appointmentCount = 120;
-    }
-    if (value.month() === 8) {
-      appointmentCount = 208;
-    }
     return (
       <Flex
         justifyContent="end"
         alignItems="end"
         className="height-100 pb-3 pr-1"
       >
-        <Badge count={appointmentCount} overflowCount={1000} />
+        <Badge count={appointmentCount?.total} />
       </Flex>
     );
   };
@@ -71,13 +71,20 @@ const CalendarPage = () => {
             value={selectedDate}
             className="abi-calendar"
             dateCellRender={dateCellRender}
-            monthCellRender={monthCellRender}
+            headerRender={CalendarHeader}
           />
         </Col>
         <Col xs={24} sm={24} md={8}>
-          <Title level={3} className="mb-4 mt-5">
-            {selectedDate.format('dddd, MMMM Do, YYYY')}
-          </Title>
+          <Flex
+            justifyContent="between"
+            alignItems="center"
+            className="pb-3 pr-1"
+          >
+            <Title level={3} className="mb-4 mt-5">
+              {selectedDate.format(DATE_FORMAT_LONG_DATE)}
+            </Title>
+            <Badge count={appointmentsCount} overflowCount={1000} />
+          </Flex>
           <CalendarCollapseList />
         </Col>
       </Row>

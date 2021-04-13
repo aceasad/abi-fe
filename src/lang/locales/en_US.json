@@ -369,7 +369,8 @@
   "appointments_page.button.new_appointment": "New Appointment",
   "appointments_page.tooltip.miss": "Likely to miss an appointment",
   "appointments_page.tooltip.attend": "Likely to attend an appointment",
-  
+  "appointments_page.text.no_appointemnts_for_date": "No appointments for selected date",
+
   "overview_page.title": "Overview",
   "overview_page.select.today": "Today",
   "overview_page.select.week": "Last 7 days",
@@ -409,8 +410,8 @@
   "overview_page.table.column.date": "Date",
   "overview_page.table.column.time": "Time",
   "overview_page.table.column.whitelisted": "Whitelisted",
-  "overview_page.table.column.status": "Status", 
-  "overview_page.table.dropdown.title": "Contact", 
-  "overview_page.table.dropdown.see_appointment": "See Appointment", 
-  "overview_page.table.dropdown.reachout": "AI Reachout" 
+  "overview_page.table.column.status": "Status",
+  "overview_page.table.dropdown.title": "Contact",
+  "overview_page.table.dropdown.see_appointment": "See Appointment",
+  "overview_page.table.dropdown.reachout": "AI Reachout"
 }
