@@ -184,7 +184,7 @@
 
   "reset_password_page.text.reset_password_title": "Reset Password",
   "reset_password_page.input_label.password": "New Password",
-  "reset_password_page.input_label.passwordRepeat": "Repeat Password",
+  "reset_password_page.input_label.passwordRepeat": "Confirm New Password",
   "reset_password_page.button.confirm_button": "Save Password",
   "reset_password_page.matches.password": "Password must be in valid format",
 

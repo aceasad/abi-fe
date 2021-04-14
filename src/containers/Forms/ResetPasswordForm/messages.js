@@ -5,11 +5,11 @@ export const scope = 'reset_password_page';
 export default defineMessages({
   passwordInputLabel: {
     id: `${scope}.input_label.password`,
-    defaultMessage: 'Password',
+    defaultMessage: 'New Password',
   },
   passwordRepeatInputLabel: {
     id: `${scope}.input_label.passwordRepeat`,
-    defaultMessage: 'Password confirm',
+    defaultMessage: 'Confirm New Password',
   },
   confirmButton: {
     id: `${scope}.button.confirm_button`,
