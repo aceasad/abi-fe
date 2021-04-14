@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   getDateAppointments,
   getDoctorAppointments,
+  setDoctorAppointments,
 } from 'redux/actions/Appointments';
 import { makeSelectDateAppointments } from 'redux/selectors/Appointment';
 import CalendarHeader from './CalendarHeader';
@@ -40,6 +41,13 @@ const CalendarPage = () => {
   };
 
   const yearAndMonth = selectedDate.format(DATE_FORMAT_YYYY_MM_DD).slice(0, 7);
+
+  useEffect(() => {
+    dispatch(
+      getDoctorAppointments(selectedDate.format(DATE_FORMAT_YYYY_MM_DD))
+    );
+    return () => dispatch(setDoctorAppointments([]));
+  }, []);
 
   useEffect(() => {
     const [year, month] = yearAndMonth.split('-');

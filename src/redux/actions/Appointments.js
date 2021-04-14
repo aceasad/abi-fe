@@ -7,6 +7,8 @@ import {
   GET_SINGLE_APPOINTMENT,
   SET_SINGLE_APPOINTMENT,
   SET_SINGLE_APPOINTMENT_LOADING,
+  DELETE_APPOINTEMNT,
+  FILTER_DELETED_APPOINTMENT,
 } from 'redux/constants/Appointment';
 
 export const getDoctorAppointments = (payload) => ({
@@ -46,5 +48,15 @@ export const setSignleAppointmnet = (payload) => ({
 
 export const setSignleAppointmnetLoading = (payload) => ({
   type: SET_SINGLE_APPOINTMENT_LOADING,
+  payload,
+});
+
+export const deleteAppointemnt = (payload) => ({
+  type: DELETE_APPOINTEMNT,
+  payload,
+});
+
+export const filterDeletedAppointment = (payload) => ({
+  type: FILTER_DELETED_APPOINTMENT,
   payload,
 });

@@ -1,5 +1,6 @@
 import { defineMessages } from 'react-intl';
 export const scope = 'appointments_page';
+export const globalScope = 'global';
 
 export default defineMessages({
   noAppointments: {
@@ -49,5 +50,25 @@ export default defineMessages({
   details: {
     id: `${scope}.text.details`,
     defaultMessage: 'Details',
+  },
+  deleteAppointment: {
+    id: `${scope}.text.delete_appointemnt`,
+    defaultMessage: 'Delete Appointment?',
+  },
+  cancel: {
+    id: `${globalScope}.text.cancel`,
+    defaultMessage: 'Cancel',
+  },
+  confirm: {
+    id: `${globalScope}.text.confirm`,
+    defaultMessage: 'Confirm',
+  },
+  deleteMessage: {
+    id: `${scope}.text.delete_message`,
+    defaultMessage: 'Are you sure you want to delete this appointment?',
+  },
+  appointemntDeleted: {
+    id: `${scope}.text.appointemnt_deleted`,
+    defaultMessage: 'Appointemnt deleted',
   },
 });

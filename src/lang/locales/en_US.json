@@ -203,6 +203,7 @@
   "global.text.cancel": "Cancel",
   "global.text.search": "Search",
   "global.text.delete": "Delete",
+  "global.text.confirm": "Confirm",
 
   "staff_page.text.see_appointments": "See Appointments",
   "staff_page.text.staff": "Staff",
@@ -387,6 +388,9 @@
   "appointments_page.text.appointment_price": "Appointment Price",
   "appointments_page.text.missing_reason": "Why did the patient miss the appointment?",
   "appointments_page.text.details": "Details",
+  "appointments_page.text.delete_appointemnt": "Delete Appointemnt?",
+  "appointments_page.text.delete_message": "Are you sure you want to delete this appointment?",
+  "appointments_page.text.appointemnt_deleted": "Appointemnt Deleted",
 
   "overview_page.title": "Overview",
   "overview_page.select.today": "Today",

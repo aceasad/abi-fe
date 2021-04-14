@@ -4,6 +4,7 @@ import {
   SET_IS_LOADING,
   SET_SINGLE_APPOINTMENT,
   SET_SINGLE_APPOINTMENT_LOADING,
+  FILTER_DELETED_APPOINTMENT,
 } from '../constants/Appointment';
 import produce from 'immer';
 
@@ -33,6 +34,25 @@ const appointment = (state = initialState, action) =>
         break;
       case SET_SINGLE_APPOINTMENT_LOADING:
         draft.singleLoading = action.payload;
+        break;
+      case FILTER_DELETED_APPOINTMENT:
+        draft.doctorAppointments = state.doctorAppointments.reduce(
+          (acc, item) => {
+            const appointments = item.appointments.filter(
+              (appointment) => appointment.id !== action.payload.id
+            );
+            if (appointments.length) return [...acc, { ...item, appointments }];
+            return acc;
+          },
+          []
+        );
+        draft.dateAppointments = state.dateAppointments
+          .map((appointments) =>
+            appointments.date === action.payload.date
+              ? { ...appointments, total: appointments.total - 1 }
+              : appointments
+          )
+          .filter((a) => a.total > 0);
         break;
     }
   });
