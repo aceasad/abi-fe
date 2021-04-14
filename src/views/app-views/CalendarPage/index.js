@@ -56,7 +56,7 @@ const CalendarPage = () => {
         alignItems="end"
         className="height-100 pb-3 pr-1"
       >
-        <Badge count={appointmentCount?.total} />
+        <Badge className="badge-color" count={appointmentCount?.total} />
       </Flex>
     );
   };
