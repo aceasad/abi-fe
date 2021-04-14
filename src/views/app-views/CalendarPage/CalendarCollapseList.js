@@ -1,6 +1,6 @@
 import React from 'react';
 import { useIntl } from 'react-intl';
-import { Badge, Collapse, List, Typography } from 'antd';
+import { Collapse, List, Typography } from 'antd';
 
 import { makeSelectDoctorAppointments } from 'redux/selectors/Appointment';
 import StaffPanelItem from './StaffPanelItem';
@@ -26,7 +26,7 @@ const CalendarCollapseList = () => {
         &nbsp;
         <Text className="text-primary">({data.specialization})</Text>
       </div>
-      <Badge count={data.appointments.length} />
+      {/* Badge goes here. */}
     </div>
   );
 
