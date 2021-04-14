@@ -39,7 +39,7 @@ const EditClinic = () => {
           showError={showError}
         />
       ) : (
-        <Loading />
+        <Loading cover="content" />
       )}
     </>
   );

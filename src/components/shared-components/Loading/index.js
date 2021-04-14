@@ -6,10 +6,10 @@ import { LoadingOutlined } from '@ant-design/icons';
 const Icon = <LoadingOutlined style={{ fontSize: 35 }} spin />;
 
 const Loading = (props) => {
-  const { align, cover } = props;
+  const { align, cover, defaultSpinner } = props;
   return (
     <div className={`loading text-${align} cover-${cover}`}>
-      <Spin indicator={Icon} />
+      {defaultSpinner ? <Spin /> : <Spin indicator={Icon} />}
     </div>
   );
 };

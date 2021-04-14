@@ -44,7 +44,7 @@ const CalendarCollapseList = () => {
     if (activeAppointemnt) dispatch(getSignleAppointmnet(activeAppointemnt));
   }, [activeAppointemnt]);
 
-  if (loading) return <Loading />;
+  if (loading) return <Loading defaultSpinner />;
 
   return (
     <div>
