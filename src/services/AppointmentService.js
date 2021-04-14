@@ -3,6 +3,7 @@ import ApiService from './ApiService';
 const ENDPOINTS = {
   GET_DOCTOR_APPOINTMNETS: '/appointments/doctors/scheduled/',
   GET_DATE_APPOINTMENTS: '/appointments/month/count/',
+  GET_APPOINTMENTS: '/appointments/',
 };
 
 class AppointmentService extends ApiService {
@@ -20,6 +21,9 @@ class AppointmentService extends ApiService {
         month,
       },
     });
+
+  getSingleAppointment = (id) =>
+    this.apiClient.get(`${ENDPOINTS.GET_APPOINTMENTS}${id}/`);
 }
 const appointmentService = new AppointmentService();
 export default appointmentService;
