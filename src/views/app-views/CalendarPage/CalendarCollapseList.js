@@ -30,7 +30,7 @@ const CalendarCollapseList = () => {
     </div>
   );
 
-  if (loading) return <Loading />;
+  if (loading) return <Loading defaultSpinner />;
 
   return (
     <>

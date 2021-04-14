@@ -43,7 +43,7 @@ const UpdateStaff = ({ showList, staffId }) => {
     dispatch(getSingleStaff(staffId));
   }, []);
 
-  if (loading) return <Loading />;
+  if (loading) return <Loading cover="content" />;
   const initialState = singleStaff
     ? {
         ...singleStaff,
