@@ -40,6 +40,7 @@ const FormTimePicker = ({
       help={showError()}
     >
       <TimePicker
+        popupClassName="picker-time-no-after"
         defaultValue={moment(
           field.value ? field.value : defaultTime,
           TIME_FORMAT_HH_MM

@@ -33,8 +33,10 @@ const OverviewPage = () => {
             onChange={setFilterValue}
             value={filterValue}
           >
-            {filters.map((item) => (
-              <Option value={item.value}>{item.label}</Option>
+            {filters.map((item, index) => (
+              <Option key={index} value={item.value}>
+                {item.label}
+              </Option>
             ))}
           </Select>,
         ]}

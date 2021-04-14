@@ -4,11 +4,14 @@ import appointmentService from '../../services/AppointmentService';
 import {
   GET_DATE_APPOINTMENTS,
   GET_DOCTOR_APPOINTMENTS,
+  GET_SINGLE_APPOINTMENT,
 } from 'redux/constants/Appointment';
 import {
   setAppointmentsLoading,
   setDateAppointments,
   setDoctorAppointments,
+  setSignleAppointmnet,
+  setSignleAppointmnetLoading,
 } from 'redux/actions/Appointments';
 
 export function* getDoctorAppoitnments({ payload }) {
@@ -34,12 +37,27 @@ export function* getDateAppointments({ payload }) {
   } catch {}
 }
 
+export function* getSingleAppointment({ payload }) {
+  try {
+    yield put(setSignleAppointmnetLoading(true));
+    const { data } = yield call(
+      appointmentService.getSingleAppointment,
+      payload
+    );
+    yield put(setSignleAppointmnet(data));
+  } catch {
+  } finally {
+    yield put(setSignleAppointmnetLoading(false));
+  }
+}
+
 export function* dateAppointments() {
   yield takeEvery(GET_DATE_APPOINTMENTS, getDateAppointments);
 }
 
 export function* doctorAppointments() {
   yield takeEvery(GET_DOCTOR_APPOINTMENTS, getDoctorAppoitnments);
+  yield takeEvery(GET_SINGLE_APPOINTMENT, getSingleAppointment);
 }
 
 export default function* rootSaga() {

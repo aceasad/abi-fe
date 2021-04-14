@@ -53,14 +53,7 @@ export const clinicSchema = Yup.object().shape({
   address: Yup.string().trim().required().max(MAX),
   parking_availability: Yup.string().required(),
   start_of_work: Yup.string().required(),
-  end_of_work: Yup.string()
-    .required()
-    .when('start_of_work', (start, schema) => {
-      return schema.test({
-        test: (end) => end > start,
-        message: messages.endTimeTimeGreatherThenStart,
-      });
-    }),
+  end_of_work: Yup.string().required(),
 });
 
 export const createPasswordSchema = Yup.object().shape({

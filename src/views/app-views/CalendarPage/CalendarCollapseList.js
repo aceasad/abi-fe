@@ -1,21 +1,27 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { Collapse, List, Typography } from 'antd';
 
 import { makeSelectDoctorAppointments } from 'redux/selectors/Appointment';
 import StaffPanelItem from './StaffPanelItem';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import messages from './messages';
 import Loading from 'components/shared-components/Loading';
+import { getSignleAppointmnet } from 'redux/actions/Appointments';
+import AppointmentPreview from './AppointmentPreview';
 
 const { Panel } = Collapse;
 const { Text } = Typography;
 
 const CalendarCollapseList = () => {
+  const dispatch = useDispatch();
   const { doctorAppointments, loading } = useSelector(
     makeSelectDoctorAppointments()
   );
+
   const { formatMessage } = useIntl();
+
+  const [activeAppointemnt, setActiveAppointment] = useState(null);
 
   const collapseHeader = (data) => (
     <div className="d-flex justify-content-between">
@@ -30,10 +36,18 @@ const CalendarCollapseList = () => {
     </div>
   );
 
+  const handleClick = ({ id }) => {
+    setActiveAppointment(id);
+  };
+
+  useEffect(() => {
+    if (activeAppointemnt) dispatch(getSignleAppointmnet(activeAppointemnt));
+  }, [activeAppointemnt]);
+
   if (loading) return <Loading />;
 
   return (
-    <>
+    <div>
       {doctorAppointments.length ? (
         <Collapse expandIconPosition="right">
           {doctorAppointments.map((item, index) => (
@@ -46,7 +60,7 @@ const CalendarCollapseList = () => {
                 itemLayout="horizontal"
                 dataSource={item.appointments}
                 renderItem={(item) => (
-                  <List.Item>
+                  <List.Item onClick={() => handleClick(item)}>
                     <List.Item.Meta
                       description={<StaffPanelItem data={item} />}
                     />
@@ -59,7 +73,10 @@ const CalendarCollapseList = () => {
       ) : (
         <div>{formatMessage(messages.noAppointments)}</div>
       )}
-    </>
+      {activeAppointemnt && (
+        <AppointmentPreview handleClose={() => setActiveAppointment(null)} />
+      )}
+    </div>
   );
 };
 
