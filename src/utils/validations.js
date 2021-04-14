@@ -139,3 +139,11 @@ export const personalDetailsSchema = Yup.object().shape({
   name: nameSchema,
   username: usernameSchema,
 });
+
+export const appointmentValidationSchema = Yup.object().shape({
+  //patient: Yup.number().required(),
+  doctor: Yup.number().required(),
+  date: Yup.string().required(),
+  appointmentType: Yup.number().required(),
+  price: Yup.number().required(),
+});

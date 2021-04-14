@@ -360,5 +360,14 @@
   "personal_details_page.text.label.email": "Email",
 
   "profile_settings_page.text.title": "Profile Settings",
-  "profile_settings_page.text.user_updated": "User Updated"
+  "profile_settings_page.text.user_updated": "User Updated",
+
+  "appointment_page.form.label.patient": "Patient",
+  "appointment_page.form.label.doctor": "Doctor",
+  "appointment_page.form.label.date": "Date",
+  "appointment_page.form.label.time": "Time",
+  "appointment_page.form.label.appointment_type": "Appointment Type",
+  "appointment_page.form.label.price": "Price",
+  "appointment_page.form.button.create": "Create",
+  "appointment_page.form.button.edit": "Edit"
 }
