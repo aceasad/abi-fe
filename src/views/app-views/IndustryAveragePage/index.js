@@ -70,7 +70,7 @@ const IndustryAverage = () => {
         {({ handleSubmit, dirty, isValid }) => (
           <Form layout="vertical" name="login-form">
             <Row gutter={32} align="bottom">
-              <Col span={12}>
+              <Col xs={24} sm={24} md={12} xxl={8}>
                 <RowColumnField
                   span={24}
                   style={{ width: '100%' }}
@@ -132,7 +132,7 @@ const IndustryAverage = () => {
                   }}
                 />
               </Col>
-              <Col span={12}>
+              <Col xs={24} sm={24} md={12} xxl={8}>
                 <Row>
                   <Col span={24}>
                     <Title level={4} type="secondary" className="mb-4">

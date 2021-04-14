@@ -4,12 +4,14 @@ import { Typography } from 'antd';
 
 const { Text } = Typography;
 
-const PatientInfoListItem = ({ children }) => {
+const PatientInfoListItem = ({ children, className }) => {
   return (
-    <Flex justifyContent="between" className="mb-2">
-      <Text className="mr-4">{children[0]}:</Text>
-      <Text className="text-right text-break">{children[1]}</Text>
-    </Flex>
+    <div className={className}>
+      <Flex justifyContent="between" className="mb-3">
+        <Text className="mr-4">{children[0]}:</Text>
+        <Text className="text-right text-break">{children[1]}</Text>
+      </Flex>
+    </div>
   );
 };
 

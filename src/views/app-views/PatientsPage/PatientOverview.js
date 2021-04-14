@@ -23,6 +23,8 @@ import { PATIENT_PAGE } from './index';
 import { prepareFormData } from 'utils/helpers';
 import messages from './messages';
 import Conversation from '../ChatPage/Conversation';
+import PatientOverviewExistingConditions from './PatientOverviewExistingConditions';
+import PatientOverviewPreviousOperations from './PatientOverviewPreviousOperations';
 
 const { Text, Title } = Typography;
 
@@ -182,6 +184,8 @@ const PatientOverview = ({ patientId, showList, updatePatient }) => {
               </Badge>
             </Flex>
             <PatientOverviewScheduledCard patient={patient} />
+            <PatientOverviewExistingConditions patient={patient} />
+            <PatientOverviewPreviousOperations patient={patient} />
             <PatientOverviewHistoryCard patient={patient} />
           </>
         )}

@@ -183,6 +183,22 @@ export default defineMessages({
     id: `${patientOverviewScope}.table.column_title.status`,
     defaultMessage: 'Status',
   },
+  columnTitleCondition: {
+    id: `${patientOverviewScope}.table.column_title.condition`,
+    defaultMessage: 'Condition',
+  },
+  columnTitleCategory: {
+    id: `${patientOverviewScope}.table.column_title.category`,
+    defaultMessage: 'Category',
+  },
+  columnTitleOperation: {
+    id: `${patientOverviewScope}.table.column_title.operation`,
+    defaultMessage: 'Operation',
+  },
+  columnTitleTimeOfSurgery: {
+    id: `${patientOverviewScope}.table.column_title.time_of_surgery`,
+    defaultMessage: 'Time of surgery',
+  },
   cardTitleScheduledAppointments: {
     id: `${patientOverviewScope}.card_title.scheduled_appointments`,
     defaultMessage: 'Scheduled Appointments',
@@ -190,6 +206,14 @@ export default defineMessages({
   cardTitleAppointmentHistory: {
     id: `${patientOverviewScope}.card_title.appointment_history`,
     defaultMessage: 'Appointment History',
+  },
+  cardTitleExistingConditions: {
+    id: `${patientOverviewScope}.card_title.existing_conditions`,
+    defaultMessage: 'Existing medical conditins',
+  },
+  cardTitlePreviousOperatins: {
+    id: `${patientOverviewScope}.card_title.previous_operations`,
+    defaultMessage: 'Previous operations',
   },
   buttonNewAppointment: {
     id: `${patientOverviewScope}.button.new_appointment`,

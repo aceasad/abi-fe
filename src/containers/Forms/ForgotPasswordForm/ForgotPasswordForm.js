@@ -4,13 +4,14 @@ import { Button, Form, Input } from 'antd';
 import { MailOutlined } from '@ant-design/icons';
 import { sendForgotPasswordEmail } from 'redux/actions/Auth';
 import { motion } from 'framer-motion';
-import { ErrorMessage, Formik } from 'formik';
+import { Field, Formik } from 'formik';
 import { useSelector } from 'react-redux';
 import messages from './messages';
 import { useIntl } from 'react-intl';
 import { forgotPasswordSchema } from 'utils/validations';
 import { makeIsSendEmailUser } from 'redux/selectors/Auth';
 import { success } from 'components/shared-components/MessagesAlerts/index';
+import FormField from 'components/custom-components/Form/FormField';
 export const ForgotPasswordForm = ({ email, showMessage }) => {
   const dispatch = useDispatch();
   const isSent = useSelector(makeIsSendEmailUser());
@@ -44,25 +45,18 @@ export const ForgotPasswordForm = ({ email, showMessage }) => {
       >
         {({ values, isValid, handleChange, handleBlur, handleSubmit }) => (
           <Form layout="vertical" name="login-form">
-            <Form.Item label={formatMessage(messages.emailInputLabel)}>
-              <Input
-                autoFocus
-                name="email"
-                onChange={handleChange}
-                onBlur={handleBlur}
-                value={values.email}
-                prefix={<MailOutlined className="text-primary" />}
-              />
-              <div className="authentication-error">
-                <ErrorMessage name="email">
-                  {(msg) =>
-                    formatMessage(msg, {
-                      label: formatMessage(messages.emailInputLabel),
-                    })
-                  }
-                </ErrorMessage>
-              </div>
-            </Form.Item>
+            <Field
+              autoFocus
+              label={formatMessage(messages.emailInputLabel)}
+              component={FormField}
+              type="email"
+              name="email"
+              prefix={<MailOutlined className="text-primary" />}
+              errorTexts={{
+                label: formatMessage(messages.emailInputLabel),
+              }}
+              value={values.email}
+            />
             <Form.Item className="mt-sm-5">
               <Button
                 onClick={() => handleSubmit(values)}

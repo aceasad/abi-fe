@@ -54,6 +54,7 @@ const ResetPasswordForm = () => {
         {({ values, handleSubmit, dirty, isValid }) => (
           <Form layout="vertical" name="login-form">
             <Field
+              label={formatMessage(messages.passwordInputLabel)}
               component={FormField}
               name={'password'}
               tooltipText={ValidPasswordFormat}
@@ -64,6 +65,7 @@ const ResetPasswordForm = () => {
               }}
             />
             <Field
+              label={formatMessage(messages.passwordRepeatInputLabel)}
               component={FormField}
               name={'passwordRepeat'}
               secureField

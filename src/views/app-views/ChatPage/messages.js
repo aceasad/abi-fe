@@ -3,6 +3,14 @@ export const scope = 'chat_page';
 export const globalScope = 'global';
 
 export default defineMessages({
+  conversationsTitle: {
+    id: `${scope}.title`,
+    defaultMessage: 'Conversations',
+  },
+  conversationsMassInvites: {
+    id: `${scope}.button.mass_invites`,
+    defaultMessage: 'Mass Invites',
+  },
   searchPlaceholder: {
     id: `${globalScope}.text.search`,
     defaultMessage: 'Search',
