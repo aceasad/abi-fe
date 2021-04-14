@@ -18,4 +18,14 @@ const makeSelectDateAppointments = () =>
     ),
   }));
 
-export { makeSelectDoctorAppointments, makeSelectDateAppointments };
+const makeSelectSingleAppointment = () =>
+  createSelector(selectAppointmentDomain, (substate) => ({
+    appointment: substate.appointment,
+    singleLoading: substate.singleLoading,
+  }));
+
+export {
+  makeSelectDoctorAppointments,
+  makeSelectDateAppointments,
+  makeSelectSingleAppointment,
+};
