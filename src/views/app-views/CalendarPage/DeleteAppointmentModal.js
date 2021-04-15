@@ -1,10 +1,15 @@
 import Modal from 'antd/lib/modal/Modal';
 import React from 'react';
 import { useIntl } from 'react-intl';
+import { useSelector } from 'react-redux';
 import messages from './messages';
+import { makeSelectSingleAppointmentLoading } from 'redux/selectors/Appointment';
+import { Button } from 'antd';
 
 const DeleteAppointmentModal = ({ handleClose, handleDelete, appointment }) => {
   const { formatMessage } = useIntl();
+
+  const loading = useSelector(makeSelectSingleAppointmentLoading());
 
   return (
     <Modal
@@ -13,6 +18,7 @@ const DeleteAppointmentModal = ({ handleClose, handleDelete, appointment }) => {
       okText={formatMessage(messages.confirm)}
       title={formatMessage(messages.deleteAppointment)}
       onCancel={handleClose}
+      okButtonProps={{ disabled: loading }}
       onOk={handleDelete}
     >
       {formatMessage(messages.deleteMessage)}

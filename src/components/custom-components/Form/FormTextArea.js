@@ -2,7 +2,7 @@ import React from 'react';
 import { Form, Input, Tooltip } from 'antd';
 import { useIntl } from 'react-intl';
 
-const FormField = ({
+const FormTextArea = ({
   form: { handleBlur, handleChange, touched, errors },
   field,
   labelComponent: Label,
@@ -14,8 +14,6 @@ const FormField = ({
   required,
   ...props
 }) => {
-  const InputField = secureField ? Input.Password : Input;
-
   const { formatMessage } = useIntl();
 
   const getLabel = () => {
@@ -46,7 +44,7 @@ const FormField = ({
       label={getLabel()}
       required={required}
     >
-      <InputField
+      <Input.TextArea
         name={field.name}
         onChange={handleChange}
         onBlur={handleBlur}
@@ -69,4 +67,4 @@ const FormField = ({
   );
 };
 
-export default FormField;
+export default FormTextArea;

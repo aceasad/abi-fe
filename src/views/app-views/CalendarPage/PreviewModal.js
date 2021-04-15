@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux';
 import { makeSelectSingleAppointment } from 'redux/selectors/Appointment';
 import { Button } from 'antd';
 
-function PreviewModal({ handleClose, showDelete }) {
+function PreviewModal({ handleClose, showDelete, showEnd, setNewData }) {
   const { formatMessage } = useIntl();
   const { appointment, singleLoading } = useSelector(
     makeSelectSingleAppointment()
@@ -22,7 +22,7 @@ function PreviewModal({ handleClose, showDelete }) {
             key="submit"
             type="primary"
             onClick={() => {
-              /* TO DO */
+              showEnd(appointment);
             }}
           >
             {formatMessage(messages.endAppointment)}

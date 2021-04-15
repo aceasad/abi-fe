@@ -5,6 +5,8 @@ import {
   SET_SINGLE_APPOINTMENT,
   SET_SINGLE_APPOINTMENT_LOADING,
   FILTER_DELETED_APPOINTMENT,
+  SET_MISSING_REASONS,
+  SET_ENDED_APPOINTMENT,
 } from '../constants/Appointment';
 import produce from 'immer';
 
@@ -14,6 +16,7 @@ const initialState = {
   loading: false,
   appointment: null,
   singleLoading: false,
+  missingReasons: [],
 };
 
 const appointment = (state = initialState, action) =>
@@ -54,6 +57,15 @@ const appointment = (state = initialState, action) =>
           )
           .filter((a) => a.total > 0);
         break;
+      case SET_MISSING_REASONS:
+        draft.missingReasons = action.payload;
+        break;
+      case SET_ENDED_APPOINTMENT:
+        draft.appointment = {
+          ...state.appointment,
+          ...action.payload.data,
+          missing_reason: action.payload?.missing_reason?.name,
+        };
     }
   });
 export default appointment;

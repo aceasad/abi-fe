@@ -71,4 +71,24 @@ export default defineMessages({
     id: `${scope}.text.appointemnt_deleted`,
     defaultMessage: 'Appointemnt deleted',
   },
+  yes: {
+    id: `${globalScope}.text.yes`,
+    defaultMessage: 'Yes',
+  },
+  no: {
+    id: `${globalScope}.text.no`,
+    defaultMessage: 'No',
+  },
+  attendedQuestion: {
+    id: `${scope}.text.attend_question`,
+    defaultMessage: 'Did patient attend the appointment?',
+  },
+  reason: {
+    id: `${scope}.text.reason`,
+    defaultMessage: 'Reason',
+  },
+  endSuccess: {
+    id: `${scope}.text.end_success`,
+    defaultMessage: 'Appointment Ended',
+  },
 });

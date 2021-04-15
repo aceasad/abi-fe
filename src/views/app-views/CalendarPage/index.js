@@ -13,7 +13,7 @@ import {
   getDateAppointments,
   getDoctorAppointments,
   setDoctorAppointments,
-} from 'redux/actions/Appointments';
+} from 'redux/actions/Appointment';
 import { makeSelectDateAppointments } from 'redux/selectors/Appointment';
 import CalendarHeader from './CalendarHeader';
 
