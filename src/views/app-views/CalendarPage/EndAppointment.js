@@ -10,7 +10,10 @@ import FormTextArea from 'components/custom-components/Form/FormTextArea';
 import { endAppointmentSchema } from 'utils/validations';
 import { useDispatch, useSelector } from 'react-redux';
 import { endAppointemnt, getMissingReasons } from 'redux/actions/Appointment';
-import { makeSelectMissingReasons } from 'redux/selectors/Appointment';
+import {
+  makeSelectMissingReasons,
+  makeSelectSingleAppointmentLoading,
+} from 'redux/selectors/Appointment';
 import { message } from 'antd';
 
 const prepareData = (values) => {
@@ -29,6 +32,8 @@ const EndAppointment = ({ handleClose, id }) => {
   const dispatch = useDispatch();
 
   const missingReasons = useSelector(makeSelectMissingReasons());
+
+  const loading = useSelector(makeSelectSingleAppointmentLoading());
 
   const afterEnd = () => {
     message.success(formatMessage(messages.endSuccess));
@@ -74,7 +79,7 @@ const EndAppointment = ({ handleClose, id }) => {
           okText={formatMessage(messages.confirm)}
           cancelText={formatMessage(messages.cancel)}
           onCancel={handleClose}
-          okButtonProps={{ disabled: !isValid }}
+          okButtonProps={{ disabled: !isValid || loading }}
           onOk={handleSubmit}
         >
           <Form layout="vertical">
