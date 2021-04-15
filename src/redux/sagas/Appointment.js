@@ -1,12 +1,15 @@
 import { takeEvery, put, call, all, fork } from 'redux-saga/effects';
 import appointmentService from '../../services/AppointmentService';
+import moment from 'moment';
 
 import {
+  DELETE_APPOINTEMNT,
   GET_DATE_APPOINTMENTS,
   GET_DOCTOR_APPOINTMENTS,
   GET_SINGLE_APPOINTMENT,
 } from 'redux/constants/Appointment';
 import {
+  filterDeletedAppointment,
   setAppointmentsLoading,
   setDateAppointments,
   setDoctorAppointments,
@@ -51,6 +54,23 @@ export function* getSingleAppointment({ payload }) {
   }
 }
 
+export function* deleteAppointemnt({ payload }) {
+  try {
+    yield put(setSignleAppointmnetLoading(true));
+    yield call(appointmentService.deleteAppointment, payload.data.id);
+    yield payload.afterDelete();
+    yield put(
+      filterDeletedAppointment({
+        date: moment(payload.data.date, 'DD/MM/YYYY').format('YYYY-MM-DD'),
+        id: payload.data.id,
+      })
+    );
+  } catch {
+  } finally {
+    yield put(setSignleAppointmnetLoading(false));
+  }
+}
+
 export function* dateAppointments() {
   yield takeEvery(GET_DATE_APPOINTMENTS, getDateAppointments);
 }
@@ -58,6 +78,7 @@ export function* dateAppointments() {
 export function* doctorAppointments() {
   yield takeEvery(GET_DOCTOR_APPOINTMENTS, getDoctorAppoitnments);
   yield takeEvery(GET_SINGLE_APPOINTMENT, getSingleAppointment);
+  yield takeEvery(DELETE_APPOINTEMNT, deleteAppointemnt);
 }
 
 export default function* rootSaga() {

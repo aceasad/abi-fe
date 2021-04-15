@@ -1,92 +1,55 @@
-import React from 'react';
-import { Button } from 'antd';
-import Modal from 'antd/lib/modal/Modal';
-import { CloseOutlined, EditOutlined } from '@ant-design/icons';
+import { message } from 'antd';
+import React, { useState } from 'react';
 import { useIntl } from 'react-intl';
+import { useDispatch } from 'react-redux';
+import DeleteAppointmentModal from './DeleteAppointmentModal';
+import PreviewModal from './PreviewModal';
 import messages from './messages';
-import { makeSelectSingleAppointment } from 'redux/selectors/Appointment';
-import { useSelector } from 'react-redux';
-import Loading from 'components/shared-components/Loading';
+import { deleteAppointemnt } from 'redux/actions/Appointments';
 
-function AppointmentPreview({ handleClose }) {
+const NESTED_MODAL = {
+  NONE: 0,
+  DELETE: 1,
+  END_APPOINTMENT: 2,
+};
+
+const AppointmentPreview = ({ handleClose }) => {
+  const dispatch = useDispatch();
   const { formatMessage } = useIntl();
-  const { appointment, singleLoading } = useSelector(
-    makeSelectSingleAppointment()
-  );
-  const isLoading = singleLoading || !appointment;
 
-  const footer =
-    !isLoading && appointment.attended === null
-      ? [
-          <Button
-            key="submit"
-            type="primary"
-            onClick={() => {
-              /*TO-DO*/
-            }}
-          >
-            {formatMessage(messages.endAppointment)}
-          </Button>,
-        ]
-      : null;
+  const [showChildModal, setShowChildModal] = useState({
+    modal: NESTED_MODAL.NONE,
+    data: null,
+  });
 
-  return (
-    <Modal
-      visible
-      title={formatMessage(messages.appointmentDetails)}
-      closeIcon={
-        <div>
-          {!isLoading && appointment.attended === null && <EditOutlined />}
-          <CloseOutlined onClick={handleClose} />
-        </div>
-      }
-      footer={footer}
-    >
-      {isLoading ? (
-        <Loading />
-      ) : (
-        <div>
-          <div>
-            {formatMessage(messages.patient)} {appointment.patient}
-          </div>
-          <div>
-            {formatMessage(messages.doctor)}{' '}
-            {`${appointment.doctor}(${appointment.specialization})`}
-          </div>
-          <div>
-            {formatMessage(messages.type)} {appointment.appointment_type}
-          </div>
-          <div>
-            {formatMessage(messages.status)} {appointment.status}
-          </div>
-          <div>
-            {formatMessage(messages.patient)} {appointment.patient}
-          </div>
-          <div>
-            {formatMessage(messages.date)} {appointment.date}
-          </div>
-          <div>
-            {formatMessage(messages.time)} {appointment.time}
-          </div>
-          <div>
-            {formatMessage(messages.appointmentPrice)} £{appointment.price}
-          </div>
-          {appointment.missing_reason && (
-            <div>
-              {formatMessage(messages.missingReason)}{' '}
-              {appointment.missing_reason}
-            </div>
-          )}
-          {appointment.missing_reason_details && (
-            <div>
-              {formatMessage(messages.details)}{' '}
-              {appointment.missing_reason_details}
-            </div>
-          )}
-        </div>
-      )}
-    </Modal>
-  );
-}
+  const showDelete = (data) =>
+    setShowChildModal({ modal: NESTED_MODAL.DELETE, data });
+
+  const showPreview = () =>
+    setShowChildModal({ modal: NESTED_MODAL.NONE, data: null });
+
+  const afterDelete = () => {
+    message.success(formatMessage(messages.appointemntDeleted));
+    handleClose();
+  };
+
+  const handleDelete = () =>
+    dispatch(deleteAppointemnt({ data: showChildModal.data, afterDelete }));
+
+  switch (showChildModal.modal) {
+    case NESTED_MODAL.NONE:
+      return <PreviewModal handleClose={handleClose} showDelete={showDelete} />;
+    case NESTED_MODAL.DELETE:
+      return (
+        <DeleteAppointmentModal
+          handleClose={showPreview}
+          handleDelete={handleDelete}
+          appointment={showChildModal.data}
+        />
+      );
+    default:
+      return <PreviewModal handleClose={handleClose} showDelete={showDelete} />;
+  }
+};
 
 export default AppointmentPreview;

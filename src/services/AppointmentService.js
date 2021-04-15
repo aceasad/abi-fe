@@ -24,6 +24,9 @@ class AppointmentService extends ApiService {
 
   getSingleAppointment = (id) =>
     this.apiClient.get(`${ENDPOINTS.GET_APPOINTMENTS}${id}/`);
+
+  deleteAppointment = (id) =>
+    this.apiClient.delete(`${ENDPOINTS.GET_APPOINTMENTS}${id}/`);
 }
 const appointmentService = new AppointmentService();
 export default appointmentService;
