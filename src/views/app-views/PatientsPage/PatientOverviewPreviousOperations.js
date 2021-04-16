@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { makeSelectHistory } from 'redux/selectors/Patient';
-import { setAppointmentHistoryPage } from 'redux/actions/Patient';
-import { DEFAULT_PAGINATION_LIMIT } from 'constants/ApiConstant';
+import { DEFAULT_SMALL_PAGINATION_LIMIT } from 'constants/ApiConstant';
 import { Card, Table, Typography } from 'antd';
 import messages from './messages';
 import { useIntl } from 'react-intl';
+import { makeSelectPreviousOperations } from 'redux/selectors/Anemnesis';
+import { getPreviousOperations, setPage } from 'redux/actions/Anamnesis';
+import { PREVIOUS_OPERATIONS } from 'redux/reducers/Anemnesis';
 
 const { Title } = Typography;
 
@@ -13,25 +14,27 @@ const PatientOverviewPreviousOperations = ({ patient }) => {
   const dispatch = useDispatch();
   const { formatMessage } = useIntl();
 
-  const { items, loading, count, page } = useSelector(makeSelectHistory());
+  const { items, loading, count, page } = useSelector(
+    makeSelectPreviousOperations()
+  );
+
+  useEffect(() => {
+    if (patient) dispatch(getPreviousOperations({ id: patient.id }));
+  }, [patient]);
 
   const columnsHistory = [
     {
       title: formatMessage(messages.columnTitleOperation),
-      dataIndex: 'operation',
-    },
-    {
-      title: formatMessage(messages.columnTitleCategory),
-      dataIndex: 'category',
+      dataIndex: 'operation_type',
     },
     {
       title: formatMessage(messages.columnTitleTimeOfSurgery),
-      dataIndex: 'time_of_surgery',
+      dataIndex: 'year',
     },
   ];
 
   const handlePaginationChange = (page) => {
-    dispatch(setAppointmentHistoryPage({ page, id: patient.id }));
+    dispatch(setPage({ page, id: patient.id, field: PREVIOUS_OPERATIONS }));
   };
 
   return (
@@ -46,7 +49,7 @@ const PatientOverviewPreviousOperations = ({ patient }) => {
         dataSource={items}
         loading={loading}
         pagination={{
-          defaultPageSize: DEFAULT_PAGINATION_LIMIT,
+          defaultPageSize: DEFAULT_SMALL_PAGINATION_LIMIT,
           total: count,
           onChange: handlePaginationChange,
           hideOnSinglePage: true,
