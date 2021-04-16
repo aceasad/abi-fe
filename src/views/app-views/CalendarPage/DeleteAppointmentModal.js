@@ -4,7 +4,6 @@ import { useIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
 import messages from './messages';
 import { makeSelectSingleAppointmentLoading } from 'redux/selectors/Appointment';
-import { Button } from 'antd';
 
 const DeleteAppointmentModal = ({ handleClose, handleDelete, appointment }) => {
   const { formatMessage } = useIntl();

@@ -7,6 +7,7 @@ import IndustryAverage from './IndustryAverage';
 import Patient from './Patient';
 import User from './User';
 import Appointment from './Appointment';
+import Anamnesis from './Anemnesis';
 
 export default function* rootSaga(getState) {
   yield all([
@@ -17,5 +18,6 @@ export default function* rootSaga(getState) {
     Patient(),
     User(),
     Appointment(),
+    Anamnesis(),
   ]);
 }

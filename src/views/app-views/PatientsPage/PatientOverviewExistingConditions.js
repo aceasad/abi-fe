@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { makeSelectHistory } from 'redux/selectors/Patient';
-import { setAppointmentHistoryPage } from 'redux/actions/Patient';
-import { DEFAULT_PAGINATION_LIMIT } from 'constants/ApiConstant';
+import { DEFAULT_SMALL_PAGINATION_LIMIT } from 'constants/ApiConstant';
 import { Card, Table, Typography } from 'antd';
 import messages from './messages';
 import { useIntl } from 'react-intl';
+import { getExistingMedicalConditions, setPage } from 'redux/actions/Anamnesis';
+import { makeSelectExistingMedicalConditions } from 'redux/selectors/Anemnesis';
+import { EXISTING_CONDITIONS } from 'redux/reducers/Anemnesis';
 
 const { Title } = Typography;
 
@@ -13,21 +14,23 @@ const PatientOverviewExistingConditions = ({ patient }) => {
   const dispatch = useDispatch();
   const { formatMessage } = useIntl();
 
-  const { items, loading, count, page } = useSelector(makeSelectHistory());
+  const { items, loading, count, page } = useSelector(
+    makeSelectExistingMedicalConditions()
+  );
+
+  useEffect(() => {
+    if (patient) dispatch(getExistingMedicalConditions({ id: patient.id }));
+  }, [patient]);
 
   const columnsHistory = [
     {
       title: formatMessage(messages.columnTitleCondition),
-      dataIndex: 'condition',
-    },
-    {
-      title: formatMessage(messages.columnTitleCategory),
-      dataIndex: 'category',
+      dataIndex: 'medical_condition',
     },
   ];
 
   const handlePaginationChange = (page) => {
-    dispatch(setAppointmentHistoryPage({ page, id: patient.id }));
+    dispatch(setPage({ page, id: patient.id, field: EXISTING_CONDITIONS }));
   };
 
   return (
@@ -42,7 +45,7 @@ const PatientOverviewExistingConditions = ({ patient }) => {
         dataSource={items}
         loading={loading}
         pagination={{
-          defaultPageSize: DEFAULT_PAGINATION_LIMIT,
+          defaultPageSize: DEFAULT_SMALL_PAGINATION_LIMIT,
           total: count,
           onChange: handlePaginationChange,
           hideOnSinglePage: true,
