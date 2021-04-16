@@ -24,7 +24,18 @@ const makeSelectSingleAppointment = () =>
     singleLoading: substate.singleLoading,
   }));
 
+const makeSelectSingleAppointmentLoading = () =>
+  createSelector(selectAppointmentDomain, (substate) => substate.singleLoading);
+
+const makeSelectMissingReasons = () =>
+  createSelector(
+    selectAppointmentDomain,
+    (substate) => substate.missingReasons
+  );
+
 export {
+  makeSelectMissingReasons,
+  makeSelectSingleAppointmentLoading,
   makeSelectDoctorAppointments,
   makeSelectDateAppointments,
   makeSelectSingleAppointment,

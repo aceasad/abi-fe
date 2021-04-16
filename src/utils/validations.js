@@ -11,7 +11,6 @@ import {
   MIN_PHONE_LENGTH,
   MAX_PHONE_LENGTH,
 } from '../constants/ClinicConstants';
-import messages from './messages';
 
 const passwordValidation = Yup.string()
   .matches(passwordFormat)
@@ -131,4 +130,12 @@ export const updateUserSchema = Yup.object().shape({
 export const personalDetailsSchema = Yup.object().shape({
   name: nameSchema,
   username: usernameSchema,
+});
+
+export const endAppointmentSchema = Yup.object().shape({
+  attended: Yup.boolean(),
+  missing_reason: Yup.string().when('attended', {
+    is: false,
+    then: Yup.string().required(),
+  }),
 });
