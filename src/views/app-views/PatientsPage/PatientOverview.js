@@ -86,7 +86,7 @@ const PatientOverview = ({ patientId, showList, updatePatient }) => {
             </div>
           </Flex>
           {!patient || loading ? (
-            <Loading />
+            <Loading defaultSpinner />
           ) : (
             <>
               <Formik
