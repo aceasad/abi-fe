@@ -20,6 +20,12 @@ import {
   SET_APPOINTMENT_STATUS_LOADING,
   SET_PATIENTS,
   SEARCH_PATIENTS,
+  DELETE_APPOINTEMNT,
+  FILTER_DELETED_APPOINTMENT,
+  END_APPOINTMENT,
+  GET_MISSING_REASONS,
+  SET_MISSING_REASONS,
+  SET_ENDED_APPOINTMENT,
 } from 'redux/constants/Appointment';
 
 export const getDoctorAppointments = (payload) => ({
@@ -123,5 +129,34 @@ export const setPatients = (payload) => ({
 
 export const searchPatients = (payload) => ({
   type: SEARCH_PATIENTS,
+  payload,
+});
+
+export const deleteAppointemnt = (payload) => ({
+  type: DELETE_APPOINTEMNT,
+  payload,
+});
+
+export const filterDeletedAppointment = (payload) => ({
+  type: FILTER_DELETED_APPOINTMENT,
+  payload,
+});
+
+export const endAppointemnt = (payload) => ({
+  type: END_APPOINTMENT,
+  payload,
+});
+
+export const getMissingReasons = () => ({
+  type: GET_MISSING_REASONS,
+});
+
+export const setMissingReasons = (payload) => ({
+  type: SET_MISSING_REASONS,
+  payload,
+});
+
+export const setEndedAppointment = (payload) => ({
+  type: SET_ENDED_APPOINTMENT,
   payload,
 });

@@ -78,7 +78,7 @@ const StaffList = ({ showCreate, editUser }) => {
       />
 
       {loading ? (
-        <Loading />
+        <Loading defaultSpinner cover="content" />
       ) : (
         <>
           <List

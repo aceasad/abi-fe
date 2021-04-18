@@ -11,6 +11,7 @@ const ENDPOINTS = {
   GET_CLINIC_DOCTORS: '/staff/',
   GET_APPOINTMENT_TYPES: '/appointment-types/',
   GET_APPOINTMENT_STATUS: '/appointment-status/',
+  GET_MISSING_REASONS: '/missing-reasons/',
 };
 
 class AppointmentService extends ApiService {
@@ -59,6 +60,13 @@ class AppointmentService extends ApiService {
 
   getAppointmentStatus = () =>
     this.apiClient.get(ENDPOINTS.GET_APPOINTMENT_STATUS);
+  deleteAppointment = (id) =>
+    this.apiClient.delete(`${ENDPOINTS.GET_APPOINTMENTS}${id}/`);
+
+  getMissingReasons = () => this.apiClient.get(ENDPOINTS.GET_MISSING_REASONS);
+
+  endAppointemnt = ({ id, data }) =>
+    this.apiClient.post(`${ENDPOINTS.GET_APPOINTMENTS}${id}/end/`, data);
 }
 
 const appointmentService = new AppointmentService();

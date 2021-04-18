@@ -11,6 +11,9 @@ import {
   SET_APPOINTMENT_STATUS_LOADING,
   APPEND_TO_APPOINTMENT_STATUS,
   SET_PATIENTS,
+  FILTER_DELETED_APPOINTMENT,
+  SET_MISSING_REASONS,
+  SET_ENDED_APPOINTMENT,
 } from '../constants/Appointment';
 import produce from 'immer';
 
@@ -34,6 +37,7 @@ const initialState = {
   appointmentTypesLoading: false,
   appointmentStatus: [],
   appointmentStatusLoading: false,
+  missingReasons: [],
 };
 
 const appointment = (state = initialState, action) =>
@@ -90,6 +94,34 @@ const appointment = (state = initialState, action) =>
           next: action.payload.next,
         };
         break;
+      case FILTER_DELETED_APPOINTMENT:
+        draft.doctorAppointments = state.doctorAppointments.reduce(
+          (acc, item) => {
+            const appointments = item.appointments.filter(
+              (appointment) => appointment.id !== action.payload.id
+            );
+            if (appointments.length) return [...acc, { ...item, appointments }];
+            return acc;
+          },
+          []
+        );
+        draft.dateAppointments = state.dateAppointments
+          .map((appointments) =>
+            appointments.date === action.payload.date
+              ? { ...appointments, total: appointments.total - 1 }
+              : appointments
+          )
+          .filter((a) => a.total > 0);
+        break;
+      case SET_MISSING_REASONS:
+        draft.missingReasons = action.payload;
+        break;
+      case SET_ENDED_APPOINTMENT:
+        draft.appointment = {
+          ...state.appointment,
+          ...action.payload.data,
+          missing_reason: action.payload?.missing_reason?.name,
+        };
     }
   });
 export default appointment;

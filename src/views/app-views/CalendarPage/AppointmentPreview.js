@@ -1,110 +1,79 @@
+import { message } from 'antd';
 import React, { useState } from 'react';
-import { Button } from 'antd';
-import Modal from 'antd/lib/modal/Modal';
-import { CloseOutlined, EditOutlined } from '@ant-design/icons';
 import { useIntl } from 'react-intl';
+import { useDispatch } from 'react-redux';
+import DeleteAppointmentModal from './DeleteAppointmentModal';
+import PreviewModal from './PreviewModal';
 import messages from './messages';
-import { makeSelectSingleAppointment } from 'redux/selectors/Appointment';
-import { useSelector } from 'react-redux';
-import Loading from 'components/shared-components/Loading';
-import AppointmentFormWrapper from '../AppointmentsPage/AppointmentFormWrapper';
-import UpdateAppointment from '../AppointmentsPage/UpdateAppointment';
+import { deleteAppointemnt } from 'redux/actions/Appointment';
+import EndAppointment from './EndAppointment';
 
-function AppointmentPreview({ handleClose }) {
-  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+const NESTED_MODAL = {
+  NONE: 0,
+  DELETE: 1,
+  END_APPOINTMENT: 2,
+};
 
+const AppointmentPreview = ({ handleClose }) => {
+  const dispatch = useDispatch();
   const { formatMessage } = useIntl();
-  const { appointment, singleLoading } = useSelector(
-    makeSelectSingleAppointment()
-  );
-  const isLoading = singleLoading || !appointment;
 
-  const footer =
-    !isLoading && appointment.attended === null
-      ? [
-          <Button
-            key="submit"
-            type="primary"
-            onClick={() => {
-              /*TO-DO*/
-            }}
-          >
-            {formatMessage(messages.endAppointment)}
-          </Button>,
-        ]
-      : null;
+  const [showChildModal, setShowChildModal] = useState({
+    modal: NESTED_MODAL.NONE,
+    data: null,
+  });
 
-  const closeEditModal = () => setIsEditModalVisible(false);
+  const setNewData = (data) => setShowChildModal((prev) => ({ ...prev, data }));
 
-  return (
-    <>
-      <Modal
-        visible={!isEditModalVisible}
-        title={formatMessage(messages.appointmentDetails)}
-        closeIcon={
-          <div>
-            {!isLoading && appointment.attended === null && (
-              <EditOutlined onClick={() => setIsEditModalVisible(true)} />
-            )}
-            <CloseOutlined onClick={handleClose} />
-          </div>
-        }
-        footer={footer}
-      >
-        {isLoading ? (
-          <Loading />
-        ) : (
-          <div>
-            <div>
-              {formatMessage(messages.patient)} {appointment.patient.full_name}
-            </div>
-            <div>
-              {formatMessage(messages.doctor)}{' '}
-              {`${appointment.doctor.full_name}(${appointment.specialization})`}
-            </div>
-            <div>
-              {formatMessage(messages.type)} {appointment.appointment_type.name}
-            </div>
-            <div>
-              {formatMessage(messages.status)} {appointment.status.name}
-            </div>
-            <div>
-              {formatMessage(messages.patient)} {appointment.patient.full_name}
-            </div>
-            <div>
-              {formatMessage(messages.date)} {appointment.date}
-            </div>
-            <div>
-              {formatMessage(messages.time)} {appointment.time}
-            </div>
-            <div>
-              {formatMessage(messages.appointmentPrice)} £{appointment.price}
-            </div>
-            {appointment.missing_reason && (
-              <div>
-                {formatMessage(messages.missingReason)}{' '}
-                {appointment.missing_reason}
-              </div>
-            )}
-            {appointment.missing_reason_details && (
-              <div>
-                {formatMessage(messages.details)}{' '}
-                {appointment.missing_reason_details}
-              </div>
-            )}
-          </div>
-        )}
-      </Modal>
-      {!isLoading && (
-        <AppointmentFormWrapper
-          Component={UpdateAppointment}
-          isEditForm={true}
-          closeModal={closeEditModal}
-          isModalVisible={isEditModalVisible}
+  const showDelete = (data) =>
+    setShowChildModal({ modal: NESTED_MODAL.DELETE, data });
+
+  const showPreview = () =>
+    setShowChildModal({ modal: NESTED_MODAL.NONE, data: null });
+
+  const showEndAppointemnt = (data) =>
+    setShowChildModal({ modal: NESTED_MODAL.END_APPOINTMENT, data });
+
+  const afterDelete = () => {
+    message.success(formatMessage(messages.appointemntDeleted));
+    handleClose();
+  };
+
+  const handleDelete = () =>
+    dispatch(deleteAppointemnt({ data: showChildModal.data, afterDelete }));
+
+  switch (showChildModal.modal) {
+    case NESTED_MODAL.NONE:
+      return (
+        <PreviewModal
+          handleClose={handleClose}
+          showDelete={showDelete}
+          showEnd={showEndAppointemnt}
+          setNewData={setNewData}
         />
-      )}
-    </>
-  );
-}
+      );
+    case NESTED_MODAL.DELETE:
+      return (
+        <DeleteAppointmentModal
+          handleClose={showPreview}
+          handleDelete={handleDelete}
+          appointment={showChildModal.data}
+        />
+      );
+    case NESTED_MODAL.END_APPOINTMENT:
+      return (
+        <EndAppointment handleClose={showPreview} id={showChildModal.data.id} />
+      );
+    default:
+      return (
+        <PreviewModal
+          handleClose={handleClose}
+          showDelete={showDelete}
+          showEnd={showEndAppointemnt}
+          setNewData={setNewData}
+        />
+      );
+  }
+};
 
 export default AppointmentPreview;

@@ -150,3 +150,11 @@ export const updateAppointmentValidationSchema = Yup.object().shape({
   price: Yup.number().required(),
   status: Yup.number().required(),
 });
+
+export const endAppointmentSchema = Yup.object().shape({
+  attended: Yup.boolean(),
+  missing_reason: Yup.string().when('attended', {
+    is: false,
+    then: Yup.string().required(),
+  }),
+});

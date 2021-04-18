@@ -203,6 +203,9 @@
   "global.text.cancel": "Cancel",
   "global.text.search": "Search",
   "global.text.delete": "Delete",
+  "global.text.confirm": "Confirm",
+  "global.text.yes": "Yes",
+  "global.text.no": "No",
 
   "staff_page.text.see_appointments": "See Appointments",
   "staff_page.text.staff": "Staff",
@@ -404,6 +407,12 @@
   "appointments_page.message.created": "New Appointment Created",
   "appointments_page.message.updated": "Appointment Updated",
   "appointments_page.message.something_went_wrong": "Something went wrong",
+  "appointments_page.text.delete_appointemnt": "Delete Appointemnt?",
+  "appointments_page.text.delete_message": "Are you sure you want to delete this appointment?",
+  "appointments_page.text.appointemnt_deleted": "Appointemnt Deleted",
+  "appointments_page.text.attend_question": "Did patient attend the appointment?",
+  "appointments_page.text.reason": "Reason",
+  "appointments_page.text.end_success": "Appointment Ended",
 
   "overview_page.title": "Overview",
   "overview_page.select.today": "Today",

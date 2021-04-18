@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   getDateAppointments,
   getDoctorAppointments,
+  setDoctorAppointments,
 } from 'redux/actions/Appointment';
 import { makeSelectDateAppointments } from 'redux/selectors/Appointment';
 import CalendarHeader from './CalendarHeader';
@@ -42,6 +43,13 @@ const CalendarPage = () => {
   const yearAndMonth = selectedDate.format(DATE_FORMAT_YYYY_MM_DD).slice(0, 7);
 
   useEffect(() => {
+    dispatch(
+      getDoctorAppointments(selectedDate.format(DATE_FORMAT_YYYY_MM_DD))
+    );
+    return () => dispatch(setDoctorAppointments([]));
+  }, []);
+
+  useEffect(() => {
     const [year, month] = yearAndMonth.split('-');
     dispatch(getDateAppointments({ year, month }));
   }, [yearAndMonth]);
@@ -56,7 +64,7 @@ const CalendarPage = () => {
         alignItems="end"
         className="height-100 pb-3 pr-1"
       >
-        <Badge count={appointmentCount?.total} />
+        <Badge className="badge-color" count={appointmentCount?.total} />
       </Flex>
     );
   };

@@ -2,10 +2,14 @@ import { takeEvery, put, call, all, fork, select } from 'redux-saga/effects';
 import appointmentService from 'services/AppointmentService';
 import staffService from 'services/StaffService';
 import patientService from 'services/PatientService';
+import moment from 'moment';
 
 import {
+  DELETE_APPOINTEMNT,
+  END_APPOINTMENT,
   GET_DATE_APPOINTMENTS,
   GET_DOCTOR_APPOINTMENTS,
+  GET_MISSING_REASONS,
   GET_SINGLE_APPOINTMENT,
   CREATE_APPOINTMENT,
   UPDATE_APPOINTMENT,
@@ -19,6 +23,7 @@ import {
   appendToAppointmentStatus,
   appendToAppointmentTypes,
   getSignleAppointmnet,
+  filterDeletedAppointment,
   setAppointmentsLoading,
   setAppointmentStatusLoading,
   setAppointmentTypesLoading,
@@ -26,6 +31,8 @@ import {
   setDoctorAppointments,
   setDoctorsLoading,
   setPatients,
+  setEndedAppointment,
+  setMissingReasons,
   setSignleAppointmnet,
   setSignleAppointmnetLoading,
 } from 'redux/actions/Appointment';
@@ -69,6 +76,42 @@ export function* getSingleAppointment({ payload }) {
   }
 }
 
+export function* deleteAppointemnt({ payload }) {
+  try {
+    yield put(setSignleAppointmnetLoading(true));
+    yield call(appointmentService.deleteAppointment, payload.data.id);
+    yield payload.afterDelete();
+    yield put(
+      filterDeletedAppointment({
+        date: moment(payload.data.date, 'DD/MM/YYYY').format('YYYY-MM-DD'),
+        id: payload.data.id,
+      })
+    );
+  } catch {
+  } finally {
+    yield put(setSignleAppointmnetLoading(false));
+  }
+}
+
+export function* getMissingReasons() {
+  try {
+    const { data } = yield call(appointmentService.getMissingReasons);
+    yield put(setMissingReasons(data));
+  } catch {}
+}
+
+export function* endAppointemnt({ payload }) {
+  try {
+    yield put(setSignleAppointmnetLoading(true));
+    yield call(appointmentService.endAppointemnt, payload);
+    yield payload.afterEnd();
+    yield put(setEndedAppointment(payload));
+  } catch {
+  } finally {
+    yield put(setSignleAppointmnetLoading(false));
+  }
+}
+
 export function* dateAppointments() {
   yield takeEvery(GET_DATE_APPOINTMENTS, getDateAppointments);
 }
@@ -76,6 +119,9 @@ export function* dateAppointments() {
 export function* doctorAppointments() {
   yield takeEvery(GET_DOCTOR_APPOINTMENTS, getDoctorAppointments);
   yield takeEvery(GET_SINGLE_APPOINTMENT, getSingleAppointment);
+  yield takeEvery(DELETE_APPOINTEMNT, deleteAppointemnt);
+  yield takeEvery(GET_MISSING_REASONS, getMissingReasons);
+  yield takeEvery(END_APPOINTMENT, endAppointemnt);
 }
 
 export function* createAppointmentSaga() {
