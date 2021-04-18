@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   getDateAppointments,
   getDoctorAppointments,
-} from 'redux/actions/Appointments';
+} from 'redux/actions/Appointment';
 import { makeSelectDateAppointments } from 'redux/selectors/Appointment';
 import CalendarHeader from './CalendarHeader';
 

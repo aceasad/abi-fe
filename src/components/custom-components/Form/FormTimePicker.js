@@ -11,13 +11,9 @@ const FormTimePicker = ({
   defaultTime,
   required,
   errorTexts,
-  disabledTimestamps,
-  availableTimestamps,
   hourStep = 1,
   minuteStep = 15,
   showNow = false,
-  startTime,
-  endTime,
 }) => {
   const { formatMessage } = useIntl();
 
@@ -39,27 +35,6 @@ const FormTimePicker = ({
     setFieldValue(field.name, timeString);
   };
 
-  const getDisabledHours = () => {
-    const hours = [...Array(24).keys()];
-    let disabledHours = hours.filter((hour) => {
-      // working hours: 17:00 - 05:00
-      if (startTime > endTime) {
-        return hour < startTime && hour > endTime;
-        // working hours: 08:00 - 20:00
-      } else {
-        return hour > startTime;
-      }
-    });
-
-    return disabledTimestamps
-      ? disabledTimestamps
-          .map((timestamp) => parseInt(timestamp.split(':')[0]))
-          .filter((value, index, array) => array.indexOf(value) === index)
-      : [];
-  };
-
-  const getDisabledMinutes = (selectedHour) => {};
-
   return (
     <Form.Item
       label={label}
@@ -77,7 +52,6 @@ const FormTimePicker = ({
         onChange={onChange}
         hourStep={hourStep}
         minuteStep={minuteStep}
-        //disabledHours={getDisabledHours}
         showNow={showNow}
       />
     </Form.Item>

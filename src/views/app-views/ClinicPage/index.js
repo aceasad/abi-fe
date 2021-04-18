@@ -7,8 +7,6 @@ import localeString from 'utils/localeString';
 import { signOut } from 'redux/actions/Auth';
 import messages from './messages';
 
-const { Title } = Typography;
-
 const ClinicPage = ({ localization = true }) => {
   const dispatch = useDispatch();
   const { formatMessage } = useIntl();

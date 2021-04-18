@@ -83,4 +83,8 @@ export default defineMessages({
     id: `${scope}.text.details`,
     defaultMessage: 'Details',
   },
+  appointmentStatus: {
+    id: `${scope}.form.label.status`,
+    defaultMessage: 'Appointment Status',
+  },
 });

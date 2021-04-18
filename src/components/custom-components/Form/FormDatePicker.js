@@ -13,6 +13,7 @@ const FormDatePicker = ({
   required,
   errorTexts,
   disablePastDates,
+  showDefaultDate,
 }) => {
   const { formatMessage } = useIntl();
 
@@ -52,10 +53,14 @@ const FormDatePicker = ({
           setFieldValue(field.name, str);
         }}
         disabledDate={disabledDates}
-        defaultValue={moment(
-          field.value ? field.value : defaultDate,
-          DATE_FORMAT_DD_MMM_YYYY
-        )}
+        defaultValue={
+          showDefaultDate
+            ? moment(
+                field.value ? field.value : defaultDate,
+                DATE_FORMAT_DD_MMM_YYYY
+              )
+            : ''
+        }
         format={DATE_FORMAT_DD_MMM_YYYY}
       />
     </Form.Item>
@@ -66,6 +71,7 @@ FormDatePicker.defaultProps = {
   defaultDate: new Date(),
   maxDate: false,
   disablePastDates: false,
+  showDefaultDate: true,
 };
 
 export default FormDatePicker;

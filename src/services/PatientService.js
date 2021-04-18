@@ -6,6 +6,7 @@ const ENDPOINTS = {
   GET_PATIENT_DETAILS: '/patients/patient-details/',
   GET_SCHEDULED_APPOINTMENTS: '/appointments/scheduled-appointments/',
   GET_APPOINTMENT_HISTORY: '/appointments/passed-appointments/',
+  SEARCH_PATIENTS: '/patients-search/',
 };
 
 class PatientService extends ApiService {
@@ -50,6 +51,14 @@ class PatientService extends ApiService {
 
   updatePatientPart = (id, data) =>
     this.apiClient.patch(ENDPOINTS.GET_PATIENTS + id + '/', data);
+
+  searchPatients = (query, organizationId) =>
+    this.apiClient.get(ENDPOINTS.SEARCH_PATIENTS, {
+      params: {
+        search: query,
+        organization: organizationId,
+      },
+    });
 }
 
 const patientService = new PatientService();
