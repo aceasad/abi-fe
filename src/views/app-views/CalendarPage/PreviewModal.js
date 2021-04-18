@@ -38,7 +38,9 @@ function PreviewModal({ handleClose, showDelete, showEnd, setNewData }) {
         <div>
           {!isLoading && appointment.attended === null && (
             <>
-              <EditOutlined />
+              <EditOutlined
+                onClick={() => setNewData({ data: null, modal: 3 })}
+              />
               <DeleteOutlined onClick={() => showDelete(appointment)} />
             </>
           )}
@@ -52,20 +54,20 @@ function PreviewModal({ handleClose, showDelete, showEnd, setNewData }) {
       ) : (
         <div>
           <div>
-            {formatMessage(messages.patient)}: {appointment.patient}
+            {formatMessage(messages.patient)}: {appointment.patient.full_name}
           </div>
           <div>
             {formatMessage(messages.doctor)}{' '}
-            {`${appointment.doctor}(${appointment.specialization})`}
+            {`${appointment.doctor.full_name}(${appointment.specialization})`}
           </div>
           <div>
-            {formatMessage(messages.type)}: {appointment.appointment_type}
+            {formatMessage(messages.type)}: {appointment.appointment_type.name}
           </div>
           <div>
-            {formatMessage(messages.status)}: {appointment.status}
+            {formatMessage(messages.status)}: {appointment.status.name}
           </div>
           <div>
-            {formatMessage(messages.patient)}: {appointment.patient}
+            {formatMessage(messages.patient)}: {appointment.patient.full_name}
           </div>
           <div>
             {formatMessage(messages.date)}: {appointment.date}
