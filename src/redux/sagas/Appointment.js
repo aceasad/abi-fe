@@ -1,5 +1,7 @@
-import { takeEvery, put, call, all, fork } from 'redux-saga/effects';
-import appointmentService from '../../services/AppointmentService';
+import { takeEvery, put, call, all, fork, select } from 'redux-saga/effects';
+import appointmentService from 'services/AppointmentService';
+import staffService from 'services/StaffService';
+import patientService from 'services/PatientService';
 import moment from 'moment';
 
 import {
@@ -9,19 +11,35 @@ import {
   GET_DOCTOR_APPOINTMENTS,
   GET_MISSING_REASONS,
   GET_SINGLE_APPOINTMENT,
+  CREATE_APPOINTMENT,
+  UPDATE_APPOINTMENT,
+  GET_APPOINTMENT_TYPES,
+  GET_APPOINTMENT_STATUS,
+  GET_DOCTORS,
+  SEARCH_PATIENTS,
 } from 'redux/constants/Appointment';
 import {
+  appendToAllDoctors,
+  appendToAppointmentStatus,
+  appendToAppointmentTypes,
+  getSignleAppointmnet,
   filterDeletedAppointment,
   setAppointmentsLoading,
+  setAppointmentStatusLoading,
+  setAppointmentTypesLoading,
   setDateAppointments,
   setDoctorAppointments,
+  setDoctorsLoading,
+  setPatients,
   setEndedAppointment,
   setMissingReasons,
   setSignleAppointmnet,
   setSignleAppointmnetLoading,
 } from 'redux/actions/Appointment';
 
-export function* getDoctorAppoitnments({ payload }) {
+import { makeSelectCurrentUser } from 'redux/selectors/Auth';
+
+export function* getDoctorAppointments({ payload }) {
   try {
     yield put(setAppointmentsLoading(true));
     const { data } = yield call(
@@ -99,13 +117,113 @@ export function* dateAppointments() {
 }
 
 export function* doctorAppointments() {
-  yield takeEvery(GET_DOCTOR_APPOINTMENTS, getDoctorAppoitnments);
+  yield takeEvery(GET_DOCTOR_APPOINTMENTS, getDoctorAppointments);
   yield takeEvery(GET_SINGLE_APPOINTMENT, getSingleAppointment);
   yield takeEvery(DELETE_APPOINTEMNT, deleteAppointemnt);
   yield takeEvery(GET_MISSING_REASONS, getMissingReasons);
   yield takeEvery(END_APPOINTMENT, endAppointemnt);
 }
 
+export function* createAppointmentSaga() {
+  yield takeEvery(CREATE_APPOINTMENT, function* ({ payload }) {
+    try {
+      yield put(setSignleAppointmnetLoading(true));
+      const { data } = yield call(
+        appointmentService.createAppointment,
+        payload
+      );
+      yield payload.afterCreate(data.start_datetime);
+      yield payload.resetForm();
+    } catch (error) {
+      yield payload.afterError(error?.response?.data[0]);
+      yield payload.setFieldValue('date', '');
+      yield payload.setFieldValue('time', '');
+    } finally {
+      yield put(setSignleAppointmnetLoading(false));
+    }
+  });
+}
+
+export function* updateAppointmentSaga() {
+  yield takeEvery(UPDATE_APPOINTMENT, function* ({ payload }) {
+    try {
+      yield put(setSignleAppointmnetLoading(true));
+      yield call(appointmentService.updateAppointment, payload);
+      yield payload.afterUpdate();
+      yield payload.resetForm();
+      yield put(getSignleAppointmnet(payload.id));
+    } catch (error) {
+      yield payload.afterError(error?.response?.data[0]);
+    } finally {
+      yield put(setSignleAppointmnetLoading(false));
+    }
+  });
+}
+
+export function* getAppointmentTypesSaga() {
+  yield takeEvery(GET_APPOINTMENT_TYPES, function* () {
+    try {
+      yield put(setAppointmentTypesLoading(true));
+      const { data } = yield call(appointmentService.getAppointmentTypes);
+      yield put(appendToAppointmentTypes(data));
+    } catch {
+    } finally {
+      yield put(setAppointmentTypesLoading(false));
+    }
+  });
+}
+
+export function* getAppointmentStatusSaga() {
+  yield takeEvery(GET_APPOINTMENT_STATUS, function* () {
+    try {
+      yield put(setAppointmentStatusLoading(true));
+      const { data } = yield call(appointmentService.getAppointmentStatus);
+      yield put(appendToAppointmentStatus(data));
+    } catch {
+    } finally {
+      yield put(setAppointmentStatusLoading(false));
+    }
+  });
+}
+
+export function* getClinicDoctors() {
+  yield takeEvery(GET_DOCTORS, function* () {
+    try {
+      yield put(setDoctorsLoading(true));
+      const { data } = yield call(staffService.getStaff);
+      yield put(appendToAllDoctors(data));
+    } catch {
+    } finally {
+      yield put(setDoctorsLoading(false));
+    }
+  });
+}
+
+export function* searchPatients() {
+  yield takeEvery(SEARCH_PATIENTS, function* ({ payload }) {
+    try {
+      const { organization } = yield select(makeSelectCurrentUser());
+      const { data } = yield call(
+        patientService.searchPatients,
+        payload.query,
+        organization
+      );
+      yield put(setPatients(data));
+    } catch {
+    } finally {
+    }
+  });
+}
+
 export default function* rootSaga() {
-  yield all([fork(doctorAppointments), fork(dateAppointments)]);
+  yield all([
+    fork(doctorAppointments),
+    fork(dateAppointments),
+    fork(createAppointmentSaga),
+    fork(updateAppointmentSaga),
+    fork(getAppointmentStatusSaga),
+    fork(getAppointmentTypesSaga),
+    fork(getClinicDoctors),
+    fork(searchPatients),
+  ]);
 }

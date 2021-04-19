@@ -12,6 +12,8 @@ const FormDatePicker = ({
   maxDate,
   required,
   errorTexts,
+  disablePastDates,
+  showDefaultDate,
 }) => {
   const { formatMessage } = useIntl();
 
@@ -28,6 +30,10 @@ const FormDatePicker = ({
       ? formatMessage(errors[field.name], errorTexts)
       : defaultErrorMessage());
 
+  const disabledDates = (date) =>
+    (maxDate && date.isAfter(maxDate)) ||
+    (disablePastDates && date < moment().startOf('day'));
+
   return (
     <Form.Item
       label={label}
@@ -40,11 +46,12 @@ const FormDatePicker = ({
           setFieldTouched(field.name, true);
           setFieldValue(field.name, str);
         }}
-        disabledDate={(date) => (maxDate ? date.isAfter(maxDate) : false)}
-        defaultValue={moment(
-          field.value ? field.value : defaultDate,
-          DATE_FORMAT_DD_MMM_YYYY
-        )}
+        disabledDate={disabledDates}
+        defaultValue={
+          showDefaultDate
+            ? moment(field.value || defaultDate, DATE_FORMAT_DD_MMM_YYYY)
+            : ''
+        }
         format={DATE_FORMAT_DD_MMM_YYYY}
       />
     </Form.Item>
@@ -54,6 +61,8 @@ const FormDatePicker = ({
 FormDatePicker.defaultProps = {
   defaultDate: new Date(),
   maxDate: false,
+  disablePastDates: false,
+  showDefaultDate: true,
 };
 
 export default FormDatePicker;

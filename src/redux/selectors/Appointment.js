@@ -24,6 +24,34 @@ const makeSelectSingleAppointment = () =>
     singleLoading: substate.singleLoading,
   }));
 
+const makeSelectAppointmentTypes = () =>
+  createSelector(selectAppointmentDomain, (substate) => ({
+    appointmentTypesLoading: substate.appointmentTypesLoading,
+    appointmentTypes: substate.appointmentTypes,
+  }));
+
+const makeSelectAppointmentStatus = () =>
+  createSelector(selectAppointmentDomain, (substate) => ({
+    appointmentStatusLoading: substate.appointmentStatusLoading,
+    appointmentStatus: substate.appointmentStatus,
+  }));
+
+const makeSelectClinicDoctors = () =>
+  createSelector(selectAppointmentDomain, (substate) => ({
+    doctors: substate.doctors.all,
+    doctorsLoading: substate.doctors.loading,
+    next: substate.doctors.next,
+  }));
+
+const makeSelectClinicPatients = () =>
+  createSelector(selectAppointmentDomain, (substate) => ({
+    patients: substate.patients.all,
+    patientsLoading: substate.patients.loading,
+    next: substate.patients.next,
+  }));
+
+const makeSelectLoading = () =>
+  createSelector(selectAppointmentDomain, (substate) => substate.loading);
 const makeSelectSingleAppointmentLoading = () =>
   createSelector(selectAppointmentDomain, (substate) => substate.singleLoading);
 
@@ -39,4 +67,9 @@ export {
   makeSelectDoctorAppointments,
   makeSelectDateAppointments,
   makeSelectSingleAppointment,
+  makeSelectAppointmentTypes,
+  makeSelectAppointmentStatus,
+  makeSelectClinicDoctors,
+  makeSelectClinicPatients,
+  makeSelectLoading,
 };

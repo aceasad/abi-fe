@@ -1,4 +1,6 @@
 import { MESSAGE_TYPE, MESSAGE_FROM } from 'constants/ChatConstants';
+import { MONTH_FORMAT_MM, YEAR_FORMAT_YYYY } from 'constants/DateConstant';
+import moment from 'moment';
 
 export const prepareFormData = (obj) =>
   Object.keys(obj).reduce((accumulator, currentValue) => {
@@ -65,3 +67,30 @@ export const filterNumberInput = (e) =>
     e.keyCode === 190 ||
     e.keyCode === 187) &&
   e.preventDefault();
+
+export const prepareAppointmentData = (values) => {
+  const startDatetime = moment(
+    `${values.date} ${values.time}`,
+    'DD-MMM-YYYY HH:mm'
+  ).format('YYYY-MM-DDTHH:mm');
+  delete values.date;
+  delete values.time;
+  values.patient = parseInt(values.patient);
+  values.price = parseFloat(values.price);
+  const preparedData = prepareFormData({ ...values, startDatetime });
+  return preparedData;
+};
+
+export const getYearAndMonth = (date) => {
+  const momentDate = moment(date);
+  return {
+    year: momentDate.format(YEAR_FORMAT_YYYY),
+    month: momentDate.format(MONTH_FORMAT_MM),
+  };
+};
+
+export const convertDateTimeStringToUtcString = (
+  datetime,
+  inputFormat,
+  outputFormat
+) => moment(datetime, inputFormat).utc().format(outputFormat);

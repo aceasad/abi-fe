@@ -1,8 +1,41 @@
 import { defineMessages } from 'react-intl';
+
 export const scope = 'appointments_page';
 export const globalScope = 'global';
 
 export default defineMessages({
+  patientLabel: {
+    id: `${scope}.form.label.patient`,
+    defaultMessage: 'Patient',
+  },
+  doctorLabel: {
+    id: `${scope}.form.label.doctor`,
+    defaultMessage: 'Doctor',
+  },
+  dateLabel: {
+    id: `${scope}.form.label.date`,
+    defaultMessage: 'Date',
+  },
+  timeLabel: {
+    id: `${scope}.form.label.time`,
+    defaultMessage: 'Time',
+  },
+  appointmentTypeLabel: {
+    id: `${scope}.form.label.appointment_type`,
+    defaultMessage: 'Appointment Type',
+  },
+  priceLabel: {
+    id: `${scope}.form.label.price`,
+    defaultMessage: 'Price',
+  },
+  createButton: {
+    id: `${scope}.form.button.create`,
+    defaultMessage: 'Create',
+  },
+  editButton: {
+    id: `${scope}.form.button.edit`,
+    defaultMessage: 'Edit',
+  },
   noAppointments: {
     id: `${scope}.text.no_appointemnts_for_date`,
     defaultMessage: 'No appointments for selected date',
@@ -50,6 +83,10 @@ export default defineMessages({
   details: {
     id: `${scope}.text.details`,
     defaultMessage: 'Details',
+  },
+  appointmentStatus: {
+    id: `${scope}.form.label.status`,
+    defaultMessage: 'Appointment Status',
   },
   deleteAppointment: {
     id: `${scope}.text.delete_appointemnt`,
