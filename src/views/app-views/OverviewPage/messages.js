@@ -45,7 +45,7 @@ export default defineMessages({
   },
   bookingEfficiency: {
     id: `${scope}.booking.efficiency`,
-    defaultMessage: 'Bookings effieciency',
+    defaultMessage: 'Booking effieciency',
   },
   bookingInvitation: {
     id: `${scope}.booking.invitation_rate`,
@@ -61,19 +61,19 @@ export default defineMessages({
   },
   uptakeProportion: {
     id: `${scope}.uptake.proportion`,
-    defaultMessage: 'Uptake - proportion of invited patients that attended',
+    defaultMessage: 'Uptake',
   },
   uptakeCoverageProportion: {
     id: `${scope}.uptake.coverage_proportion`,
-    defaultMessage: 'Coverage - proportion of invited patients that attended',
+    defaultMessage: 'Coverage',
   },
   uptakeAverage: {
     id: `${scope}.uptake.average`,
-    defaultMessage: 'Uptake: country average',
+    defaultMessage: 'Uptake - country average',
   },
   uptakeCoverageAverage: {
     id: `${scope}.uptake.coverage_average`,
-    defaultMessage: 'Coverage: country average',
+    defaultMessage: 'Coverage - country average',
   },
   appointmentsMissed: {
     id: `${scope}.appointments.missed`,

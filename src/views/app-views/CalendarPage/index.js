@@ -83,16 +83,16 @@ const CalendarPage = () => {
           />
         </Col>
         <Col xs={24} sm={24} md={8}>
-          <Flex
-            justifyContent="between"
-            alignItems="center"
-            className="pb-3 pr-1"
-          >
-            <Title level={3} className="mb-4 mt-5">
+          <Title level={3} className="mb-4 mt-5">
+            <Flex justifyContent="between" alignItems="center">
               {selectedDate.format(DATE_FORMAT_LONG_DATE)}
-            </Title>
-            <Badge count={appointmentsCount} overflowCount={1000} />
-          </Flex>
+              <Badge
+                count={appointmentsCount}
+                overflowCount={1000}
+                className="badge-color"
+              />
+            </Flex>
+          </Title>
           <CalendarCollapseList />
         </Col>
       </Row>

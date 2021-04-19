@@ -22,11 +22,11 @@ const DeleteAppointmentModal = ({ handleClose, handleDelete, appointment }) => {
     >
       {formatMessage(messages.deleteMessage)}
       <div>
-        {formatMessage(messages.patient)}: {appointment.patient}
+        {formatMessage(messages.patient)}: {appointment?.patient?.full_name}
       </div>
       <div>
         {formatMessage(messages.doctor)}:{' '}
-        {`${appointment.doctor}(${appointment.specialization})`}
+        {`${appointment?.doctor?.full_name}(${appointment.specialization})`}
       </div>
       <div>
         {formatMessage(messages.date)}: {appointment.date}

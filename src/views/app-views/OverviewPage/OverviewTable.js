@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, Divider, Tag, Card, Menu, Dropdown, Button } from 'antd';
+import { Table, Card, Menu, Dropdown, Button, Typography } from 'antd';
 import { useIntl } from 'react-intl';
 import messages from './messages';
 import { DownOutlined } from '@ant-design/icons';
@@ -127,9 +127,14 @@ const OverviewTable = () => {
   );
 
   return (
-    <Card>
-      <Table columns={columns} dataSource={dummyData} />
-    </Card>
+    <>
+      <Typography.Title level={2} className="mb-4">
+        {formatMessage(messages.tableTitle)}
+      </Typography.Title>
+      <Card>
+        <Table columns={columns} dataSource={dummyData} />
+      </Card>
+    </>
   );
 };
 

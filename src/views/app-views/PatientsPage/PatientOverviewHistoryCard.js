@@ -2,7 +2,7 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { makeSelectHistory } from 'redux/selectors/Patient';
 import { setAppointmentHistoryPage } from 'redux/actions/Patient';
-import { DEFAULT_PAGINATION_LIMIT } from 'constants/ApiConstant';
+import { DEFAULT_SMALL_PAGINATION_LIMIT } from 'constants/ApiConstant';
 import { Card, Table, Typography } from 'antd';
 import messages from './messages';
 import { useIntl } from 'react-intl';
@@ -30,7 +30,7 @@ export const statusColor = (status) => {
   }
 };
 
-const PatientOverviewHistoryCard = ({ patient }) => {
+const PatientOverviewHistoryCard = ({ patient, showAppointment }) => {
   const dispatch = useDispatch();
   const { formatMessage } = useIntl();
 
@@ -72,11 +72,14 @@ const PatientOverviewHistoryCard = ({ patient }) => {
         </Title>
       </div>
       <Table
+        onRow={(record) => ({
+          onClick: () => showAppointment(record.id),
+        })}
         columns={columnsHistory}
         dataSource={items}
         loading={loading}
         pagination={{
-          defaultPageSize: DEFAULT_PAGINATION_LIMIT,
+          defaultPageSize: DEFAULT_SMALL_PAGINATION_LIMIT,
           total: count,
           onChange: handlePaginationChange,
           hideOnSinglePage: true,

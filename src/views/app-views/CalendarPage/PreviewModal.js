@@ -60,21 +60,20 @@ function PreviewModal({ handleClose, showDelete, showEnd, setNewData }) {
       ) : (
         <div>
           <div>
-            {formatMessage(messages.patient)}: {appointment.patient.full_name}
+            {formatMessage(messages.patient)}: {appointment?.patient?.full_name}
           </div>
           <div>
             {formatMessage(messages.doctor)}{' '}
-            {`${appointment.doctor.full_name}(${appointment.specialization})`}
+            {`${appointment?.doctor?.full_name}(${appointment.specialization})`}
           </div>
           <div>
-            {formatMessage(messages.type)}: {appointment.appointment_type.name}
+            {formatMessage(messages.type)}:{' '}
+            {appointment?.appointment_type?.name}
           </div>
           <div>
-            {formatMessage(messages.status)}: {appointment.status.name}
+            {formatMessage(messages.status)}: {appointment?.status?.name}
           </div>
-          <div>
-            {formatMessage(messages.patient)}: {appointment.patient.full_name}
-          </div>
+
           <div>
             {formatMessage(messages.date)}: {appointment.date}
           </div>

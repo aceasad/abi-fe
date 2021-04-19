@@ -19,6 +19,7 @@ const CreatePatient = ({ showList }) => {
   const GENDER_CHOICES = [
     { id: GENDER.MALE, name: formatMessage(messages.male) },
     { id: GENDER.FEMALE, name: formatMessage(messages.female) },
+    { id: GENDER.OTHER, name: formatMessage(messages.other) },
   ];
 
   const afterCreate = () => {

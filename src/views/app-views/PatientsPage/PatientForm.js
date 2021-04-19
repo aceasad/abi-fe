@@ -2,7 +2,7 @@ import React from 'react';
 import { useIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
 import { Field, Formik } from 'formik';
-import { Card, Col, Row, Typography } from 'antd';
+import { Button, Card, Col, Row, Typography } from 'antd';
 import Form from 'antd/lib/form/Form';
 
 import PatientHeader from './PatientHeader';
@@ -252,6 +252,17 @@ const PatientForm = ({
                           maxValue: MAX,
                         }}
                       />
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col span={24} className={'text-right'}>
+                      <Button
+                        disabled={!isValid || !dirty || loading}
+                        type="primary"
+                        onClick={handleSubmit}
+                      >
+                        {formatMessage(messages.save)}
+                      </Button>
                     </Col>
                   </Row>
                 </Col>

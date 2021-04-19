@@ -139,6 +139,10 @@ export default defineMessages({
     id: `${staffScope}.text.female`,
     defaultMessage: 'Female',
   },
+  other: {
+    id: `${staffScope}.text.other`,
+    defaultMessage: 'Other',
+  },
   patientCreated: {
     id: `${detailScope}.text.patient_created`,
     defaultMessage: 'Patient Created',
