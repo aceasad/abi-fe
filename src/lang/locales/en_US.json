@@ -298,7 +298,7 @@
   "patient_details.side.form.marital_status": "Marital Status",
   "patient_details.side.form.number_of_dependants": "Number of Dependants",
   "patient_details.side.form.employment_status": "Employment Status",
-  "patient_details.side.form.educational_background": "Educationl Background",
+  "patient_details.side.form.educational_background": "Educational Background",
   "patient_details.side.form.insurance": "Insurance",
   "patient_details.error.phone_format": "Phone must be in valid format",
   "patient_details.text.patient_created": "Patient Created",
