@@ -60,7 +60,10 @@ const CalendarCollapseList = () => {
                 itemLayout="horizontal"
                 dataSource={item.appointments}
                 renderItem={(item) => (
-                  <List.Item onClick={() => handleClick(item)}>
+                  <List.Item
+                    onClick={() => handleClick(item)}
+                    className="cursor-pointer list-item-hover"
+                  >
                     <List.Item.Meta
                       description={<StaffPanelItem data={item} />}
                     />
