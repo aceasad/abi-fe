@@ -71,12 +71,12 @@ const PatientOverviewScheduledCard = ({ patient, showAppointment }) => {
     },
     {
       title: formatMessage(messages.columnTitleDoctor),
-      dataIndex: 'doctor',
+      dataIndex: ['doctor', 'full_name'],
       sorter: true,
     },
     {
       title: formatMessage(messages.columnTitleType),
-      dataIndex: 'appointment_type',
+      dataIndex: ['appointment_type', 'name'],
       sorter: true,
     },
     {

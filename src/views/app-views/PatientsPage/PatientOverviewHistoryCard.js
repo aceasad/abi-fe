@@ -47,15 +47,15 @@ const PatientOverviewHistoryCard = ({ patient, showAppointment }) => {
     },
     {
       title: formatMessage(messages.columnTitleDoctor),
-      dataIndex: 'doctor',
+      dataIndex: ['doctor', 'full_name'],
     },
     {
       title: formatMessage(messages.columnTitleType),
-      dataIndex: 'appointment_type',
+      dataIndex: ['appointment_type', 'name'],
     },
     {
       title: formatMessage(messages.columnTitleStatus),
-      dataIndex: 'status',
+      dataIndex: ['status', 'name'],
       render: statusColor,
     },
   ];

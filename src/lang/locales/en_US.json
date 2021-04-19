@@ -290,7 +290,7 @@
   "patient_details.side.form.first_name": "First Name",
   "patient_details.side.form.last_name": "Last Name",
   "patient_details.side.form.date_of_birth": "Date of Birth",
-  "patient_details.side.form.sex": "Sex",
+  "patient_details.side.form.sex": "Gender",
   "patient_details.side.form.height": "Height",
   "patient_details.side.form.weight": "Weight",
   "patient_details.side.form.ethnicity": "Ethnicity",

@@ -82,6 +82,7 @@ const PatientForm = ({
                     />
                     <ColumnField
                       span={8}
+                      maxDate={new Date()}
                       component={FormDatePicker}
                       label={formatMessage(messages.dateOfBirth)}
                       name="date_of_birth"

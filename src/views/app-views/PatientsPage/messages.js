@@ -81,7 +81,7 @@ export default defineMessages({
   },
   sex: {
     id: `${detailScope}.side.form.sex`,
-    defaultMessage: 'Sex',
+    defaultMessage: 'Gender',
   },
   height: {
     id: `${detailScope}.side.form.height`,
