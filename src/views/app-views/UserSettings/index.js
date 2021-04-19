@@ -97,23 +97,26 @@ const UserSettings = () => {
                 {formatMessage(messages.clinicAdmin)}
               </Text>
             )}
-            <Tooltip title={formatMessage(messages.editUser)}>
-              <Button
-                icon={<FormOutlined />}
-                onClick={() =>
-                  setActiveForm({ id: USER_FORM.UPDATE, data: elm.id })
-                }
-                size="small"
-              />
-            </Tooltip>
+
             {!elm.is_organization_owner && (
-              <Tooltip title={formatMessage(messages.deleteUser)}>
-                <Button
-                  icon={<DeleteOutlined />}
-                  onClick={() => showDeleteConfirm(elm)}
-                  size="small"
-                />
-              </Tooltip>
+              <>
+                <Tooltip title={formatMessage(messages.editUser)}>
+                  <Button
+                    icon={<FormOutlined />}
+                    onClick={() =>
+                      setActiveForm({ id: USER_FORM.UPDATE, data: elm.id })
+                    }
+                    size="small"
+                  />
+                </Tooltip>
+                <Tooltip title={formatMessage(messages.deleteUser)}>
+                  <Button
+                    icon={<DeleteOutlined />}
+                    onClick={() => showDeleteConfirm(elm)}
+                    size="small"
+                  />
+                </Tooltip>
+              </>
             )}
           </Space>
         </div>

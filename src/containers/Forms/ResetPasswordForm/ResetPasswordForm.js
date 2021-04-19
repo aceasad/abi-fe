@@ -5,11 +5,12 @@ import messages from './messages';
 import { useDispatch, useSelector } from 'react-redux';
 import { useIntl } from 'react-intl';
 import FormField from 'components/custom-components/Form/FormField';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { resetPassword } from 'redux/actions/Auth';
 import { passwordMinLength } from 'constants/Validation';
 import { makeIsResetPassword } from 'redux/selectors/Auth';
 import { success } from 'components/shared-components/MessagesAlerts/index';
+import { ROUTES } from 'routes';
 const { resetPasswordSchema } = require('utils/validations');
 
 export const ValidPasswordFormat = () => {
@@ -34,9 +35,12 @@ const ResetPasswordForm = () => {
   const { token } = useParams();
   const { formatMessage } = useIntl();
 
+  const history = useHistory();
+
   useEffect(() => {
     if (isReset) {
       success(formatMessage(messages.passwordSuccessfullyChanged));
+      history.push(ROUTES.LOGIN);
     }
   }, [isReset]);
 

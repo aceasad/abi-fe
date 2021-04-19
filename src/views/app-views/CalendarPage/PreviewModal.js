@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux';
 import { makeSelectSingleAppointment } from 'redux/selectors/Appointment';
 import { Button } from 'antd';
 
-function PreviewModal({ handleClose, showDelete, showEnd, setNewData }) {
+function PreviewModal({ handleClose, showDelete, showEnd }) {
   const { formatMessage } = useIntl();
   const { appointment, singleLoading } = useSelector(
     makeSelectSingleAppointment()

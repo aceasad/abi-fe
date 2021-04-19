@@ -1,4 +1,8 @@
-import { DEFAULT_PAGINATION_LIMIT, ORDERING } from 'constants/ApiConstant';
+import {
+  DEFAULT_PAGINATION_LIMIT,
+  DEFAULT_SMALL_PAGINATION_LIMIT,
+  ORDERING,
+} from 'constants/ApiConstant';
 import ApiService from './ApiService';
 
 const ENDPOINTS = {
@@ -35,16 +39,16 @@ class PatientService extends ApiService {
     this.apiClient.get(ENDPOINTS.GET_SCHEDULED_APPOINTMENTS + id + '/', {
       params: {
         ordering: field,
-        limit: DEFAULT_PAGINATION_LIMIT,
-        offset: (page - 1) * DEFAULT_PAGINATION_LIMIT,
+        limit: DEFAULT_SMALL_PAGINATION_LIMIT,
+        offset: (page - 1) * DEFAULT_SMALL_PAGINATION_LIMIT,
       },
     });
 
   getAppointmentHistory = (id, page) =>
     this.apiClient.get(ENDPOINTS.GET_APPOINTMENT_HISTORY + id + '/', {
       params: {
-        limit: DEFAULT_PAGINATION_LIMIT,
-        offset: (page - 1) * DEFAULT_PAGINATION_LIMIT,
+        limit: DEFAULT_SMALL_PAGINATION_LIMIT,
+        offset: (page - 1) * DEFAULT_SMALL_PAGINATION_LIMIT,
       },
     });
 
