@@ -6,7 +6,10 @@ import { setScheduledOrder, setScheduledPage } from 'redux/actions/Patient';
 import { makeSelectScheduledAppointments } from 'redux/selectors/Patient';
 import messages from './messages';
 import Flex from 'components/shared-components/Flex';
-import { DEFAULT_PAGINATION_LIMIT, ORDERING } from 'constants/ApiConstant';
+import {
+  DEFAULT_SMALL_PAGINATION_LIMIT,
+  ORDERING,
+} from 'constants/ApiConstant';
 
 const { Title, Text } = Typography;
 
@@ -24,7 +27,7 @@ const prepareField = (order, field) => {
   }
 };
 
-const PatientOverviewScheduledCard = ({ patient }) => {
+const PatientOverviewScheduledCard = ({ patient, showAppointment }) => {
   const predictionOption = 'Likely to be missed';
   const dispatch = useDispatch();
 
@@ -95,11 +98,14 @@ const PatientOverviewScheduledCard = ({ patient }) => {
         </Button>
       </Flex>
       <Table
+        onRow={(record) => ({
+          onClick: () => showAppointment(record.id),
+        })}
         columns={columnsScheduled}
         dataSource={items}
         onChange={handleChange}
         pagination={{
-          defaultPageSize: DEFAULT_PAGINATION_LIMIT,
+          defaultPageSize: DEFAULT_SMALL_PAGINATION_LIMIT,
           total: count,
           onChange: handlePaginationChange,
           hideOnSinglePage: true,

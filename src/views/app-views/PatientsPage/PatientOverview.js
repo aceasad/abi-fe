@@ -25,6 +25,8 @@ import messages from './messages';
 import Conversation from '../ChatPage/Conversation';
 import PatientOverviewExistingConditions from './PatientOverviewExistingConditions';
 import PatientOverviewPreviousOperations from './PatientOverviewPreviousOperations';
+import { getSignleAppointmnet } from 'redux/actions/Appointment';
+import AppointmentPreview from '../CalendarPage/AppointmentPreview';
 
 const { Text, Title } = Typography;
 
@@ -35,6 +37,12 @@ const PatientOverview = ({ patientId, showList, updatePatient }) => {
   );
   const [showMessages, setShowMessages] = useState();
   const { formatMessage } = useIntl();
+
+  const [activeAppointmnet, setActiveAppointment] = useState(null);
+
+  useEffect(() => {
+    if (activeAppointmnet) dispatch(getSignleAppointmnet(activeAppointmnet));
+  }, [activeAppointmnet]);
 
   const patientDetailsFields = {
     date_of_birth: formatMessage(messages.dateOfBirth),
@@ -66,6 +74,8 @@ const PatientOverview = ({ patientId, showList, updatePatient }) => {
       })
     );
   };
+
+  const showAppointment = (id) => setActiveAppointment(id);
 
   return (
     <Row gutter={16}>
@@ -183,13 +193,22 @@ const PatientOverview = ({ patientId, showList, updatePatient }) => {
                 </Button>
               </Badge>
             </Flex>
-            <PatientOverviewScheduledCard patient={patient} />
+            <PatientOverviewScheduledCard
+              patient={patient}
+              showAppointment={showAppointment}
+            />
             <PatientOverviewExistingConditions patient={patient} />
             <PatientOverviewPreviousOperations patient={patient} />
-            <PatientOverviewHistoryCard patient={patient} />
+            <PatientOverviewHistoryCard
+              patient={patient}
+              showAppointment={showAppointment}
+            />
           </>
         )}
       </Col>
+      {activeAppointmnet && (
+        <AppointmentPreview handleClose={() => setActiveAppointment(null)} />
+      )}
     </Row>
   );
 };
