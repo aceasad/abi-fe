@@ -46,24 +46,11 @@ const dummyDataInvite = [
         any questions or concerns please let me know.
         <br />
         Please find frequently asked questions{' '}
-        <a href="https://www.nhsinform.scot/healthy-living/screening/cervical/cervical-screening-smear-test#overview">
-          here
-        </a>
-      </div>
-    ),
-  },
-  {
-    title: '18-25 years old, Female',
-    description: (
-      <div>
-        Hi Kate, just a gentle reminder that you have a cervical screening
-        appointment on Fri May 7th, 9 am
-        <br />
-        We don't want you to feel worried about this appointment. If you have
-        any questions or concerns please let me know.
-        <br />
-        Please find frequently asked questions{' '}
-        <a href="https://www.nhsinform.scot/healthy-living/screening/cervical/cervical-screening-smear-test#overview">
+        <a
+          href="https://www.nhsinform.scot/healthy-living/screening/cervical/cervical-screening-smear-test#overview"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           here
         </a>
       </div>
@@ -83,6 +70,7 @@ const dummyDataInvite = [
         <a
           href="https://www.nhsinform.scot/healthy-living/screening/cervical/cervical-screening-smear-test#overview"
           target="_blank"
+          rel="noopener noreferrer"
         >
           here
         </a>
@@ -100,7 +88,32 @@ const dummyDataInvite = [
         any questions or concerns please let me know.
         <br />
         Please find frequently asked questions{' '}
-        <a href="https://www.nhsinform.scot/healthy-living/screening/cervical/cervical-screening-smear-test#overview">
+        <a
+          href="https://www.nhsinform.scot/healthy-living/screening/cervical/cervical-screening-smear-test#overview"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          here
+        </a>
+      </div>
+    ),
+  },
+  {
+    title: '18-25 years old, Female',
+    description: (
+      <div>
+        Hi Kate, just a gentle reminder that you have a cervical screening
+        appointment on Fri May 7th, 9 am
+        <br />
+        We don't want you to feel worried about this appointment. If you have
+        any questions or concerns please let me know.
+        <br />
+        Please find frequently asked questions{' '}
+        <a
+          href="https://www.nhsinform.scot/healthy-living/screening/cervical/cervical-screening-smear-test#overview"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           here
         </a>
       </div>
