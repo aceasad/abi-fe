@@ -10,7 +10,7 @@ import EndAppointment from './EndAppointment';
 import AppointmentFormWrapper from '../AppointmentsPage/AppointmentFormWrapper';
 import UpdateAppointment from '../AppointmentsPage/UpdateAppointment';
 
-const NESTED_MODAL = {
+export const NESTED_MODAL = {
   NONE: 0,
   DELETE: 1,
   END_APPOINTMENT: 2,

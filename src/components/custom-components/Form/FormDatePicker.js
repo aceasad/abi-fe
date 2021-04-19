@@ -30,15 +30,9 @@ const FormDatePicker = ({
       ? formatMessage(errors[field.name], errorTexts)
       : defaultErrorMessage());
 
-  const disabledDates = (date) => {
-    if (
-      (maxDate && date.isAfter(maxDate)) ||
-      (disablePastDates && date < moment().startOf('day'))
-    ) {
-      return true;
-    }
-    return false;
-  };
+  const disabledDates = (date) =>
+    (maxDate && date.isAfter(maxDate)) ||
+    (disablePastDates && date < moment().startOf('day'));
 
   return (
     <Form.Item
@@ -55,10 +49,7 @@ const FormDatePicker = ({
         disabledDate={disabledDates}
         defaultValue={
           showDefaultDate
-            ? moment(
-                field.value ? field.value : defaultDate,
-                DATE_FORMAT_DD_MMM_YYYY
-              )
+            ? moment(field.value || defaultDate, DATE_FORMAT_DD_MMM_YYYY)
             : ''
         }
         format={DATE_FORMAT_DD_MMM_YYYY}

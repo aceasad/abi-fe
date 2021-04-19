@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Form, AutoComplete, Select } from 'antd';
 import { useIntl } from 'react-intl';
 
@@ -30,10 +30,13 @@ const FormAutocomplete = ({
       label,
     });
 
-  const triggerError = () => touched[field.name] && errors[field.name];
+  const hasError = useMemo(() => touched[field.name] && errors[field.name], [
+    touched[field.name],
+    errors[field.name],
+  ]);
 
   const showError = () =>
-    triggerError() &&
+    hasError &&
     (errorTexts
       ? formatMessage(errors[field.name], errorTexts)
       : defaultErrorMessage());
@@ -42,7 +45,7 @@ const FormAutocomplete = ({
     <Form.Item
       label={label}
       required={required}
-      validateStatus={triggerError() && 'error'}
+      validateStatus={hasError && 'error'}
       help={showError()}
     >
       <AutoComplete
@@ -55,7 +58,7 @@ const FormAutocomplete = ({
           setText(value);
         }}
         onBlur={() => setFieldTouched(field.name, true)}
-        onSearch={(value) => setQuery(value)}
+        onSearch={setQuery}
         onSelect={handleSelected}
       >
         {options

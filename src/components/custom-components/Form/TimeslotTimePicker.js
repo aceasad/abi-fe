@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { Form, TimePicker } from 'antd';
 import moment from 'moment';
@@ -25,10 +25,13 @@ const TimeslotTimePicker = ({
       label,
     });
 
-  const triggerError = () => touched[field.name] && errors[field.name];
+  const hasError = useMemo(() => touched[field.name] && errors[field.name], [
+    touched[field.name],
+    errors[field.name],
+  ]);
 
   const showError = () =>
-    triggerError() &&
+    hasError &&
     (errorTexts
       ? formatMessage(errors[field.name], errorTexts)
       : defaultErrorMessage());
@@ -79,7 +82,7 @@ const TimeslotTimePicker = ({
     <Form.Item
       label={label}
       required={required}
-      validateStatus={triggerError() && 'error'}
+      validateStatus={hasError && 'error'}
       help={showError()}
     >
       {isFetching ? null : (

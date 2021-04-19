@@ -7,6 +7,7 @@ import Loading from 'components/shared-components/Loading';
 import { useSelector } from 'react-redux';
 import { makeSelectSingleAppointment } from 'redux/selectors/Appointment';
 import { Button } from 'antd';
+import { NESTED_MODAL } from 'views/app-views/CalendarPage/AppointmentPreview';
 
 function PreviewModal({ handleClose, showDelete, showEnd, setNewData }) {
   const { formatMessage } = useIntl();
@@ -39,7 +40,12 @@ function PreviewModal({ handleClose, showDelete, showEnd, setNewData }) {
           {!isLoading && appointment.attended === null && (
             <>
               <EditOutlined
-                onClick={() => setNewData({ data: null, modal: 3 })}
+                onClick={() =>
+                  setNewData({
+                    data: null,
+                    modal: NESTED_MODAL.EDIT_APPOINTMENT,
+                  })
+                }
               />
               <DeleteOutlined onClick={() => showDelete(appointment)} />
             </>

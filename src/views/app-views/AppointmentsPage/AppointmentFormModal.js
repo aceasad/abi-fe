@@ -15,6 +15,7 @@ import { makeSelectClinicPatients } from 'redux/selectors/Appointment';
 import DirtyFieldWrapper from 'components/custom-components/Form/DirtyFieldWrapper';
 import TimeslotTimePicker from 'components/custom-components/Form/TimeslotTimePicker';
 import { Link } from 'react-router-dom';
+import RowColumnField from 'components/custom-components/Form/RowColumnField';
 
 const AppointmentFormModal = ({
   initialState,
@@ -114,22 +115,16 @@ const AppointmentFormModal = ({
                     <Link to={'patients'}>{'+'}</Link>
                   </Col>
                 </Row>
-                <Row>
-                  <Col xs={24}>
-                    <Field
-                      label={formatMessage(messages.doctorLabel)}
-                      name="doctor"
-                      component={FormSelect}
-                      options={doctors}
-                      optionField="full_name"
-                      defaultOption={
-                        doctors &&
-                        doctors.find((option) => option.id === values.doctor)
-                      }
-                      required
-                    />
-                  </Col>
-                </Row>
+                <RowColumnField
+                  span={24}
+                  label={formatMessage(messages.doctorLabel)}
+                  name="doctor"
+                  component={FormSelect}
+                  options={doctors}
+                  optionField="full_name"
+                  defaultOption={values.doctor}
+                  required
+                />
                 <Row>
                   <Col xs={24} lg={12}>
                     <Field
@@ -138,12 +133,7 @@ const AppointmentFormModal = ({
                       component={FormSelect}
                       options={appointmentTypes}
                       optionField="name"
-                      defaultOption={
-                        appointmentTypes &&
-                        appointmentTypes.find(
-                          (option) => option.id === values.appointmentType
-                        )
-                      }
+                      defaultOption={values.appointmentType}
                       afterSelectChange={afterAppointmentTypeSelect}
                       afterSelectChangeFieldName="price"
                       required
@@ -188,24 +178,16 @@ const AppointmentFormModal = ({
                   </Col>
                 </Row>
                 {isEditForm && (
-                  <Row>
-                    <Col xs={24}>
-                      <Field
-                        label={formatMessage(messages.appointmentStatus)}
-                        name="status"
-                        component={FormSelect}
-                        options={appointmentStatus}
-                        optionField="name"
-                        defaultOption={
-                          appointmentStatus &&
-                          appointmentStatus.find(
-                            (option) => option.id === values.status
-                          )
-                        }
-                        required
-                      />
-                    </Col>
-                  </Row>
+                  <RowColumnField
+                    span={24}
+                    label={formatMessage(messages.appointmentStatus)}
+                    name="status"
+                    component={FormSelect}
+                    options={appointmentStatus}
+                    optionField="name"
+                    defaultOption={values.status}
+                    required
+                  />
                 )}
               </Form>
             </Card>
