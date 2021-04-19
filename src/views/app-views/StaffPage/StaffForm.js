@@ -3,7 +3,7 @@ import { Formik, Field } from 'formik';
 import React, { useEffect } from 'react';
 import { useIntl } from 'react-intl';
 import messages from './messages';
-import { Row, Col, Form, Card, Typography } from 'antd';
+import { Row, Col, Form, Card, Typography, Button } from 'antd';
 import FormField from 'components/custom-components/Form/FormField';
 import FormDatePicker from 'components/custom-components/Form/FormDatePicker';
 import { staffValidationSchema } from 'utils/validations';
@@ -152,6 +152,15 @@ const StaffForm = ({
                     }
                     label={formatMessage(messages.seniority)}
                   />
+                </Col>
+                <Col span={24} className={'text-right'}>
+                  <Button
+                    disabled={!isValid || !dirty || loading}
+                    type="primary"
+                    onClick={handleSubmit}
+                  >
+                    {formatMessage(messages.submit)}
+                  </Button>
                 </Col>
               </Row>
             </Form>

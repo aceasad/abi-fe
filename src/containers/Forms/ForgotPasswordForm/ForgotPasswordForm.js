@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { Button, Form, Input } from 'antd';
+import { Button, Form } from 'antd';
 import { MailOutlined } from '@ant-design/icons';
 import { sendForgotPasswordEmail } from 'redux/actions/Auth';
 import { motion } from 'framer-motion';

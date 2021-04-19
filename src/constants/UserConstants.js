@@ -7,4 +7,5 @@ export const PASSWORD_STATUSES = {
 export const GENDER = {
   MALE: 'MALE',
   FEMALE: 'FEMALE',
+  OTHER: 'OTHER',
 };

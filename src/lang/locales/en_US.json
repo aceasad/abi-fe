@@ -224,6 +224,7 @@
   "staff_page.text.male": "Male",
   "staff_page.text.female": "Female",
   "staff_page.text.gender": "Gender",
+  "staff_page.text.other": "Other",
   "staff_page.text.staff_created": "Staff Created",
   "staff_page.text.staff_updated": "Staff Updated",
   "staff_page.text.delete_description": "Are you sure you want to delete {label}?",
