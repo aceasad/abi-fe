@@ -44,7 +44,7 @@ const Uptake = () => {
         />
         <OverviewCard
           span={12}
-          title={formatMessage(messages.uptakeCoverageProportion)}
+          title={formatMessage(messages.uptakeCoverageAverage)}
           tooltip={dummyData.tooltip}
           content={dummyData.coverageProp}
         />
