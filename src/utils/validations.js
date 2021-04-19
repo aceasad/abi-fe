@@ -132,6 +132,25 @@ export const personalDetailsSchema = Yup.object().shape({
   username: usernameSchema,
 });
 
+export const createAppointmentValidationSchema = Yup.object().shape({
+  patient: Yup.number().required(),
+  doctor: Yup.number().required(),
+  date: Yup.string().required(),
+  time: Yup.string().required(),
+  appointmentType: Yup.number().required(),
+  price: Yup.number().required(),
+});
+
+export const updateAppointmentValidationSchema = Yup.object().shape({
+  patient: Yup.number().required(),
+  doctor: Yup.number().required(),
+  date: Yup.string().required(),
+  time: Yup.string().required(),
+  appointmentType: Yup.number().required(),
+  price: Yup.number().required(),
+  status: Yup.number().required(),
+});
+
 export const endAppointmentSchema = Yup.object().shape({
   attended: Yup.boolean(),
   missing_reason: Yup.string().when('attended', {

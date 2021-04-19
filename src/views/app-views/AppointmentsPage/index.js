@@ -1,10 +1,17 @@
 import { Button, PageHeader, Space } from 'antd';
-import React from 'react';
+import React, { useState } from 'react';
 import CalendarPage from '../CalendarPage';
 import { useIntl } from 'react-intl';
+import CreateAppointment from './CreateAppointment';
+import AppointmentFormWrapper from './AppointmentFormWrapper';
 
 const AppointmentsPage = () => {
   const { formatMessage } = useIntl();
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const closeModal = () => {
+    setIsModalVisible(false);
+  };
 
   return (
     <>
@@ -16,7 +23,7 @@ const AppointmentsPage = () => {
             <Button>
               {formatMessage({ id: 'appointments_page.button.export' })}
             </Button>
-            <Button type="primary">
+            <Button type="primary" onClick={() => setIsModalVisible(true)}>
               {formatMessage({
                 id: 'appointments_page.button.new_appointment',
               })}
@@ -24,6 +31,14 @@ const AppointmentsPage = () => {
           </Space>,
         ]}
       />
+
+      <AppointmentFormWrapper
+        Component={CreateAppointment}
+        isEditForm={false}
+        closeModal={closeModal}
+        isModalVisible={isModalVisible}
+      />
+
       <CalendarPage />
     </>
   );

@@ -11,6 +11,9 @@ const FormTimePicker = ({
   defaultTime,
   required,
   errorTexts,
+  hourStep = 1,
+  minuteStep = 15,
+  showNow = false,
 }) => {
   const { formatMessage } = useIntl();
 
@@ -47,6 +50,9 @@ const FormTimePicker = ({
         )}
         format={TIME_FORMAT_HH_MM}
         onChange={onChange}
+        hourStep={hourStep}
+        minuteStep={minuteStep}
+        showNow={showNow}
       />
     </Form.Item>
   );

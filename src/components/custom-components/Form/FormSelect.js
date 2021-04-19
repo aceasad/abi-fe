@@ -15,6 +15,8 @@ const FormSelect = ({
   placeholder,
   errorTexts,
   required,
+  afterSelectChange,
+  afterSelectChangeFieldName,
 }) => {
   const { formatMessage } = useIntl();
 
@@ -22,6 +24,8 @@ const FormSelect = ({
 
   const handleSelected = (value) => {
     setFieldValue(field.name, value);
+    setFieldTouched(field.name, true);
+    afterSelectChange(setFieldValue, afterSelectChangeFieldName, value);
   };
 
   const defaultErrorMessage = () =>
@@ -45,7 +49,7 @@ const FormSelect = ({
       help={showError()}
     >
       <Select
-        value={defaultOption && defaultOption[optionField]}
+        value={defaultOption || null}
         placeholder={placeholderText}
         onChange={handleSelected}
         onBlur={() => setFieldTouched(field.name, true)}
@@ -63,6 +67,7 @@ const FormSelect = ({
 FormSelect.defaultProps = {
   options: [],
   errorTexts: false,
+  afterSelectChange: () => {},
 };
 
 export default FormSelect;

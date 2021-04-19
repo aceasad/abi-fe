@@ -7,11 +7,14 @@ import PreviewModal from './PreviewModal';
 import messages from './messages';
 import { deleteAppointemnt } from 'redux/actions/Appointment';
 import EndAppointment from './EndAppointment';
+import AppointmentFormWrapper from '../AppointmentsPage/AppointmentFormWrapper';
+import UpdateAppointment from '../AppointmentsPage/UpdateAppointment';
 
-const NESTED_MODAL = {
+export const NESTED_MODAL = {
   NONE: 0,
   DELETE: 1,
   END_APPOINTMENT: 2,
+  EDIT_APPOINTMENT: 3,
 };
 
 const AppointmentPreview = ({ handleClose }) => {
@@ -23,7 +26,8 @@ const AppointmentPreview = ({ handleClose }) => {
     data: null,
   });
 
-  const setNewData = (data) => setShowChildModal((prev) => ({ ...prev, data }));
+  const setNewData = (data) =>
+    setShowChildModal((prev) => ({ ...prev, ...data }));
 
   const showDelete = (data) =>
     setShowChildModal({ modal: NESTED_MODAL.DELETE, data });
@@ -63,6 +67,15 @@ const AppointmentPreview = ({ handleClose }) => {
     case NESTED_MODAL.END_APPOINTMENT:
       return (
         <EndAppointment handleClose={showPreview} id={showChildModal.data.id} />
+      );
+    case NESTED_MODAL.EDIT_APPOINTMENT:
+      return (
+        <AppointmentFormWrapper
+          Component={UpdateAppointment}
+          isEditForm
+          isModalVisible
+          closeModal={showPreview}
+        />
       );
     default:
       return (
