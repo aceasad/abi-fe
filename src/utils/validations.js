@@ -38,11 +38,7 @@ export const forgotPasswordSchema = Yup.object().shape({
 
 export const clinicSchema = Yup.object().shape({
   name: nameSchema,
-  google_maps_link: Yup.string()
-    .trim()
-    .required()
-    .url()
-    .max(MAX_GOOGLE_LINK_LENGTH),
+  google_maps_link: Yup.string().trim().url().max(MAX_GOOGLE_LINK_LENGTH),
   phone_number: Yup.string()
     .trim()
     .required()
