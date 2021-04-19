@@ -78,6 +78,7 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
           start_of_work: clinicData?.start_of_work || initialWorkTime,
           end_of_work: clinicData?.end_of_work || initialWorkTime,
         }}
+        enableReinitialize
         validationSchema={clinicSchema}
         onSubmit={handleSubmit}
       >
