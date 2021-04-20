@@ -78,7 +78,7 @@
 			},
 			{
 				"avatar": "",
-				"text": "OK. Your appointment is scheduled for Monday, April 5, at 8 am. at Dr. Sam Smith.",
+				"text": "OK. Your appointment is scheduled for Monday, April 5, at 8 am. with Dr. Sam Smith.",
 				"from": "me",
 				"time": "",
 				"msgType": "text"
@@ -171,7 +171,7 @@
 			},
 			{
 				"avatar": "",
-				"text": "OK. Your appointment is scheduled for Monday, April 5, at 8 am. at Dr. Sam Smith.",
+				"text": "OK. Your appointment is scheduled for Monday, April 5, at 8 am. with Dr. Sam Smith.",
 				"from": "me",
 				"time": "",
 				"msgType": "text"
@@ -257,7 +257,7 @@
 			},
 			{
 				"avatar": "",
-				"text": "OK. Your appointment is scheduled for Monday, April 5, at 8 am. at Dr. Sam Smith.",
+				"text": "OK. Your appointment is scheduled for Monday, April 5, at 8 am. with Dr. Sam Smith.",
 				"from": "me",
 				"time": "",
 				"msgType": "text"
