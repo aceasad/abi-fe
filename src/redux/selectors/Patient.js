@@ -1,4 +1,7 @@
-import { DEFAULT_PAGINATION_LIMIT } from 'constants/ApiConstant';
+import {
+  DEFAULT_PAGINATION_LIMIT,
+  DEFAULT_SMALL_PAGINATION_LIMIT,
+} from 'constants/ApiConstant';
 import { createSelector } from 'reselect';
 import reducers from '../reducers';
 
@@ -79,7 +82,27 @@ const makeSelectHistoryPage = () =>
     ({ appointmentHistory }) => appointmentHistory.page
   );
 
+const makeSelectLastScheduledAppointmentOnThePage = () =>
+  createSelector(selectPatientsDomain, ({ scheduledAppointments }) => ({
+    isLast:
+      scheduledAppointments.page !== 1 &&
+      scheduledAppointments.count - 1 <=
+        (scheduledAppointments.page - 1) * DEFAULT_SMALL_PAGINATION_LIMIT,
+    page: scheduledAppointments.page,
+  }));
+
+const makeSelectLastAppointmentHistoryOnThePage = () =>
+  createSelector(selectPatientsDomain, ({ appointmentHistory }) => ({
+    isLast:
+      appointmentHistory.page !== 1 &&
+      appointmentHistory.count - 1 <=
+        (appointmentHistory.page - 1) * DEFAULT_SMALL_PAGINATION_LIMIT,
+    page: appointmentHistory.page,
+  }));
+
 export {
+  makeSelectLastScheduledAppointmentOnThePage,
+  makeSelectLastAppointmentHistoryOnThePage,
   makeSelectPatients,
   makeSelectPatientRequestData,
   makeSelectLastOnThePage,

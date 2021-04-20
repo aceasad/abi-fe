@@ -6,6 +6,7 @@ import { DEFAULT_SMALL_PAGINATION_LIMIT } from 'constants/ApiConstant';
 import { Card, Table, Typography } from 'antd';
 import messages from './messages';
 import { useIntl } from 'react-intl';
+import { APPOINTMNET_HISTORY } from 'constants/ClinicConstants';
 
 const { Title, Text } = Typography;
 
@@ -73,7 +74,8 @@ const PatientOverviewHistoryCard = ({ patient, showAppointment }) => {
       </div>
       <Table
         onRow={(record) => ({
-          onClick: () => showAppointment(record.id),
+          onClick: () =>
+            showAppointment({ id: record.id, type: APPOINTMNET_HISTORY }),
         })}
         columns={columnsHistory}
         dataSource={items}

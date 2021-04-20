@@ -104,7 +104,7 @@ function* updatePatient({ payload }) {
   }
 }
 
-function* getScheduledAppointments({ payload }) {
+export function* getScheduledAppointments({ payload }) {
   try {
     const requestData = yield select(makeSelectScheduledData());
     yield put(setScheduledAppointmentsLoading(true));
@@ -120,7 +120,7 @@ function* getScheduledAppointments({ payload }) {
   }
 }
 
-function* getAppointmentHistory({ payload }) {
+export function* getAppointmentHistory({ payload }) {
   try {
     const page = yield select(makeSelectHistoryPage());
     yield put(setAppointmentHistoryLoading(true));

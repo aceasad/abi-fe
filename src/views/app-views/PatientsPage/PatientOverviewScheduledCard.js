@@ -10,6 +10,7 @@ import {
   DEFAULT_SMALL_PAGINATION_LIMIT,
   ORDERING,
 } from 'constants/ApiConstant';
+import { SCHEDULED_APPOINTMENT } from 'constants/ClinicConstants';
 
 const { Title, Text } = Typography;
 
@@ -99,7 +100,8 @@ const PatientOverviewScheduledCard = ({ patient, showAppointment }) => {
       </Flex>
       <Table
         onRow={(record) => ({
-          onClick: () => showAppointment(record.id),
+          onClick: () =>
+            showAppointment({ id: record.id, type: SCHEDULED_APPOINTMENT }),
         })}
         columns={columnsScheduled}
         dataSource={items}
