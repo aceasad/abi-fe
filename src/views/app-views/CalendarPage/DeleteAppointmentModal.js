@@ -4,11 +4,39 @@ import { useIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
 import messages from './messages';
 import { makeSelectSingleAppointmentLoading } from 'redux/selectors/Appointment';
+import { Typography } from 'antd';
+import RowWithMultipleColumns from 'components/util-components/Grid/RowWithMultipleColumns';
 
 const DeleteAppointmentModal = ({ handleClose, handleDelete, appointment }) => {
   const { formatMessage } = useIntl();
 
   const loading = useSelector(makeSelectSingleAppointmentLoading());
+
+  const listData = [
+    {
+      label: formatMessage(messages.patient),
+      value: appointment?.patient?.full_name,
+    },
+    {
+      label: formatMessage(messages.doctor),
+      value: `${appointment?.doctor?.full_name} (${appointment?.specialization})`,
+    },
+    {
+      label: formatMessage(messages.date),
+      value: appointment?.date,
+    },
+    {
+      label: formatMessage(messages.time),
+      value: appointment?.time,
+    },
+  ];
+
+  const list = listData.map((item, index) => (
+    <RowWithMultipleColumns key={index} gutter={16} spanList={[4, 20]}>
+      {`${item.label}:`}
+      {item.value}
+    </RowWithMultipleColumns>
+  ));
 
   return (
     <Modal
@@ -20,20 +48,10 @@ const DeleteAppointmentModal = ({ handleClose, handleDelete, appointment }) => {
       okButtonProps={{ disabled: loading }}
       onOk={handleDelete}
     >
-      {formatMessage(messages.deleteMessage)}
-      <div>
-        {formatMessage(messages.patient)}: {appointment?.patient?.full_name}
-      </div>
-      <div>
-        {formatMessage(messages.doctor)}:{' '}
-        {`${appointment?.doctor?.full_name}(${appointment.specialization})`}
-      </div>
-      <div>
-        {formatMessage(messages.date)}: {appointment.date}
-      </div>
-      <div>
-        {formatMessage(messages.time)}: {appointment.time}
-      </div>
+      <Typography.Paragraph type="secondary" strong>
+        {formatMessage(messages.deleteMessage)}
+      </Typography.Paragraph>
+      {list}
     </Modal>
   );
 };
