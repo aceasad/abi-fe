@@ -36,7 +36,7 @@
 			},
 			{
 				"avatar": "",
-				"text": "OK. What type of appointment do you want to schedule.",
+				"text": "OK. What type of appointment do you want to schedule?",
 				"from": "me",
 				"time": "",
 				"msgType": "text"
@@ -64,7 +64,7 @@
 			},
 			{
 				"avatar": "",
-				"text": "OK. What time would suit you for the appointment.",
+				"text": "OK. What time would suit you for the appointment?",
 				"from": "me",
 				"time": "",
 				"msgType": "text"
@@ -129,7 +129,7 @@
 			},
 			{
 				"avatar": "",
-				"text": "OK. What type of appointment do you want to schedule.",
+				"text": "OK. What type of appointment do you want to schedule?",
 				"from": "me",
 				"time": "",
 				"msgType": "text"
@@ -157,7 +157,7 @@
 			},
 			{
 				"avatar": "",
-				"text": "OK. What time would suit you for the appointment.",
+				"text": "OK. What time would suit you for the appointment?",
 				"from": "me",
 				"time": "",
 				"msgType": "text"
@@ -215,7 +215,7 @@
 			},
 			{
 				"avatar": "",
-				"text": "OK. What type of appointment do you want to schedule.",
+				"text": "OK. What type of appointment do you want to schedule?",
 				"from": "me",
 				"time": "",
 				"msgType": "text"
@@ -243,7 +243,7 @@
 			},
 			{
 				"avatar": "",
-				"text": "OK. What time would suit you for the appointment.",
+				"text": "OK. What time would suit you for the appointment?",
 				"from": "me",
 				"time": "",
 				"msgType": "text"
