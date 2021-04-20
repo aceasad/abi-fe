@@ -19,18 +19,18 @@ const AbiData = () => {
   return (
     <div className="mb-4">
       <Title level={4} className="text-primary mb-3">
-        {formatMessage(messages.abiDataTitle)}
+        {formatMessage(messages.asaDataTitle)}
       </Title>
       <GroupRow>
         <OverviewCard
           span={12}
-          title={formatMessage(messages.abiDataEfficiency)}
+          title={formatMessage(messages.asaDataEfficiency)}
           tooltip={dummyData.tooltip}
           content={dummyData.efficiency}
         />
         <OverviewCard
           span={12}
-          title={formatMessage(messages.abiDataRevenueSaved)}
+          title={formatMessage(messages.asaDataRevenueSaved)}
           tooltip={dummyData.tooltip}
           content={dummyData.saved}
         />

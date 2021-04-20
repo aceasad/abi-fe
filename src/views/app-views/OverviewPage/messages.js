@@ -27,9 +27,9 @@ export default defineMessages({
     id: `${scope}.booking.title`,
     defaultMessage: 'Booking',
   },
-  abiDataTitle: {
-    id: `${scope}.abi_data.title`,
-    defaultMessage: 'Abi data',
+  asaDataTitle: {
+    id: `${scope}.asa_data.title`,
+    defaultMessage: 'Asa data',
   },
   uptakeTitle: {
     id: `${scope}.uptake.title`,
@@ -51,13 +51,13 @@ export default defineMessages({
     id: `${scope}.booking.invitation_rate`,
     defaultMessage: 'Invitation rate',
   },
-  abiDataEfficiency: {
-    id: `${scope}.abi_data.efficiency`,
-    defaultMessage: 'Abi efficiency',
+  asaDataEfficiency: {
+    id: `${scope}.asa_data.efficiency`,
+    defaultMessage: 'Asa efficiency',
   },
-  abiDataRevenueSaved: {
-    id: `${scope}.abi_data.revenue_saved`,
-    defaultMessage: 'Revenue saved due to Abi',
+  asaDataRevenueSaved: {
+    id: `${scope}.asa_data.revenue_saved`,
+    defaultMessage: 'Revenue saved due to Asa',
   },
   uptakeProportion: {
     id: `${scope}.uptake.proportion`,
