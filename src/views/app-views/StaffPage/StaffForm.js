@@ -102,12 +102,7 @@ const StaffForm = ({
                     name="ethnicity"
                     options={ethnicities}
                     optionField="name"
-                    defaultOption={
-                      ethnicities &&
-                      ethnicities.find(
-                        (ethnicity) => ethnicity.id === values.ethnicity
-                      )
-                    }
+                    defaultOption={values.ethnicity}
                     label={formatMessage(messages.ethnicity)}
                   />
                 </Col>
@@ -128,13 +123,7 @@ const StaffForm = ({
                     name="specialization"
                     options={specializations}
                     optionField="name"
-                    defaultOption={
-                      specializations &&
-                      specializations.find(
-                        (specialization) =>
-                          specialization.id === values.specialization
-                      )
-                    }
+                    defaultOption={values.specialization}
                     label={formatMessage(messages.specialization)}
                   />
                 </Col>
@@ -144,12 +133,7 @@ const StaffForm = ({
                     name="seniority"
                     options={seniorities}
                     optionField="name"
-                    defaultOption={
-                      seniorities &&
-                      seniorities.find(
-                        (seniority) => seniority.id === values.seniority
-                      )
-                    }
+                    defaultOption={values.seniority}
                     label={formatMessage(messages.seniority)}
                   />
                 </Col>
