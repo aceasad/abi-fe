@@ -45,7 +45,7 @@ export default defineMessages({
   },
   bookingEfficiency: {
     id: `${scope}.booking.efficiency`,
-    defaultMessage: 'Booking effieciency',
+    defaultMessage: 'Booking efficiency ',
   },
   bookingInvitation: {
     id: `${scope}.booking.invitation_rate`,
