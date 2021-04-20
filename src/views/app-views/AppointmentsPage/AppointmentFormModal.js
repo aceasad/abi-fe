@@ -16,6 +16,7 @@ import DirtyFieldWrapper from 'components/custom-components/Form/DirtyFieldWrapp
 import TimeslotTimePicker from 'components/custom-components/Form/TimeslotTimePicker';
 import { Link } from 'react-router-dom';
 import RowColumnField from 'components/custom-components/Form/RowColumnField';
+import { PlusOutlined } from '@ant-design/icons';
 
 const AppointmentFormModal = ({
   initialState,
@@ -90,107 +91,109 @@ const AppointmentFormModal = ({
           {loadingData ? (
             <Loading />
           ) : (
-            <Card>
-              <Form
-                layout="vertical"
-                name="appointment-form"
-                className="ml-sm-3"
-              >
-                <Row>
-                  <Col xs={18}>
-                    <Field
-                      component={FormAutocomplete}
-                      label={formatMessage(messages.patientLabel)}
-                      name="patient"
-                      required
-                      placeholder={formatMessage(messages.searchPlaceholder)}
-                      setQuery={setQuery}
-                      options={patients}
-                      optionField="full_name"
-                      query={query}
-                      defaultValue={isEditForm && appointment.patient.full_name}
-                    />
-                  </Col>
-                  <Col>
-                    <Link to={'patients'}>{'+'}</Link>
-                  </Col>
-                </Row>
-                <RowColumnField
-                  span={24}
-                  label={formatMessage(messages.doctorLabel)}
-                  name="doctor"
-                  component={FormSelect}
-                  options={doctors}
-                  optionField="full_name"
-                  defaultOption={values.doctor}
-                  required
-                />
-                <Row>
-                  <Col xs={24} lg={12}>
-                    <Field
-                      label={formatMessage(messages.appointmentTypeLabel)}
-                      name="appointmentType"
-                      component={FormSelect}
-                      options={appointmentTypes}
-                      optionField="name"
-                      defaultOption={values.appointmentType}
-                      afterSelectChange={afterAppointmentTypeSelect}
-                      afterSelectChangeFieldName="price"
-                      required
-                    />
-                  </Col>
-                  <Col xs={24} lg={12}>
-                    <DirtyFieldWrapper
-                      setFieldDirty={setFieldTouched}
-                      name="price"
-                      dependencies={[touched.appointmentType]}
-                    >
-                      <Field
-                        component={FormNumberField}
-                        label={formatMessage(messages.priceLabel)}
-                        name="price"
-                        placeholder={formatMessage(messages.priceLabel)}
-                        required
-                        decimals={2}
-                      />
-                    </DirtyFieldWrapper>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col xs={24} lg={12}>
-                    <Field
-                      component={FormDatePicker}
-                      label={formatMessage(messages.dateLabel)}
-                      name="date"
-                      disablePastDates
-                      showDefaultDate={isEditForm}
-                      required
-                    />
-                  </Col>
-                  <Col xs={24} lg={12}>
-                    <Field
-                      component={TimeslotTimePicker}
-                      label={formatMessage(messages.timeLabel)}
-                      name="time"
-                      required
-                      showDefaultTime={isEditForm}
-                    />
-                  </Col>
-                </Row>
-                {isEditForm && (
-                  <RowColumnField
-                    span={24}
-                    label={formatMessage(messages.appointmentStatus)}
-                    name="status"
+            <Form
+              layout="vertical"
+              name="appointment-form"
+              className="ml-3 mr-3"
+            >
+              <Row gutter={16} className="d-flex">
+                <Col xs={20}>
+                  <Field
+                    component={FormAutocomplete}
+                    label={formatMessage(messages.patientLabel)}
+                    name="patient"
+                    required
+                    placeholder={formatMessage(messages.searchPlaceholder)}
+                    setQuery={setQuery}
+                    options={patients}
+                    optionField="full_name"
+                    query={query}
+                    defaultValue={isEditForm && appointment.patient.full_name}
+                  />
+                </Col>
+                <Col xs={4}>
+                  <Button type="primary" style={{ marginTop: '1.8rem' }}>
+                    <Link to={'patients'}>
+                      <PlusOutlined />
+                    </Link>
+                  </Button>
+                </Col>
+              </Row>
+              <RowColumnField
+                span={24}
+                label={formatMessage(messages.doctorLabel)}
+                name="doctor"
+                component={FormSelect}
+                options={doctors}
+                optionField="full_name"
+                defaultOption={values.doctor}
+                required
+              />
+              <Row gutter={16}>
+                <Col xs={24} lg={12}>
+                  <Field
+                    label={formatMessage(messages.appointmentTypeLabel)}
+                    name="appointmentType"
                     component={FormSelect}
-                    options={appointmentStatus}
+                    options={appointmentTypes}
                     optionField="name"
-                    defaultOption={values.status}
+                    defaultOption={values.appointmentType}
+                    afterSelectChange={afterAppointmentTypeSelect}
+                    afterSelectChangeFieldName="price"
                     required
                   />
-                )}
-              </Form>
-            </Card>
+                </Col>
+                <Col xs={24} lg={12}>
+                  <DirtyFieldWrapper
+                    setFieldDirty={setFieldTouched}
+                    name="price"
+                    dependencies={[touched.appointmentType]}
+                  >
+                    <Field
+                      component={FormNumberField}
+                      label={formatMessage(messages.priceLabel)}
+                      name="price"
+                      placeholder={formatMessage(messages.priceLabel)}
+                      required
+                      decimals={2}
+                    />
+                  </DirtyFieldWrapper>
+                </Col>
+              </Row>
+              <Row gutter={16}>
+                <Col xs={24} lg={12}>
+                  <Field
+                    component={FormDatePicker}
+                    label={formatMessage(messages.dateLabel)}
+                    name="date"
+                    disablePastDates
+                    showDefaultDate={isEditForm}
+                    required
+                  />
+                </Col>
+                <Col xs={24} lg={12}>
+                  <Field
+                    component={TimeslotTimePicker}
+                    label={formatMessage(messages.timeLabel)}
+                    name="time"
+                    required
+                    showDefaultTime={isEditForm}
+                  />
+                </Col>
+              </Row>
+              {isEditForm && (
+                <RowColumnField
+                  span={24}
+                  label={formatMessage(messages.appointmentStatus)}
+                  name="status"
+                  component={FormSelect}
+                  options={appointmentStatus}
+                  optionField="name"
+                  defaultOption={values.status}
+                  required
+                />
+              )}
+            </Form>
           )}
         </Modal>
       )}
