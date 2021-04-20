@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import messages from './messages';
 import { makeSelectSingleAppointmentLoading } from 'redux/selectors/Appointment';
 import { Typography } from 'antd';
-import RowWithTwoColumns from 'components/util-components/Grid/RowWithTwoColumns';
+import RowWithMultipleColumns from 'components/util-components/Grid/RowWithMultipleColumns';
 
 const DeleteAppointmentModal = ({ handleClose, handleDelete, appointment }) => {
   const { formatMessage } = useIntl();
@@ -31,11 +31,11 @@ const DeleteAppointmentModal = ({ handleClose, handleDelete, appointment }) => {
     },
   ];
 
-  const list = listData.map((item) => (
-    <RowWithTwoColumns gutter={16} spanLeft={4} spanRight={20}>
+  const list = listData.map((item, index) => (
+    <RowWithMultipleColumns key={index} gutter={16} spanList={[4, 20]}>
       {`${item.label}:`}
       {item.value}
-    </RowWithTwoColumns>
+    </RowWithMultipleColumns>
   ));
 
   return (

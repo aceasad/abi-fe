@@ -8,8 +8,8 @@ import { useSelector } from 'react-redux';
 import { makeSelectSingleAppointment } from 'redux/selectors/Appointment';
 import { Button, Space, Typography } from 'antd';
 import { NESTED_MODAL } from 'views/app-views/CalendarPage/AppointmentPreview';
-import RowWithTwoColumns from 'components/util-components/Grid/RowWithTwoColumns';
 import Flex from 'components/shared-components/Flex';
+import RowWithMultipleColumns from 'components/util-components/Grid/RowWithMultipleColumns';
 
 function PreviewModal({ handleClose, showDelete, showEnd, setNewData }) {
   const { formatMessage } = useIntl();
@@ -75,11 +75,16 @@ function PreviewModal({ handleClose, showDelete, showEnd, setNewData }) {
     },
   ];
 
-  const detailsList = detailsListData.map((item) => (
-    <RowWithTwoColumns className="mb-2" gutter={16} spanLeft={8} spanRight={16}>
+  const detailsList = detailsListData.map((item, index) => (
+    <RowWithMultipleColumns
+      key={index}
+      className="mb-2"
+      gutter={16}
+      spanList={[8, 16]}
+    >
       {`${item.label}:`}
       {item.value}
-    </RowWithTwoColumns>
+    </RowWithMultipleColumns>
   ));
 
   return (
