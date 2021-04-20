@@ -96,12 +96,7 @@ const PatientForm = ({
                       name="gender"
                       options={genderChoices}
                       optionField="name"
-                      defaultOption={
-                        genderChoices &&
-                        genderChoices.find(
-                          (option) => option.id == values.gender
-                        )
-                      }
+                      defaultOption={values.gender}
                       label={formatMessage(messages.sex)}
                       required
                     />
@@ -132,12 +127,7 @@ const PatientForm = ({
                       name="ethnicity"
                       options={ethnicities}
                       optionField="name"
-                      defaultOption={
-                        ethnicities &&
-                        ethnicities.find(
-                          (option) => option.id == values.ethnicity
-                        )
-                      }
+                      defaultOption={values.ethnicity}
                       label={formatMessage(messages.ethnicity)}
                     />
                   </Row>
@@ -194,12 +184,7 @@ const PatientForm = ({
                       name="material_status"
                       options={material_status}
                       optionField="name"
-                      defaultOption={
-                        material_status &&
-                        material_status.find(
-                          (option) => option.id == values.material_status
-                        )
-                      }
+                      defaultOption={values.material_status}
                       label={formatMessage(messages.materialStatus)}
                     />
                     <ColumnField
@@ -219,12 +204,7 @@ const PatientForm = ({
                       name="employment"
                       options={employment}
                       optionField="name"
-                      defaultOption={
-                        employment &&
-                        employment.find(
-                          (option) => option.id == values.employment
-                        )
-                      }
+                      defaultOption={values.employment}
                       label={formatMessage(messages.employmentStatus)}
                     />
                     <ColumnField
@@ -233,12 +213,7 @@ const PatientForm = ({
                       name="education"
                       options={education}
                       optionField="name"
-                      defaultOption={
-                        education &&
-                        education.find(
-                          (option) => option.id == values.education
-                        )
-                      }
+                      defaultOption={values.education}
                       label={formatMessage(messages.education)}
                     />
                   </Row>

@@ -37,7 +37,23 @@ import {
   setSignleAppointmnetLoading,
 } from 'redux/actions/Appointment';
 
+import {
+  getScheduledAppointments,
+  getAppointmentHistory,
+} from 'redux/sagas/Patient';
 import { makeSelectCurrentUser } from 'redux/selectors/Auth';
+import {
+  APPOINTMNET_HISTORY,
+  SCHEDULED_APPOINTMENT,
+} from 'constants/ClinicConstants';
+import {
+  makeSelectLastAppointmentHistoryOnThePage,
+  makeSelectLastScheduledAppointmentOnThePage,
+} from 'redux/selectors/Patient';
+import {
+  setAppointmentHistoryPage,
+  setScheduledPage,
+} from 'redux/actions/Patient';
 
 export function* getDoctorAppointments({ payload }) {
   try {
@@ -81,12 +97,51 @@ export function* deleteAppointemnt({ payload }) {
     yield put(setSignleAppointmnetLoading(true));
     yield call(appointmentService.deleteAppointment, payload.data.id);
     yield payload.afterDelete();
-    yield put(
-      filterDeletedAppointment({
-        date: moment(payload.data.date, 'DD/MM/YYYY').format('YYYY-MM-DD'),
-        id: payload.data.id,
-      })
-    );
+    if (payload.patientAppointment)
+      // eslint-disable-next-line default-case
+      switch (payload.patientAppointment) {
+        case SCHEDULED_APPOINTMENT: {
+          const { isLast, page } = yield select(
+            makeSelectLastScheduledAppointmentOnThePage()
+          );
+          if (isLast)
+            yield put(
+              setScheduledPage({
+                page: page - 1,
+                id: payload?.data?.patient?.id,
+              })
+            );
+          else
+            yield getScheduledAppointments({
+              payload: { id: payload?.data?.patient?.id },
+            });
+          break;
+        }
+        case APPOINTMNET_HISTORY: {
+          const { isLast, page } = yield select(
+            makeSelectLastAppointmentHistoryOnThePage()
+          );
+          if (isLast)
+            yield put(
+              setAppointmentHistoryPage({
+                page: page - 1,
+                id: payload?.data?.patient?.id,
+              })
+            );
+          else
+            yield getAppointmentHistory({
+              payload: { id: payload?.data?.patient?.id },
+            });
+          break;
+        }
+      }
+    else
+      yield put(
+        filterDeletedAppointment({
+          date: moment(payload.data.date, 'DD/MM/YYYY').format('YYYY-MM-DD'),
+          id: payload.data.id,
+        })
+      );
   } catch {
   } finally {
     yield put(setSignleAppointmnetLoading(false));

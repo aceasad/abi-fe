@@ -27,6 +27,7 @@ import PatientOverviewExistingConditions from './PatientOverviewExistingConditio
 import PatientOverviewPreviousOperations from './PatientOverviewPreviousOperations';
 import { getSignleAppointmnet } from 'redux/actions/Appointment';
 import AppointmentPreview from '../CalendarPage/AppointmentPreview';
+import { SCHEDULED_APPOINTMENT } from 'constants/ClinicConstants';
 
 const { Text, Title } = Typography;
 
@@ -41,7 +42,7 @@ const PatientOverview = ({ patientId, showList, updatePatient }) => {
   const [activeAppointmnet, setActiveAppointment] = useState(null);
 
   useEffect(() => {
-    if (activeAppointmnet) dispatch(getSignleAppointmnet(activeAppointmnet));
+    if (activeAppointmnet) dispatch(getSignleAppointmnet(activeAppointmnet.id));
   }, [activeAppointmnet]);
 
   const patientDetailsFields = {
@@ -74,8 +75,6 @@ const PatientOverview = ({ patientId, showList, updatePatient }) => {
       })
     );
   };
-
-  const showAppointment = (id) => setActiveAppointment(id);
 
   return (
     <Row gutter={16}>
@@ -195,19 +194,22 @@ const PatientOverview = ({ patientId, showList, updatePatient }) => {
             </Flex>
             <PatientOverviewScheduledCard
               patient={patient}
-              showAppointment={showAppointment}
+              showAppointment={setActiveAppointment}
             />
             <PatientOverviewExistingConditions patient={patient} />
             <PatientOverviewPreviousOperations patient={patient} />
             <PatientOverviewHistoryCard
               patient={patient}
-              showAppointment={showAppointment}
+              showAppointment={setActiveAppointment}
             />
           </>
         )}
       </Col>
       {activeAppointmnet && (
-        <AppointmentPreview handleClose={() => setActiveAppointment(null)} />
+        <AppointmentPreview
+          handleClose={() => setActiveAppointment(null)}
+          aditionalSubmitData={{ patientAppointment: activeAppointmnet.type }}
+        />
       )}
     </Row>
   );

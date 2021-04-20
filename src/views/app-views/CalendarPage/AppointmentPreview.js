@@ -17,7 +17,7 @@ export const NESTED_MODAL = {
   EDIT_APPOINTMENT: 3,
 };
 
-const AppointmentPreview = ({ handleClose }) => {
+const AppointmentPreview = ({ handleClose, aditionalSubmitData = {} }) => {
   const dispatch = useDispatch();
   const { formatMessage } = useIntl();
 
@@ -44,7 +44,13 @@ const AppointmentPreview = ({ handleClose }) => {
   };
 
   const handleDelete = () =>
-    dispatch(deleteAppointemnt({ data: showChildModal.data, afterDelete }));
+    dispatch(
+      deleteAppointemnt({
+        data: showChildModal.data,
+        afterDelete,
+        ...aditionalSubmitData,
+      })
+    );
 
   switch (showChildModal.modal) {
     case NESTED_MODAL.NONE:
