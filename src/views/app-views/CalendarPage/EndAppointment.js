@@ -96,6 +96,7 @@ const EndAppointment = ({ handleClose, id }) => {
                   component={FormSelect}
                   name="missing_reason"
                   options={missingReasons}
+                  defaultOption={values.missing_reason}
                   optionField="name"
                   label={formatMessage(messages.missingReason)}
                   errorTexts={{ label: formatMessage(messages.reason) }}
