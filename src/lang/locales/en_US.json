@@ -209,6 +209,7 @@
 
   "staff_page.text.see_appointments": "See Appointments",
   "staff_page.see_appointments.title": "{staffName}'s appointments",
+  "staff_page.past_appointments.table.title": "Past Appointments",
   "staff_page.text.staff": "Staff",
   "staff_page.text.add_new_staff": "Add New Staff",
   "staff_page.text.delete": "Delete",

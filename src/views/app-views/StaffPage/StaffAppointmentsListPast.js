@@ -1,7 +1,6 @@
 import React from 'react';
 import { Card, Table, Typography } from 'antd';
 import { useIntl } from 'react-intl';
-
 import messages from '../PatientsPage/messages';
 
 const { Title, Text } = Typography;
@@ -61,9 +60,7 @@ const StaffAppointmentsListPast = () => {
 
   return (
     <Card>
-      <Title level={4}>
-        {formatMessage(messages.cardTitleAppointmentHistory)}
-      </Title>
+      <Title level={4}>{formatMessage(messages.staffPastAppointments)}</Title>
       <Table columns={columnsHistory} dataSource={''} />
     </Card>
   );

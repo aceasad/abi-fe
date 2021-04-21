@@ -143,6 +143,10 @@ export default defineMessages({
     id: `${staffScope}.text.other`,
     defaultMessage: 'Other',
   },
+  staffPastAppointments: {
+    id: `${staffScope}.past_appointments.table.title`,
+    defaultMessage: 'Past Appointments',
+  },
   patientCreated: {
     id: `${detailScope}.text.patient_created`,
     defaultMessage: 'Patient Created',
