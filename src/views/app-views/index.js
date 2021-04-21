@@ -2,7 +2,6 @@ import React, { lazy, Suspense } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import Loading from 'components/shared-components/Loading';
 import { APP_PREFIX_PATH } from 'configs/AppConfig';
-import StaffAppointments from './StaffPage/StaffAppointments';
 
 export const AppViews = () => {
   return (
@@ -32,13 +31,6 @@ export const AppViews = () => {
         <Route
           path={`${APP_PREFIX_PATH}/settings`}
           component={lazy(() => import(`./SettingsPage`))}
-        />
-
-        {/* Remove when change page on click is implemented. */}
-        <Route
-          exact
-          path={`${APP_PREFIX_PATH}/staff-appointments`}
-          component={StaffAppointments}
         />
 
         <Redirect
