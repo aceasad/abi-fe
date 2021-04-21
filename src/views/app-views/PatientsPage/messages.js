@@ -175,6 +175,10 @@ export default defineMessages({
     id: `${patientOverviewScope}.table.column_title.doctor`,
     defaultMessage: 'Doctor',
   },
+  columnTitlePatient: {
+    id: `${patientOverviewScope}.table.column_title.patient`,
+    defaultMessage: 'Patient',
+  },
   columnTitleType: {
     id: `${patientOverviewScope}.table.column_title.type`,
     defaultMessage: 'Type',
