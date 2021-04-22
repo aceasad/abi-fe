@@ -15,6 +15,9 @@ import { makeSelectPatientDetails } from 'redux/selectors/Patient';
 import { patientSchema } from 'utils/validations';
 import { MAX } from 'constants/ClinicConstants';
 import { filterNumberInput } from 'utils/helpers';
+import PatientOverviewExistingConditions from './PatientOverviewExistingConditions';
+import PatientFormExistingConditions from './PatientFormExistingConditions';
+import PatientFormPreviousOperationss from './PatientFormPreviousOperations';
 
 const { Title } = Typography;
 
@@ -245,6 +248,9 @@ const PatientForm = ({
               </Row>
             </Form>
           </Card>
+
+          <PatientFormExistingConditions />
+          <PatientFormPreviousOperationss />
         </>
       )}
     </Formik>
