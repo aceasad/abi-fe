@@ -65,6 +65,8 @@ class PatientService extends ApiService {
             organization: organizationId,
           },
         });
+
+  getMoreSearchResults = (next) => next && this.apiClient.get(next);
 }
 
 const patientService = new PatientService();

@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { Form, AutoComplete, Select } from 'antd';
 import { useIntl } from 'react-intl';
-import Loading from 'components/shared-components/Loading';
+import MiniLoader from 'components/shared-components/Loading/MiniLoader';
 
 const { Option } = Select;
 
@@ -53,7 +53,7 @@ const FormAutocomplete = ({
       <AutoComplete
         value={text}
         placeholder={placeholder}
-        onChange={(value) => setText(value)}
+        onChange={setText}
         onBlur={() => setFieldTouched(field.name, true)}
         onSearch={setQuery}
         onSelect={handleSelected}
@@ -66,11 +66,7 @@ const FormAutocomplete = ({
             ))
           : null}
       </AutoComplete>
-      {loading ? (
-        <div style={{ position: 'absolute', top: 5, right: 10 }}>
-          <Loading fontSize={25} />
-        </div>
-      ) : null}
+      {loading && <MiniLoader />}
     </Form.Item>
   );
 };

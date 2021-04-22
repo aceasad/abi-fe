@@ -28,6 +28,8 @@ import {
   SET_PATIENTS_AUTOCOMPLETE,
   SET_PATIENTS_LOADING_AUTOCOMPLETE,
   RESET_PATIENTS_AUTOCOMPLETE,
+  GET_MORE_SEARCH_RESULTS,
+  APPEND_MORE_PATIENTS_AUTOCOMPLETE,
 } from 'redux/constants/Appointment';
 
 export const getDoctorAppointments = (payload) => ({
@@ -170,4 +172,13 @@ export const setPatientsLoadingAutocomplete = (payload) => ({
 
 export const resetPatientsAutocomplete = () => ({
   type: RESET_PATIENTS_AUTOCOMPLETE,
+});
+
+export const getMoreSearchResults = () => ({
+  type: GET_MORE_SEARCH_RESULTS,
+});
+
+export const addMorePatientsAutocomplete = (payload) => ({
+  type: APPEND_MORE_PATIENTS_AUTOCOMPLETE,
+  payload,
 });

@@ -16,6 +16,7 @@ import {
   SET_PATIENTS_AUTOCOMPLETE,
   SET_PATIENTS_LOADING_AUTOCOMPLETE,
   RESET_PATIENTS_AUTOCOMPLETE,
+  APPEND_MORE_PATIENTS_AUTOCOMPLETE,
 } from '../constants/Appointment';
 import produce from 'immer';
 
@@ -93,6 +94,13 @@ const appointment = (state = initialState, action) =>
         draft.patients = {
           ...draft.patients,
           all: [...action.payload.results],
+          next: action.payload.next,
+        };
+        break;
+      case APPEND_MORE_PATIENTS_AUTOCOMPLETE:
+        draft.patients = {
+          ...draft.patients,
+          all: [...draft.patients.all, action.payload.results],
           next: action.payload.next,
         };
         break;

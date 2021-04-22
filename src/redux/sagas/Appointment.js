@@ -17,6 +17,7 @@ import {
   GET_APPOINTMENT_STATUS,
   GET_DOCTORS,
   SEARCH_PATIENTS,
+  GET_MORE_SEARCH_RESULTS,
 } from 'redux/constants/Appointment';
 import {
   appendToAllDoctors,
@@ -36,6 +37,7 @@ import {
   setSignleAppointmnet,
   setSignleAppointmnetLoading,
   setPatientsLoadingAutocomplete,
+  addMorePatientsAutocomplete,
 } from 'redux/actions/Appointment';
 
 import {
@@ -273,6 +275,22 @@ export function* searchPatients() {
   });
 }
 
+export function* getMoreSearchResults() {
+  yield takeEvery(GET_MORE_SEARCH_RESULTS, function* () {
+    try {
+      const { next } = yield select(makeSelectClinicPatients());
+      yield put(setPatientsLoadingAutocomplete(true));
+      if (next) {
+        const { data } = yield call(patientService.getMoreSearchResults(next));
+        yield put(addMorePatientsAutocomplete(data));
+      }
+    } catch {
+    } finally {
+      yield put(setPatientsLoadingAutocomplete(false));
+    }
+  });
+}
+
 export default function* rootSaga() {
   yield all([
     fork(doctorAppointments),
@@ -283,5 +301,6 @@ export default function* rootSaga() {
     fork(getAppointmentTypesSaga),
     fork(getClinicDoctors),
     fork(searchPatients),
+    fork(getMoreSearchResults),
   ]);
 }
