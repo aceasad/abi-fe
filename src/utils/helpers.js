@@ -99,3 +99,6 @@ export const convertDateTimeStringToUtcString = (
   inputFormat,
   outputFormat
 ) => moment(datetime, inputFormat).utc().format(outputFormat);
+
+export const formHasError = (fields, errors) =>
+  fields.some((fieldName) => !!errors[fieldName]);

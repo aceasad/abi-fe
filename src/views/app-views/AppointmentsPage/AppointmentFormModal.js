@@ -1,7 +1,7 @@
 import { Formik, Field } from 'formik';
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
-import { Row, Col, Form, Card, Button, Modal } from 'antd';
+import { Row, Col, Form, Button, Modal } from 'antd';
 import FormDatePicker from 'components/custom-components/Form/FormDatePicker';
 import FormSelect from 'components/custom-components/Form/FormSelect';
 import FormNumberField from 'components/custom-components/Form/FormNumberField';
@@ -20,6 +20,7 @@ import TimeslotTimePicker from 'components/custom-components/Form/TimeslotTimePi
 import { Link } from 'react-router-dom';
 import RowColumnField from 'components/custom-components/Form/RowColumnField';
 import { PlusOutlined } from '@ant-design/icons';
+import { PATIENT_PAGE } from 'views/app-views/PatientsPage';
 
 const AppointmentFormModal = ({
   initialState,
@@ -66,6 +67,7 @@ const AppointmentFormModal = ({
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
       enableReinitialize
+      validateOnMount
     >
       {({ values, handleSubmit, dirty, isValid, setFieldTouched, touched }) => (
         <Modal
@@ -120,7 +122,12 @@ const AppointmentFormModal = ({
                 </Col>
                 <Col xs={4}>
                   <Button type="primary" style={{ marginTop: '1.8rem' }}>
-                    <Link to={'patients'}>
+                    <Link
+                      to={{
+                        pathname: 'patients',
+                        search: `?layout=${PATIENT_PAGE.CREATE}`,
+                      }}
+                    >
                       <PlusOutlined />
                     </Link>
                   </Button>

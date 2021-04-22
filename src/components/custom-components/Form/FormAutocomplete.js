@@ -27,6 +27,11 @@ const FormAutocomplete = ({
     setText(options.find((option) => option.id === value)[optionField]);
   };
 
+  const handleSearch = (value) => {
+    setFieldValue(field.name, '');
+    setQuery(value);
+  };
+
   const defaultErrorMessage = () =>
     formatMessage(errors[field.name], {
       label,
@@ -55,7 +60,7 @@ const FormAutocomplete = ({
         placeholder={placeholder}
         onChange={setText}
         onBlur={() => setFieldTouched(field.name, true)}
-        onSearch={setQuery}
+        onSearch={handleSearch}
         onSelect={handleSelected}
       >
         {options

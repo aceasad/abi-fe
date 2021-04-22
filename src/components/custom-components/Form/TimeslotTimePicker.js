@@ -1,10 +1,19 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { useIntl } from 'react-intl';
 import { Form, TimePicker } from 'antd';
 import moment from 'moment';
 import { TIME_FORMAT_HH_MM } from 'constants/TimeConstant';
 import { useGetAvailableTimeslots } from 'queries/shared';
 import { TIMESLOTS, TIMESLOT_HOURS } from 'constants/TimeslotConstants';
+import { formHasError } from 'utils/helpers';
+
+const FIELDS_TO_CHECK = [
+  'patient',
+  'doctor',
+  'appointmentType',
+  'price',
+  'date',
+];
 
 const TimeslotTimePicker = ({
   label,
@@ -42,6 +51,12 @@ const TimeslotTimePicker = ({
   };
 
   const [disabledTimeslots, setDisabledTimeslots] = useState([]);
+
+  const [isDisabled, setIsDisabled] = useState(false);
+
+  useEffect(() => {
+    setIsDisabled(formHasError(FIELDS_TO_CHECK, errors));
+  }, [touched, errors]);
 
   const setDisabledSlots = (available) => {
     const disabled = getDisabledSlots(available);
@@ -115,6 +130,8 @@ const TimeslotTimePicker = ({
               : ''
           }
           hideDisabledOptions
+          disabled={isDisabled}
+          inputReadOnly
         />
       )}
     </Form.Item>
