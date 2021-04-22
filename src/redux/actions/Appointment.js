@@ -18,7 +18,6 @@ import {
   APPEND_TO_APPOINTMENT_STATUS,
   SET_APPOINTMENT_TYPES_LOADING,
   SET_APPOINTMENT_STATUS_LOADING,
-  SET_PATIENTS,
   SEARCH_PATIENTS,
   DELETE_APPOINTEMNT,
   FILTER_DELETED_APPOINTMENT,
@@ -26,6 +25,9 @@ import {
   GET_MISSING_REASONS,
   SET_MISSING_REASONS,
   SET_ENDED_APPOINTMENT,
+  SET_PATIENTS_AUTOCOMPLETE,
+  SET_PATIENTS_LOADING_AUTOCOMPLETE,
+  RESET_PATIENTS_AUTOCOMPLETE,
 } from 'redux/constants/Appointment';
 
 export const getDoctorAppointments = (payload) => ({
@@ -122,8 +124,8 @@ export const setAppointmentStatusLoading = (payload) => ({
   payload,
 });
 
-export const setPatients = (payload) => ({
-  type: SET_PATIENTS,
+export const setPatientsAutocomplete = (payload) => ({
+  type: SET_PATIENTS_AUTOCOMPLETE,
   payload,
 });
 
@@ -159,4 +161,13 @@ export const setMissingReasons = (payload) => ({
 export const setEndedAppointment = (payload) => ({
   type: SET_ENDED_APPOINTMENT,
   payload,
+});
+
+export const setPatientsLoadingAutocomplete = (payload) => ({
+  type: SET_PATIENTS_LOADING_AUTOCOMPLETE,
+  payload,
+});
+
+export const resetPatientsAutocomplete = () => ({
+  type: RESET_PATIENTS_AUTOCOMPLETE,
 });

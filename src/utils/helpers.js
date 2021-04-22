@@ -69,15 +69,20 @@ export const filterNumberInput = (e) =>
   e.preventDefault();
 
 export const prepareAppointmentData = (values) => {
-  const startDatetime = moment(
-    `${values.date} ${values.time}`,
-    'DD-MMM-YYYY HH:mm'
-  ).format('YYYY-MM-DDTHH:mm');
-  delete values.date;
-  delete values.time;
-  values.patient = parseInt(values.patient);
-  values.price = parseFloat(values.price);
-  const preparedData = prepareFormData({ ...values, startDatetime });
+  let { date, time, patient, price, ...otherValues } = values;
+  const startDatetime = moment(`${date} ${time}`, 'DD-MMM-YYYY HH:mm').format(
+    'YYYY-MM-DDTHH:mm'
+  );
+
+  patient = parseInt(patient);
+  price = parseFloat(price);
+  const preparedData = prepareFormData({
+    ...otherValues,
+    patient,
+    price,
+    startDatetime,
+  });
+
   return preparedData;
 };
 

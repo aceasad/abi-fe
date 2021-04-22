@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { Form, AutoComplete, Select } from 'antd';
 import { useIntl } from 'react-intl';
+import Loading from 'components/shared-components/Loading';
 
 const { Option } = Select;
 
@@ -15,6 +16,7 @@ const FormAutocomplete = ({
   optionField,
   setQuery,
   defaultValue,
+  loading,
 }) => {
   const { formatMessage } = useIntl();
 
@@ -51,12 +53,7 @@ const FormAutocomplete = ({
       <AutoComplete
         value={text}
         placeholder={placeholder}
-        onChange={(value) => {
-          if (!options.some((option) => option[optionField] === value)) {
-            setFieldValue(field.name, '');
-          }
-          setText(value);
-        }}
+        onChange={(value) => setText(value)}
         onBlur={() => setFieldTouched(field.name, true)}
         onSearch={setQuery}
         onSelect={handleSelected}
@@ -69,6 +66,11 @@ const FormAutocomplete = ({
             ))
           : null}
       </AutoComplete>
+      {loading ? (
+        <div style={{ position: 'absolute', top: 5, right: 10 }}>
+          <Loading fontSize={25} />
+        </div>
+      ) : null}
     </Form.Item>
   );
 };

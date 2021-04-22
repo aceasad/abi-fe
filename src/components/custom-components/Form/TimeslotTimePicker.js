@@ -57,7 +57,18 @@ const TimeslotTimePicker = ({
   );
 
   const getDisabledSlots = ({ data }) => {
-    return TIMESLOTS.filter((slot) => !data.includes(slot));
+    let [nowHour, nowMinutes] = moment().format('HH:mm').split(':');
+    nowHour = parseInt(nowHour);
+    nowMinutes = parseInt(nowMinutes);
+
+    return TIMESLOTS.filter((slot) => {
+      const [slotHour, slotMinute] = slot.split(':');
+      return (
+        !data.includes(slot) ||
+        parseInt(slotHour) < nowHour ||
+        (parseInt(slotHour) === nowHour && parseInt(slotMinute) < nowMinutes)
+      );
+    });
   };
 
   const getDisabledHours = () => {
@@ -85,7 +96,7 @@ const TimeslotTimePicker = ({
       validateStatus={hasError && 'error'}
       help={showError()}
     >
-      {isFetching ? null : (
+      {!isFetching && (
         <TimePicker
           popupClassName="picker-time-no-after"
           format={TIME_FORMAT_HH_MM}
@@ -103,6 +114,7 @@ const TimeslotTimePicker = ({
                 )
               : ''
           }
+          hideDisabledOptions
         />
       )}
     </Form.Item>

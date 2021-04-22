@@ -31,13 +31,14 @@ const AppointmentsPage = () => {
           </Space>,
         ]}
       />
-
-      <AppointmentFormWrapper
-        Component={CreateAppointment}
-        isEditForm={false}
-        closeModal={closeModal}
-        isModalVisible={isModalVisible}
-      />
+      {isModalVisible && (
+        <AppointmentFormWrapper
+          Component={CreateAppointment}
+          isEditForm={false}
+          closeModal={closeModal}
+          isModalVisible={isModalVisible}
+        />
+      )}
 
       <CalendarPage />
     </>

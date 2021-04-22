@@ -30,11 +30,12 @@ import {
   setDateAppointments,
   setDoctorAppointments,
   setDoctorsLoading,
-  setPatients,
+  setPatientsAutocomplete,
   setEndedAppointment,
   setMissingReasons,
   setSignleAppointmnet,
   setSignleAppointmnetLoading,
+  setPatientsLoadingAutocomplete,
 } from 'redux/actions/Appointment';
 
 import {
@@ -54,6 +55,7 @@ import {
   setAppointmentHistoryPage,
   setScheduledPage,
 } from 'redux/actions/Patient';
+import { makeSelectClinicPatients } from 'redux/selectors/Appointment';
 
 export function* getDoctorAppointments({ payload }) {
   try {
@@ -188,10 +190,8 @@ export function* createAppointmentSaga() {
         payload
       );
       yield payload.afterCreate(data.start_datetime);
-      yield payload.resetForm();
     } catch (error) {
       yield payload.afterError(error?.response?.data[0]);
-      yield payload.setFieldValue('date', '');
       yield payload.setFieldValue('time', '');
     } finally {
       yield put(setSignleAppointmnetLoading(false));
@@ -205,7 +205,6 @@ export function* updateAppointmentSaga() {
       yield put(setSignleAppointmnetLoading(true));
       yield call(appointmentService.updateAppointment, payload);
       yield payload.afterUpdate();
-      yield payload.resetForm();
       yield put(getSignleAppointmnet(payload.id));
     } catch (error) {
       yield payload.afterError(error?.response?.data[0]);
@@ -258,14 +257,18 @@ export function* searchPatients() {
   yield takeEvery(SEARCH_PATIENTS, function* ({ payload }) {
     try {
       const { organization } = yield select(makeSelectCurrentUser());
+      const { next } = yield select(makeSelectClinicPatients());
+      yield put(setPatientsLoadingAutocomplete(true));
       const { data } = yield call(
         patientService.searchPatients,
         payload.query,
-        organization
+        organization,
+        next
       );
-      yield put(setPatients(data));
+      yield put(setPatientsAutocomplete(data));
     } catch {
     } finally {
+      yield put(setPatientsLoadingAutocomplete(false));
     }
   });
 }

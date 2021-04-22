@@ -6,7 +6,10 @@ import FormDatePicker from 'components/custom-components/Form/FormDatePicker';
 import FormSelect from 'components/custom-components/Form/FormSelect';
 import FormNumberField from 'components/custom-components/Form/FormNumberField';
 import { useDispatch, useSelector } from 'react-redux';
-import { searchPatients } from 'redux/actions/Appointment';
+import {
+  searchPatients,
+  resetPatientsAutocomplete,
+} from 'redux/actions/Appointment';
 import messages from './messages';
 import Loading from 'components/shared-components/Loading';
 import FormAutocomplete from 'components/custom-components/Form/FormAutocomplete';
@@ -29,7 +32,6 @@ const AppointmentFormModal = ({
   validationSchema,
   handleSubmit,
   loadingData,
-  isModalVisible,
   loading,
   appointment,
 }) => {
@@ -46,13 +48,17 @@ const AppointmentFormModal = ({
   const [query, setQuery] = useState('');
   const debouncedSearch = useDebounce(query, 500);
 
-  const { patients } = useSelector(makeSelectClinicPatients());
+  const { patients, patientsLoading } = useSelector(makeSelectClinicPatients());
 
   useEffect(() => {
     if (query) {
       dispatch(searchPatients({ query }));
     }
   }, [debouncedSearch]);
+
+  useEffect(() => {
+    return dispatch(resetPatientsAutocomplete());
+  }, []);
 
   return (
     <Formik
@@ -64,8 +70,8 @@ const AppointmentFormModal = ({
       {({ values, handleSubmit, dirty, isValid, setFieldTouched, touched }) => (
         <Modal
           title={title}
-          visible={isModalVisible}
-          destroyOnClose={true}
+          visible
+          destroyOnClose
           closable={false}
           footer={[
             <Button
@@ -109,6 +115,7 @@ const AppointmentFormModal = ({
                     optionField="full_name"
                     query={query}
                     defaultValue={isEditForm && appointment.patient.full_name}
+                    loading={patientsLoading}
                   />
                 </Col>
                 <Col xs={4}>
