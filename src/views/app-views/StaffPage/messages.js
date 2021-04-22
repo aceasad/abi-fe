@@ -104,4 +104,8 @@ export default defineMessages({
     id: `${scope}.text.deleted_success`,
     defaultMessage: 'Staff Deleted',
   },
+  seeAppointmentsTitle: {
+    id: `${scope}.see_appointments.title`,
+    defaultMessage: "{staffName}'s appointments",
+  },
 });

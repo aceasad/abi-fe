@@ -143,6 +143,10 @@ export default defineMessages({
     id: `${staffScope}.text.other`,
     defaultMessage: 'Other',
   },
+  staffPastAppointments: {
+    id: `${staffScope}.past_appointments.table.title`,
+    defaultMessage: 'Past Appointments',
+  },
   patientCreated: {
     id: `${detailScope}.text.patient_created`,
     defaultMessage: 'Patient Created',
@@ -174,6 +178,10 @@ export default defineMessages({
   columnTitleDoctor: {
     id: `${patientOverviewScope}.table.column_title.doctor`,
     defaultMessage: 'Doctor',
+  },
+  columnTitlePatient: {
+    id: `${patientOverviewScope}.table.column_title.patient`,
+    defaultMessage: 'Patient',
   },
   columnTitleType: {
     id: `${patientOverviewScope}.table.column_title.type`,
