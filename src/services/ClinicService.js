@@ -4,7 +4,7 @@ const ENDPOINTS = {
   CREATE_CLINIC: '/clinics/',
   UPDATE_CLINIC: '/clinics/:id/',
   GET_CLINIC: '/clinics/',
-  GET_USERS_CLINIC: '/clinics/my-clinic',
+  GET_USERS_CLINIC: '/clinics/my-clinic/',
 };
 
 class ClinicService extends ApiService {
