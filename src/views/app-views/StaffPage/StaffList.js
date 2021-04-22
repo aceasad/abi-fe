@@ -18,7 +18,7 @@ export const OPTION_KEYS = {
   DELETE: '2',
 };
 
-const StaffList = ({ showCreate, editUser }) => {
+const StaffList = ({ showCreate, editUser, seeAppointments }) => {
   const [staffForDelete, setStaffForDelete] = useState();
 
   const { count, page } = useSelector(makeSelectPagination());
@@ -110,9 +110,7 @@ const StaffList = ({ showCreate, editUser }) => {
                       }
                     />
                   )}
-                  handleClick={() => {
-                    //TO-DO
-                  }}
+                  handleClick={() => seeAppointments(staffItem.id)}
                 />
               </List.Item>
             )}
