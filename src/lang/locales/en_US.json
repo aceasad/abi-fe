@@ -206,6 +206,7 @@
   "global.text.confirm": "Confirm",
   "global.text.yes": "Yes",
   "global.text.no": "No",
+  "global.text.add_new": "Add New",
 
   "staff_page.text.see_appointments": "See Appointments",
   "staff_page.see_appointments.title": "{staffName}'s appointments",
