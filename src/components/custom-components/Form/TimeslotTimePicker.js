@@ -6,6 +6,7 @@ import { TIME_FORMAT_HH_MM } from 'constants/TimeConstant';
 import { useGetAvailableTimeslots } from 'queries/shared';
 import { TIMESLOTS, TIMESLOT_HOURS } from 'constants/TimeslotConstants';
 import { formHasError } from 'utils/helpers';
+import { DATE_FORMAT_DD_MMM_YYYY } from 'constants/DateConstant';
 
 const FIELDS_TO_CHECK = [
   'patient',
@@ -72,18 +73,26 @@ const TimeslotTimePicker = ({
   );
 
   const getDisabledSlots = ({ data }) => {
-    let [nowHour, nowMinutes] = moment().format('HH:mm').split(':');
+    const nowMoment = moment();
+    let [nowHour, nowMinutes] = nowMoment.format('HH:mm').split(':');
     nowHour = parseInt(nowHour);
     nowMinutes = parseInt(nowMinutes);
 
-    return TIMESLOTS.filter((slot) => {
-      const [slotHour, slotMinute] = slot.split(':');
-      return (
-        !data.includes(slot) ||
-        parseInt(slotHour) < nowHour ||
-        (parseInt(slotHour) === nowHour && parseInt(slotMinute) < nowMinutes)
-      );
-    });
+    const selectedDateMoment = moment(values.date, DATE_FORMAT_DD_MMM_YYYY);
+
+    // if selected date is today, disable all timslots that are passed
+    // if not, return all disabled slots
+    return selectedDateMoment.isSame(nowMoment, 'day')
+      ? TIMESLOTS.filter((slot) => {
+          const [slotHour, slotMinute] = slot.split(':');
+          return (
+            !data.includes(slot) ||
+            parseInt(slotHour) < nowHour ||
+            (parseInt(slotHour) === nowHour &&
+              parseInt(slotMinute) < nowMinutes)
+          );
+        })
+      : TIMESLOTS.filter((slot) => !data.includes(slot));
   };
 
   const getDisabledHours = () => {
