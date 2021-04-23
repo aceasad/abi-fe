@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
 import { Field, Formik } from 'formik';
@@ -15,7 +15,6 @@ import { makeSelectPatientDetails } from 'redux/selectors/Patient';
 import { patientSchema } from 'utils/validations';
 import { MAX } from 'constants/ClinicConstants';
 import { filterNumberInput } from 'utils/helpers';
-import PatientOverviewExistingConditions from './PatientOverviewExistingConditions';
 import PatientFormExistingConditions from './PatientFormExistingConditions';
 import PatientFormPreviousOperationss from './PatientFormPreviousOperations';
 
@@ -30,10 +29,30 @@ const PatientForm = ({
   loading,
 }) => {
   const { formatMessage } = useIntl();
+  const headerRef = useRef(null);
+  const [isSaveVisible, setIsSaveVisible] = useState(false);
 
   const { education, employment, material_status, ethnicities } = useSelector(
     makeSelectPatientDetails()
   );
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const observerOptions = {
+        threshold: 1.0,
+      };
+      const observerCallback = (entries) => {
+        entries[0].isIntersecting
+          ? setIsSaveVisible(false)
+          : setIsSaveVisible(true);
+      };
+      const observer = new IntersectionObserver(
+        observerCallback,
+        observerOptions
+      );
+      observer.observe(headerRef.current);
+    }
+  }, []);
 
   return (
     <Formik
@@ -44,12 +63,14 @@ const PatientForm = ({
     >
       {({ values, dirty, isValid, handleSubmit }) => (
         <>
-          <PatientHeader
-            title={title}
-            secondaryAction={showList}
-            primaryAction={handleSubmit}
-            primaryDisabled={!isValid || !dirty || loading}
-          />
+          <div ref={headerRef}>
+            <PatientHeader
+              title={title}
+              secondaryAction={showList}
+              primaryAction={handleSubmit}
+              primaryDisabled={!isValid || !dirty || loading}
+            />
+          </div>
           <Card className="p-4">
             <Form layout="vertical">
               <Row gutter={16}>
@@ -233,17 +254,6 @@ const PatientForm = ({
                       />
                     </Col>
                   </Row>
-                  <Row>
-                    <Col span={24} className={'text-right'}>
-                      <Button
-                        disabled={!isValid || !dirty || loading}
-                        type="primary"
-                        onClick={handleSubmit}
-                      >
-                        {formatMessage(messages.save)}
-                      </Button>
-                    </Col>
-                  </Row>
                 </Col>
               </Row>
             </Form>
@@ -251,6 +261,16 @@ const PatientForm = ({
 
           <PatientFormExistingConditions />
           <PatientFormPreviousOperationss />
+
+          <Button
+            onClick={handleSubmit}
+            type="primary"
+            className={`floating-button ${
+              !isValid || !dirty || loading || !isSaveVisible ? '' : 'active'
+            }`}
+          >
+            {formatMessage(messages.save)}
+          </Button>
         </>
       )}
     </Formik>
