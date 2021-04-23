@@ -42,9 +42,7 @@ const PatientForm = ({
         threshold: 1.0,
       };
       const observerCallback = (entries) => {
-        entries[0].isIntersecting
-          ? setIsSaveVisible(false)
-          : setIsSaveVisible(true);
+        setIsSaveVisible(!entries[0].isIntersecting);
       };
       const observer = new IntersectionObserver(
         observerCallback,
