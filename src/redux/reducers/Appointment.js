@@ -10,10 +10,13 @@ import {
   APPEND_TO_APPOINTMENT_TYPES,
   SET_APPOINTMENT_STATUS_LOADING,
   APPEND_TO_APPOINTMENT_STATUS,
-  SET_PATIENTS,
   FILTER_DELETED_APPOINTMENT,
   SET_MISSING_REASONS,
   SET_ENDED_APPOINTMENT,
+  SET_PATIENTS_AUTOCOMPLETE,
+  SET_PATIENTS_LOADING_AUTOCOMPLETE,
+  RESET_PATIENTS_AUTOCOMPLETE,
+  APPEND_MORE_PATIENTS_AUTOCOMPLETE,
 } from '../constants/Appointment';
 import produce from 'immer';
 
@@ -87,10 +90,17 @@ const appointment = (state = initialState, action) =>
           ...action.payload.results,
         ];
         break;
-      case SET_PATIENTS:
+      case SET_PATIENTS_AUTOCOMPLETE:
         draft.patients = {
           ...draft.patients,
           all: [...action.payload.results],
+          next: action.payload.next,
+        };
+        break;
+      case APPEND_MORE_PATIENTS_AUTOCOMPLETE:
+        draft.patients = {
+          ...draft.patients,
+          all: [...draft.patients.all, action.payload.results],
           next: action.payload.next,
         };
         break;
@@ -122,6 +132,17 @@ const appointment = (state = initialState, action) =>
           ...action.payload.data,
           missing_reason: action.payload?.missing_reason?.name,
         };
+        break;
+      case SET_PATIENTS_LOADING_AUTOCOMPLETE:
+        draft.patients.loading = action.payload;
+        break;
+      case RESET_PATIENTS_AUTOCOMPLETE:
+        draft.patients = {
+          ...draft.patients,
+          all: [],
+          next: null,
+        };
+        break;
     }
   });
 export default appointment;

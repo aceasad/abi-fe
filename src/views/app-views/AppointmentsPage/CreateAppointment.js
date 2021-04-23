@@ -19,7 +19,6 @@ const CreateAppointment = ({
   appointmentTypes,
   doctors,
   closeModal,
-  isModalVisible,
   isDataLoading,
 }) => {
   const dispatch = useDispatch();
@@ -40,14 +39,13 @@ const CreateAppointment = ({
     message.error(msg);
   };
 
-  const handleSubmit = (values, { resetForm, setFieldValue }) => {
+  const handleSubmit = (values, { setFieldValue }) => {
     const preparedData = prepareAppointmentData(values);
     dispatch(
       createAppointment({
         data: preparedData,
         afterCreate,
         afterError,
-        resetForm,
         setFieldValue,
       })
     );
@@ -74,7 +72,6 @@ const CreateAppointment = ({
       closeModal={closeModal}
       handleSubmit={handleSubmit}
       loadingData={isDataLoading}
-      isModalVisible={isModalVisible}
       loading={singleLoading}
     />
   );

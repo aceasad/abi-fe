@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { useLocation, useParams } from 'react-router-dom';
 
 import { getPatientDetails } from 'redux/actions/Patient';
 import CreatePatient from './CreatePatient';
@@ -14,8 +15,17 @@ export const PATIENT_PAGE = {
   PREVIEW: 4,
 };
 function Patients() {
+  const location = useLocation();
+
   const [patientPage, setPatientPage] = useState(PATIENT_PAGE.LIST);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (location.search) {
+      const layout = new URLSearchParams(location.search).get('layout');
+      setPatientPage({ id: parseInt(layout) });
+    }
+  }, []);
 
   const showCreate = () => setPatientPage({ id: PATIENT_PAGE.CREATE });
   const showList = () => setPatientPage({ id: PATIENT_PAGE.LIST });

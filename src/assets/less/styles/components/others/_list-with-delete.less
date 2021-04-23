@@ -1,0 +1,42 @@
+.list-with-delete-header {
+  padding: @padding-sm @padding-md;
+  border-top-left-radius: @border-radius-base;
+  border-top-right-radius: @border-radius-base;
+  border-bottom-left-radius: @border-radius-sm;
+  border-bottom-right-radius: @border-radius-sm;
+  background-color: @gray-lighter;
+}
+
+.list-with-delete-body {
+  height: 14.1rem;
+}
+
+.list-with-delete-body-small {
+  height: 11rem;
+}
+
+.list-with-delete-item {
+  margin-right: @margin-md;
+  border-radius: @border-radius-base;
+
+  &:hover {
+    background-color: @gray-lightest;
+
+    .list-with-delete-icon {
+      opacity: 1;
+    }
+  }
+}
+
+.list-with-delete-item-regular {
+  padding: @padding-sm @padding-lg @padding-sm @padding-md;
+}
+
+.list-with-delete-item-small {
+  padding: @padding-xss @padding-lg @padding-xss @padding-md;
+}
+
+.list-with-delete-icon {
+  opacity: 0;
+  transition: opacity 200ms ease-in-out;
+}

@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { Form, AutoComplete, Select } from 'antd';
 import { useIntl } from 'react-intl';
+import MiniLoader from 'components/shared-components/Loading/MiniLoader';
 
 const { Option } = Select;
 
@@ -15,6 +16,7 @@ const FormAutocomplete = ({
   optionField,
   setQuery,
   defaultValue,
+  loading,
 }) => {
   const { formatMessage } = useIntl();
 
@@ -23,6 +25,11 @@ const FormAutocomplete = ({
   const handleSelected = (value) => {
     setFieldValue(field.name, value);
     setText(options.find((option) => option.id === value)[optionField]);
+  };
+
+  const handleSearch = (value) => {
+    setFieldValue(field.name, '');
+    setQuery(value);
   };
 
   const defaultErrorMessage = () =>
@@ -51,14 +58,9 @@ const FormAutocomplete = ({
       <AutoComplete
         value={text}
         placeholder={placeholder}
-        onChange={(value) => {
-          if (!options.some((option) => option[optionField] === value)) {
-            setFieldValue(field.name, '');
-          }
-          setText(value);
-        }}
+        onChange={setText}
         onBlur={() => setFieldTouched(field.name, true)}
-        onSearch={setQuery}
+        onSearch={handleSearch}
         onSelect={handleSelected}
       >
         {options
@@ -69,6 +71,7 @@ const FormAutocomplete = ({
             ))
           : null}
       </AutoComplete>
+      {loading && <MiniLoader />}
     </Form.Item>
   );
 };

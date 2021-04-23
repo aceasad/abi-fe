@@ -239,4 +239,8 @@ export default defineMessages({
     id: `${patientOverviewScope}.back_to_overview`,
     defaultMessage: 'Back to patient overview',
   },
+  addNew: {
+    id: `${commonScope}.text.add_new`,
+    defaultMessage: 'Add New',
+  },
 });

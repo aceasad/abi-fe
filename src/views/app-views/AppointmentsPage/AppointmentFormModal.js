@@ -1,12 +1,15 @@
 import { Formik, Field } from 'formik';
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
-import { Row, Col, Form, Card, Button, Modal } from 'antd';
+import { Row, Col, Form, Button, Modal } from 'antd';
 import FormDatePicker from 'components/custom-components/Form/FormDatePicker';
 import FormSelect from 'components/custom-components/Form/FormSelect';
 import FormNumberField from 'components/custom-components/Form/FormNumberField';
 import { useDispatch, useSelector } from 'react-redux';
-import { searchPatients } from 'redux/actions/Appointment';
+import {
+  searchPatients,
+  resetPatientsAutocomplete,
+} from 'redux/actions/Appointment';
 import messages from './messages';
 import Loading from 'components/shared-components/Loading';
 import FormAutocomplete from 'components/custom-components/Form/FormAutocomplete';
@@ -17,6 +20,7 @@ import TimeslotTimePicker from 'components/custom-components/Form/TimeslotTimePi
 import { Link } from 'react-router-dom';
 import RowColumnField from 'components/custom-components/Form/RowColumnField';
 import { PlusOutlined } from '@ant-design/icons';
+import { PATIENT_PAGE } from 'views/app-views/PatientsPage';
 
 const AppointmentFormModal = ({
   initialState,
@@ -29,7 +33,6 @@ const AppointmentFormModal = ({
   validationSchema,
   handleSubmit,
   loadingData,
-  isModalVisible,
   loading,
   appointment,
 }) => {
@@ -46,7 +49,7 @@ const AppointmentFormModal = ({
   const [query, setQuery] = useState('');
   const debouncedSearch = useDebounce(query, 500);
 
-  const { patients } = useSelector(makeSelectClinicPatients());
+  const { patients, patientsLoading } = useSelector(makeSelectClinicPatients());
 
   useEffect(() => {
     if (query) {
@@ -54,18 +57,23 @@ const AppointmentFormModal = ({
     }
   }, [debouncedSearch]);
 
+  useEffect(() => {
+    return dispatch(resetPatientsAutocomplete());
+  }, []);
+
   return (
     <Formik
       initialValues={initialState}
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
       enableReinitialize
+      validateOnMount
     >
       {({ values, handleSubmit, dirty, isValid, setFieldTouched, touched }) => (
         <Modal
           title={title}
-          visible={isModalVisible}
-          destroyOnClose={true}
+          visible
+          destroyOnClose
           closable={false}
           footer={[
             <Button
@@ -109,11 +117,17 @@ const AppointmentFormModal = ({
                     optionField="full_name"
                     query={query}
                     defaultValue={isEditForm && appointment.patient.full_name}
+                    loading={patientsLoading}
                   />
                 </Col>
                 <Col xs={4}>
                   <Button type="primary" style={{ marginTop: '1.8rem' }}>
-                    <Link to={'patients'}>
+                    <Link
+                      to={{
+                        pathname: 'patients',
+                        search: `?layout=${PATIENT_PAGE.CREATE}`,
+                      }}
+                    >
                       <PlusOutlined />
                     </Link>
                   </Button>
