@@ -72,22 +72,24 @@ const PatientOverviewHistoryCard = ({ patient, showAppointment }) => {
           {formatMessage(messages.cardTitleAppointmentHistory)}
         </Title>
       </div>
-      <Table
-        onRow={(record) => ({
-          onClick: () =>
-            showAppointment({ id: record.id, type: APPOINTMNET_HISTORY }),
-        })}
-        columns={columnsHistory}
-        dataSource={items}
-        loading={loading}
-        pagination={{
-          defaultPageSize: DEFAULT_SMALL_PAGINATION_LIMIT,
-          total: count,
-          onChange: handlePaginationChange,
-          hideOnSinglePage: true,
-          current: page,
-        }}
-      />
+      <div className="table-responsive ant-table-row-pointer">
+        <Table
+          onRow={(record) => ({
+            onClick: () =>
+              showAppointment({ id: record.id, type: APPOINTMNET_HISTORY }),
+          })}
+          columns={columnsHistory}
+          dataSource={items}
+          loading={loading}
+          pagination={{
+            defaultPageSize: DEFAULT_SMALL_PAGINATION_LIMIT,
+            total: count,
+            onChange: handlePaginationChange,
+            hideOnSinglePage: true,
+            current: page,
+          }}
+        />
+      </div>
     </Card>
   );
 };

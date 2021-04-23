@@ -29,7 +29,7 @@ const PrivateRoute = ({ component, ...rest }) => {
   };
 
   const getComponent = (props) =>
-    getComponentByPasswordAndClinicUpdateStatus(props);
+    user ? getComponentByPasswordAndClinicUpdateStatus(props) : <Loading />;
 
   return (
     <Route

@@ -98,23 +98,25 @@ const PatientOverviewScheduledCard = ({ patient, showAppointment }) => {
           {formatMessage(messages.buttonNewAppointment)}
         </Button>
       </Flex>
-      <Table
-        onRow={(record) => ({
-          onClick: () =>
-            showAppointment({ id: record.id, type: SCHEDULED_APPOINTMENT }),
-        })}
-        columns={columnsScheduled}
-        dataSource={items}
-        onChange={handleChange}
-        pagination={{
-          defaultPageSize: DEFAULT_SMALL_PAGINATION_LIMIT,
-          total: count,
-          onChange: handlePaginationChange,
-          hideOnSinglePage: true,
-          current: page,
-        }}
-        loading={loading}
-      />
+      <div className="table-responsive ant-table-row-pointer">
+        <Table
+          onRow={(record) => ({
+            onClick: () =>
+              showAppointment({ id: record.id, type: SCHEDULED_APPOINTMENT }),
+          })}
+          columns={columnsScheduled}
+          dataSource={items}
+          onChange={handleChange}
+          pagination={{
+            defaultPageSize: DEFAULT_SMALL_PAGINATION_LIMIT,
+            total: count,
+            onChange: handlePaginationChange,
+            hideOnSinglePage: true,
+            current: page,
+          }}
+          loading={loading}
+        />
+      </div>
     </Card>
   );
 };

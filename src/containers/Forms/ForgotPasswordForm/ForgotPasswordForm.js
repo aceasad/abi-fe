@@ -12,6 +12,8 @@ import { forgotPasswordSchema } from 'utils/validations';
 import { makeIsSendEmailUser } from 'redux/selectors/Auth';
 import { success } from 'components/shared-components/MessagesAlerts/index';
 import FormField from 'components/custom-components/Form/FormField';
+import { Link } from 'react-router-dom';
+import { ROUTES } from 'routes';
 export const ForgotPasswordForm = ({ email, showMessage }) => {
   const dispatch = useDispatch();
   const isSent = useSelector(makeIsSendEmailUser());
@@ -43,7 +45,7 @@ export const ForgotPasswordForm = ({ email, showMessage }) => {
         validationSchema={forgotPasswordSchema}
         onSubmit={confirm}
       >
-        {({ values, isValid, handleChange, handleBlur, handleSubmit }) => (
+        {({ values, isValid, handleSubmit }) => (
           <Form layout="vertical" name="login-form">
             <Field
               autoFocus
@@ -68,6 +70,11 @@ export const ForgotPasswordForm = ({ email, showMessage }) => {
                 {formatMessage(messages.confirmButton)}
               </Button>
             </Form.Item>
+            <div className="text-center">
+              <Link to={ROUTES.LOGIN}>
+                {formatMessage(messages.backToLogin)}
+              </Link>
+            </div>
           </Form>
         )}
       </Formik>
