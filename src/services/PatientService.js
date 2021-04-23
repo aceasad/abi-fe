@@ -56,13 +56,17 @@ class PatientService extends ApiService {
   updatePatientPart = (id, data) =>
     this.apiClient.patch(ENDPOINTS.GET_PATIENTS + id + '/', data);
 
-  searchPatients = (query, organizationId) =>
-    this.apiClient.get(ENDPOINTS.SEARCH_PATIENTS, {
-      params: {
-        search: query,
-        organization: organizationId,
-      },
-    });
+  searchPatients = (query, organizationId, next) =>
+    next
+      ? this.apiClient.get(next)
+      : this.apiClient.get(ENDPOINTS.SEARCH_PATIENTS, {
+          params: {
+            search: query,
+            organization: organizationId,
+          },
+        });
+
+  getMoreSearchResults = (next) => next && this.apiClient.get(next);
 }
 
 const patientService = new PatientService();

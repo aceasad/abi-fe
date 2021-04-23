@@ -11,12 +11,7 @@ import {
   makeSelectClinicDoctors,
 } from 'redux/selectors/Appointment';
 
-const AppointmentFormWrapper = ({
-  isEditForm,
-  Component,
-  closeModal,
-  isModalVisible,
-}) => {
+const AppointmentFormWrapper = ({ isEditForm, Component, closeModal }) => {
   const dispatch = useDispatch();
 
   const { appointmentTypesLoading, appointmentTypes } = useSelector(
@@ -45,7 +40,6 @@ const AppointmentFormWrapper = ({
       doctors={doctors}
       status={appointmentStatus}
       closeModal={closeModal}
-      isModalVisible={isModalVisible}
       isDataLoading={
         !!appointmentTypesLoading ||
         !!appointmentStatusLoading ||
