@@ -19,4 +19,8 @@ export default defineMessages({
     id: `${scope}.text.error_sent`,
     defaultMessage: "User with this email doesn't exists",
   },
+  backToLogin: {
+    id: `${scope}.text.back_to_login`,
+    defaultMessage: 'Back to login',
+  },
 });
