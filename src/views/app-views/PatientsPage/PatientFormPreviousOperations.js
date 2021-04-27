@@ -19,7 +19,7 @@ import moment from 'moment';
 import { useGetOperationTypes } from 'queries/shared';
 import { useDispatch, useSelector } from 'react-redux';
 import { makeSelectOrganization } from 'redux/selectors/Auth';
-import { useDebounce } from 'utils/hooks';
+import { useDebounce, useLazyLoad } from 'utils/hooks';
 import MiniLoader from 'components/shared-components/Loading/MiniLoader';
 import { addNewOperationType, setPage } from 'redux/actions/Anamnesis';
 import { makeSelectPreviousOperations } from 'redux/selectors/Anemnesis';
@@ -43,7 +43,7 @@ const PatientFormPreviousOperationss = ({
   const organization = useSelector(makeSelectOrganization());
 
   const [search, setSearch] = useState('');
-  const debounce = useDebounce(search, 500);
+  const debounceSearch = useDebounce(search, 500);
   const dispatch = useDispatch();
 
   const { items } = useSelector(makeSelectPreviousOperations());
@@ -55,7 +55,7 @@ const PatientFormPreviousOperationss = ({
       id: 0,
       operation_type_id: payload.id,
       operation_type: payload.name,
-      year: new Date(),
+      year: new Date().getFullYear(),
       key: Math.random().toString(36).substring(7),
     };
     setOperations((prev) => ({
@@ -111,9 +111,9 @@ const PatientFormPreviousOperationss = ({
 
   const { data, isFetching, isFetched } = useGetOperationTypes(
     organization,
-    debounce,
+    debounceSearch,
     null,
-    debounce === search && !!search.length
+    debounceSearch === search && !!search.length
   );
 
   const findOptionByName = (name) =>
@@ -121,7 +121,8 @@ const PatientFormPreviousOperationss = ({
 
   const handleSelect = (option) => {
     const selectedOption = findOptionByName(option);
-    handleAddOperation(selectedOption);
+    if (selectedOption) handleAddOperation(selectedOption);
+    else handleSubmit();
   };
 
   const handleAddOperation = (operation) => {
@@ -148,78 +149,75 @@ const PatientFormPreviousOperationss = ({
   };
 
   useEffect(() => {
-    const operationListElement = document.querySelector('#previous-list div');
-
-    function handleScroll() {
-      if (
-        operationListElement.scrollHeight - operationListElement.scrollTop ===
-          operationListElement.clientHeight &&
-        nextRef.current.next
-      )
-        dispatch(
-          setPage({
-            page: nextRef.current.page + 1,
-            id,
-            field: PREVIOUS_OPERATIONS,
-            type: APPEND,
-          })
-        );
-    }
-    operationListElement.addEventListener('scroll', handleScroll, false);
-
-    return () =>
-      operationListElement.removeEventListener('scroll', handleScroll, false);
-  }, []);
-
-  useEffect(() => {
     nextRef.current = { next, page };
   }, [next, page]);
 
-  const conditionList = items
-    .filter((item) => !item.hidden)
-    .map((item) => (
-      <div
-        key={item.id === 0 ? item.key : item.id}
-        className="list-with-delete-item list-with-delete-item-small"
-      >
-        <Row gutter={16}>
-          <Col span={16} className="d-flex align-items-center">
-            <Typography.Text>{item.operation_type}</Typography.Text>
-          </Col>
-          <Col span={6}>
-            <DatePicker
-              size="small"
-              picker="year"
-              allowClear={false}
-              defaultValue={moment(item.year, YEAR_FORMAT_YYYY)}
-              format={YEAR_FORMAT_YYYY}
-              onChange={(_, year) => changeOperation({ ...item, year })}
-            />
-          </Col>
-          <Col
-            span={2}
-            className="d-flex align-items-center justify-content-end"
-          >
-            <CloseOutlined
-              onClick={() => deleteOperation(item)}
-              className="list-with-delete-icon cursor-pointer mr-2"
-            />
+  useLazyLoad(
+    '#previous-list div',
+    () =>
+      dispatch(
+        setPage({
+          page: nextRef.current.page + 1,
+          id,
+          field: PREVIOUS_OPERATIONS,
+          type: APPEND,
+        })
+      ),
+    [],
+    () => nextRef.current.next
+  );
 
-            <DeleteFilled
-              onClick={() => deleteOperationType(item)}
-              className="list-with-delete-icon cursor-pointer"
-            />
-          </Col>
-        </Row>
-      </div>
-    ));
+  const previousOperations = items.reduce(
+    (acc, item) =>
+      item.hidden
+        ? acc
+        : [
+            ...acc,
+            <div
+              key={item.id === 0 ? item.key : item.id}
+              className="list-with-delete-item list-with-delete-item-small"
+            >
+              <Row gutter={16}>
+                <Col span={16} className="d-flex align-items-center">
+                  <Typography.Text>{item.operation_type}</Typography.Text>
+                </Col>
+                <Col span={6}>
+                  <DatePicker
+                    size="small"
+                    picker="year"
+                    disabledDate={(current) => current.valueOf() > Date.now()}
+                    allowClear={false}
+                    defaultValue={moment(item.year, YEAR_FORMAT_YYYY)}
+                    format={YEAR_FORMAT_YYYY}
+                    onChange={(_, year) => changeOperation({ ...item, year })}
+                  />
+                </Col>
+                <Col
+                  span={2}
+                  className="d-flex align-items-center justify-content-end"
+                >
+                  <CloseOutlined
+                    onClick={() => deleteOperation(item)}
+                    className="list-with-delete-icon cursor-pointer mr-2"
+                  />
+
+                  <DeleteFilled
+                    onClick={() => deleteOperationType(item)}
+                    className="list-with-delete-icon cursor-pointer"
+                  />
+                </Col>
+              </Row>
+            </div>,
+          ],
+    []
+  );
 
   useEffect(() => {
     if (
-      conditionList.length &&
-      conditionList.length < DEFAULT_SMALL_PAGINATION_LIMIT &&
+      previousOperations.length &&
+      previousOperations.length < DEFAULT_SMALL_PAGINATION_LIMIT &&
       !!next &&
-      conditionList.length <= count
+      previousOperations.length <= count
     )
       dispatch(
         setPage({
@@ -229,7 +227,7 @@ const PatientFormPreviousOperationss = ({
           type: APPEND,
         })
       );
-  }, [conditionList.length]);
+  }, [previousOperations.length]);
 
   return (
     <Card className="p-4">
@@ -258,13 +256,18 @@ const PatientFormPreviousOperationss = ({
                     onKeyDown={handleEnterPress}
                     backfill
                   >
-                    {data?.data?.results?.length
-                      ? data?.data?.results.map((res) => (
-                          <Option key={res.id} value={res.name}>
-                            {res.name}
-                          </Option>
-                        ))
-                      : null}
+                    {data?.data?.results.map((res) => (
+                      <Option
+                        key={res.id}
+                        value={
+                          res.name.toLowerCase() === search.toLowerCase()
+                            ? search
+                            : res.name
+                        }
+                      >
+                        {res.name}
+                      </Option>
+                    ))}
                   </AutoComplete>
                   {isFetching && <MiniLoader />}
                 </Form.Item>
@@ -292,7 +295,7 @@ const PatientFormPreviousOperationss = ({
               </Col>
             </Row>
             <div className="list-with-delete-body-small">
-              <Scrollbars id="previous-list">{conditionList}</Scrollbars>
+              <Scrollbars id="previous-list">{previousOperations}</Scrollbars>
             </div>
           </div>
         </Col>
