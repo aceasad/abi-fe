@@ -35,6 +35,7 @@ import {
   makeSelectScheduledData,
   makeSelectHistoryPage,
 } from '../selectors/Patient';
+import { getPreviousOperations } from './Anemnesis';
 
 function* getPatients() {
   try {
@@ -161,7 +162,12 @@ export function* patientSaga() {
   yield takeEvery(DELETE_PATIENT, deletePatient);
   yield takeEvery(GET_PATIENTS_DETAILS, getPatientDetails);
   yield takeEvery(CREATE_PATIENT, createPatient);
-  yield takeEvery(GET_PATIENT_SINGLE, getPatientSingle);
+  yield takeEvery(GET_PATIENT_SINGLE, function* ({ payload }) {
+    yield all([
+      getPatientSingle({ payload: payload }),
+      getPreviousOperations({ payload: { id: payload } }),
+    ]);
+  });
   yield takeEvery(UPDATE_PATIENT, updatePatient);
   yield takeEvery(GET_PATIENT_OVERVIEW, getPatientOverview);
   yield takeEvery(SET_SCHEDULED_PAGE, getScheduledAppointments);

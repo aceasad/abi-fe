@@ -1,11 +1,15 @@
 import { takeEvery, put, call, all, fork, select } from 'redux-saga/effects';
 import {
+  appendPreviousOperations,
+  filterOperationType,
   setExistingMedicalConditions,
   setLoading,
   setPreviousOperations,
 } from 'redux/actions/Anamnesis';
 
 import {
+  ADD_OPERATION_TYPE,
+  DELETE_OPERATION_TYPE,
   GET_MEDICAL_CONDITIONS,
   GET_PREVIOUS_OPERATIONS,
   SET_ANEMNESIS_PAGE,
@@ -19,6 +23,8 @@ import {
   makeSelectPreviousOperations,
 } from 'redux/selectors/Anemnesis';
 import anamnesisService from 'services/AnamnesisService';
+
+export const APPEND = 'APPEND';
 
 export function* getMedicalConditions({ payload }) {
   try {
@@ -44,10 +50,33 @@ export function* getPreviousOperations({ payload }) {
       requestData,
       payload.id
     );
-    yield put(setPreviousOperations(data));
+    if (payload.type === APPEND) yield put(appendPreviousOperations(data));
+    else yield put(setPreviousOperations(data));
   } finally {
     yield put(setLoading({ field: PREVIOUS_OPERATIONS, loading: false }));
   }
+}
+
+export function* addOperationType({ payload }) {
+  try {
+    const { data } = yield call(
+      anamnesisService.addOperationType,
+      payload.name
+    );
+    yield payload.afterAdd();
+    yield payload.addOperation(data);
+  } catch {}
+}
+
+export function* deleteOperationType({ payload }) {
+  try {
+    yield call(
+      anamnesisService.deleteOperationType,
+      payload.item.operation_type_id
+    );
+    yield payload.afterDelete();
+    yield put(filterOperationType(payload.item.operation_type_id));
+  } catch {}
 }
 
 export function* anemnesisSaga() {
@@ -59,6 +88,8 @@ export function* anemnesisSaga() {
     else if (payload.field === PREVIOUS_OPERATIONS)
       yield getPreviousOperations({ payload });
   });
+  yield takeEvery(ADD_OPERATION_TYPE, addOperationType);
+  yield takeEvery(DELETE_OPERATION_TYPE, deleteOperationType);
 }
 
 export default function* rootSaga() {

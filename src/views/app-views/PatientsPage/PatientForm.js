@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Field, Formik } from 'formik';
-import { Button, Card, Col, Row, Typography } from 'antd';
+import { Button, Card, Col, message, Row, Typography, Modal } from 'antd';
 import Form from 'antd/lib/form/Form';
 
 import PatientHeader from './PatientHeader';
@@ -17,6 +17,10 @@ import { MAX } from 'constants/ClinicConstants';
 import { filterNumberInput } from 'utils/helpers';
 import PatientFormExistingConditions from './PatientFormExistingConditions';
 import PatientFormPreviousOperationss from './PatientFormPreviousOperations';
+import {
+  deleteOperationTypeFromOrganization,
+  resetPreviousOperations,
+} from 'redux/actions/Anamnesis';
 
 const { Title } = Typography;
 
@@ -27,14 +31,34 @@ const PatientForm = ({
   genderChoices,
   initialState,
   loading,
+  id,
 }) => {
   const { formatMessage } = useIntl();
   const headerRef = useRef(null);
   const [isSaveVisible, setIsSaveVisible] = useState(false);
+  const dispatch = useDispatch();
 
   const { education, employment, material_status, ethnicities } = useSelector(
     makeSelectPatientDetails()
   );
+
+  const afterDelete = () => {
+    message.success(formatMessage(messages.operationTypeDeleted));
+  };
+
+  const deleteOperationType = (item) => {
+    Modal.confirm({
+      title: formatMessage(messages.deleteOperationType, {
+        name: item.operation_type,
+      }),
+      okText: formatMessage(messages.formConfirmationButton),
+      okType: 'danger',
+      cancelText: formatMessage(messages.cancel),
+      onOk() {
+        dispatch(deleteOperationTypeFromOrganization({ item, afterDelete }));
+      },
+    });
+  };
 
   useEffect(() => {
     const observerOptions = {
@@ -52,17 +76,25 @@ const PatientForm = ({
 
     return () => {
       headerRef.current && observer.unobserve(headerRef.current);
+      dispatch(resetPreviousOperations());
     };
   }, []);
 
   return (
     <Formik
       enableReinitialize
-      initialValues={initialState}
+      initialValues={{
+        ...initialState,
+        operations: {
+          addedOperations: [],
+          deletedOperations: [],
+          changedOperations: [],
+        },
+      }}
       onSubmit={handleSubmit}
       validationSchema={patientSchema}
     >
-      {({ values, dirty, isValid, handleSubmit }) => (
+      {({ values, dirty, isValid, handleSubmit, setFieldValue }) => (
         <>
           <div ref={headerRef}>
             <PatientHeader
@@ -261,7 +293,14 @@ const PatientForm = ({
           </Card>
 
           <PatientFormExistingConditions />
-          <PatientFormPreviousOperationss />
+
+          <PatientFormPreviousOperationss
+            id={id}
+            setOperations={(callback) =>
+              setFieldValue('operations', callback(values.operations))
+            }
+            deleteOperationType={deleteOperationType}
+          />
 
           <Button
             onClick={handleSubmit}

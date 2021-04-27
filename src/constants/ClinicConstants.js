@@ -13,6 +13,7 @@ export const baseState = {
   order: '',
   search: '',
   single: null,
+  next: null,
 };
 export const MAX_GOOGLE_LINK_LENGTH = 500;
 
