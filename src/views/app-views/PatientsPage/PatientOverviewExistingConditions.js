@@ -26,13 +26,6 @@ const PatientOverviewExistingConditions = ({ patient }) => {
     if (patient) dispatch(getExistingMedicalConditions({ id: patient.id }));
   }, [patient]);
 
-  // clean-up
-  useEffect(() => {
-    return () => {
-      dispatch(resetExistingMedicalConditions());
-    };
-  }, []);
-
   const columnsHistory = [
     {
       title: formatMessage(messages.columnTitleCondition),

@@ -12,12 +12,12 @@ import {
   Modal,
 } from 'antd';
 import Flex from 'components/shared-components/Flex';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useIntl } from 'react-intl';
 import messages from './messages';
 import { DeleteFilled, CloseOutlined } from '@ant-design/icons';
 import Scrollbars from 'react-custom-scrollbars';
-import { useDebounce } from 'utils/hooks';
+import { useDebounce, useLazyLoad } from 'utils/hooks';
 import { useSearchMedicalConditions } from 'queries/shared';
 import { useDispatch, useSelector } from 'react-redux';
 import { makeSelectCurrentUser } from 'redux/selectors/Auth';
@@ -26,18 +26,24 @@ import { makeSelectExistingMedicalConditions } from 'redux/selectors/Anemnesis';
 import {
   createMedicalCondition,
   deleteMedicalCondition,
+  setPage,
 } from 'redux/actions/Anamnesis';
+import { EXISTING_CONDITIONS } from 'redux/reducers/Anemnesis';
+import { APPEND } from 'redux/sagas/Anemnesis';
 
 const { Title } = Typography;
 
 const { Option } = Select;
 
-const PatientFormExistingConditions = ({ setFieldValue }) => {
+const PatientFormExistingConditions = ({ setFieldValue, id }) => {
   const { formatMessage } = useIntl();
   const dispatch = useDispatch();
 
   const { organization } = useSelector(makeSelectCurrentUser());
-  const { items } = useSelector(makeSelectExistingMedicalConditions());
+  const { items, page, next, count } = useSelector(
+    makeSelectExistingMedicalConditions()
+  );
+  const nextRef = useRef();
 
   const [query, setQuery] = useState('');
   const [text, setText] = useState(query);
@@ -89,9 +95,9 @@ const PatientFormExistingConditions = ({ setFieldValue }) => {
       title: formatMessage(messages.deleteMedicalCondition, {
         name: findOptionById(id)['name'],
       }),
-      okText: 'Confirm',
+      okText: formatMessage(messages.formConfirmationButton),
       okType: 'danger',
-      cancelText: 'Cancel',
+      cancelText: formatMessage(messages.cancel),
       onOk() {
         dispatch(
           deleteMedicalCondition({ data: id, afterDelete: deleteCondition })
@@ -121,18 +127,38 @@ const PatientFormExistingConditions = ({ setFieldValue }) => {
     }
   };
 
-  useEffect(() => {
-    setFieldValue(
-      'medicalConditions',
-      conditions.map((condition) => condition.id)
-    );
-  }, [conditions]);
-
   const handleEnterPress = (e) => {
     if (e.key === 'Enter' && !isFetching && isFetched) {
       addCondition(e.target.value);
     }
   };
+
+  useEffect(() => {
+    setFieldValue(
+      'medicalConditions',
+      conditions.map((condition) => condition.id)
+    );
+    setText('');
+  }, [conditions]);
+
+  useEffect(() => {
+    nextRef.current = { next, page };
+  }, [next, page]);
+
+  useLazyLoad(
+    '#existing-conditions-list div',
+    () =>
+      dispatch(
+        setPage({
+          page: nextRef.current.page + 1,
+          id,
+          field: EXISTING_CONDITIONS,
+          type: APPEND,
+        })
+      ),
+    [],
+    () => nextRef.current.next
+  );
 
   const conditionList = conditions.map((item) => (
     <Flex
@@ -175,7 +201,7 @@ const PatientFormExistingConditions = ({ setFieldValue }) => {
                   <AutoComplete
                     value={text}
                     style={{ width: '100%' }}
-                    placeholder={'Press enter to add'}
+                    placeholder={formatMessage(messages.pressEnterToAdd)}
                     onSearch={handleSearch}
                     onSelect={handleSelect}
                     onKeyDown={handleEnterPress}
@@ -200,7 +226,9 @@ const PatientFormExistingConditions = ({ setFieldValue }) => {
               </Typography.Text>
             </div>
             <div className="list-with-delete-body">
-              <Scrollbars>{conditionList}</Scrollbars>
+              <Scrollbars id="existing-conditions-list">
+                {conditionList}
+              </Scrollbars>
             </div>
           </div>
         </Col>

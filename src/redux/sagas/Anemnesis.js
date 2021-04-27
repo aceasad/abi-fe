@@ -1,5 +1,6 @@
 import { takeEvery, put, call, all, fork, select } from 'redux-saga/effects';
 import {
+  appendExistingConditions,
   appendPreviousOperations,
   filterOperationType,
   setExistingMedicalConditions,
@@ -37,6 +38,7 @@ export function* getMedicalConditions({ payload }) {
       requestData,
       payload.id
     );
+    if (payload.type === APPEND) yield put(appendExistingConditions(data));
     yield put(setExistingMedicalConditions(data));
   } finally {
     yield put(setLoading({ field: EXISTING_CONDITIONS, loading: false }));

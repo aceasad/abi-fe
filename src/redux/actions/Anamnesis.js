@@ -15,6 +15,7 @@ import {
   FILTER_OPERATION,
   DELETE_OPERATION_TYPE,
   FILTER_OPERATION_TYPE,
+  APPEND_EXISTING_CONDITIONS,
 } from 'redux/constants/Anemnesis';
 
 export const getExistingMedicalConditions = (payload) => ({
@@ -92,5 +93,10 @@ export const deleteOperationTypeFromOrganization = (payload) => ({
 
 export const filterOperationType = (payload) => ({
   type: FILTER_OPERATION_TYPE,
+  payload,
+});
+
+export const appendExistingConditions = (payload) => ({
+  type: APPEND_EXISTING_CONDITIONS,
   payload,
 });

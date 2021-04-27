@@ -10,6 +10,7 @@ import {
   RESET_PREVIOUS_OPERATIONS,
   FILTER_OPERATION,
   FILTER_OPERATION_TYPE,
+  APPEND_EXISTING_CONDITIONS,
 } from 'redux/constants/Anemnesis';
 import { baseState } from 'constants/ClinicConstants';
 
@@ -59,6 +60,21 @@ const anamnesis = (state = initialState, action) =>
         break;
       case RESET_EXISTING_MEDICAL_CONDITION:
         draft[EXISTING_CONDITIONS] = baseState;
+        break;
+      case APPEND_EXISTING_CONDITIONS:
+        draft[EXISTING_CONDITIONS] = {
+          ...state[EXISTING_CONDITIONS],
+          items: [
+            ...state[EXISTING_CONDITIONS].items,
+            ...action.payload.results.map((item) => {
+              return {
+                id: item.medical_condition_id,
+                name: item.medical_condition,
+              };
+            }),
+          ],
+          next: action.payload.next,
+        };
         break;
       case APEND_OPERATION:
         draft[PREVIOUS_OPERATIONS] = {

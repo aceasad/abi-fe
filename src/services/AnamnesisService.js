@@ -1,4 +1,7 @@
-import { DEFAULT_SMALL_PAGINATION_LIMIT } from 'constants/ApiConstant';
+import {
+  DEFAULT_SMALL_PAGINATION_LIMIT,
+  LARGE_PAGINATION_LIMIT,
+} from 'constants/ApiConstant';
 import ApiService from './ApiService';
 
 const ENDPOINTS = {
@@ -16,7 +19,7 @@ class AnamnesisService extends ApiService {
   getExistingConditions = ({ page = 1 }, id) =>
     this.apiClient.get(ENDPOINTS.GET_EXISTING_CONDITIONS.replace(':id', id), {
       params: {
-        limit: DEFAULT_SMALL_PAGINATION_LIMIT,
+        limit: LARGE_PAGINATION_LIMIT,
         offset: (page - 1) * DEFAULT_SMALL_PAGINATION_LIMIT,
       },
     });
