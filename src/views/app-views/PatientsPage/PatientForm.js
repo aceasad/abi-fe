@@ -61,21 +61,23 @@ const PatientForm = ({
   };
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const observerOptions = {
-        threshold: 1.0,
-      };
-      const observerCallback = (entries) => {
-        setIsSaveVisible(!entries[0].isIntersecting);
-      };
-      const observer = new IntersectionObserver(
-        observerCallback,
-        observerOptions
-      );
-      observer.observe(headerRef.current);
-    }
+    const observerOptions = {
+      threshold: 1.0,
+    };
+    const observerCallback = (entries) => {
+      setIsSaveVisible(!entries[0].isIntersecting);
+    };
+    const observer = new IntersectionObserver(
+      observerCallback,
+      observerOptions
+    );
 
-    return () => dispatch(resetPreviousOperations());
+    headerRef.current && observer.observe(headerRef.current);
+
+    return () => {
+      headerRef.current && observer.unobserve(headerRef.current);
+      dispatch(resetPreviousOperations());
+    };
   }, []);
 
   return (

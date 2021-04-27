@@ -47,3 +47,34 @@
         }
     }
 }
+
+.overview-collapse {
+    &.ant-collapse-item {
+        .ant-collapse-header {
+            padding: 0 !important;
+        }
+
+        .ant-collapse-content {
+            .ant-collapse-content-box {
+                padding: 0;
+            }
+        }
+
+        .anticon.anticon-right.ant-collapse-arrow {
+            top: -2px;
+        }
+    }
+}
+
+.collapse-arrow-custom {
+    padding: @padding-xs;
+    border-radius: 50%;
+    background-color: @primary-color;
+    color: @white;
+    transform: rotateZ(0);
+    transition: transform 250ms ease-in-out;
+
+    &.open {
+        transform: rotateZ(180deg);
+    }
+}
