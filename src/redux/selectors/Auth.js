@@ -47,6 +47,9 @@ const makeSelectLoading = () =>
 const makeSelectIsOrganizationOwner = () =>
   createSelector(selectAuthDomain, ({ user }) => user?.is_organization_owner);
 
+const makeSelectOrganization = () =>
+  createSelector(selectAuthDomain, ({ user }) => user?.organization);
+
 export {
   makeSelectLoading,
   makeSelectCurrentUser,
@@ -57,4 +60,5 @@ export {
   makeIsSendEmailUser,
   makeIsResetPassword,
   makeSelectIsOrganizationOwner,
+  makeSelectOrganization,
 };

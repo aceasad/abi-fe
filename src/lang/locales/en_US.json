@@ -343,6 +343,10 @@
   "patient_overview.table.column_title.time_of_surgery": "Time of surgery",
   "patient_overview.messages": "Messages",
   "patient_overview.back_to_overview": "Back to patient overview",
+  "patient_overview.text.press_enter_to_add": "Press enter to add",
+  "patient_overview.text.operation_type_added": "Operation type successfully created",
+  "patient_overview.text.operation_type_deleted": "Operation type successfully deleted",
+  "patient_overview.text.delete_operation_type": "Are you sure you want to delete {name} operation type? All patients operations bound with {name} would be deleted with this action.",
 
   "user_settings.title": "User Settings",
   "user_settings.clinic_admin": "clinic admin",
