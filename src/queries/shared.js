@@ -33,3 +33,17 @@ export const useSearchMedicalConditions = (organizationId, query, enabled) =>
       refetchOnWindowFocus: false,
     }
   );
+
+export const useGetOperationTypes = (organization, data, next, enabled) =>
+  useQuery(
+    ['getOperationTypes', organization, data, next, enabled],
+    async () =>
+      next
+        ? await anamnesisService.getNextOrganizationTypePage(next)
+        : await anamnesisService.getOrganizationTypes({ organization, data }),
+    {
+      enabled,
+      refetchOnWindowFocus: false,
+      onSuccess: ({ data }) => data,
+    }
+  );

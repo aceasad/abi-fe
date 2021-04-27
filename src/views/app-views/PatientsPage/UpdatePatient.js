@@ -86,6 +86,7 @@ const UpdatePatient = ({ showList, patientId }) => {
       loading={loading}
       initialState={initialState}
       genderChoices={GENDER_CHOICES}
+      id={patientId}
     />
   );
 };

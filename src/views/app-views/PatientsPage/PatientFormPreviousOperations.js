@@ -1,59 +1,233 @@
 import {
+  AutoComplete,
   Button,
   Card,
   Col,
   DatePicker,
   Form,
   Input,
+  message,
   Row,
   Typography,
 } from 'antd';
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
 import messages from './messages';
-import { DeleteFilled } from '@ant-design/icons';
+import { DeleteFilled, CloseOutlined } from '@ant-design/icons';
 import Scrollbars from 'react-custom-scrollbars';
 import moment from 'moment';
+import { useGetOperationTypes } from 'queries/shared';
+import { useDispatch, useSelector } from 'react-redux';
+import { makeSelectOrganization } from 'redux/selectors/Auth';
+import { useDebounce, useLazyLoad } from 'utils/hooks';
+import MiniLoader from 'components/shared-components/Loading/MiniLoader';
+import { addNewOperationType, setPage } from 'redux/actions/Anamnesis';
+import { makeSelectPreviousOperations } from 'redux/selectors/Anemnesis';
+import { YEAR_FORMAT_YYYY } from 'constants/DateConstant';
+import { PREVIOUS_OPERATIONS } from 'redux/reducers/Anemnesis';
+import { APPEND } from 'redux/sagas/Anemnesis';
+import { DEFAULT_SMALL_PAGINATION_LIMIT } from 'constants/ApiConstant';
+import { appendOperation, filterOperation } from 'redux/actions/Anamnesis';
 
+const { Option } = AutoComplete;
 const { Title } = Typography;
 
-const dummyData = [
-  { id: 1, operation: 'operation 1', date: '2016/02/01' },
-  { id: 2, operation: 'operation 2', date: '2018/01/01' },
-  { id: 3, operation: 'operation 3', date: '2012/01/01' },
-  { id: 4, operation: 'operation 4', date: '2001/01/01' },
-  { id: 5, operation: 'operation 5', date: '2004/11/01' },
-  { id: 6, operation: 'operation 6', date: '2003/01/01' },
-  { id: 7, operation: 'operation 7', date: '2020/07/01' },
-  { id: 8, operation: 'operation 8', date: '2015/01/01' },
-];
-
-const PatientFormPreviousOperationss = () => {
+const PatientFormPreviousOperationss = ({
+  setOperations,
+  id,
+  deleteOperationType,
+}) => {
   const { formatMessage } = useIntl();
-  const dateFormat = 'YYYY/MM/DD';
+  const nextRef = useRef();
 
-  const conditionList = dummyData.map((item) => (
-    <div
-      key={item.id}
-      className="list-with-delete-item list-with-delete-item-small"
-    >
-      <Row gutter={16}>
-        <Col span={16} className="d-flex align-items-center">
-          <Typography.Text>{item.operation}</Typography.Text>
-        </Col>
-        <Col span={6}>
-          <DatePicker
-            size="small"
-            defaultValue={moment(item.date, dateFormat)}
-            format={dateFormat}
-          />
-        </Col>
-        <Col span={2} className="d-flex align-items-center justify-content-end">
-          <DeleteFilled className="list-with-delete-icon cursor-pointer" />
-        </Col>
-      </Row>
-    </div>
-  ));
+  const organization = useSelector(makeSelectOrganization());
+
+  const [search, setSearch] = useState('');
+  const debounceSearch = useDebounce(search, 500);
+  const dispatch = useDispatch();
+
+  const { items } = useSelector(makeSelectPreviousOperations());
+
+  const { page, next, count } = useSelector(makeSelectPreviousOperations());
+
+  const addOperation = (payload) => {
+    const data = {
+      id: 0,
+      operation_type_id: payload.id,
+      operation_type: payload.name,
+      year: new Date().getFullYear(),
+      key: Math.random().toString(36).substring(7),
+    };
+    setOperations((prev) => ({
+      ...prev,
+      addedOperations: [...prev.addedOperations, data],
+    }));
+
+    dispatch(appendOperation(data));
+  };
+
+  const changeOperation = (item) => {
+    if (item.id === 0) {
+      setOperations((prev) => ({
+        ...prev,
+        addedOperations: prev.addedOperations.map((operation) =>
+          operation.key === item.key ? item : operation
+        ),
+      }));
+    } else {
+      setOperations((prev) => ({
+        ...prev,
+        changedOperations: prev.changedOperations.some(
+          (operation) => operation.id === item.id
+        )
+          ? prev.changedOperations.map((operation) =>
+              operation.id === item.id ? item : operation
+            )
+          : [...prev.changedOperations, item],
+      }));
+    }
+  };
+
+  const deleteOperation = (item) => {
+    if (item.id === 0) {
+      setOperations((prev) => ({
+        ...prev,
+        addedOperations: prev.addedOperations.filter(
+          ({ key }) => item.key !== key
+        ),
+      }));
+      dispatch(filterOperation({ key: item.key }));
+    } else {
+      setOperations((prev) => ({
+        ...prev,
+        deletedOperations: [...prev.deletedOperations, item.id],
+        changedOperations: prev.changedOperations.filter(
+          (operation) => operation.id !== item.id
+        ),
+      }));
+      dispatch(filterOperation({ id: item.id }));
+    }
+  };
+
+  const { data, isFetching, isFetched } = useGetOperationTypes(
+    organization,
+    debounceSearch,
+    null,
+    debounceSearch === search && !!search.length
+  );
+
+  const findOptionByName = (name) =>
+    data.data.results.find((o) => o.name.toLowerCase() === name.toLowerCase());
+
+  const handleSelect = (option) => {
+    const selectedOption = findOptionByName(option);
+    if (selectedOption) handleAddOperation(selectedOption);
+    else handleSubmit();
+  };
+
+  const handleAddOperation = (operation) => {
+    addOperation(operation);
+    setSearch('');
+  };
+
+  const handleEnterPress = (e) => {
+    if (e.key === 'Enter' && !isFetching && isFetched) {
+      const selectedOption = findOptionByName(e.target.value);
+      if (!selectedOption) handleSubmit();
+    }
+  };
+
+  const afterAdd = () => {
+    message.success(formatMessage(messages.operationTypeAdded));
+    setSearch('');
+  };
+
+  const handleSubmit = () => {
+    const selectedOption = findOptionByName(search);
+    if (!selectedOption)
+      dispatch(addNewOperationType({ name: search, addOperation, afterAdd }));
+  };
+
+  useEffect(() => {
+    nextRef.current = { next, page };
+  }, [next, page]);
+
+  useLazyLoad(
+    '#previous-list div',
+    () =>
+      dispatch(
+        setPage({
+          page: nextRef.current.page + 1,
+          id,
+          field: PREVIOUS_OPERATIONS,
+          type: APPEND,
+        })
+      ),
+    [],
+    () => nextRef.current.next
+  );
+
+  const previousOperations = items.reduce(
+    (acc, item) =>
+      item.hidden
+        ? acc
+        : [
+            ...acc,
+            <div
+              key={item.id === 0 ? item.key : item.id}
+              className="list-with-delete-item list-with-delete-item-small"
+            >
+              <Row gutter={16}>
+                <Col span={16} className="d-flex align-items-center">
+                  <Typography.Text>{item.operation_type}</Typography.Text>
+                </Col>
+                <Col span={6}>
+                  <DatePicker
+                    size="small"
+                    picker="year"
+                    disabledDate={(current) => current.valueOf() > Date.now()}
+                    allowClear={false}
+                    defaultValue={moment(item.year, YEAR_FORMAT_YYYY)}
+                    format={YEAR_FORMAT_YYYY}
+                    onChange={(_, year) => changeOperation({ ...item, year })}
+                  />
+                </Col>
+                <Col
+                  span={2}
+                  className="d-flex align-items-center justify-content-end"
+                >
+                  <CloseOutlined
+                    onClick={() => deleteOperation(item)}
+                    className="list-with-delete-icon cursor-pointer mr-2"
+                  />
+
+                  <DeleteFilled
+                    onClick={() => deleteOperationType(item)}
+                    className="list-with-delete-icon cursor-pointer"
+                  />
+                </Col>
+              </Row>
+            </div>,
+          ],
+    []
+  );
+
+  useEffect(() => {
+    if (
+      previousOperations.length &&
+      previousOperations.length < DEFAULT_SMALL_PAGINATION_LIMIT &&
+      !!next &&
+      previousOperations.length <= count
+    )
+      dispatch(
+        setPage({
+          page: page + 1,
+          id,
+          field: PREVIOUS_OPERATIONS,
+          type: APPEND,
+        })
+      );
+  }, [previousOperations.length]);
 
   return (
     <Card className="p-4">
@@ -63,15 +237,45 @@ const PatientFormPreviousOperationss = () => {
             {formatMessage(messages.cardTitlePreviousOperatins)}
           </Title>
         </Col>
-
         <Col span={18}>
           <Form layout="vertical">
             <Form.Item label="Add previous operation">
               <Input.Group compact className="d-flex">
-                <Form.Item name="previous_operations" noStyle>
-                  <Input placeholder="Press enter to add" />
+                <Form.Item
+                  name="previous_operations"
+                  style={{ position: 'relative', width: '100%' }}
+                >
+                  <AutoComplete
+                    value={search}
+                    style={{
+                      width: '100%',
+                    }}
+                    onSelect={handleSelect}
+                    onSearch={setSearch}
+                    placeholder={formatMessage(messages.pressEnterToAdd)}
+                    onKeyDown={handleEnterPress}
+                    backfill
+                  >
+                    {data?.data?.results.map((res) => (
+                      <Option
+                        key={res.id}
+                        value={
+                          res.name.toLowerCase() === search.toLowerCase()
+                            ? search
+                            : res.name
+                        }
+                      >
+                        {res.name}
+                      </Option>
+                    ))}
+                  </AutoComplete>
+                  {isFetching && <MiniLoader />}
                 </Form.Item>
-                <Button onClick={() => {}}>
+
+                <Button
+                  onClick={() => handleSelect(search)}
+                  disabled={isFetching || !isFetched}
+                >
                   {formatMessage(messages.addNew)}
                 </Button>
               </Input.Group>
@@ -91,7 +295,7 @@ const PatientFormPreviousOperationss = () => {
               </Col>
             </Row>
             <div className="list-with-delete-body-small">
-              <Scrollbars>{conditionList}</Scrollbars>
+              <Scrollbars id="previous-list">{previousOperations}</Scrollbars>
             </div>
           </div>
         </Col>
@@ -100,4 +304,4 @@ const PatientFormPreviousOperationss = () => {
   );
 };
 
-export default PatientFormPreviousOperationss;
+export default React.memo(PatientFormPreviousOperationss);

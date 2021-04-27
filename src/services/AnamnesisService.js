@@ -7,6 +7,9 @@ const ENDPOINTS = {
   SEARCH_MEDICAL_CONDITIONS: '/medical-conditions-search/',
   CREATE_MEDICAL_CONDITION: '/medical-conditions/',
   DELETE_MEDICAL_CONDITION: '/medical-conditions/:id/',
+  GET_ORGANIZATION_TYPES:
+    '/operation-types-search/?search=:text&organization=:id',
+  POST_OPERATION_TYPES: '/operation-types/',
 };
 
 class AnamnesisService extends ApiService {
@@ -42,6 +45,22 @@ class AnamnesisService extends ApiService {
     this.apiClient.delete(
       ENDPOINTS.DELETE_MEDICAL_CONDITION.replace(':id', id)
     );
+
+  getOrganizationTypes = ({ organization, data }) =>
+    this.apiClient.get(
+      ENDPOINTS.GET_ORGANIZATION_TYPES.replace(':id', organization).replace(
+        ':text',
+        data
+      )
+    );
+
+  getNextOrganizationTypePage = (next) => this.apiClient.get(next);
+
+  addOperationType = (name) =>
+    this.apiClient.post(ENDPOINTS.POST_OPERATION_TYPES, { name });
+
+  deleteOperationType = (id) =>
+    this.apiClient.delete(ENDPOINTS.POST_OPERATION_TYPES + id + '/');
 }
 const anamnesisService = new AnamnesisService();
 export default anamnesisService;

@@ -55,6 +55,10 @@ export default defineMessages({
     id: `${commonScope}.text.save`,
     defaultMessage: 'Save',
   },
+  formConfirmationButton: {
+    id: `${commonScope}.text.confirm`,
+    defaultMessage: 'Confirm',
+  },
   deleteTitle: {
     id: `${scope}.text.delete_patient`,
     defaultMessage: 'Delete Patient',
@@ -259,5 +263,22 @@ export default defineMessages({
   medicalConditionDeleted: {
     id: `${patientOverviewScope}.text.modal.condition_deleted`,
     defaultMessage: 'Medical condition successfully deleted',
+  },
+  pressEnterToAdd: {
+    id: `${patientOverviewScope}.text.press_enter_to_add`,
+    defaultMessage: 'Press enter to add',
+  },
+  operationTypeAdded: {
+    id: `${patientOverviewScope}.text.operation_type_added`,
+    defaultMessage: 'Operation type successfully created',
+  },
+  deleteOperationType: {
+    id: `${patientOverviewScope}.text.delete_operation_type`,
+    defaultMessage:
+      'Are you sure you want to delete {name} operation type? All patients operations bound with {name} would be deleted with this action.',
+  },
+  operationTypeDeleted: {
+    id: `${patientOverviewScope}.text.operation_type_deleted`,
+    defaultMessage: 'Operation type successfully deleted',
   },
 });

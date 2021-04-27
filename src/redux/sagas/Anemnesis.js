@@ -1,5 +1,7 @@
 import { takeEvery, put, call, all, fork, select } from 'redux-saga/effects';
 import {
+  appendPreviousOperations,
+  filterOperationType,
   setExistingMedicalConditions,
   setLoading,
   setPreviousOperations,
@@ -8,6 +10,8 @@ import {
 import {
   CREATE_MEDICAL_CONDITION,
   DELETE_MEDICAL_CONDITION,
+  ADD_OPERATION_TYPE,
+  DELETE_OPERATION_TYPE,
   GET_MEDICAL_CONDITIONS,
   GET_PREVIOUS_OPERATIONS,
   SET_ANEMNESIS_PAGE,
@@ -21,6 +25,8 @@ import {
   makeSelectPreviousOperations,
 } from 'redux/selectors/Anemnesis';
 import anamnesisService from 'services/AnamnesisService';
+
+export const APPEND = 'APPEND';
 
 export function* getMedicalConditions({ payload }) {
   try {
@@ -46,7 +52,8 @@ export function* getPreviousOperations({ payload }) {
       requestData,
       payload.id
     );
-    yield put(setPreviousOperations(data));
+    if (payload.type === APPEND) yield put(appendPreviousOperations(data));
+    else yield put(setPreviousOperations(data));
   } finally {
     yield put(setLoading({ field: PREVIOUS_OPERATIONS, loading: false }));
   }
@@ -71,6 +78,28 @@ export function* deleteMedicalCondition({ payload }) {
   } catch {}
 }
 
+export function* addOperationType({ payload }) {
+  try {
+    const { data } = yield call(
+      anamnesisService.addOperationType,
+      payload.name
+    );
+    yield payload.afterAdd();
+    yield payload.addOperation(data);
+  } catch {}
+}
+
+export function* deleteOperationType({ payload }) {
+  try {
+    yield call(
+      anamnesisService.deleteOperationType,
+      payload.item.operation_type_id
+    );
+    yield payload.afterDelete();
+    yield put(filterOperationType(payload.item.operation_type_id));
+  } catch {}
+}
+
 export function* anemnesisSaga() {
   yield takeEvery(GET_MEDICAL_CONDITIONS, getMedicalConditions);
   yield takeEvery(GET_PREVIOUS_OPERATIONS, getPreviousOperations);
@@ -82,6 +111,8 @@ export function* anemnesisSaga() {
   });
   yield takeEvery(CREATE_MEDICAL_CONDITION, createMedicalCondition);
   yield takeEvery(DELETE_MEDICAL_CONDITION, deleteMedicalCondition);
+  yield takeEvery(ADD_OPERATION_TYPE, addOperationType);
+  yield takeEvery(DELETE_OPERATION_TYPE, deleteOperationType);
 }
 
 export default function* rootSaga() {

@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Field, Formik } from 'formik';
-import { Button, Card, Col, Row, Typography } from 'antd';
+import { Button, Card, Col, message, Row, Typography, Modal } from 'antd';
 import Form from 'antd/lib/form/Form';
 
 import PatientHeader from './PatientHeader';
@@ -17,6 +17,10 @@ import { MAX } from 'constants/ClinicConstants';
 import { filterNumberInput } from 'utils/helpers';
 import PatientFormExistingConditions from './PatientFormExistingConditions';
 import PatientFormPreviousOperationss from './PatientFormPreviousOperations';
+import {
+  deleteOperationTypeFromOrganization,
+  resetPreviousOperations,
+} from 'redux/actions/Anamnesis';
 
 const { Title } = Typography;
 
@@ -27,28 +31,79 @@ const PatientForm = ({
   genderChoices,
   initialState,
   loading,
+  id,
 }) => {
   const { formatMessage } = useIntl();
+  const headerRef = useRef(null);
+  const [isSaveVisible, setIsSaveVisible] = useState(false);
+  const dispatch = useDispatch();
 
   const { education, employment, material_status, ethnicities } = useSelector(
     makeSelectPatientDetails()
   );
 
+  const afterDelete = () => {
+    message.success(formatMessage(messages.operationTypeDeleted));
+  };
+
+  const deleteOperationType = (item) => {
+    Modal.confirm({
+      title: formatMessage(messages.deleteOperationType, {
+        name: item.operation_type,
+      }),
+      okText: formatMessage(messages.formConfirmationButton),
+      okType: 'danger',
+      cancelText: formatMessage(messages.cancel),
+      onOk() {
+        dispatch(deleteOperationTypeFromOrganization({ item, afterDelete }));
+      },
+    });
+  };
+
+  useEffect(() => {
+    const observerOptions = {
+      threshold: 1.0,
+    };
+    const observerCallback = (entries) => {
+      setIsSaveVisible(!entries[0].isIntersecting);
+    };
+    const observer = new IntersectionObserver(
+      observerCallback,
+      observerOptions
+    );
+
+    headerRef.current && observer.observe(headerRef.current);
+
+    return () => {
+      headerRef.current && observer.unobserve(headerRef.current);
+      dispatch(resetPreviousOperations());
+    };
+  }, []);
+
   return (
     <Formik
       enableReinitialize
-      initialValues={initialState}
+      initialValues={{
+        ...initialState,
+        operations: {
+          addedOperations: [],
+          deletedOperations: [],
+          changedOperations: [],
+        },
+      }}
       onSubmit={handleSubmit}
       validationSchema={patientSchema}
     >
       {({ values, dirty, isValid, handleSubmit, setFieldValue }) => (
         <>
-          <PatientHeader
-            title={title}
-            secondaryAction={showList}
-            primaryAction={handleSubmit}
-            primaryDisabled={!isValid || !dirty || loading}
-          />
+          <div ref={headerRef}>
+            <PatientHeader
+              title={title}
+              secondaryAction={showList}
+              primaryAction={handleSubmit}
+              primaryDisabled={!isValid || !dirty || loading}
+            />
+          </div>
           <Card className="p-4">
             <Form layout="vertical">
               <Row gutter={16}>
@@ -232,24 +287,30 @@ const PatientForm = ({
                       />
                     </Col>
                   </Row>
-                  <Row>
-                    <Col span={24} className={'text-right'}>
-                      <Button
-                        disabled={!isValid || !dirty || loading}
-                        type="primary"
-                        onClick={handleSubmit}
-                      >
-                        {formatMessage(messages.save)}
-                      </Button>
-                    </Col>
-                  </Row>
                 </Col>
               </Row>
             </Form>
           </Card>
 
           <PatientFormExistingConditions setFieldValue={setFieldValue} />
-          <PatientFormPreviousOperationss />
+
+          <PatientFormPreviousOperationss
+            id={id}
+            setOperations={(callback) =>
+              setFieldValue('operations', callback(values.operations))
+            }
+            deleteOperationType={deleteOperationType}
+          />
+
+          <Button
+            onClick={handleSubmit}
+            type="primary"
+            className={`floating-button ${
+              !isValid || !dirty || loading || !isSaveVisible ? '' : 'active'
+            }`}
+          >
+            {formatMessage(messages.save)}
+          </Button>
         </>
       )}
     </Formik>

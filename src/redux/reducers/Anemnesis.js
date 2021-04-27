@@ -5,6 +5,11 @@ import {
   SET_PREVIOUS_OPERATIONS,
   SET_ANEMNESIS_PAGE,
   RESET_EXISTING_MEDICAL_CONDITION,
+  APEND_OPERATION,
+  APPEND_OPERATIONS,
+  RESET_PREVIOUS_OPERATIONS,
+  FILTER_OPERATION,
+  FILTER_OPERATION_TYPE,
 } from 'redux/constants/Anemnesis';
 import { baseState } from 'constants/ClinicConstants';
 
@@ -43,6 +48,7 @@ const anamnesis = (state = initialState, action) =>
           ...state[PREVIOUS_OPERATIONS],
           items: action.payload.results,
           count: action.payload.count,
+          next: action.payload.next,
         };
         break;
       case SET_ANEMNESIS_PAGE:
@@ -54,6 +60,44 @@ const anamnesis = (state = initialState, action) =>
       case RESET_EXISTING_MEDICAL_CONDITION:
         draft[EXISTING_CONDITIONS] = baseState;
         break;
+      case APEND_OPERATION:
+        draft[PREVIOUS_OPERATIONS] = {
+          ...state[PREVIOUS_OPERATIONS],
+          items: [action.payload, ...state[PREVIOUS_OPERATIONS].items],
+        };
+        break;
+      case APPEND_OPERATIONS:
+        draft[PREVIOUS_OPERATIONS] = {
+          ...state[PREVIOUS_OPERATIONS],
+          items: [
+            ...state[PREVIOUS_OPERATIONS].items,
+            ...action.payload.results,
+          ],
+          next: action.payload.next,
+        };
+        break;
+      case RESET_PREVIOUS_OPERATIONS:
+        draft[PREVIOUS_OPERATIONS] = baseState;
+        break;
+      case FILTER_OPERATION:
+        draft[PREVIOUS_OPERATIONS] = {
+          ...draft[PREVIOUS_OPERATIONS],
+          items: action.payload.key
+            ? draft[PREVIOUS_OPERATIONS].items.filter(
+                (item) => item.key !== action.payload.key
+              )
+            : draft[PREVIOUS_OPERATIONS].items.map((item) =>
+                item.id === action.payload.id ? { ...item, hidden: true } : item
+              ),
+        };
+        break;
+      case FILTER_OPERATION_TYPE:
+        draft[PREVIOUS_OPERATIONS] = {
+          ...draft[PREVIOUS_OPERATIONS],
+          items: draft[PREVIOUS_OPERATIONS].items.filter(
+            (item) => item.operation_type_id !== action.payload
+          ),
+        };
     }
   });
 export default anamnesis;

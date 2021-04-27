@@ -113,7 +113,7 @@ const patient = (state = initialState, action) =>
         break;
       case SET_SCHEDULED_ORDER:
         draft.scheduledAppointments = {
-          ...state.patients,
+          ...state.scheduledAppointments,
           field: action.payload.order ? action.payload.field : '',
           order: action.payload.order || '',
         };
