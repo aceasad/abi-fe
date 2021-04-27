@@ -4,7 +4,11 @@ import { DEFAULT_SMALL_PAGINATION_LIMIT } from 'constants/ApiConstant';
 import { Card, Table, Typography } from 'antd';
 import messages from './messages';
 import { useIntl } from 'react-intl';
-import { getExistingMedicalConditions, setPage } from 'redux/actions/Anamnesis';
+import {
+  getExistingMedicalConditions,
+  resetExistingMedicalConditions,
+  setPage,
+} from 'redux/actions/Anamnesis';
 import { makeSelectExistingMedicalConditions } from 'redux/selectors/Anemnesis';
 import { EXISTING_CONDITIONS } from 'redux/reducers/Anemnesis';
 
@@ -22,10 +26,17 @@ const PatientOverviewExistingConditions = ({ patient }) => {
     if (patient) dispatch(getExistingMedicalConditions({ id: patient.id }));
   }, [patient]);
 
+  // clean-up
+  useEffect(() => {
+    return () => {
+      dispatch(resetExistingMedicalConditions());
+    };
+  }, []);
+
   const columnsHistory = [
     {
       title: formatMessage(messages.columnTitleCondition),
-      dataIndex: 'medical_condition',
+      dataIndex: 'name',
     },
   ];
 

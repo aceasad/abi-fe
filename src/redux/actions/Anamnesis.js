@@ -5,6 +5,9 @@ import {
   SET_PREVIOUS_OPERATIONS,
   SET_ANEMNESIS_LOADING,
   SET_ANEMNESIS_PAGE,
+  CREATE_MEDICAL_CONDITION,
+  DELETE_MEDICAL_CONDITION,
+  RESET_EXISTING_MEDICAL_CONDITION,
 } from 'redux/constants/Anemnesis';
 
 export const getExistingMedicalConditions = (payload) => ({
@@ -35,4 +38,18 @@ export const setLoading = (payload) => ({
 export const setPage = (payload) => ({
   type: SET_ANEMNESIS_PAGE,
   payload,
+});
+
+export const createMedicalCondition = (payload) => ({
+  type: CREATE_MEDICAL_CONDITION,
+  payload,
+});
+
+export const deleteMedicalCondition = (payload) => ({
+  type: DELETE_MEDICAL_CONDITION,
+  payload,
+});
+
+export const resetExistingMedicalConditions = () => ({
+  type: RESET_EXISTING_MEDICAL_CONDITION,
 });

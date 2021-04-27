@@ -4,6 +4,9 @@ import ApiService from './ApiService';
 const ENDPOINTS = {
   GET_EXISTING_CONDITIONS: '/patients/:id/medical-conditions/',
   GET_PREVIOUS_OPERATIONS: '/patients/:id/operations/',
+  SEARCH_MEDICAL_CONDITIONS: '/medical-conditions-search/',
+  CREATE_MEDICAL_CONDITION: '/medical-conditions/',
+  DELETE_MEDICAL_CONDITION: '/medical-conditions/:id/',
 };
 
 class AnamnesisService extends ApiService {
@@ -22,6 +25,23 @@ class AnamnesisService extends ApiService {
         offset: (page - 1) * DEFAULT_SMALL_PAGINATION_LIMIT,
       },
     });
+  searchMedicalConditions = (organizationId, query, next = null) =>
+    next
+      ? this.apiClient.get(next)
+      : this.apiClient.get(ENDPOINTS.SEARCH_MEDICAL_CONDITIONS, {
+          params: {
+            organization: organizationId,
+            search: query,
+          },
+        });
+
+  createMedicalCondition = (payload) =>
+    this.apiClient.post(ENDPOINTS.CREATE_MEDICAL_CONDITION, payload);
+
+  deleteMedicalCondition = (id) =>
+    this.apiClient.delete(
+      ENDPOINTS.DELETE_MEDICAL_CONDITION.replace(':id', id)
+    );
 }
 const anamnesisService = new AnamnesisService();
 export default anamnesisService;

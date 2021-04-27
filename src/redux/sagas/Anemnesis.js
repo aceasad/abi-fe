@@ -6,6 +6,8 @@ import {
 } from 'redux/actions/Anamnesis';
 
 import {
+  CREATE_MEDICAL_CONDITION,
+  DELETE_MEDICAL_CONDITION,
   GET_MEDICAL_CONDITIONS,
   GET_PREVIOUS_OPERATIONS,
   SET_ANEMNESIS_PAGE,
@@ -50,6 +52,25 @@ export function* getPreviousOperations({ payload }) {
   }
 }
 
+export function* createMedicalCondition({ payload }) {
+  try {
+    const { data } = yield call(
+      anamnesisService.createMedicalCondition,
+      payload.data
+    );
+    yield payload.afterCreate(data.id);
+  } catch {
+    yield payload.afterError();
+  }
+}
+
+export function* deleteMedicalCondition({ payload }) {
+  try {
+    yield call(anamnesisService.deleteMedicalCondition, payload.data);
+    yield payload.afterDelete(payload.data);
+  } catch {}
+}
+
 export function* anemnesisSaga() {
   yield takeEvery(GET_MEDICAL_CONDITIONS, getMedicalConditions);
   yield takeEvery(GET_PREVIOUS_OPERATIONS, getPreviousOperations);
@@ -59,6 +80,8 @@ export function* anemnesisSaga() {
     else if (payload.field === PREVIOUS_OPERATIONS)
       yield getPreviousOperations({ payload });
   });
+  yield takeEvery(CREATE_MEDICAL_CONDITION, createMedicalCondition);
+  yield takeEvery(DELETE_MEDICAL_CONDITION, deleteMedicalCondition);
 }
 
 export default function* rootSaga() {

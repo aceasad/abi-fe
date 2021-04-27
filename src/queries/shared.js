@@ -1,4 +1,5 @@
 import { useQuery } from 'react-query';
+import anamnesisService from 'services/AnamnesisService';
 import AppointmentService from 'services/AppointmentService';
 
 export const useGetAvailableTimeslots = (
@@ -20,5 +21,15 @@ export const useGetAvailableTimeslots = (
     {
       enabled: !!date && !!doctor && !!patient && !!appointmentType,
       onSuccess: (data) => setDisabledCallback(data),
+    }
+  );
+
+export const useSearchMedicalConditions = (organizationId, query, enabled) =>
+  useQuery(
+    ['searchMedicalConditions', organizationId, query, enabled],
+    () => anamnesisService.searchMedicalConditions(organizationId, query),
+    {
+      enabled,
+      refetchOnWindowFocus: false,
     }
   );

@@ -15,7 +15,6 @@ import { makeSelectPatientDetails } from 'redux/selectors/Patient';
 import { patientSchema } from 'utils/validations';
 import { MAX } from 'constants/ClinicConstants';
 import { filterNumberInput } from 'utils/helpers';
-import PatientOverviewExistingConditions from './PatientOverviewExistingConditions';
 import PatientFormExistingConditions from './PatientFormExistingConditions';
 import PatientFormPreviousOperationss from './PatientFormPreviousOperations';
 
@@ -42,7 +41,7 @@ const PatientForm = ({
       onSubmit={handleSubmit}
       validationSchema={patientSchema}
     >
-      {({ values, dirty, isValid, handleSubmit }) => (
+      {({ values, dirty, isValid, handleSubmit, setFieldValue }) => (
         <>
           <PatientHeader
             title={title}
@@ -249,7 +248,7 @@ const PatientForm = ({
             </Form>
           </Card>
 
-          <PatientFormExistingConditions />
+          <PatientFormExistingConditions setFieldValue={setFieldValue} />
           <PatientFormPreviousOperationss />
         </>
       )}

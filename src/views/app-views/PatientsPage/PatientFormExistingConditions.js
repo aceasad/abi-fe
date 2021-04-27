@@ -1,36 +1,158 @@
-import { Button, Card, Col, Form, Input, Row, Typography } from 'antd';
+import {
+  AutoComplete,
+  Button,
+  Card,
+  Col,
+  Form,
+  Input,
+  Row,
+  Typography,
+  Select,
+  message,
+  Modal,
+} from 'antd';
 import Flex from 'components/shared-components/Flex';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useIntl } from 'react-intl';
 import messages from './messages';
-import { DeleteFilled } from '@ant-design/icons';
+import { DeleteFilled, CloseOutlined } from '@ant-design/icons';
 import Scrollbars from 'react-custom-scrollbars';
+import { useDebounce } from 'utils/hooks';
+import { useSearchMedicalConditions } from 'queries/shared';
+import { useDispatch, useSelector } from 'react-redux';
+import { makeSelectCurrentUser } from 'redux/selectors/Auth';
+import MiniLoader from 'components/shared-components/Loading/MiniLoader';
+import { makeSelectExistingMedicalConditions } from 'redux/selectors/Anemnesis';
+import {
+  createMedicalCondition,
+  deleteMedicalCondition,
+} from 'redux/actions/Anamnesis';
 
 const { Title } = Typography;
 
-const list = [
-  { id: 1, condition: 'condition 1' },
-  { id: 2, condition: 'condition 2' },
-  { id: 3, condition: 'condition 3' },
-  { id: 4, condition: 'condition 4' },
-  { id: 5, condition: 'condition 5' },
-  { id: 6, condition: 'condition 6' },
-  { id: 7, condition: 'condition 7' },
-  { id: 8, condition: 'condition 8' },
-];
+const { Option } = Select;
 
-const PatientFormExistingConditions = () => {
+const PatientFormExistingConditions = ({ setFieldValue }) => {
   const { formatMessage } = useIntl();
+  const dispatch = useDispatch();
 
-  const conditionList = list.map((item) => (
+  const { organization } = useSelector(makeSelectCurrentUser());
+  const { items } = useSelector(makeSelectExistingMedicalConditions());
+
+  const [query, setQuery] = useState('');
+  const [text, setText] = useState(query);
+  const debouncedSearch = useDebounce(query, 500);
+  const [conditions, setConditions] = useState(items);
+
+  const { data, isFetching, isFetched } = useSearchMedicalConditions(
+    organization,
+    query,
+    debouncedSearch === query && !!query
+  );
+
+  const findOptionByName = (name) =>
+    data?.data?.results.find((option) => option.name === name);
+
+  const findOptionById = (id) =>
+    data?.data?.results.find((option) => option.id === id);
+
+  const handleSearch = (value) => {
+    setQuery(value);
+    setText(value);
+  };
+
+  const handleSelect = (value) => {
+    setText(findOptionByName(value)['name']);
+    addCondition(value);
+  };
+
+  const afterCreate = (id) => {
+    setConditions([{ id, name: text }, ...conditions]);
+    message.success(formatMessage(messages.newConditionCreated));
+  };
+
+  const afterError = () => {
+    message.error(formatMessage(messages.conditionAlreadyExists));
+  };
+
+  const removeCondition = (id) => {
+    setConditions(conditions.filter((condition) => condition.id !== id));
+  };
+
+  const deleteCondition = (id) => {
+    removeCondition(id);
+    message.success(formatMessage(messages.medicalConditionDeleted));
+  };
+
+  const handleDelete = (id) => {
+    Modal.confirm({
+      title: formatMessage(messages.deleteMedicalCondition, {
+        name: findOptionById(id)['name'],
+      }),
+      okText: 'Confirm',
+      okType: 'danger',
+      cancelText: 'Cancel',
+      onOk() {
+        dispatch(
+          deleteMedicalCondition({ data: id, afterDelete: deleteCondition })
+        );
+      },
+    });
+  };
+
+  const addCondition = (value) => {
+    const foundInAutocompleteList = findOptionByName(value);
+    // if selected condition is from autocomplete list (exists on BE)
+    if (foundInAutocompleteList) {
+      // and if not already in the list of conditions, add condition
+      if (!conditions.find((option) => option.name === value)) {
+        setConditions([foundInAutocompleteList, ...conditions]);
+      }
+      // if selected condition is not in the autocomplete list (doesn't exist on BE),
+      // create new condition and add it to the list of conditions
+    } else {
+      dispatch(
+        createMedicalCondition({
+          data: { name: value },
+          afterCreate,
+          afterError,
+        })
+      );
+    }
+  };
+
+  useEffect(() => {
+    setFieldValue(
+      'medicalConditions',
+      conditions.map((condition) => condition.id)
+    );
+  }, [conditions]);
+
+  const handleEnterPress = (e) => {
+    if (e.key === 'Enter' && !isFetching && isFetched) {
+      addCondition(e.target.value);
+    }
+  };
+
+  const conditionList = conditions.map((item) => (
     <Flex
       key={item.id}
       justifyContent="between"
       alignItems="center"
       className="list-with-delete-item list-with-delete-item-regular"
     >
-      <Typography.Text>{item.condition}</Typography.Text>
-      <DeleteFilled className="list-with-delete-icon cursor-pointer" />
+      <Typography.Text>{item.name}</Typography.Text>
+      <div>
+        <CloseOutlined
+          className="list-with-delete-icon cursor-pointer"
+          onClick={() => removeCondition(item.id)}
+          style={{ marginRight: '5px' }}
+        />
+        <DeleteFilled
+          className="list-with-delete-icon cursor-pointer"
+          onClick={() => handleDelete(item.id)}
+        />
+      </div>
     </Flex>
   ));
 
@@ -42,13 +164,30 @@ const PatientFormExistingConditions = () => {
             {formatMessage(messages.cardTitleExistingConditions)}
           </Title>
         </Col>
-
         <Col span={18}>
           <Form layout="vertical">
             <Form.Item label="Add existing medical conditions">
               <Input.Group compact className="d-flex">
-                <Form.Item name="existing_conditions" noStyle>
-                  <Input placeholder="Press enter to add" />
+                <Form.Item
+                  name="existing_conditions"
+                  style={{ width: '100%', position: 'relative' }}
+                >
+                  <AutoComplete
+                    value={text}
+                    style={{ width: '100%' }}
+                    placeholder={'Press enter to add'}
+                    onSearch={handleSearch}
+                    onSelect={handleSelect}
+                    onKeyDown={handleEnterPress}
+                    backfill
+                  >
+                    {data?.data?.results.map((item) => (
+                      <Option key={item.id} value={item.name}>
+                        {item.name}
+                      </Option>
+                    ))}
+                  </AutoComplete>
+                  {isFetching && <MiniLoader />}
                 </Form.Item>
                 <Button>{formatMessage(messages.addNew)}</Button>
               </Input.Group>

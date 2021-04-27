@@ -4,6 +4,7 @@ import {
   SET_MEDICAL_CONDITIONS,
   SET_PREVIOUS_OPERATIONS,
   SET_ANEMNESIS_PAGE,
+  RESET_EXISTING_MEDICAL_CONDITION,
 } from 'redux/constants/Anemnesis';
 import { baseState } from 'constants/ClinicConstants';
 
@@ -28,7 +29,12 @@ const anamnesis = (state = initialState, action) =>
       case SET_MEDICAL_CONDITIONS:
         draft[EXISTING_CONDITIONS] = {
           ...state[EXISTING_CONDITIONS],
-          items: action.payload.results,
+          items: action.payload.results.map((item) => {
+            return {
+              id: item.medical_condition_id,
+              name: item.medical_condition,
+            };
+          }),
           count: action.payload.count,
         };
         break;
@@ -44,6 +50,9 @@ const anamnesis = (state = initialState, action) =>
           ...state[action.payload.field],
           page: action.payload.page,
         };
+        break;
+      case RESET_EXISTING_MEDICAL_CONDITION:
+        draft[EXISTING_CONDITIONS] = baseState;
         break;
     }
   });
