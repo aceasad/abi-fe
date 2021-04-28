@@ -1,22 +1,32 @@
-import { Card, Typography, List, Collapse, Badge } from 'antd';
-import React from 'react';
+import React, { useState } from 'react';
+import { Card, Typography, List, Collapse } from 'antd';
+import { DownOutlined } from '@ant-design/icons';
 
 const { Panel } = Collapse;
 
 const OverviewList = ({ title, listData }) => {
+  const [isCollapseOpen, setIsCollapseOpen] = useState(false);
+
   const collapseHeader = (
     <>
       <div className="d-flex justify-content-between align-items-center">
         <Typography.Title level={2} className="mb-0">
           {title}
         </Typography.Title>
-        <Badge className="badge-color" count={7} />
+        <DownOutlined
+          className={`collapse-arrow-custom ${isCollapseOpen ? 'open' : ''}`}
+        />
       </div>
     </>
   );
 
   return (
-    <Collapse expandIconPosition="right" ghost className="mb-4">
+    <Collapse
+      expandIconPosition="right"
+      ghost
+      className="mb-4"
+      onChange={() => setIsCollapseOpen(!isCollapseOpen)}
+    >
       <Panel
         className="overview-collapse"
         header={collapseHeader}
