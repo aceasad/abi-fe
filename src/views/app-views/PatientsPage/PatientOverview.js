@@ -27,15 +27,12 @@ import PatientOverviewExistingConditions from './PatientOverviewExistingConditio
 import PatientOverviewPreviousOperations from './PatientOverviewPreviousOperations';
 import { getSignleAppointmnet } from 'redux/actions/Appointment';
 import AppointmentPreview from '../CalendarPage/AppointmentPreview';
-import { SCHEDULED_APPOINTMENT } from 'constants/ClinicConstants';
 
 const { Text, Title } = Typography;
 
 const PatientOverview = ({ patientId, showList, updatePatient }) => {
   const dispatch = useDispatch();
-  const { patient, loading, lastAppointment } = useSelector(
-    makeSelectPatientOverview()
-  );
+  const { patient, loading } = useSelector(makeSelectPatientOverview());
   const [showMessages, setShowMessages] = useState();
   const { formatMessage } = useIntl();
 
@@ -141,7 +138,6 @@ const PatientOverview = ({ patientId, showList, updatePatient }) => {
                   material_status: patient?.material_status?.name,
                   employment: patient?.employment?.name,
                 }}
-                lastAppointment={lastAppointment}
               />
             </>
           )}

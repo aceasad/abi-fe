@@ -2,11 +2,7 @@ import { Divider } from 'antd';
 import React from 'react';
 import PatientInfoListItem from './PatientInfoListItem';
 
-const PatientOverviewDetails = ({
-  fields,
-  patient,
-  lastAppointment = null,
-}) => {
+const PatientOverviewDetails = ({ fields, patient }) => {
   const firstDivider = 4;
   const secondDivider = 11;
 
@@ -24,12 +20,6 @@ const PatientOverviewDetails = ({
           {hasDivider(index) && <Divider className="mt-2 mb-3" />}
         </div>
       ))}
-      {lastAppointment && (
-        <PatientInfoListItem>
-          {fields.last_appointment}
-          {lastAppointment}
-        </PatientInfoListItem>
-      )}
     </>
   );
 };
