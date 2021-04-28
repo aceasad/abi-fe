@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import CreateStaff from './CreateStaff';
 import StaffAppointments from './StaffAppointments';
 import StaffList from './StaffList';
@@ -11,14 +11,18 @@ export const STAFF_PAGE = {
   APPOINTMENTS: 3,
 };
 
-const StaffPage = () => {
-  const [staffPage, setStaffPage] = useState(STAFF_PAGE.LIST);
+const StaffPage = ({ location: { key } }) => {
+  const [staffPage, setStaffPage] = useState({ id: STAFF_PAGE.LIST });
 
   const showCreate = () => setStaffPage({ id: STAFF_PAGE.CREATE });
   const showList = () => setStaffPage({ id: STAFF_PAGE.LIST });
   const editUser = (data) => setStaffPage({ id: STAFF_PAGE.EDIT, data });
   const seeAppointments = (data) =>
     setStaffPage({ id: STAFF_PAGE.APPOINTMENTS, data });
+
+  useEffect(() => {
+    setStaffPage({ id: STAFF_PAGE.LIST });
+  }, [key]);
 
   switch (staffPage.id) {
     case STAFF_PAGE.LIST:

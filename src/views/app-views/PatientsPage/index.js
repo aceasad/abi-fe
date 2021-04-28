@@ -14,7 +14,7 @@ export const PATIENT_PAGE = {
   EDIT: 3,
   PREVIEW: 4,
 };
-function Patients() {
+function Patients({ location: { key } }) {
   const location = useLocation();
 
   const [patientPage, setPatientPage] = useState(PATIENT_PAGE.LIST);
@@ -37,6 +37,10 @@ function Patients() {
   useEffect(() => {
     dispatch(getPatientDetails());
   }, [dispatch]);
+
+  useEffect(() => {
+    setPatientPage(PATIENT_PAGE.LIST);
+  }, [key]);
 
   switch (patientPage.id) {
     case PATIENT_PAGE.LIST:
