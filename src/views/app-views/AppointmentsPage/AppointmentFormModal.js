@@ -35,6 +35,7 @@ const AppointmentFormModal = ({
   loadingData,
   loading,
   appointment,
+  patientDefault = '',
 }) => {
   const { formatMessage } = useIntl();
 
@@ -116,12 +117,21 @@ const AppointmentFormModal = ({
                     options={patients}
                     optionField="full_name"
                     query={query}
-                    defaultValue={isEditForm && appointment.patient.full_name}
+                    defaultValue={
+                      isEditForm
+                        ? appointment.patient.full_name
+                        : patientDefault
+                    }
+                    disabled={patientDefault}
                     loading={patientsLoading}
                   />
                 </Col>
                 <Col xs={4}>
-                  <Button type="primary" style={{ marginTop: '1.8rem' }}>
+                  <Button
+                    type="primary"
+                    style={{ marginTop: '1.8rem' }}
+                    disabled={patientDefault}
+                  >
                     <Link
                       to={{
                         pathname: 'patients',

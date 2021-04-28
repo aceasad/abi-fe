@@ -14,12 +14,16 @@ import {
 import { makeSelectSingleAppointment } from 'redux/selectors/Appointment';
 import moment from 'moment';
 import { DATE_FORMAT_YYYY_MM_DD } from 'constants/DateConstant';
+import { setScheduledPage } from 'redux/actions/Patient';
 
 const CreateAppointment = ({
   appointmentTypes,
   doctors,
   closeModal,
   isDataLoading,
+  patient_full_name = '',
+  patient_id = '',
+  isCalendar = true,
 }) => {
   const dispatch = useDispatch();
   const { formatMessage } = useIntl();
@@ -27,12 +31,16 @@ const CreateAppointment = ({
   const afterCreate = (newAppointmentStartDatetime) => {
     message.success(formatMessage(messages.newAppointmentCreated));
     closeModal();
-    dispatch(
-      getDoctorAppointments(
-        moment(newAppointmentStartDatetime).format(DATE_FORMAT_YYYY_MM_DD)
-      )
-    );
-    dispatch(getDateAppointments(getYearAndMonth(newAppointmentStartDatetime)));
+    if (isCalendar) {
+      dispatch(
+        getDoctorAppointments(
+          moment(newAppointmentStartDatetime).format(DATE_FORMAT_YYYY_MM_DD)
+        )
+      );
+      dispatch(
+        getDateAppointments(getYearAndMonth(newAppointmentStartDatetime))
+      );
+    } else dispatch(setScheduledPage({ page: 1, id: patient_id }));
   };
 
   const afterError = (msg) => {
@@ -57,7 +65,7 @@ const CreateAppointment = ({
     <AppointmentFormModal
       title={formatMessage(messages.createAppointmentTitle)}
       initialState={{
-        patient: '',
+        patient: patient_id,
         doctor: '',
         appointmentType: '',
         price: 0,
@@ -73,6 +81,8 @@ const CreateAppointment = ({
       handleSubmit={handleSubmit}
       loadingData={isDataLoading}
       loading={singleLoading}
+      patientDefault={patient_full_name}
+      patient_id={patient_id}
     />
   );
 };
