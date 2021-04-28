@@ -46,7 +46,7 @@ const PatientForm = ({
     message.success(formatMessage(messages.operationTypeDeleted));
   };
 
-  const deleteOperationType = (item) => {
+  const deleteOperationType = ({ item, action }) => {
     Modal.confirm({
       title: formatMessage(messages.deleteOperationType, {
         name: item.operation_type,
@@ -55,7 +55,15 @@ const PatientForm = ({
       okType: 'danger',
       cancelText: formatMessage(messages.cancel),
       onOk() {
-        dispatch(deleteOperationTypeFromOrganization({ item, afterDelete }));
+        dispatch(
+          deleteOperationTypeFromOrganization({
+            item,
+            afterDelete: () => {
+              afterDelete();
+              action(item);
+            },
+          })
+        );
       },
     });
   };
