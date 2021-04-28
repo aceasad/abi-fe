@@ -12,7 +12,6 @@ import {
   APPEND_TO_APPOINTMENT_STATUS,
   FILTER_DELETED_APPOINTMENT,
   SET_MISSING_REASONS,
-  SET_ENDED_APPOINTMENT,
   SET_PATIENTS_AUTOCOMPLETE,
   SET_PATIENTS_LOADING_AUTOCOMPLETE,
   RESET_PATIENTS_AUTOCOMPLETE,
@@ -126,13 +125,7 @@ const appointment = (state = initialState, action) =>
       case SET_MISSING_REASONS:
         draft.missingReasons = action.payload;
         break;
-      case SET_ENDED_APPOINTMENT:
-        draft.appointment = {
-          ...state.appointment,
-          ...action.payload.data,
-          missing_reason: action.payload?.missing_reason?.name,
-        };
-        break;
+
       case SET_PATIENTS_LOADING_AUTOCOMPLETE:
         draft.patients.loading = action.payload;
         break;
