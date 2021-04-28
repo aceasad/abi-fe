@@ -49,12 +49,9 @@ const makeSelectPatientLoading = () =>
   createSelector(selectPatientsDomain, ({ patients }) => patients.loading);
 
 const makeSelectPatientOverview = () =>
-  createSelector(selectPatientsDomain, ({ patients, appointmentHistory }) => ({
+  createSelector(selectPatientsDomain, ({ patients }) => ({
     loading: patients.loading,
     patient: patients.single,
-    lastAppointment: appointmentHistory.items.length
-      ? appointmentHistory.items[0].date
-      : null,
   }));
 
 const makeSelectScheduledAppointments = () =>
