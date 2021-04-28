@@ -14,12 +14,14 @@ import {
 import { message } from 'antd';
 import moment from 'moment';
 import { DATE_FORMAT_DD_MMM_YYYY } from 'constants/DateConstant';
+import { makeSelectExistingMedicalConditions } from 'redux/selectors/Anemnesis';
 
 const UpdatePatient = ({ showList, patientId }) => {
   const { formatMessage } = useIntl();
   const dispatch = useDispatch();
 
   const { patient, loading } = useSelector(makeSelectPatientSingle());
+  const { items } = useSelector(makeSelectExistingMedicalConditions());
 
   const GENDER_CHOICES = [
     { id: GENDER.MALE, name: formatMessage(messages.male) },
@@ -56,6 +58,7 @@ const UpdatePatient = ({ showList, patientId }) => {
         ethnicity: patient?.ethnicity?.id,
         material_status: patient?.material_status?.id,
         employment: patient?.employment?.id,
+        medicalConditions: items,
       }
     : {
         first_name: '',
@@ -72,6 +75,7 @@ const UpdatePatient = ({ showList, patientId }) => {
         employment: '',
         education: '',
         insurance: '',
+        medicalConditions: [],
       };
 
   return (

@@ -19,6 +19,7 @@ import PatientFormExistingConditions from './PatientFormExistingConditions';
 import PatientFormPreviousOperationss from './PatientFormPreviousOperations';
 import {
   deleteOperationTypeFromOrganization,
+  resetExistingMedicalConditions,
   resetPreviousOperations,
 } from 'redux/actions/Anamnesis';
 
@@ -85,6 +86,7 @@ const PatientForm = ({
     return () => {
       headerRef.current && observer.unobserve(headerRef.current);
       dispatch(resetPreviousOperations());
+      dispatch(resetExistingMedicalConditions());
     };
   }, []);
 
@@ -300,7 +302,10 @@ const PatientForm = ({
             </Form>
           </Card>
 
-          <PatientFormExistingConditions />
+          <PatientFormExistingConditions
+            setFieldValue={setFieldValue}
+            id={id}
+          />
 
           <PatientFormPreviousOperationss
             id={id}

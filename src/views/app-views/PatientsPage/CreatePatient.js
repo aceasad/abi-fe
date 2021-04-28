@@ -54,6 +54,7 @@ const CreatePatient = ({ showList }) => {
         employment: '',
         education: '',
         insurance: '',
+        medicalConditions: [],
       }}
       genderChoices={GENDER_CHOICES}
     />

@@ -24,6 +24,16 @@ export const useGetAvailableTimeslots = (
     }
   );
 
+export const useSearchMedicalConditions = (organizationId, query, enabled) =>
+  useQuery(
+    ['searchMedicalConditions', organizationId, query, enabled],
+    () => anamnesisService.searchMedicalConditions(organizationId, query),
+    {
+      enabled,
+      refetchOnWindowFocus: false,
+    }
+  );
+
 export const useGetOperationTypes = (organization, data, next, enabled) =>
   useQuery(
     ['getOperationTypes', organization, data, next, enabled],

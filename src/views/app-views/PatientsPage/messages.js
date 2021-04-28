@@ -247,6 +247,23 @@ export default defineMessages({
     id: `${commonScope}.text.add_new`,
     defaultMessage: 'Add New',
   },
+  newConditionCreated: {
+    id: `${scope}.text.success.new_condition_created`,
+    defaultMessage: 'Condition Created',
+  },
+  conditionAlreadyExists: {
+    id: `${patientOverviewScope}.text.error.condition_already_exists`,
+    defaultMessage: 'Condition with this name already exists',
+  },
+  deleteMedicalCondition: {
+    id: `${patientOverviewScope}.text.modal.confirm_delete_message`,
+    defaultMessage:
+      'Are you sure you want to delete "{name}" medical condition? All patients bound with "{name}" medical condition will be afected by this action.',
+  },
+  medicalConditionDeleted: {
+    id: `${patientOverviewScope}.text.modal.condition_deleted`,
+    defaultMessage: 'Medical condition successfully deleted',
+  },
   pressEnterToAdd: {
     id: `${patientOverviewScope}.text.press_enter_to_add`,
     defaultMessage: 'Press enter to add',
