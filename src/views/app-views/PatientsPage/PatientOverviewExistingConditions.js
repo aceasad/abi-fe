@@ -24,6 +24,7 @@ const PatientOverviewExistingConditions = ({ patient }) => {
 
   useEffect(() => {
     if (patient) dispatch(getExistingMedicalConditions({ id: patient.id }));
+    return () => dispatch(resetExistingMedicalConditions());
   }, [patient]);
 
   const columnsHistory = [
