@@ -1,15 +1,49 @@
-import { PageHeader } from 'antd';
+import { PageHeader, Typography } from 'antd';
 import React from 'react';
+import { useIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
 import { makeSelectStaff } from 'redux/selectors/Staff';
-import StaffAppointmentsList from './StaffAppointmentsList';
-import StaffAppointmentsListPast from './StaffAppointmentsListPast';
+import Appointments from './Appointments';
+import messages from '../PatientsPage/messages';
+import { HISTORY, SCHEDULED } from 'redux/reducers/Staff';
+
+const STATUS_OPTIONS = {
+  SCHEDULED: 'Scheduled',
+  ATTENDED: 'Attended',
+  RESCHEDULED: 'Rescheduled',
+  CANCELLED: 'Cancelled',
+};
+
+const columnMap = {
+  date: 'start_datetime',
+  patient_full_name: 'patient__last_name,patient__first_name',
+  appointment_type_name: 'appointment_type__name',
+  status_name: 'status__name',
+};
+
+export const statusColor = (status) => {
+  switch (status) {
+    case STATUS_OPTIONS.SCHEDULED:
+      return (
+        <Typography.Text className="text-primary">{status}</Typography.Text>
+      );
+    case STATUS_OPTIONS.ATTENDED:
+      return <Typography.Text type="success">{status}</Typography.Text>;
+    case STATUS_OPTIONS.RESCHEDULED:
+      return <Typography.Text type="warning">{status}</Typography.Text>;
+    case STATUS_OPTIONS.CANCELLED:
+      return <Typography.Text type="secondary">{status}</Typography.Text>;
+    default:
+      return <Typography.Text>{status}</Typography.Text>;
+  }
+};
 
 const StaffAppointments = ({ staffId, showList }) => {
   const { staff } = useSelector(makeSelectStaff());
   const staffData = staff.find((obj) => {
     return obj.id === staffId;
   });
+  const { formatMessage } = useIntl();
 
   return (
     <>
@@ -20,8 +54,72 @@ const StaffAppointments = ({ staffId, showList }) => {
         title={`${staffData.first_name} ${staffData.last_name}`}
         subTitle={`${staffData.seniority} ${staffData.specialization}`}
       />
-      <StaffAppointmentsList />
-      <StaffAppointmentsListPast />
+      <Appointments field={SCHEDULED} id={staffId} columnMap={columnMap}>
+        <Appointments.Table
+          title={formatMessage(messages.cardTitleScheduledAppointments)}
+          columns={[
+            {
+              title: formatMessage(messages.columnTitleDate),
+              dataIndex: 'date',
+              sorter: true,
+            },
+            {
+              title: formatMessage(messages.columnTitleTime),
+              dataIndex: 'time',
+              sorter: false,
+            },
+            {
+              title: formatMessage(messages.columnTitlePatient),
+              dataIndex: ['patient', 'full_name'],
+              sorter: true,
+            },
+            {
+              title: formatMessage(messages.columnTitleType),
+              dataIndex: ['appointment_type', 'name'],
+              sorter: true,
+            },
+            {
+              title: formatMessage(messages.columnTitlePrediction),
+              dataIndex: 'prediction',
+              sorter: true,
+              render: '',
+            },
+          ]}
+        />
+      </Appointments>
+      <Appointments field={HISTORY} id={staffId} columnMap={columnMap}>
+        <Appointments.Table
+          title={formatMessage(messages.staffPastAppointments)}
+          columns={[
+            {
+              title: formatMessage(messages.columnTitleDate),
+              dataIndex: 'date',
+              sorter: true,
+            },
+            {
+              title: formatMessage(messages.columnTitleTime),
+              dataIndex: 'time',
+              sorter: false,
+            },
+            {
+              title: formatMessage(messages.columnTitlePatient),
+              dataIndex: ['patient', 'full_name'],
+              sorter: true,
+            },
+            {
+              title: formatMessage(messages.columnTitleType),
+              dataIndex: ['appointment_type', 'name'],
+              sorter: true,
+            },
+            {
+              title: formatMessage(messages.columnTitleStatus),
+              dataIndex: ['status', 'name'],
+              sorter: true,
+              render: statusColor,
+            },
+          ]}
+        />
+      </Appointments>
     </>
   );
 };

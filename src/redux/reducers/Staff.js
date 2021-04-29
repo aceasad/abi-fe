@@ -4,8 +4,16 @@ import {
   SET_STAFF_LOADING,
   SET_STAFF_DETAILS,
   SET_STAFF_SINGLE,
+  SET_STAFF_APPOINTMENTS,
+  SET_STAFF_APPOINTMENTS_PAGE,
+  SET_STAFF_APPOINTMENTS_LOADING,
+  SET_STAFF_APPOINTMENTS_ORDER,
 } from '../constants/Staff';
 import produce from 'immer';
+import { baseState } from 'constants/ClinicConstants';
+
+export const SCHEDULED = 'scheduled';
+export const HISTORY = 'history';
 
 const initialState = {
   staff: [],
@@ -16,6 +24,8 @@ const initialState = {
   specializations: [],
   seniorities: [],
   staffSingle: null,
+  [SCHEDULED]: baseState,
+  [HISTORY]: baseState,
 };
 
 /* eslint-disable default-case */
@@ -39,6 +49,32 @@ const staff = (state = initialState, action) =>
         break;
       case SET_STAFF_SINGLE:
         draft.staffSingle = action.payload;
+        break;
+      case SET_STAFF_APPOINTMENTS:
+        draft[action.payload.field] = {
+          ...state[action.payload.field],
+          items: action.payload.results,
+          count: action.payload.count,
+        };
+        break;
+      case SET_STAFF_APPOINTMENTS_PAGE:
+        draft[action.payload.field] = {
+          ...state[action.payload.field],
+          page: action.payload.page,
+        };
+        break;
+      case SET_STAFF_APPOINTMENTS_LOADING:
+        draft[action.payload.field] = {
+          ...state[action.payload.field],
+          loading: action.payload.loading,
+        };
+        break;
+      case SET_STAFF_APPOINTMENTS_ORDER:
+        draft[action.payload.field] = {
+          ...state[action.payload.field],
+          field: action.payload.order ? action.payload.sort_field : '',
+          order: action.payload.order || '',
+        };
         break;
     }
   });
