@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useContext, useEffect, useState } from 'react';
+import { Link, withRouter } from 'react-router-dom';
 import { Menu, Grid } from 'antd';
 import IntlMessage from '../util-components/IntlMessage';
 import Icon from '../util-components/Icon';
@@ -8,6 +8,9 @@ import { connect } from 'react-redux';
 import { SIDE_NAV_LIGHT, NAV_TYPE_SIDE } from 'constants/ThemeConstant';
 import utils from 'utils';
 import { onMobileNavToggle } from 'redux/actions/Theme';
+import { useHistory } from 'react-router-dom';
+import { beforeRoute, BeforeRouteContext } from 'utils/context';
+import { generateKey } from 'utils/helpers';
 
 const { SubMenu } = Menu;
 const { useBreakpoint } = Grid;
@@ -29,22 +32,36 @@ const setDefaultOpen = (key) => {
   return keyList;
 };
 
-const SideNavContent = (props) => {
-  const {
-    sideNavTheme,
-    routeInfo,
-    hideGroupTitle,
-    localization,
-    onMobileNavToggle,
-  } = props;
-
+const SideNavContent = ({
+  sideNavTheme,
+  routeInfo,
+  hideGroupTitle,
+  localization,
+  onMobileNavToggle,
+}) => {
   const isMobile = !utils.getBreakPoint(useBreakpoint()).includes('lg');
 
-  const closeMobileNav = () => {
+  const history = useHistory();
+  const [route, setRoute] = useState({});
+  const { proceed, setContext, action } = useContext(BeforeRouteContext);
+  const closeMobileNav = (e) => {
+    e.preventDefault();
+
+    setRoute({ path: e.target.pathname, key: generateKey() });
     if (isMobile) {
       onMobileNavToggle(false);
     }
   };
+
+  useEffect(() => {
+    if (route && proceed) {
+      setContext(beforeRoute);
+      history.push(route.path);
+    } else if (action.toString() == beforeRoute.action.toString()) {
+      history.push(route.path);
+    } else if (route) action();
+  }, [proceed, route.key]);
+
   return (
     <Menu
       theme={sideNavTheme === SIDE_NAV_LIGHT ? 'light' : 'dark'}
@@ -80,10 +97,7 @@ const SideNavContent = (props) => {
                       <span>
                         {setLocale(localization, subMenuSecond.title)}
                       </span>
-                      <Link
-                        onClick={() => closeMobileNav()}
-                        to={subMenuSecond.path}
-                      />
+                      <Link onClick={closeMobileNav} to={subMenuSecond.path} />
                     </Menu.Item>
                   ))}
                 </SubMenu>
@@ -91,10 +105,7 @@ const SideNavContent = (props) => {
                 <Menu.Item key={subMenuFirst.key}>
                   {subMenuFirst.icon ? <Icon type={subMenuFirst.icon} /> : null}
                   <span>{setLocale(localization, subMenuFirst.title)}</span>
-                  <Link
-                    onClick={() => closeMobileNav()}
-                    to={subMenuFirst.path}
-                  />
+                  <Link onClick={closeMobileNav} to={subMenuFirst.path} />
                 </Menu.Item>
               )
             )}
@@ -104,7 +115,7 @@ const SideNavContent = (props) => {
             {menu.icon ? <Icon type={menu?.icon} /> : null}
             <span>{setLocale(localization, menu?.title)}</span>
             {menu.path ? (
-              <Link onClick={() => closeMobileNav()} to={menu.path} />
+              <Link onClick={closeMobileNav} to={menu.path} />
             ) : null}
           </Menu.Item>
         )
@@ -185,4 +196,6 @@ const mapStateToProps = ({ theme }) => {
   return { sideNavTheme, topNavColor };
 };
 
-export default connect(mapStateToProps, { onMobileNavToggle })(MenuContent);
+export default withRouter(
+  connect(mapStateToProps, { onMobileNavToggle })(MenuContent)
+);

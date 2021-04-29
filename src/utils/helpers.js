@@ -102,3 +102,5 @@ export const convertDateTimeStringToUtcString = (
 
 export const formHasError = (fields, errors) =>
   fields.some((fieldName) => !!errors[fieldName]);
+
+export const generateKey = () => Math.random().toString(36).substring(7);

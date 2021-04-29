@@ -281,4 +281,16 @@ export default defineMessages({
     id: `${patientOverviewScope}.text.operation_type_deleted`,
     defaultMessage: 'Operation type successfully deleted',
   },
+  discardText: {
+    id: `${patientOverviewScope}.text.discard_text`,
+    defaultMessage: 'If you leave this page all changes will be discarded.',
+  },
+  discardTitle: {
+    id: `${patientOverviewScope}.text.discard_title`,
+    defaultMessage: 'Changes not saved',
+  },
+  discardButton: {
+    id: `${patientOverviewScope}.text.discard_button`,
+    defaultMessage: 'Discard Changes',
+  },
 });
