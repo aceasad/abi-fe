@@ -17,6 +17,7 @@ const FormAutocomplete = ({
   setQuery,
   defaultValue,
   loading,
+  ...props
 }) => {
   const { formatMessage } = useIntl();
 
@@ -62,6 +63,7 @@ const FormAutocomplete = ({
         onBlur={() => setFieldTouched(field.name, true)}
         onSearch={handleSearch}
         onSelect={handleSelected}
+        {...props}
       >
         {options
           ? options.map((item) => (

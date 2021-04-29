@@ -19,6 +19,7 @@ import PatientFormExistingConditions from './PatientFormExistingConditions';
 import PatientFormPreviousOperationss from './PatientFormPreviousOperations';
 import {
   deleteOperationTypeFromOrganization,
+  resetExistingMedicalConditions,
   resetPreviousOperations,
 } from 'redux/actions/Anamnesis';
 
@@ -46,7 +47,7 @@ const PatientForm = ({
     message.success(formatMessage(messages.operationTypeDeleted));
   };
 
-  const deleteOperationType = (item) => {
+  const deleteOperationType = ({ item, action }) => {
     Modal.confirm({
       title: formatMessage(messages.deleteOperationType, {
         name: item.operation_type,
@@ -55,7 +56,15 @@ const PatientForm = ({
       okType: 'danger',
       cancelText: formatMessage(messages.cancel),
       onOk() {
-        dispatch(deleteOperationTypeFromOrganization({ item, afterDelete }));
+        dispatch(
+          deleteOperationTypeFromOrganization({
+            item,
+            afterDelete: () => {
+              afterDelete();
+              action(item);
+            },
+          })
+        );
       },
     });
   };
@@ -77,6 +86,7 @@ const PatientForm = ({
     return () => {
       headerRef.current && observer.unobserve(headerRef.current);
       dispatch(resetPreviousOperations());
+      dispatch(resetExistingMedicalConditions());
     };
   }, []);
 
@@ -292,7 +302,10 @@ const PatientForm = ({
             </Form>
           </Card>
 
-          <PatientFormExistingConditions />
+          <PatientFormExistingConditions
+            setFieldValue={setFieldValue}
+            id={id}
+          />
 
           <PatientFormPreviousOperationss
             id={id}

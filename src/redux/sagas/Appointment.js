@@ -32,7 +32,6 @@ import {
   setDoctorAppointments,
   setDoctorsLoading,
   setPatientsAutocomplete,
-  setEndedAppointment,
   setMissingReasons,
   setSignleAppointmnet,
   setSignleAppointmnetLoading,
@@ -162,9 +161,9 @@ export function* getMissingReasons() {
 export function* endAppointemnt({ payload }) {
   try {
     yield put(setSignleAppointmnetLoading(true));
-    yield call(appointmentService.endAppointemnt, payload);
+    const { data } = yield call(appointmentService.endAppointemnt, payload);
     yield payload.afterEnd();
-    yield put(setEndedAppointment(payload));
+    yield put(setSignleAppointmnet(data));
   } catch {
   } finally {
     yield put(setSignleAppointmnetLoading(false));

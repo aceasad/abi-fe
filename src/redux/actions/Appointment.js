@@ -24,7 +24,6 @@ import {
   END_APPOINTMENT,
   GET_MISSING_REASONS,
   SET_MISSING_REASONS,
-  SET_ENDED_APPOINTMENT,
   SET_PATIENTS_AUTOCOMPLETE,
   SET_PATIENTS_LOADING_AUTOCOMPLETE,
   RESET_PATIENTS_AUTOCOMPLETE,
@@ -157,11 +156,6 @@ export const getMissingReasons = () => ({
 
 export const setMissingReasons = (payload) => ({
   type: SET_MISSING_REASONS,
-  payload,
-});
-
-export const setEndedAppointment = (payload) => ({
-  type: SET_ENDED_APPOINTMENT,
   payload,
 });
 

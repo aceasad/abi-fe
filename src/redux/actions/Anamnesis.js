@@ -5,6 +5,9 @@ import {
   SET_PREVIOUS_OPERATIONS,
   SET_ANEMNESIS_LOADING,
   SET_ANEMNESIS_PAGE,
+  CREATE_MEDICAL_CONDITION,
+  DELETE_MEDICAL_CONDITION,
+  RESET_EXISTING_MEDICAL_CONDITION,
   ADD_OPERATION_TYPE,
   APEND_OPERATION,
   APPEND_OPERATIONS,
@@ -12,6 +15,7 @@ import {
   FILTER_OPERATION,
   DELETE_OPERATION_TYPE,
   FILTER_OPERATION_TYPE,
+  APPEND_EXISTING_CONDITIONS,
 } from 'redux/constants/Anemnesis';
 
 export const getExistingMedicalConditions = (payload) => ({
@@ -42,6 +46,20 @@ export const setLoading = (payload) => ({
 export const setPage = (payload) => ({
   type: SET_ANEMNESIS_PAGE,
   payload,
+});
+
+export const createMedicalCondition = (payload) => ({
+  type: CREATE_MEDICAL_CONDITION,
+  payload,
+});
+
+export const deleteMedicalCondition = (payload) => ({
+  type: DELETE_MEDICAL_CONDITION,
+  payload,
+});
+
+export const resetExistingMedicalConditions = () => ({
+  type: RESET_EXISTING_MEDICAL_CONDITION,
 });
 
 export const addNewOperationType = (payload) => ({
@@ -75,5 +93,10 @@ export const deleteOperationTypeFromOrganization = (payload) => ({
 
 export const filterOperationType = (payload) => ({
   type: FILTER_OPERATION_TYPE,
+  payload,
+});
+
+export const appendExistingConditions = (payload) => ({
+  type: APPEND_EXISTING_CONDITIONS,
   payload,
 });

@@ -5,7 +5,11 @@ import { Card, Table, Typography } from 'antd';
 import messages from './messages';
 import { useIntl } from 'react-intl';
 import { makeSelectPreviousOperations } from 'redux/selectors/Anemnesis';
-import { getPreviousOperations, setPage } from 'redux/actions/Anamnesis';
+import {
+  getPreviousOperations,
+  resetPreviousOperations,
+  setPage,
+} from 'redux/actions/Anamnesis';
 import { PREVIOUS_OPERATIONS } from 'redux/reducers/Anemnesis';
 
 const { Title } = Typography;
@@ -20,6 +24,7 @@ const PatientOverviewPreviousOperations = ({ patient }) => {
 
   useEffect(() => {
     if (patient) dispatch(getPreviousOperations({ id: patient.id }));
+    return () => dispatch(resetPreviousOperations());
   }, [patient]);
 
   const columnsHistory = [

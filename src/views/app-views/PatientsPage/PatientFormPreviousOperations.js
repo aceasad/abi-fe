@@ -202,7 +202,9 @@ const PatientFormPreviousOperationss = ({
                   />
 
                   <DeleteFilled
-                    onClick={() => deleteOperationType(item)}
+                    onClick={() =>
+                      deleteOperationType({ item, action: deleteOperation })
+                    }
                     className="list-with-delete-icon cursor-pointer"
                   />
                 </Col>

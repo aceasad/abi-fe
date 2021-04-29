@@ -1,5 +1,5 @@
 import { Button, Card, Table, Typography } from 'antd';
-import React from 'react';
+import React, { useState } from 'react';
 import { useIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
 import { setScheduledOrder, setScheduledPage } from 'redux/actions/Patient';
@@ -11,6 +11,8 @@ import {
   ORDERING,
 } from 'constants/ApiConstant';
 import { SCHEDULED_APPOINTMENT } from 'constants/ClinicConstants';
+import AppointmentFormWrapper from '../AppointmentsPage/AppointmentFormWrapper';
+import CreateAppointment from '../AppointmentsPage/CreateAppointment';
 
 const { Title, Text } = Typography;
 
@@ -59,6 +61,12 @@ const PatientOverviewScheduledCard = ({ patient, showAppointment }) => {
 
   const { formatMessage } = useIntl();
 
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const closeModal = () => {
+    setIsModalVisible(false);
+  };
+
   const columnsScheduled = [
     {
       title: formatMessage(messages.columnTitleDate),
@@ -94,7 +102,7 @@ const PatientOverviewScheduledCard = ({ patient, showAppointment }) => {
         <Title level={4} className="mb-0">
           {formatMessage(messages.cardTitleScheduledAppointments)}
         </Title>
-        <Button ghost type="primary">
+        <Button ghost type="primary" onClick={() => setIsModalVisible(true)}>
           {formatMessage(messages.buttonNewAppointment)}
         </Button>
       </Flex>
@@ -117,6 +125,21 @@ const PatientOverviewScheduledCard = ({ patient, showAppointment }) => {
           loading={loading}
         />
       </div>
+      {isModalVisible && (
+        <AppointmentFormWrapper
+          Component={(props) => (
+            <CreateAppointment
+              {...props}
+              isCalendar={false}
+              patient_id={patient.id}
+              patient_full_name={patient.full_name}
+            />
+          )}
+          isEditForm={false}
+          closeModal={closeModal}
+          isModalVisible={isModalVisible}
+        />
+      )}
     </Card>
   );
 };

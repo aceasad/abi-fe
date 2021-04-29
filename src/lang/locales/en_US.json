@@ -321,6 +321,8 @@
   "patients_page.text.delete_description": "Are you sure you want to delete {label}?",
   "patients_page.text.delete_success": "Patient Deleted",
   "patients_page.text.edit_patient": "Edit Patient",
+  "patients_page.text.success.new_condition_created": "Condition Created",
+  "patients_page.text.error.condition_already_exists": "Condition with this name already exists",
 
   "patient_overview.title": "Overview",
   "patient_overview.back_to_patients": "Back to patients",
@@ -343,6 +345,8 @@
   "patient_overview.table.column_title.time_of_surgery": "Time of surgery",
   "patient_overview.messages": "Messages",
   "patient_overview.back_to_overview": "Back to patient overview",
+  "patient_overview.text.modal.confirm_delete_message": "Are you sure you want to delete \"{name}\" medical condition? All patients bound with \"{name}\" medical condition will be afected by this action.",
+  "patient_overview.text.modal.condition_deleted": "Medical condition successfully deleted",
   "patient_overview.text.press_enter_to_add": "Press enter to add",
   "patient_overview.text.operation_type_added": "Operation type successfully created",
   "patient_overview.text.operation_type_deleted": "Operation type successfully deleted",
