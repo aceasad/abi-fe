@@ -20,6 +20,7 @@ export const useGetAvailableTimeslots = (
       ),
     {
       enabled: !!date && !!doctor && !!patient && !!appointmentType,
+      refetchOnWindowFocus: false,
       onSuccess: (data) => setDisabledCallback(data),
     }
   );
