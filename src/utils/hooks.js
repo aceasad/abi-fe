@@ -27,7 +27,7 @@ export const useLazyLoad = (
 
     const handleScroll = () => {
       if (
-        element.scrollHeight - element.scrollTop === element.clientHeight &&
+        element.scrollHeight - element.scrollTop <= element.clientHeight &&
         checkAdditionalConditions()
       )
         action();
