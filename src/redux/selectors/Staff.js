@@ -29,7 +29,11 @@ const makeSelectStaffSingle = () =>
 const makeSelectLoading = () =>
   createSelector(selectStaffDomain, (substate) => substate.loading);
 
+const makeSelectStaffAppointmentsRequestData = (field) =>
+  createSelector(selectStaffDomain, ({ [field]: data }) => data);
+
 export {
+  makeSelectStaffAppointmentsRequestData,
   makeSelectStaff,
   makeSelectPagination,
   makeSelectStaffDetails,
