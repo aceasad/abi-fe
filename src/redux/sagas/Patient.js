@@ -36,6 +36,7 @@ import {
   makeSelectHistoryPage,
 } from '../selectors/Patient';
 import { getPreviousOperations } from './Anemnesis';
+import { getMedicalConditions } from './Anemnesis';
 
 function* getPatients() {
   try {
@@ -166,6 +167,7 @@ export function* patientSaga() {
     yield all([
       getPatientSingle({ payload: payload }),
       getPreviousOperations({ payload: { id: payload } }),
+      getMedicalConditions({ payload: { id: payload } }),
     ]);
   });
   yield takeEvery(UPDATE_PATIENT, updatePatient);

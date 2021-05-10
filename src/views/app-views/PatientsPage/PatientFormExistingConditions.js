@@ -30,6 +30,7 @@ import {
 } from 'redux/actions/Anamnesis';
 import { EXISTING_CONDITIONS } from 'redux/reducers/Anemnesis';
 import { APPEND } from 'redux/sagas/Anemnesis';
+import Loading from 'components/shared-components/Loading';
 
 const { Title } = Typography;
 
@@ -40,7 +41,7 @@ const PatientFormExistingConditions = ({ setFieldValue, id }) => {
   const dispatch = useDispatch();
 
   const { organization } = useSelector(makeSelectCurrentUser());
-  const { items, page, next, count } = useSelector(
+  const { items, page, next } = useSelector(
     makeSelectExistingMedicalConditions()
   );
   const nextRef = useRef();
@@ -57,10 +58,11 @@ const PatientFormExistingConditions = ({ setFieldValue, id }) => {
   );
 
   const findOptionByName = (name) =>
-    data?.data?.results.find((option) => option.name === name);
+    data?.data?.results.find(
+      (option) => option.name.toLowerCase() === name.toLowerCase()
+    );
 
-  const findOptionById = (id) =>
-    data?.data?.results.find((option) => option.id === id);
+  const findOptionById = (id) => conditions.find((option) => option.id === id);
 
   const handleSearch = (value) => {
     setQuery(value);
@@ -139,11 +141,16 @@ const PatientFormExistingConditions = ({ setFieldValue, id }) => {
       conditions.map((condition) => condition.id)
     );
     setText('');
+    setQuery('');
   }, [conditions]);
 
   useEffect(() => {
     nextRef.current = { next, page };
   }, [next, page]);
+
+  useEffect(() => {
+    setConditions(items);
+  }, [items]);
 
   useLazyLoad(
     '#existing-conditions-list div',
@@ -208,14 +215,27 @@ const PatientFormExistingConditions = ({ setFieldValue, id }) => {
                     backfill
                   >
                     {data?.data?.results.map((item) => (
-                      <Option key={item.id} value={item.name}>
+                      <Option
+                        key={item.id}
+                        value={item.name}
+                        value={
+                          item.name.toLowerCase() === query.toLowerCase()
+                            ? query
+                            : item.name
+                        }
+                      >
                         {item.name}
                       </Option>
                     ))}
                   </AutoComplete>
                   {isFetching && <MiniLoader />}
                 </Form.Item>
-                <Button>{formatMessage(messages.addNew)}</Button>
+                <Button
+                  disabled={isFetching || !isFetched}
+                  onClick={() => addCondition(text)}
+                >
+                  {formatMessage(messages.addNew)}
+                </Button>
               </Input.Group>
             </Form.Item>
           </Form>
