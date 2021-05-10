@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
 import { Field, Formik } from 'formik';
@@ -22,6 +22,7 @@ import {
   resetExistingMedicalConditions,
   resetPreviousOperations,
 } from 'redux/actions/Anamnesis';
+import { BeforeRouteContext } from 'utils/context';
 
 const { Title } = Typography;
 
@@ -38,6 +39,9 @@ const PatientForm = ({
   const headerRef = useRef(null);
   const [isSaveVisible, setIsSaveVisible] = useState(false);
   const dispatch = useDispatch();
+  const { setContext, ...rest } = useContext(BeforeRouteContext);
+  const [discardModalVisible, setDiscardModalVisible] = useState(false);
+  const formRef = useRef();
 
   const { education, employment, material_status, ethnicities } = useSelector(
     makeSelectPatientDetails()
@@ -48,6 +52,7 @@ const PatientForm = ({
   };
 
   const deleteOperationType = ({ item, action }) => {
+    enableRedirect();
     Modal.confirm({
       title: formatMessage(messages.deleteOperationType, {
         name: item.operation_type,
@@ -69,7 +74,30 @@ const PatientForm = ({
     });
   };
 
+  const showDiscardModal = () => {
+    formRef.current.dirty ? setDiscardModalVisible(true) : enableRedirect();
+  };
+
   useEffect(() => {
+    if (discardModalVisible)
+      Modal.confirm({
+        title: formatMessage(messages.discardTitle),
+        content: formatMessage(messages.discardText),
+        okText: formatMessage(messages.discardButton),
+        okType: 'danger',
+        cancelText: formatMessage(messages.cancel),
+        onCancel() {
+          setDiscardModalVisible(false);
+        },
+        onOk() {
+          showList();
+          enableRedirect();
+        },
+      });
+  }, [discardModalVisible]);
+
+  useEffect(() => {
+    setContext({ ...rest, proceed: false, action: showDiscardModal });
     const observerOptions = {
       threshold: 1.0,
     };
@@ -90,6 +118,8 @@ const PatientForm = ({
     };
   }, []);
 
+  const enableRedirect = () => setContext({ ...rest, proceed: true });
+
   return (
     <Formik
       enableReinitialize
@@ -101,6 +131,7 @@ const PatientForm = ({
           changedOperations: [],
         },
       }}
+      innerRef={formRef}
       onSubmit={handleSubmit}
       validationSchema={patientSchema}
     >
@@ -109,8 +140,13 @@ const PatientForm = ({
           <div ref={headerRef}>
             <PatientHeader
               title={title}
-              secondaryAction={showList}
-              primaryAction={handleSubmit}
+              secondaryAction={() => {
+                showDiscardModal(true);
+              }}
+              primaryAction={() => {
+                enableRedirect();
+                handleSubmit();
+              }}
               primaryDisabled={!isValid || !dirty || loading}
             />
           </div>
@@ -316,7 +352,10 @@ const PatientForm = ({
           />
 
           <Button
-            onClick={handleSubmit}
+            onClick={() => {
+              enableRedirect();
+              handleSubmit();
+            }}
             type="primary"
             className={`floating-button ${
               !isValid || !dirty || loading || !isSaveVisible ? '' : 'active'

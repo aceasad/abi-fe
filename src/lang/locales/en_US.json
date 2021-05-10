@@ -351,6 +351,9 @@
   "patient_overview.text.operation_type_added": "Operation type successfully created",
   "patient_overview.text.operation_type_deleted": "Operation type successfully deleted",
   "patient_overview.text.delete_operation_type": "Are you sure you want to delete {name} operation type? All patients operations bound with {name} would be deleted with this action.",
+  "patient_overview.text.discard_text": "If you leave this page all changes will be discarded.",
+  "patient_overview.text.discard_button": "Discard Changes",
+  "patient_overview.text.discard_title": "Changes not saved",
 
   "user_settings.title": "User Settings",
   "user_settings.clinic_admin": "clinic admin",

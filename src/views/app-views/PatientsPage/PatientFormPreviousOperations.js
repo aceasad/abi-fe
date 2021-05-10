@@ -28,6 +28,7 @@ import { PREVIOUS_OPERATIONS } from 'redux/reducers/Anemnesis';
 import { APPEND } from 'redux/sagas/Anemnesis';
 import { DEFAULT_SMALL_PAGINATION_LIMIT } from 'constants/ApiConstant';
 import { appendOperation, filterOperation } from 'redux/actions/Anamnesis';
+import { generateKey } from 'utils/helpers';
 
 const { Option } = AutoComplete;
 const { Title } = Typography;
@@ -56,7 +57,7 @@ const PatientFormPreviousOperationss = ({
       operation_type_id: payload.id,
       operation_type: payload.name,
       year: new Date().getFullYear(),
-      key: Math.random().toString(36).substring(7),
+      key: generateKey(),
     };
     setOperations((prev) => ({
       ...prev,
