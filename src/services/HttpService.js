@@ -7,12 +7,11 @@ class HttpService {
     this.client = axios.create(options);
 
     this.client.interceptors.response.use(
-      this.handleSuccessResponse,
+      this.handleSuccessResponse.bind(this),
       this.handleErrorResponse.bind(this)
     );
     this.unauthorizedCallback = () => {};
     this.refreshTokenCallback = () => {};
-    
   }
 
   attachHeaders(headers) {
@@ -29,7 +28,7 @@ class HttpService {
 
   handleErrorResponse(error) {
     const { status, data } = error.response;
-    
+
     switch (status) {
       case 401: {
         this.unauthorizedCallback();
@@ -37,10 +36,12 @@ class HttpService {
       }
       case 403: {
         if (data.code === INVALID_TOKEN_CODE) {
-          return this.refreshTokenCallback().then((newToken) => {
-            error.config.headers.Authorization = `Bearer ${newToken}`;
-            return axios.request(error.config);
-          })
+          return this.refreshTokenCallback()
+            .then((newToken) => {
+              error.config.headers.Authorization = `Bearer ${newToken}`;
+              return axios.request(error.config);
+            })
+            .catch(() => this.unauthorizedCallback());
         }
         break;
       }
@@ -57,7 +58,7 @@ class HttpService {
 
   setRefreshTokenCallback(callback) {
     this.refreshTokenCallback = callback;
-  };
+  }
 }
 
 const options = {

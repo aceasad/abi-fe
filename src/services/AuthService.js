@@ -42,6 +42,9 @@ class AuthService extends ApiService {
   createSession = (token) => {
     setLocalStorageItem('token', token);
     this.setAuthorizationHeader();
+
+    this.api.setUnauthorizedCallback(this.destroySession.bind(this));
+    this.api.setRefreshTokenCallback(this.refreshToken.bind(this));
   };
 
   destroySession = () => {
