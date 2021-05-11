@@ -150,6 +150,7 @@
   "clinic_page.text.end_of_work": "End of Work",
   "clinic_page.text.create": "Create",
   "clinic_page.text.logout": "Logout",
+  "clinic_page.text.all_day_working_hours": "Working hours 00-24",
   "clinic_page.validation.invalid_phone": "Phone number format is +xxxxxxxxxxxxxxx",
   "clinic_page.header.title": "Clinic Settings",
   "clinic_page.side.title": "Clinic Details",

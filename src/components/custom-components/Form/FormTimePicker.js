@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { Form, TimePicker } from 'antd';
 import moment from 'moment';
@@ -14,8 +14,13 @@ const FormTimePicker = ({
   hourStep = 1,
   minuteStep = 15,
   showNow = false,
+  disabled = false,
 }) => {
   const { formatMessage } = useIntl();
+
+  const [time, setTime] = useState(
+    moment(field.value ? field.value : defaultTime, TIME_FORMAT_HH_MM)
+  );
 
   const defaultErrorMessage = () =>
     formatMessage(errors[field.name], {
@@ -30,10 +35,18 @@ const FormTimePicker = ({
       ? formatMessage(errors[field.name], errorTexts)
       : defaultErrorMessage());
 
-  const onChange = (_, timeString) => {
+  const onChange = (timeMoment, timeString) => {
+    setTime(timeMoment);
     setFieldTouched(field.name, true);
     setFieldValue(field.name, timeString);
   };
+
+  useEffect(() => {
+    if (disabled) {
+      setTime(moment('00:00', TIME_FORMAT_HH_MM));
+      setFieldValue(field.name, '00:00');
+    }
+  }, [disabled]);
 
   return (
     <Form.Item
@@ -43,6 +56,7 @@ const FormTimePicker = ({
       help={showError()}
     >
       <TimePicker
+        value={time}
         popupClassName="picker-time-no-after"
         defaultValue={moment(
           field.value ? field.value : defaultTime,
@@ -53,6 +67,7 @@ const FormTimePicker = ({
         hourStep={hourStep}
         minuteStep={minuteStep}
         showNow={showNow}
+        disabled={disabled}
       />
     </Form.Item>
   );
