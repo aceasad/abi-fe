@@ -58,7 +58,7 @@ const UpdatePatient = ({ showList, patientId }) => {
         ethnicity: patient?.ethnicity?.id,
         material_status: patient?.material_status?.id,
         employment: patient?.employment?.id,
-        medicalConditions: items,
+        medicalConditions: items.map((condition) => condition.id),
       }
     : {
         first_name: '',

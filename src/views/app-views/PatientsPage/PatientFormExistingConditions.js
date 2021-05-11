@@ -30,7 +30,6 @@ import {
 } from 'redux/actions/Anamnesis';
 import { EXISTING_CONDITIONS } from 'redux/reducers/Anemnesis';
 import { APPEND } from 'redux/sagas/Anemnesis';
-import Loading from 'components/shared-components/Loading';
 
 const { Title } = Typography;
 
