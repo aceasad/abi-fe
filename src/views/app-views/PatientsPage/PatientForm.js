@@ -52,7 +52,6 @@ const PatientForm = ({
   };
 
   const deleteOperationType = ({ item, action }) => {
-    enableRedirect();
     Modal.confirm({
       title: formatMessage(messages.deleteOperationType, {
         name: item.operation_type,
