@@ -18,7 +18,10 @@ import Scrollbars from 'react-custom-scrollbars';
 import moment from 'moment';
 import { useGetOperationTypes } from 'queries/shared';
 import { useDispatch, useSelector } from 'react-redux';
-import { makeSelectOrganization } from 'redux/selectors/Auth';
+import {
+  makeSelectIsOrganizationOwner,
+  makeSelectOrganization,
+} from 'redux/selectors/Auth';
 import { useDebounce, useLazyLoad } from 'utils/hooks';
 import MiniLoader from 'components/shared-components/Loading/MiniLoader';
 import { addNewOperationType, setPage } from 'redux/actions/Anamnesis';
@@ -48,6 +51,7 @@ const PatientFormPreviousOperationss = ({
   const dispatch = useDispatch();
 
   const { items } = useSelector(makeSelectPreviousOperations());
+  const isOrganizationOwner = useSelector(makeSelectIsOrganizationOwner());
 
   const { page, next, count } = useSelector(makeSelectPreviousOperations());
 
@@ -202,12 +206,14 @@ const PatientFormPreviousOperationss = ({
                     className="list-with-delete-icon cursor-pointer mr-2"
                   />
 
-                  <DeleteFilled
-                    onClick={() =>
-                      deleteOperationType({ item, action: deleteOperation })
-                    }
-                    className="list-with-delete-icon cursor-pointer"
-                  />
+                  {isOrganizationOwner && (
+                    <DeleteFilled
+                      onClick={() =>
+                        deleteOperationType({ item, action: deleteOperation })
+                      }
+                      className="list-with-delete-icon cursor-pointer"
+                    />
+                  )}
                 </Col>
               </Row>
             </div>,

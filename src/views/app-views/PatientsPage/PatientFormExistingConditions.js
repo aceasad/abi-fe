@@ -20,7 +20,10 @@ import Scrollbars from 'react-custom-scrollbars';
 import { useDebounce, useLazyLoad } from 'utils/hooks';
 import { useSearchMedicalConditions } from 'queries/shared';
 import { useDispatch, useSelector } from 'react-redux';
-import { makeSelectCurrentUser } from 'redux/selectors/Auth';
+import {
+  makeSelectCurrentUser,
+  makeSelectIsOrganizationOwner,
+} from 'redux/selectors/Auth';
 import MiniLoader from 'components/shared-components/Loading/MiniLoader';
 import { makeSelectExistingMedicalConditions } from 'redux/selectors/Anemnesis';
 import {
@@ -45,6 +48,7 @@ const PatientFormExistingConditions = ({ setFieldValue, id }) => {
   );
   const nextRef = useRef();
 
+  const isOrganizationOwner = useSelector(makeSelectIsOrganizationOwner());
   const [query, setQuery] = useState('');
   const [text, setText] = useState(query);
   const debouncedSearch = useDebounce(query, 500);
@@ -180,10 +184,12 @@ const PatientFormExistingConditions = ({ setFieldValue, id }) => {
           onClick={() => removeCondition(item.id)}
           style={{ marginRight: '5px' }}
         />
-        <DeleteFilled
-          className="list-with-delete-icon cursor-pointer"
-          onClick={() => handleDelete(item.id)}
-        />
+        {isOrganizationOwner && (
+          <DeleteFilled
+            className="list-with-delete-icon cursor-pointer"
+            onClick={() => handleDelete(item.id)}
+          />
+        )}
       </div>
     </Flex>
   ));
