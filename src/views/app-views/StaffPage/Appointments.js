@@ -23,20 +23,22 @@ const AppointmentsTable = ({
 }) => (
   <Card>
     <Typography.Title level={4}>{title}</Typography.Title>
-    <Table
-      columns={columns}
-      dataSource={items}
-      onRow={onRow}
-      onChange={handleChange}
-      pagination={{
-        defaultPageSize: pageSize,
-        total: count,
-        onChange: handlePaginationChange,
-        hideOnSinglePage: true,
-        current: page,
-      }}
-      loading={loading}
-    />
+    <div className="table-responsive ant-table-row-pointer">
+      <Table
+        columns={columns}
+        dataSource={items}
+        onRow={onRow}
+        onChange={handleChange}
+        pagination={{
+          defaultPageSize: pageSize,
+          total: count,
+          onChange: handlePaginationChange,
+          hideOnSinglePage: true,
+          current: page,
+        }}
+        loading={loading}
+      />
+    </div>
   </Card>
 );
 
