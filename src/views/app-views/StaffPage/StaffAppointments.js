@@ -1,11 +1,13 @@
 import { PageHeader, Typography } from 'antd';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useIntl } from 'react-intl';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { makeSelectStaff } from 'redux/selectors/Staff';
 import Appointments from './Appointments';
 import messages from '../PatientsPage/messages';
 import { HISTORY, SCHEDULED } from 'redux/reducers/Staff';
+import { getSignleAppointmnet } from 'redux/actions/Appointment';
+import AppointmentPreview from '../CalendarPage/AppointmentPreview';
 
 const STATUS_OPTIONS = {
   SCHEDULED: 'Scheduled',
@@ -44,6 +46,13 @@ const StaffAppointments = ({ staffId, showList }) => {
     return obj.id === staffId;
   });
   const { formatMessage } = useIntl();
+  const dispatch = useDispatch();
+
+  const [activeAppointment, setActiveAppointment] = useState(null);
+
+  useEffect(() => {
+    activeAppointment && dispatch(getSignleAppointmnet(activeAppointment));
+  }, [activeAppointment]);
 
   return (
     <>
@@ -85,6 +94,13 @@ const StaffAppointments = ({ staffId, showList }) => {
               render: '',
             },
           ]}
+          onRow={(record) => {
+            return {
+              onClick: () => {
+                setActiveAppointment(record.id);
+              },
+            };
+          }}
         />
       </Appointments>
       <Appointments field={HISTORY} id={staffId} columnMap={columnMap}>
@@ -120,6 +136,9 @@ const StaffAppointments = ({ staffId, showList }) => {
           ]}
         />
       </Appointments>
+      {activeAppointment && (
+        <AppointmentPreview handleClose={() => setActiveAppointment(null)} />
+      )}
     </>
   );
 };

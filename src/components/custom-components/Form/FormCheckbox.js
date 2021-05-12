@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
-import { Button, Form } from 'antd';
-import { Checkbox } from 'antd';
+import { Checkbox, Form } from 'antd';
+import React from 'react';
 
 const FormCheckbox = ({
   field,
