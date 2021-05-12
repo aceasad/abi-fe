@@ -134,6 +134,13 @@ const StaffAppointments = ({ staffId, showList }) => {
               render: statusColor,
             },
           ]}
+          onRow={(record) => {
+            return {
+              onClick: () => {
+                setActiveAppointment(record.id);
+              },
+            };
+          }}
         />
       </Appointments>
       {activeAppointment && (
