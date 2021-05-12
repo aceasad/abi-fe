@@ -100,4 +100,8 @@ export default defineMessages({
     id: `${scope}.text.end_of_work`,
     defaultMessage: 'End of Work',
   },
+  allDayWorkingHours: {
+    id: `${scope}.text.all_day_working_hours`,
+    defaultMessage: 'Working hours 00-24',
+  },
 });

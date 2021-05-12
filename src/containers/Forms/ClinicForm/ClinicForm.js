@@ -21,6 +21,7 @@ import ColumnField from 'components/custom-components/Form/ColumnField';
 import { prepareFormData } from 'utils/helpers';
 import { useLocation } from 'react-router-dom';
 import FormTimePicker from 'components/custom-components/Form/FormTimePicker';
+import Checkbox from 'antd/lib/checkbox/Checkbox';
 
 const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
   const { formatMessage } = useIntl();
@@ -28,6 +29,10 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
   const loading = useSelector(makeSelectIsLoading());
   const [visibilityOfParkinSizeField, setVisibility] = useState(
     clinicData?.parking_availability === AVAILABLE
+  );
+  const [isAllDayChecked, setIsAllDayChecked] = useState(
+    clinicData?.start_of_work === '00:00:00' &&
+      clinicData?.end_of_work === '00:00:00'
   );
   const location = useLocation();
 
@@ -218,6 +223,7 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
                       errorTexts={{
                         label: formatMessage(messages.startOfWork),
                       }}
+                      disabled={isAllDayChecked}
                     />
                     <Col span={2} className="text-center">
                       <MinusOutlined className="mt-3 text-primary" />
@@ -229,7 +235,16 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
                       errorTexts={{
                         label: formatMessage(messages.endOfWork),
                       }}
+                      disabled={isAllDayChecked}
                     />
+                    <Col span={8} className="mt-2 text-center">
+                      <Checkbox
+                        onChange={(e) => setIsAllDayChecked(e.target.checked)}
+                        checked={isAllDayChecked}
+                      >
+                        {formatMessage(messages.allDayWorkingHours)}
+                      </Checkbox>
+                    </Col>
                   </Row>
                 </Form.Item>
                 <Row>
