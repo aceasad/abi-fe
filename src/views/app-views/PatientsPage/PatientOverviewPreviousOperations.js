@@ -14,7 +14,7 @@ import { PREVIOUS_OPERATIONS } from 'redux/reducers/Anemnesis';
 
 const { Title } = Typography;
 
-const PatientOverviewPreviousOperations = ({ patient }) => {
+const PatientOverviewPreviousOperations = ({ patient, patientId }) => {
   const dispatch = useDispatch();
   const { formatMessage } = useIntl();
 
@@ -23,7 +23,7 @@ const PatientOverviewPreviousOperations = ({ patient }) => {
   );
 
   useEffect(() => {
-    if (patient) dispatch(getPreviousOperations({ id: patient.id }));
+    if (patient) dispatch(getPreviousOperations({ id: patientId }));
     return () => dispatch(resetPreviousOperations());
   }, [patient]);
 
@@ -39,7 +39,7 @@ const PatientOverviewPreviousOperations = ({ patient }) => {
   ];
 
   const handlePaginationChange = (page) => {
-    dispatch(setPage({ page, id: patient.id, field: PREVIOUS_OPERATIONS }));
+    dispatch(setPage({ page, id: patientId, field: PREVIOUS_OPERATIONS }));
   };
 
   return (

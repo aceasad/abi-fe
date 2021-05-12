@@ -192,8 +192,14 @@ const PatientOverview = ({ patientId, showList, updatePatient }) => {
               patient={patient}
               showAppointment={setActiveAppointment}
             />
-            <PatientOverviewExistingConditions patient={patient} />
-            <PatientOverviewPreviousOperations patient={patient} />
+            <PatientOverviewExistingConditions
+              patient={patient}
+              patientId={patientId}
+            />
+            <PatientOverviewPreviousOperations
+              patient={patient}
+              patientId={patientId}
+            />
             <PatientOverviewHistoryCard
               patient={patient}
               showAppointment={setActiveAppointment}
