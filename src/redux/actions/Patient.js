@@ -23,6 +23,8 @@ import {
   SET_HISTORY_PAGE,
   CHANGE_PATIENT,
   TOGGLE_PATIENT_WHITELIST,
+  GET_SCHEDULED_APPOINTMENTS,
+  GET_APPOINTMENT_HISTORY,
 } from '../constants/Patient';
 
 export const getPatients = () => ({
@@ -140,4 +142,14 @@ export const changePatient = (payload) => ({
 
 export const togglePatientWhitelist = () => ({
   type: TOGGLE_PATIENT_WHITELIST,
+});
+
+export const getScheduledAppointments = (payload) => ({
+  type: GET_SCHEDULED_APPOINTMENTS,
+  payload,
+});
+
+export const getAppointmentHistory = (payload) => ({
+  type: GET_APPOINTMENT_HISTORY,
+  payload,
 });

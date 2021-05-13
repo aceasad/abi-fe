@@ -15,6 +15,14 @@ import {
   makeSelectSingleAppointmentLoading,
 } from 'redux/selectors/Appointment';
 import { message } from 'antd';
+import {
+  APPOINTMNET_HISTORY,
+  SCHEDULED_APPOINTMENT,
+} from 'constants/ClinicConstants';
+import {
+  getAppointmentHistory,
+  getScheduledAppointments,
+} from 'redux/actions/Patient';
 
 const prepareData = (values) => {
   const missing_reason_details = values.missing_reason_details.length
@@ -27,7 +35,7 @@ const prepareData = (values) => {
   };
 };
 
-const EndAppointment = ({ handleClose, id }) => {
+const EndAppointment = ({ handleClose, id, patientId, appointment_type }) => {
   const { formatMessage } = useIntl();
   const dispatch = useDispatch();
 
@@ -37,6 +45,17 @@ const EndAppointment = ({ handleClose, id }) => {
 
   const afterEnd = () => {
     message.success(formatMessage(messages.endSuccess));
+    if (patientId)
+      // eslint-disable-next-line default-case
+      switch (appointment_type) {
+        case APPOINTMNET_HISTORY:
+          dispatch(getAppointmentHistory({ id: patientId }));
+          break;
+        case SCHEDULED_APPOINTMENT:
+          dispatch(getScheduledAppointments({ id: patientId }));
+          break;
+      }
+
     handleClose();
   };
 
