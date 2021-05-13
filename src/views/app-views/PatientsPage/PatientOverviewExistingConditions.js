@@ -14,7 +14,7 @@ import { EXISTING_CONDITIONS } from 'redux/reducers/Anemnesis';
 
 const { Title } = Typography;
 
-const PatientOverviewExistingConditions = ({ patient, patientId }) => {
+const PatientOverviewExistingConditions = ({ patientId }) => {
   const dispatch = useDispatch();
   const { formatMessage } = useIntl();
 
@@ -23,9 +23,9 @@ const PatientOverviewExistingConditions = ({ patient, patientId }) => {
   );
 
   useEffect(() => {
-    if (patient) dispatch(getExistingMedicalConditions({ id: patientId }));
+    dispatch(getExistingMedicalConditions({ id: patientId }));
     return () => dispatch(resetExistingMedicalConditions());
-  }, [patient]);
+  }, []);
 
   const columnsHistory = [
     {

@@ -14,7 +14,7 @@ import { PREVIOUS_OPERATIONS } from 'redux/reducers/Anemnesis';
 
 const { Title } = Typography;
 
-const PatientOverviewPreviousOperations = ({ patient, patientId }) => {
+const PatientOverviewPreviousOperations = ({ patientId }) => {
   const dispatch = useDispatch();
   const { formatMessage } = useIntl();
 
@@ -23,9 +23,9 @@ const PatientOverviewPreviousOperations = ({ patient, patientId }) => {
   );
 
   useEffect(() => {
-    if (patient) dispatch(getPreviousOperations({ id: patientId }));
+    dispatch(getPreviousOperations({ id: patientId }));
     return () => dispatch(resetPreviousOperations());
-  }, [patient]);
+  }, []);
 
   const columnsHistory = [
     {
