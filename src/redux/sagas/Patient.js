@@ -15,6 +15,8 @@ import {
   SET_SCHEDULED_ORDER,
   SET_HISTORY_PAGE,
   CHANGE_PATIENT,
+  GET_APPOINTMENT_HISTORY,
+  GET_SCHEDULED_APPOINTMENTS,
 } from 'redux/constants/Patient';
 import {
   setPatientDetails,
@@ -176,6 +178,8 @@ export function* patientSaga() {
   yield takeEvery(SET_SCHEDULED_ORDER, getScheduledAppointments);
   yield takeEvery(SET_HISTORY_PAGE, getAppointmentHistory);
   yield takeEvery(CHANGE_PATIENT, changePatient);
+  yield takeEvery(GET_APPOINTMENT_HISTORY, getAppointmentHistory);
+  yield takeEvery(GET_SCHEDULED_APPOINTMENTS, getScheduledAppointments);
 }
 
 export default function* rootSaga() {

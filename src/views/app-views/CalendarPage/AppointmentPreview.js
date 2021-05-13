@@ -17,7 +17,12 @@ export const NESTED_MODAL = {
   EDIT_APPOINTMENT: 3,
 };
 
-const AppointmentPreview = ({ handleClose, aditionalSubmitData = {} }) => {
+const AppointmentPreview = ({
+  handleClose,
+  aditionalSubmitData = {},
+  patientId,
+  appointment_type,
+}) => {
   const dispatch = useDispatch();
   const { formatMessage } = useIntl();
 
@@ -72,12 +77,23 @@ const AppointmentPreview = ({ handleClose, aditionalSubmitData = {} }) => {
       );
     case NESTED_MODAL.END_APPOINTMENT:
       return (
-        <EndAppointment handleClose={showPreview} id={showChildModal.data.id} />
+        <EndAppointment
+          handleClose={showPreview}
+          id={showChildModal.data.id}
+          patientId={patientId}
+          appointment_type={appointment_type}
+        />
       );
     case NESTED_MODAL.EDIT_APPOINTMENT:
       return (
         <AppointmentFormWrapper
-          Component={UpdateAppointment}
+          Component={(props) => (
+            <UpdateAppointment
+              patientId={patientId}
+              appointment_type={appointment_type}
+              {...props}
+            />
+          )}
           isEditForm
           isModalVisible
           closeModal={showPreview}

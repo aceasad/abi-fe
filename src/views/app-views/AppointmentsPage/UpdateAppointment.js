@@ -11,6 +11,14 @@ import { makeSelectSingleAppointment } from 'redux/selectors/Appointment';
 import moment from 'moment';
 import { DATE_FORMAT_DD_MMM_YYYY } from 'constants/DateConstant';
 import { TIME_FORMAT_HH_MM } from 'constants/TimeConstant';
+import {
+  APPOINTMNET_HISTORY,
+  SCHEDULED_APPOINTMENT,
+} from 'constants/ClinicConstants';
+import {
+  getAppointmentHistory,
+  getScheduledAppointments,
+} from 'redux/actions/Patient';
 
 const UpdateAppointment = ({
   appointmentTypes,
@@ -18,6 +26,8 @@ const UpdateAppointment = ({
   status,
   closeModal,
   isDataLoading,
+  patientId,
+  appointment_type,
 }) => {
   const dispatch = useDispatch();
   const { formatMessage } = useIntl();
@@ -28,6 +38,16 @@ const UpdateAppointment = ({
 
   const afterUpdate = () => {
     message.success(formatMessage(messages.appointmentUpdated));
+    if (patientId)
+      // eslint-disable-next-line default-case
+      switch (appointment_type) {
+        case APPOINTMNET_HISTORY:
+          dispatch(getAppointmentHistory({ id: patientId }));
+          break;
+        case SCHEDULED_APPOINTMENT:
+          dispatch(getScheduledAppointments({ id: patientId }));
+          break;
+      }
     closeModal();
   };
 
