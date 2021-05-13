@@ -1,7 +1,7 @@
 import { getLocalStorageItem, setLocalStorageItem } from 'utils/localStorage';
 import ApiService from './ApiService';
 import store from 'redux/store';
-import { setToken } from 'redux/actions/Auth';
+import { setToken, signOutSuccess } from 'redux/actions/Auth';
 
 const ENDPOINTS = {
   LOGIN: '/token/',
@@ -50,6 +50,7 @@ class AuthService extends ApiService {
   destroySession = () => {
     localStorage.clear();
     this.api.removeHeaders(['Authorization']);
+    store.dispatch(signOutSuccess());
   };
 
   login = async (loginData) => {
