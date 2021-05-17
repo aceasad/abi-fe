@@ -29,7 +29,13 @@ import {
   RESET_PATIENTS_AUTOCOMPLETE,
   GET_MORE_SEARCH_RESULTS,
   APPEND_MORE_PATIENTS_AUTOCOMPLETE,
+  DELETE_APPOINTMENT_FROM_PATIENTS,
+  DELETE_APPOINTMENT_FROM_STAFF,
 } from 'redux/constants/Appointment';
+import {
+  FROM_STAFF_APPOINTMENTS,
+  FROM_PATIENT_APPOINTMENTS,
+} from 'constants/ClinicConstants';
 
 export const getDoctorAppointments = (payload) => ({
   type: GET_DOCTOR_APPOINTMENTS,
@@ -135,10 +141,25 @@ export const searchPatients = (payload) => ({
   payload,
 });
 
-export const deleteAppointemnt = (payload) => ({
-  type: DELETE_APPOINTEMNT,
-  payload,
-});
+export const deleteAppointemnt = (payload) => {
+  switch (payload.deleteFrom) {
+    case FROM_STAFF_APPOINTMENTS:
+      return {
+        type: DELETE_APPOINTMENT_FROM_STAFF,
+        payload,
+      };
+    case FROM_PATIENT_APPOINTMENTS:
+      return {
+        type: DELETE_APPOINTMENT_FROM_PATIENTS,
+        payload,
+      };
+    default:
+      return {
+        type: DELETE_APPOINTEMNT,
+        payload,
+      };
+  }
+};
 
 export const filterDeletedAppointment = (payload) => ({
   type: FILTER_DELETED_APPOINTMENT,

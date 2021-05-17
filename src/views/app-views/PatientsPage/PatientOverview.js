@@ -27,6 +27,7 @@ import PatientOverviewExistingConditions from './PatientOverviewExistingConditio
 import PatientOverviewPreviousOperations from './PatientOverviewPreviousOperations';
 import { getSignleAppointmnet } from 'redux/actions/Appointment';
 import AppointmentPreview from '../CalendarPage/AppointmentPreview';
+import { FROM_PATIENT_APPOINTMENTS } from 'constants/ClinicConstants';
 
 const { Text, Title } = Typography;
 
@@ -206,7 +207,10 @@ const PatientOverview = ({ patientId, showList, updatePatient }) => {
           handleClose={() => setActiveAppointment(null)}
           patientId={patientId}
           appointment_type={activeAppointmnet.type}
-          aditionalSubmitData={{ patientAppointment: activeAppointmnet.type }}
+          aditionalSubmitData={{
+            patientAppointment: activeAppointmnet.type,
+            deleteFrom: FROM_PATIENT_APPOINTMENTS,
+          }}
         />
       )}
     </Row>

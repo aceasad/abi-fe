@@ -8,6 +8,7 @@ import messages from '../PatientsPage/messages';
 import { HISTORY, SCHEDULED } from 'redux/reducers/Staff';
 import { getSignleAppointmnet } from 'redux/actions/Appointment';
 import AppointmentPreview from '../CalendarPage/AppointmentPreview';
+import { FROM_STAFF_APPOINTMENTS } from 'constants/ClinicConstants';
 
 const STATUS_OPTIONS = {
   SCHEDULED: 'Scheduled',
@@ -51,7 +52,7 @@ const StaffAppointments = ({ staffId, showList }) => {
   const [activeAppointment, setActiveAppointment] = useState(null);
 
   useEffect(() => {
-    activeAppointment && dispatch(getSignleAppointmnet(activeAppointment));
+    activeAppointment && dispatch(getSignleAppointmnet(activeAppointment.id));
   }, [activeAppointment]);
 
   return (
@@ -97,7 +98,11 @@ const StaffAppointments = ({ staffId, showList }) => {
           onRow={(record) => {
             return {
               onClick: () => {
-                setActiveAppointment(record.id);
+                setActiveAppointment({
+                  id: record.id,
+                  type: SCHEDULED,
+                  patientId: record.patient.id,
+                });
               },
             };
           }}
@@ -137,14 +142,26 @@ const StaffAppointments = ({ staffId, showList }) => {
           onRow={(record) => {
             return {
               onClick: () => {
-                setActiveAppointment(record.id);
+                setActiveAppointment({
+                  id: record.id,
+                  type: HISTORY,
+                  patientId: record.patient.id,
+                });
               },
             };
           }}
         />
       </Appointments>
       {activeAppointment && (
-        <AppointmentPreview handleClose={() => setActiveAppointment(null)} />
+        <AppointmentPreview
+          handleClose={() => setActiveAppointment(null)}
+          aditionalSubmitData={{
+            temporalType: activeAppointment.type,
+            deleteFrom: FROM_STAFF_APPOINTMENTS,
+          }}
+          patientId={activeAppointment.patientId}
+          appointment_type={activeAppointment.type}
+        />
       )}
     </>
   );

@@ -88,7 +88,7 @@ function* deleteStaff({ payload }) {
   } catch (error) {}
 }
 
-function* getStaffAppointments({ payload }) {
+export function* getStaffAppointments({ payload }) {
   try {
     const requestData = yield select(
       makeSelectStaffAppointmentsRequestData(payload.field)

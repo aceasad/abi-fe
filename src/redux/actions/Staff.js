@@ -15,6 +15,8 @@ import {
   SET_STAFF_APPOINTMENTS_PAGE,
   SET_STAFF_APPOINTMENTS_LOADING,
   SET_STAFF_APPOINTMENTS_ORDER,
+  SET_SCHEDULED_STAFF_APPOINTMENTS_PAGE,
+  SET_PAST_STAFF_APPOINTMENTS_PAGE,
 } from '../constants/Staff';
 
 export const getStaff = () => ({
@@ -92,5 +94,15 @@ export const setAppointmentsLoading = (payload) => ({
 
 export const setOrder = (payload) => ({
   type: SET_STAFF_APPOINTMENTS_ORDER,
+  payload,
+});
+
+export const setScheduledStaffAppointmentsPage = (payload) => ({
+  type: SET_SCHEDULED_STAFF_APPOINTMENTS_PAGE,
+  payload,
+});
+
+export const setPastStaffAppointmentsPage = (payload) => ({
+  type: SET_PAST_STAFF_APPOINTMENTS_PAGE,
   payload,
 });
