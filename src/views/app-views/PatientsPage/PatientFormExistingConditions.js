@@ -116,8 +116,15 @@ const PatientFormExistingConditions = ({ setFieldValue, id }) => {
     // if selected condition is from autocomplete list (exists on BE)
     if (foundInAutocompleteList) {
       // and if not already in the list of conditions, add condition
-      if (!conditions.find((option) => option.name === value)) {
+      if (
+        !conditions.find(
+          (option) => option.name === foundInAutocompleteList.name
+        )
+      ) {
         setConditions([foundInAutocompleteList, ...conditions]);
+      } else {
+        setText('');
+        setQuery('');
       }
       // if selected condition is not in the autocomplete list (doesn't exist on BE),
       // create new condition and add it to the list of conditions

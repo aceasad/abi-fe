@@ -30,7 +30,7 @@ const UpdatePatient = ({ showList, patientId }) => {
   ];
 
   useEffect(() => {
-    dispatch(getSinglePatient(patientId));
+    dispatch(getSinglePatient({ id: patientId, noLimit: true }));
   }, [dispatch, patientId]);
 
   const afterUpdate = () => {
