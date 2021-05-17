@@ -168,10 +168,8 @@ export function* patientSaga() {
   yield takeEvery(GET_PATIENT_SINGLE, function* ({ payload }) {
     yield all([
       getPatientSingle({ payload: payload.id }),
-      getPreviousOperations({ payload: { id: payload.id } }),
-      getMedicalConditions({
-        payload: { id: payload.id, noLimit: payload.noLimit },
-      }),
+      getPreviousOperations({ payload }),
+      getMedicalConditions({ payload }),
     ]);
   });
   yield takeEvery(UPDATE_PATIENT, updatePatient);
