@@ -15,10 +15,12 @@ import {
   APPOINTMNET_HISTORY,
   SCHEDULED_APPOINTMENT,
 } from 'constants/ClinicConstants';
+import { HISTORY, SCHEDULED } from 'redux/reducers/Staff';
 import {
   getAppointmentHistory,
   getScheduledAppointments,
 } from 'redux/actions/Patient';
+import { getAppointments } from 'redux/actions/Staff';
 
 const UpdateAppointment = ({
   appointmentTypes,
@@ -38,7 +40,7 @@ const UpdateAppointment = ({
 
   const afterUpdate = () => {
     message.success(formatMessage(messages.appointmentUpdated));
-    if (patientId)
+    if (patientId) {
       // eslint-disable-next-line default-case
       switch (appointment_type) {
         case APPOINTMNET_HISTORY:
@@ -47,7 +49,15 @@ const UpdateAppointment = ({
         case SCHEDULED_APPOINTMENT:
           dispatch(getScheduledAppointments({ id: patientId }));
           break;
+        // those are when appointment is updated from the Staff Appointments List
+        case SCHEDULED:
+          dispatch(getAppointments({ id: patientId, field: SCHEDULED }));
+          break;
+        case HISTORY:
+          dispatch(getAppointments({ id: patientId, field: HISTORY }));
+          break;
       }
+    }
     closeModal();
   };
 

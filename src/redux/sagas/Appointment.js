@@ -5,7 +5,6 @@ import patientService from 'services/PatientService';
 import moment from 'moment';
 
 import {
-  DELETE_APPOINTEMNT,
   END_APPOINTMENT,
   GET_DATE_APPOINTMENTS,
   GET_DOCTOR_APPOINTMENTS,
@@ -18,6 +17,9 @@ import {
   GET_DOCTORS,
   SEARCH_PATIENTS,
   GET_MORE_SEARCH_RESULTS,
+  DELETE_APPOINTMENT_FROM_PATIENTS,
+  DELETE_APPOINTMENT_FROM_STAFF,
+  DELETE_APPOINTEMNT,
 } from 'redux/constants/Appointment';
 import {
   appendToAllDoctors,
@@ -38,12 +40,13 @@ import {
   setPatientsLoadingAutocomplete,
   addMorePatientsAutocomplete,
 } from 'redux/actions/Appointment';
-
+import { HISTORY, SCHEDULED } from 'redux/reducers/Staff';
 import {
   getScheduledAppointments,
   getAppointmentHistory,
 } from 'redux/sagas/Patient';
 import { makeSelectCurrentUser } from 'redux/selectors/Auth';
+import { getStaffAppointments } from 'redux/sagas/Staff';
 import {
   APPOINTMNET_HISTORY,
   SCHEDULED_APPOINTMENT,
@@ -53,10 +56,15 @@ import {
   makeSelectLastScheduledAppointmentOnThePage,
 } from 'redux/selectors/Patient';
 import {
+  makeSelectLastScheduledAppointmentOnTheStaffPage,
+  makeSelectLastPastAppointmentOnTheStaffPage,
+} from 'redux/selectors/Staff';
+import {
   setAppointmentHistoryPage,
   setScheduledPage,
 } from 'redux/actions/Patient';
 import { makeSelectClinicPatients } from 'redux/selectors/Appointment';
+import { setAppointmentsPage } from 'redux/actions/Staff';
 
 export function* getDoctorAppointments({ payload }) {
   try {
@@ -95,7 +103,24 @@ export function* getSingleAppointment({ payload }) {
   }
 }
 
-export function* deleteAppointemnt({ payload }) {
+export function* deleteAppointmentFromCalendarView({ payload }) {
+  try {
+    yield put(setSignleAppointmnetLoading(true));
+    yield call(appointmentService.deleteAppointment, payload.data.id);
+    yield payload.afterDelete();
+    yield put(
+      filterDeletedAppointment({
+        date: moment(payload.data.date, 'DD/MM/YYYY').format('YYYY-MM-DD'),
+        id: payload.data.id,
+      })
+    );
+  } catch {
+  } finally {
+    yield put(setSignleAppointmnetLoading(false));
+  }
+}
+
+export function* deleteAppointemntFromPatients({ payload }) {
   try {
     yield put(setSignleAppointmnetLoading(true));
     yield call(appointmentService.deleteAppointment, payload.data.id);
@@ -138,13 +163,65 @@ export function* deleteAppointemnt({ payload }) {
           break;
         }
       }
-    else
-      yield put(
-        filterDeletedAppointment({
-          date: moment(payload.data.date, 'DD/MM/YYYY').format('YYYY-MM-DD'),
-          id: payload.data.id,
-        })
-      );
+  } catch {
+  } finally {
+    yield put(setSignleAppointmnetLoading(false));
+  }
+}
+
+export function* deleteAppointmentFromStaff({ payload }) {
+  try {
+    yield put(setSignleAppointmnetLoading(true));
+    yield call(appointmentService.deleteAppointment, payload.data.id);
+    yield payload.afterDelete();
+    if (payload.temporalType) {
+      // eslint-disable-next-line default-case
+      switch (payload.temporalType) {
+        case SCHEDULED: {
+          const { isLast, page } = yield select(
+            makeSelectLastScheduledAppointmentOnTheStaffPage()
+          );
+          if (isLast)
+            yield put(
+              setAppointmentsPage({
+                page: page - 1,
+                field: payload.temporalType,
+                id: payload?.data?.patient?.id,
+              })
+            );
+          else
+            yield getStaffAppointments({
+              payload: {
+                id: payload?.data?.patient?.id,
+                field: payload.temporalType,
+              },
+            });
+          break;
+        }
+        case HISTORY: {
+          const { isLast, page } = yield select(
+            makeSelectLastPastAppointmentOnTheStaffPage()
+          );
+          if (isLast)
+            yield put(
+              setAppointmentsPage({
+                page: page - 1,
+                field: payload.temporalType,
+                id: payload?.data?.patient?.id,
+              })
+            );
+          else {
+            yield getStaffAppointments({
+              payload: {
+                id: payload?.data?.patient?.id,
+                field: payload.temporalType,
+              },
+            });
+          }
+          break;
+        }
+      }
+    }
   } catch {
   } finally {
     yield put(setSignleAppointmnetLoading(false));
@@ -177,7 +254,12 @@ export function* dateAppointments() {
 export function* doctorAppointments() {
   yield takeEvery(GET_DOCTOR_APPOINTMENTS, getDoctorAppointments);
   yield takeEvery(GET_SINGLE_APPOINTMENT, getSingleAppointment);
-  yield takeEvery(DELETE_APPOINTEMNT, deleteAppointemnt);
+  yield takeEvery(
+    DELETE_APPOINTMENT_FROM_PATIENTS,
+    deleteAppointemntFromPatients
+  );
+  yield takeEvery(DELETE_APPOINTMENT_FROM_STAFF, deleteAppointmentFromStaff);
+  yield takeEvery(DELETE_APPOINTEMNT, deleteAppointmentFromCalendarView);
   yield takeEvery(GET_MISSING_REASONS, getMissingReasons);
   yield takeEvery(END_APPOINTMENT, endAppointemnt);
 }

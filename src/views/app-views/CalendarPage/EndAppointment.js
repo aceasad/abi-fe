@@ -23,6 +23,8 @@ import {
   getAppointmentHistory,
   getScheduledAppointments,
 } from 'redux/actions/Patient';
+import { HISTORY, SCHEDULED } from 'redux/reducers/Staff';
+import { getAppointments } from 'redux/actions/Staff';
 
 const prepareData = (values) => {
   const missing_reason_details = values.missing_reason_details.length
@@ -53,6 +55,13 @@ const EndAppointment = ({ handleClose, id, patientId, appointment_type }) => {
           break;
         case SCHEDULED_APPOINTMENT:
           dispatch(getScheduledAppointments({ id: patientId }));
+          break;
+        // when appointment is ended from Staff Appointments Page
+        case HISTORY:
+          dispatch(getAppointments({ id: patientId, field: HISTORY }));
+          break;
+        case SCHEDULED:
+          dispatch(getAppointments({ id: patientId, field: SCHEDULED }));
           break;
       }
 
