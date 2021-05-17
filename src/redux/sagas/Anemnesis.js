@@ -36,7 +36,8 @@ export function* getMedicalConditions({ payload }) {
     const { data } = yield call(
       anamnesisService.getExistingConditions,
       requestData,
-      payload.id
+      payload.id,
+      payload.noLimit
     );
     if (payload.type === APPEND) yield put(appendExistingConditions(data));
     yield put(setExistingMedicalConditions(data));
