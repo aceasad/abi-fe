@@ -186,13 +186,13 @@ export function* deleteAppointmentFromStaff({ payload }) {
               setAppointmentsPage({
                 page: page - 1,
                 field: payload.temporalType,
-                id: payload?.data?.patient?.id,
+                id: payload?.data?.doctor?.id,
               })
             );
           else
             yield getStaffAppointments({
               payload: {
-                id: payload?.data?.patient?.id,
+                id: payload?.data?.doctor?.id,
                 field: payload.temporalType,
               },
             });
@@ -207,13 +207,13 @@ export function* deleteAppointmentFromStaff({ payload }) {
               setAppointmentsPage({
                 page: page - 1,
                 field: payload.temporalType,
-                id: payload?.data?.patient?.id,
+                id: payload?.data?.doctor?.id,
               })
             );
           else {
             yield getStaffAppointments({
               payload: {
-                id: payload?.data?.patient?.id,
+                id: payload?.data?.doctor?.id,
                 field: payload.temporalType,
               },
             });

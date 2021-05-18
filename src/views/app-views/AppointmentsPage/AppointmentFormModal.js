@@ -59,7 +59,7 @@ const AppointmentFormModal = ({
   }, [debouncedSearch]);
 
   useEffect(() => {
-    return dispatch(resetPatientsAutocomplete());
+    return () => dispatch(resetPatientsAutocomplete());
   }, []);
 
   return (

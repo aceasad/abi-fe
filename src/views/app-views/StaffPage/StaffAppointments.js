@@ -157,9 +157,10 @@ const StaffAppointments = ({ staffId, showList }) => {
           handleClose={() => setActiveAppointment(null)}
           aditionalSubmitData={{
             temporalType: activeAppointment.type,
-            deleteFrom: FROM_STAFF_APPOINTMENTS,
+            actionFrom: FROM_STAFF_APPOINTMENTS,
           }}
           patientId={activeAppointment.patientId}
+          staffId={staffId}
           appointment_type={activeAppointment.type}
         />
       )}

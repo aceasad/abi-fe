@@ -209,7 +209,7 @@ const PatientOverview = ({ patientId, showList, updatePatient }) => {
           appointment_type={activeAppointmnet.type}
           aditionalSubmitData={{
             patientAppointment: activeAppointmnet.type,
-            deleteFrom: FROM_PATIENT_APPOINTMENTS,
+            actionFrom: FROM_PATIENT_APPOINTMENTS,
           }}
         />
       )}
