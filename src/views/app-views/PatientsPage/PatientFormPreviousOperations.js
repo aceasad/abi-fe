@@ -303,7 +303,7 @@ const PatientFormPreviousOperationss = ({
                 </Typography.Text>
               </Col>
             </Row>
-            <div className="list-with-delete-body list-with-delete-body-small">
+            <div className="list-with-delete-body-small">
               <Scrollbars id="previous-list">{previousOperations}</Scrollbars>
             </div>
           </div>

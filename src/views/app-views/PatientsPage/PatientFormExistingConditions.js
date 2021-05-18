@@ -257,7 +257,7 @@ const PatientFormExistingConditions = ({ setFieldValue, id }) => {
                 {formatMessage(messages.columnTitleCondition)}
               </Typography.Text>
             </div>
-            <div className="list-with-delete-body">
+            <div className="list-with-delete-body-small">
               <Scrollbars id="existing-conditions-list">
                 {conditionList}
               </Scrollbars>
