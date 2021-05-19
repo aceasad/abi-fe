@@ -44,7 +44,11 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
 
   const handleSubmit = (values) => {
     const formData = prepareFormData({ ...values });
-    if (!(values.photo instanceof File)) formData.delete('photo');
+    if (!(values.photo instanceof File) || !values.photo)
+      formData.delete('photo');
+    if (!values.photo) {
+      formData.append('photo', '');
+    }
 
     if (clinicData) {
       dispatch(
@@ -99,7 +103,11 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
               justify={checkIsInSettingsPage() ? 'start' : 'center'}
             >
               <Col>
-                <Field component={FormImageUpload} name={'photo'} />
+                <Field
+                  component={FormImageUpload}
+                  name={'photo'}
+                  removeImageLabel={formatMessage(messages.removeImageButton)}
+                />
               </Col>
             </Row>
 

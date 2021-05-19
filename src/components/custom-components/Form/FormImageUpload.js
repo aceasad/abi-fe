@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { UserOutlined, UpOutlined } from '@ant-design/icons';
-import { Badge, Avatar } from 'antd';
+import { Badge, Avatar, Button } from 'antd';
 
-const FormImageUpload = ({ field, form, isSubmit }) => {
+const FormImageUpload = ({ field, form, isSubmit, removeImageLabel }) => {
   const [imagePreview, setImagePreview] = useState(field.value);
 
   useEffect(() => {
     const image = field.value;
-    if (image && typeof image !== 'string')
+    if (image && image instanceof File)
       setImagePreview(URL.createObjectURL(image));
-    else if (image) setImagePreview(image);
+    else if (typeof image == 'string') setImagePreview(image);
     return () => {
-      if (!(image instanceof String)) URL.revokeObjectURL(image);
+      if (!(typeof image == 'string')) URL.revokeObjectURL(image);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [field.value]);
@@ -49,6 +49,14 @@ const FormImageUpload = ({ field, form, isSubmit }) => {
           />
         </Badge>
       </label>
+      <Button
+        className="ml-4"
+        onClick={() => {
+          form.setFieldValue(field.name, '');
+        }}
+      >
+        {removeImageLabel}
+      </Button>
     </div>
   );
 };
