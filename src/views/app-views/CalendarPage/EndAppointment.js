@@ -17,6 +17,8 @@ import {
 import { message } from 'antd';
 import {
   APPOINTMNET_HISTORY,
+  FROM_PATIENT_APPOINTMENTS,
+  FROM_STAFF_APPOINTMENTS,
   SCHEDULED_APPOINTMENT,
 } from 'constants/ClinicConstants';
 import {
@@ -37,7 +39,14 @@ const prepareData = (values) => {
   };
 };
 
-const EndAppointment = ({ handleClose, id, patientId, appointment_type }) => {
+const EndAppointment = ({
+  handleClose,
+  id,
+  patientId,
+  appointment_type,
+  staffId,
+  endFrom = null,
+}) => {
   const { formatMessage } = useIntl();
   const dispatch = useDispatch();
 
@@ -47,8 +56,17 @@ const EndAppointment = ({ handleClose, id, patientId, appointment_type }) => {
 
   const afterEnd = () => {
     message.success(formatMessage(messages.endSuccess));
-    if (patientId)
+    if (endFrom === FROM_STAFF_APPOINTMENTS) {
       // eslint-disable-next-line default-case
+      switch (appointment_type) {
+        case HISTORY:
+          dispatch(getAppointments({ id: staffId, field: HISTORY }));
+          break;
+        case SCHEDULED:
+          dispatch(getAppointments({ id: staffId, field: SCHEDULED }));
+          break;
+      }
+    } else if (endFrom === FROM_PATIENT_APPOINTMENTS) {
       switch (appointment_type) {
         case APPOINTMNET_HISTORY:
           dispatch(getAppointmentHistory({ id: patientId }));
@@ -56,14 +74,8 @@ const EndAppointment = ({ handleClose, id, patientId, appointment_type }) => {
         case SCHEDULED_APPOINTMENT:
           dispatch(getScheduledAppointments({ id: patientId }));
           break;
-        // when appointment is ended from Staff Appointments Page
-        case HISTORY:
-          dispatch(getAppointments({ id: patientId, field: HISTORY }));
-          break;
-        case SCHEDULED:
-          dispatch(getAppointments({ id: patientId, field: SCHEDULED }));
-          break;
       }
+    }
 
     handleClose();
   };

@@ -22,6 +22,7 @@ const AppointmentPreview = ({
   aditionalSubmitData = {},
   patientId,
   appointment_type,
+  staffId,
 }) => {
   const dispatch = useDispatch();
   const { formatMessage } = useIntl();
@@ -82,6 +83,10 @@ const AppointmentPreview = ({
           id={showChildModal.data.id}
           patientId={patientId}
           appointment_type={appointment_type}
+          endFrom={
+            aditionalSubmitData?.actionFrom && aditionalSubmitData.actionFrom
+          }
+          staffId={staffId}
         />
       );
     case NESTED_MODAL.EDIT_APPOINTMENT:
@@ -91,6 +96,11 @@ const AppointmentPreview = ({
             <UpdateAppointment
               patientId={patientId}
               appointment_type={appointment_type}
+              staffId={staffId}
+              updateFrom={
+                aditionalSubmitData?.actionFrom &&
+                aditionalSubmitData.actionFrom
+              }
               {...props}
             />
           )}
@@ -111,4 +121,4 @@ const AppointmentPreview = ({
   }
 };
 
-export default AppointmentPreview;
+export default React.memo(AppointmentPreview);

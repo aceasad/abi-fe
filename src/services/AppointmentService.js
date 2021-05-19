@@ -2,7 +2,7 @@ import ApiService from './ApiService';
 import moment from 'moment';
 
 const ENDPOINTS = {
-  AVAILABLE_TIMESLOTS: '/appointments/timeslots/available',
+  AVAILABLE_TIMESLOTS: '/appointments/timeslots/available/',
   CREATE_APPOINTMENT: '/appointments/',
   UPDATE_APPOINTMENT: '/appointments/:id/',
   GET_DOCTOR_APPOINTMNETS: '/appointments/doctors/scheduled/',

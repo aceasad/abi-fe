@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import AppointmentFormModal from './AppointmentFormModal';
 import messages from './messages';
@@ -13,6 +13,8 @@ import { DATE_FORMAT_DD_MMM_YYYY } from 'constants/DateConstant';
 import { TIME_FORMAT_HH_MM } from 'constants/TimeConstant';
 import {
   APPOINTMNET_HISTORY,
+  FROM_PATIENT_APPOINTMENTS,
+  FROM_STAFF_APPOINTMENTS,
   SCHEDULED_APPOINTMENT,
 } from 'constants/ClinicConstants';
 import { HISTORY, SCHEDULED } from 'redux/reducers/Staff';
@@ -30,6 +32,8 @@ const UpdateAppointment = ({
   isDataLoading,
   patientId,
   appointment_type,
+  staffId,
+  updateFrom = null,
 }) => {
   const dispatch = useDispatch();
   const { formatMessage } = useIntl();
@@ -40,21 +44,24 @@ const UpdateAppointment = ({
 
   const afterUpdate = () => {
     message.success(formatMessage(messages.appointmentUpdated));
-    if (patientId) {
+    if (updateFrom === FROM_STAFF_APPOINTMENTS) {
       // eslint-disable-next-line default-case
+      switch (appointment_type) {
+        // those are when appointment is updated from the Staff Appointments List
+        case SCHEDULED:
+          dispatch(getAppointments({ id: staffId, field: SCHEDULED }));
+          break;
+        case HISTORY:
+          dispatch(getAppointments({ id: staffId, field: HISTORY }));
+          break;
+      }
+    } else if (updateFrom === FROM_PATIENT_APPOINTMENTS) {
       switch (appointment_type) {
         case APPOINTMNET_HISTORY:
           dispatch(getAppointmentHistory({ id: patientId }));
           break;
         case SCHEDULED_APPOINTMENT:
           dispatch(getScheduledAppointments({ id: patientId }));
-          break;
-        // those are when appointment is updated from the Staff Appointments List
-        case SCHEDULED:
-          dispatch(getAppointments({ id: patientId, field: SCHEDULED }));
-          break;
-        case HISTORY:
-          dispatch(getAppointments({ id: patientId, field: HISTORY }));
           break;
       }
     }

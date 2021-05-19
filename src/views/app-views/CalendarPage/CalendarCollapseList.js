@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { Collapse, List, Typography } from 'antd';
 
@@ -40,12 +40,15 @@ const CalendarCollapseList = () => {
     setActiveAppointment(id);
   };
 
+  const handleClose = useCallback(() => {
+    setActiveAppointment(null);
+  }, []);
+
   useEffect(() => {
     if (activeAppointemnt) dispatch(getSignleAppointmnet(activeAppointemnt));
   }, [activeAppointemnt]);
 
   if (loading) return <Loading defaultSpinner />;
-
   return (
     <div>
       {doctorAppointments.length ? (
@@ -76,9 +79,7 @@ const CalendarCollapseList = () => {
       ) : (
         <div>{formatMessage(messages.noAppointments)}</div>
       )}
-      {activeAppointemnt && (
-        <AppointmentPreview handleClose={() => setActiveAppointment(null)} />
-      )}
+      {activeAppointemnt && <AppointmentPreview handleClose={handleClose} />}
     </div>
   );
 };

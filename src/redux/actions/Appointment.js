@@ -142,7 +142,7 @@ export const searchPatients = (payload) => ({
 });
 
 export const deleteAppointemnt = (payload) => {
-  switch (payload.deleteFrom) {
+  switch (payload.actionFrom) {
     case FROM_STAFF_APPOINTMENTS:
       return {
         type: DELETE_APPOINTMENT_FROM_STAFF,
