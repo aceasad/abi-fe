@@ -104,4 +104,8 @@ export default defineMessages({
     id: `${scope}.text.all_day_working_hours`,
     defaultMessage: 'Working hours 00-24',
   },
+  removeImageButton: {
+    id: `${scope}.button.remove_image`,
+    defaultMessage: 'Remove Image',
+  },
 });
