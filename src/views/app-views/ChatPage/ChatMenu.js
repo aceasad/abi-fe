@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ChatData from 'assets/data/chat.data.json';
 import { Badge, Input } from 'antd';
 import AvatarStatus from 'components/shared-components/AvatarStatus';
@@ -7,30 +7,45 @@ import { SearchOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 import { useIntl } from 'react-intl';
 import messages from './messages';
-import { chatListItemStyle } from 'utils/helpers';
+import { chatListItemStyle, formatMessageTimestamp } from 'utils/helpers';
+import { getAllChatsInfo, getMoreChatsInfo } from 'redux/actions/Chats';
+import { useDispatch, useSelector } from 'react-redux';
+import { makeSelectAllChatsInfo } from 'redux/selectors/Chats';
+import Loading from 'components/shared-components/Loading';
+import { useLazyLoad } from 'utils/hooks';
+import Scrollbars from 'react-custom-scrollbars';
 
 const ChatMenu = ({ match, location }) => {
-  const [chatList, setChatList] = useState(ChatData);
   const history = useHistory();
   const { formatMessage } = useIntl();
+  const dispatch = useDispatch();
+
+  const nextRef = useRef(null);
+
+  const id = parseInt(location.pathname.match(/\/([^/]+)\/?$/)[1]);
+
+  const { items, next } = useSelector(makeSelectAllChatsInfo());
+
+  useEffect(() => {
+    nextRef.current = { next };
+  }, [next]);
+
+  useLazyLoad(
+    '#chat-menu-scroll div',
+    () => {
+      dispatch(getMoreChatsInfo());
+    },
+    [],
+    () => nextRef.current.next
+  );
 
   const openChat = (id) => {
-    const data = chatList.map((chat) =>
-      chat.id === id ? { ...chat, unread: 0 } : chat
-    );
-    setChatList(data);
     history.push(`${match.url}/${id}`);
   };
 
   const searchOnChange = (e) => {
-    const query = e.target.value;
-    const data = ChatData.filter((item) =>
-      !query ? item : item.name.toLowerCase().includes(query)
-    );
-    setChatList(data);
+    // TO-DO - Elastic Search
   };
-
-  const id = parseInt(location.pathname.match(/\/([^/]+)\/?$/)[1]);
 
   return (
     <div className="chat-menu">
@@ -42,33 +57,39 @@ const ChatMenu = ({ match, location }) => {
         />
       </div>
       <div className="chat-menu-list">
-        {chatList.map((item, index) => (
-          <div
-            key={`chat-item-${item.id}`}
-            onClick={() => openChat(item.id)}
-            className={chatListItemStyle(chatList.length - 1, item, index, id)}
-          >
-            <AvatarStatus
-              src={item.avatar}
-              name={item.name}
-              subTitle={item.msg[item.msg.length - 1].text}
-            />
-            <div className="text-right">
-              <div className="chat-menu-list-item-time">{item.time}</div>
-              {!item.unread ? (
-                <span></span>
-              ) : (
-                <Badge
-                  count={item.unread}
-                  style={{ backgroundColor: COLOR_1 }}
+        <Scrollbars id="chat-menu-scroll">
+          {items.map((item, index) => {
+            return (
+              <div
+                key={`chat-item-${item.patient.id}`}
+                onClick={() => openChat(item.patient.id)}
+                className={chatListItemStyle(items.length - 1, item, index, id)}
+              >
+                <AvatarStatus
+                  src={item.patient.picture}
+                  name={item.patient.full_name}
+                  subTitle={item.last_message.text}
                 />
-              )}
-            </div>
-          </div>
-        ))}
+                <div className="text-right">
+                  <div className="chat-menu-list-item-time">
+                    {formatMessageTimestamp(item.last_message.created_at)}
+                  </div>
+                  {!item?.unread ? (
+                    <span></span>
+                  ) : (
+                    <Badge
+                      count={item.unread}
+                      style={{ backgroundColor: COLOR_1 }}
+                    />
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </Scrollbars>
       </div>
     </div>
   );
 };
 
-export default ChatMenu;
+export default React.memo(ChatMenu);

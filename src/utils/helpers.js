@@ -49,15 +49,9 @@ export const chatListItemStyle = (
 };
 
 export const singleChatMessageStyle = (message) => {
-  const messageTypeStyle =
-    message.msgType === MESSAGE_TYPE.DATE ? 'datetime' : '';
-  const messageFromStyle =
-    message.from === MESSAGE_FROM.OPPOSITE
-      ? 'msg-recipient'
-      : message.from === MESSAGE_FROM.ME
-      ? 'msg-sent'
-      : '';
-
+  const messageTypeStyle = '';
+  //const messageTypeStyle =  // message?.msgType === MESSAGE_TYPE.DATE ? 'datetime' : '';
+  const messageFromStyle = message.is_answer ? 'msg-sent' : 'msg-recipient';
   return `msg ${messageTypeStyle} ${messageFromStyle}`;
 };
 
@@ -104,3 +98,19 @@ export const formHasError = (fields, errors) =>
   fields.some((fieldName) => !!errors[fieldName]);
 
 export const generateKey = () => Math.random().toString(36).substring(7);
+
+export const formatMessageTimestamp = (timestamp) => {
+  const momentDate = moment(timestamp).local();
+  return moment().local().isSame(momentDate, 'd')
+    ? momentDate.format('h:mm a')
+    : momentDate.format('DD/MM/YYYY');
+};
+
+export const formatMessagesTimestampMinutes = (timestamp) =>
+  moment(timestamp).local().format('h:mm a');
+
+export const isSameDay = (timestamp1, timestamp2) =>
+  moment(timestamp1).local().isSame(moment(timestamp2).local(), 'd');
+
+export const formatMessagesTimestampDate = (timestamp) =>
+  moment(timestamp).local().format('DD/MM/YYYY');

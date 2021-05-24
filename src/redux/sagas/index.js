@@ -8,6 +8,7 @@ import Patient from './Patient';
 import User from './User';
 import Appointment from './Appointment';
 import Anamnesis from './Anemnesis';
+import Chats from './Chats';
 
 export default function* rootSaga(getState) {
   yield all([
@@ -19,5 +20,6 @@ export default function* rootSaga(getState) {
     User(),
     Appointment(),
     Anamnesis(),
+    Chats(),
   ]);
 }

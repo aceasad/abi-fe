@@ -17,7 +17,19 @@ import { MESSAGE_TYPE, MESSAGE_FROM } from 'constants/ChatConstants';
 import { useIntl } from 'react-intl';
 import messages from './messages';
 import { useParams } from 'react-router-dom';
-import { singleChatMessageStyle } from 'utils/helpers';
+import {
+  formatMessagesTimestampDate,
+  formatMessagesTimestampMinutes,
+  isSameDay,
+  singleChatMessageStyle,
+} from 'utils/helpers';
+import { useDispatch, useSelector } from 'react-redux';
+import { getSingleChat } from 'redux/actions/Chats';
+import {
+  makeSelectSingleChat,
+  makeSelectSingleChatInfo,
+} from 'redux/selectors/Chats';
+import Loading from 'components/shared-components/Loading';
 
 const Conversation = ({
   conversationId,
@@ -33,43 +45,40 @@ const Conversation = ({
   const id = parseInt(params.id || conversationId);
   const [info, setInfo] = useState({});
   const [messageList, setMessageList] = useState([]);
+  const { items, loading } = useSelector(makeSelectSingleChat());
+  const { chatInfo } = useSelector(makeSelectSingleChatInfo(id));
 
   const { formatMessage } = useIntl();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     getConversation(id);
     scrollToBottom();
   }, [params.id]);
 
-  const getConversation = (currentId) => {
-    const data = ChatData.filter((chat) => chat.id === currentId);
-    setInfo(data[0]);
-    setMessageList(data[0].msg);
-  };
+  useEffect(() => {
+    setMessageList(items);
+    scrollToBottom();
+  }, [items]);
 
-  const getMessageType = ({ msgType, text }) => {
-    switch (msgType) {
-      case MESSAGE_TYPE.TEXT:
-        return <span>{text}</span>;
-      case MESSAGE_TYPE.IMAGE:
-        return <img src={text} alt={text} />;
-      case MESSAGE_TYPE.FILE:
-        return (
-          <Flex alignItems="center" className="msg-file">
-            <FileOutlined className="font-size-md" />
-            <span className="ml-2 font-weight-semibold text-link pointer">
-              <u>{text}</u>
-            </span>
-          </Flex>
-        );
-      default:
-        return null;
-    }
+  useEffect(() => {
+    setInfo(chatInfo);
+    scrollToBottom();
+  }, [chatInfo]);
+
+  const getConversation = (currentId) => {
+    dispatch(
+      getSingleChat({ patientId: currentId, afterEffect: scrollToBottom })
+    );
   };
 
   const scrollToBottom = () => {
-    chatBodyRef.current.scrollToBottom();
+    chatBodyRef.current && chatBodyRef.current.scrollToBottom();
   };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [chatBodyRef.current]);
 
   const onSend = (values) => {
     if (values.newMessage) {
@@ -99,32 +108,72 @@ const Conversation = ({
     </div>
   );
 
-  const chatContentBody = (messages, id) => (
-    <div className="chat-content-body">
-      <Scrollbars ref={chatBodyRef} autoHide>
-        {messages.map((message, index) => (
-          <div
-            key={`msg-${id}-${index}`}
-            className={singleChatMessageStyle(message)}
-          >
-            {message.avatar ? (
-              <div className="mr-2">
-                <Avatar src={message.avatar} />
+  const generateDividerMessage = (date) => {
+    return {
+      created_at: formatMessagesTimestampDate(date),
+      type: 'DIVIDER',
+      id: 'divider',
+    };
+  };
+
+  const addDividers = (messages) => {
+    if (messages.length === 1) {
+      return [generateDividerMessage(messages[0].created_at), ...messages];
+    }
+    const added =
+      messages.length &&
+      messages.reduce((acc, item) => {
+        if (acc.length) {
+          if (isSameDay(acc[acc.length - 1].created_at, item.created_at)) {
+            return [...acc, item];
+          } else {
+            return [...acc, generateDividerMessage(item.created_at), item];
+          }
+        } else {
+          if (isSameDay(acc.created_at, item.created_at)) {
+            return [acc, item];
+          } else {
+            return [acc, generateDividerMessage(item.created_at), item];
+          }
+        }
+      });
+    return added;
+  };
+
+  const chatContentBody = (messages) => {
+    const messagesWithDividers = addDividers(messages);
+    return (
+      <div className="chat-content-body">
+        <Scrollbars ref={chatBodyRef} autoHide>
+          {messagesWithDividers &&
+            messagesWithDividers.map((message, index) => (
+              <div
+                key={`msg-${message.id}-${index}`}
+                className={singleChatMessageStyle(message)}
+              >
+                {message?.type === 'DIVIDER' ? (
+                  <Divider>{message.created_at}</Divider>
+                ) : !message.is_answer ? (
+                  <div className="mr-2">
+                    <Avatar src={info && info.patient.picture} />
+                  </div>
+                ) : null}
+                {message.text ? (
+                  <div className={`bubble`}>
+                    <div className="bubble-wrapper">
+                      <span>{message.text}</span>
+                    </div>
+                    <span>
+                      {formatMessagesTimestampMinutes(message.created_at)}
+                    </span>
+                  </div>
+                ) : null}
               </div>
-            ) : null}
-            {message.text ? (
-              <div className={`bubble ${!message.avatar ? 'ml-5' : ''}`}>
-                <div className="bubble-wrapper">{getMessageType(message)}</div>
-              </div>
-            ) : null}
-            {message.msgType === MESSAGE_TYPE.DATE ? (
-              <Divider>{message.time}</Divider>
-            ) : null}
-          </div>
-        ))}
-      </Scrollbars>
-    </div>
-  );
+            ))}
+        </Scrollbars>
+      </div>
+    );
+  };
 
   const chatContentFooter = () => (
     <div className="chat-content-footer">
@@ -135,12 +184,6 @@ const Conversation = ({
             placeholder={formatMessage(messages.typeAMessagePlaceholder)}
             suffix={
               <div className="d-flex align-items-center">
-                <button className="text-dark font-size-lg mr-3">
-                  <SmileOutlined />
-                </button>
-                <button className="text-dark font-size-lg mr-3">
-                  <PaperClipOutlined />
-                </button>
                 <Button
                   shape="circle"
                   type="primary"
@@ -190,8 +233,8 @@ const Conversation = ({
 
   return (
     <div className="chat-content">
-      {chatContentHeader(title ? title : info.name)}
-      {chatContentBody(messageList, id)}
+      {chatContentHeader(title ? title : info?.patient?.full_name)}
+      {loading ? <Loading /> : chatContentBody(messageList, id)}
       {chatContentFooter()}
     </div>
   );
