@@ -13,6 +13,7 @@ import { useIntl } from 'react-intl';
 import messages from './messages';
 import { useParams } from 'react-router-dom';
 import {
+  addDividers,
   formatMessagesTimestampDate,
   formatMessagesTimestampMinutes,
   generateDividerMessage,
@@ -35,6 +36,7 @@ import { useLazyLoad } from 'utils/hooks';
 import { useCallback } from 'react';
 import Checkbox from 'antd/lib/checkbox/Checkbox';
 import { useToggleRasaActivity } from 'queries/shared';
+import ChatContentBody from './ChatContentBody';
 
 const Conversation = ({
   conversationId,
@@ -49,8 +51,8 @@ const Conversation = ({
   const params = useParams();
 
   const id = parseInt(params.id || conversationId);
-  const { items, loading, next } = useSelector(makeSelectSingleChat());
-  const { chatInfo } = useSelector(makeSelectSingleChatInfo(id));
+  const { items, loading, next } = useSelector(makeSelectSingleChat);
+  const { chatInfo } = useSelector(makeSelectSingleChatInfo);
 
   const { formatMessage } = useIntl();
   const dispatch = useDispatch();
@@ -63,8 +65,8 @@ const Conversation = ({
     () => dispatch(getMoreSingleChatMessages({ patientId: params.id })),
     [params, dispatch]
   );
-  const getConversation = (currentId) => {
-    dispatch(getSingleChat({ patientId: currentId }));
+  const getConversation = (patientId) => {
+    dispatch(getSingleChat({ patientId }));
   };
 
   const scrollToBottom = () => {
@@ -92,7 +94,7 @@ const Conversation = ({
     // TO-DO
   };
 
-  const { mutate } = useToggleRasaActivity();
+  const { mutate, isLoading } = useToggleRasaActivity();
 
   const chatContentHeader = (name, isRasaPaused) => (
     <div className="chat-content-header">
@@ -100,6 +102,7 @@ const Conversation = ({
       <Checkbox
         key={`checkbox-rasa-${generateKey()}`}
         defaultChecked={isRasaPaused}
+        disabled={isLoading}
         onChange={() =>
           mutate(id, { onSuccess: () => dispatch(toggleRasaActivity(id)) })
         }
@@ -115,62 +118,13 @@ const Conversation = ({
     </div>
   );
 
-  // hasMoreMessages - if there is more messages on BE for lazy load
-  // If there is no more messages to load -> add date divider as first element
-  const addDividers = (messages, hasMoreMessages) => {
-    if (messages.length === 1) {
-      return [generateDividerMessage(messages[0].created_at), ...messages];
-    }
-    const added =
-      messages.length &&
-      messages.reduce((acc, item) => {
-        if (acc.length) {
-          if (isSameDay(acc[acc.length - 1].created_at, item.created_at)) {
-            return [...acc, item];
-          } else {
-            return [...acc, generateDividerMessage(item.created_at), item];
-          }
-        } else {
-          if (isSameDay(acc.created_at, item.created_at)) {
-            return [acc, item];
-          } else {
-            return [acc, generateDividerMessage(item.created_at), item];
-          }
-        }
-      });
-    if (!hasMoreMessages && added.length) {
-      return [generateDividerMessage(added[0].created_at), ...added];
-    }
-    return added;
-  };
-
-  const chatContentBody = (messages) => {
-    const messagesWithDividers = addDividers(messages);
-    return (
-      messagesWithDividers &&
-      messagesWithDividers.map((message, index) => (
-        <div
-          key={`msg-${message.id}-${index}`}
-          className={singleChatMessageStyle(message)}
-        >
-          {message?.type === MESSAGE_TYPE.DIVIDER ? (
-            <Divider>{message.created_at}</Divider>
-          ) : !message.is_answer ? (
-            <div className="mr-2">
-              <Avatar src={chatInfo && chatInfo.patient.picture} />
-            </div>
-          ) : null}
-          {message.text ? (
-            <div className={`bubble`}>
-              <div className="bubble-wrapper">
-                <span>{message.text}</span>
-              </div>
-              <span>{formatMessagesTimestampMinutes(message.created_at)}</span>
-            </div>
-          ) : null}
-        </div>
-      ))
-    );
+  const chatContentBody = (messages, next, patientPicture) => {
+    return messages ? (
+      <ChatContentBody
+        messages={addDividers(messages, next)}
+        patientPicture={patientPicture}
+      />
+    ) : null;
   };
 
   const chatContentFooter = () => (
@@ -242,7 +196,11 @@ const Conversation = ({
           autoHide={false}
           id="single-chat-scroll"
         >
-          {loading ? <Loading /> : chatContentBody(items, next)}
+          {loading ? (
+            <Loading />
+          ) : (
+            chatContentBody(items, next, chatInfo && chatInfo.patient.picture)
+          )}
         </Scrollbars>
       </div>
       {chatContentFooter()}

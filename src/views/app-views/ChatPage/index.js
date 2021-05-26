@@ -1,22 +1,13 @@
-import React, { useEffect } from 'react';
+import { Button, PageHeader } from 'antd';
 import InnerAppLayout from 'layouts/inner-app-layout';
+import React from 'react';
+import { useIntl } from 'react-intl';
 import ChatContent from './ChatContent';
 import ChatMenu from './ChatMenu';
-import { Button, PageHeader } from 'antd';
-import { useIntl } from 'react-intl';
 import messages from './messages';
-import { useDispatch, useSelector } from 'react-redux';
-import { makeSelectAllChatsInfo } from 'redux/selectors/Chats';
-import { getAllChatsInfo } from 'redux/actions/Chats';
-import Loading from 'components/shared-components/Loading';
 
 const Chat = (props) => {
   const { formatMessage } = useIntl();
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(getAllChatsInfo());
-  }, []);
 
   return (
     <>

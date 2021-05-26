@@ -18,7 +18,7 @@ import { MESSAGE_STATUS } from 'constants/ChatConstants';
 
 const initialState = {
   ...baseState,
-  single: (({ single, ...rest }) => rest)(baseState),
+  single: (({ single, ...rest }) => rest)({ ...baseState, chatInfo: null }),
 };
 
 /* eslint-disable default-case */
@@ -34,6 +34,11 @@ const chats = (state = initialState, action) =>
           page:
             Math.floor(action.payload.count / CHAT_MESSAGES_PAGINATION_LIMIT) +
             1,
+          chatInfo: {
+            patient: state.items.find(
+              (item) => item.patient.id === action.payload.results[0].patient
+            ).patient,
+          },
         };
         break;
       case SET_SINGLE_CHAT_LOADING:

@@ -40,22 +40,28 @@ const ChatMenu = ({ match, location }) => {
   );
 
   const [query, setQuery] = useState('');
+
   const id = parseInt(location.pathname.match(/\/([^/]+)\/?$/)[1]);
 
-  const { items, next, loading } = useSelector(makeSelectAllChatsInfo());
+  const { items, next, loading } = useSelector(makeSelectAllChatsInfo);
 
   const debouncedSearch = useDebounce(query, 500);
+
+  useEffect(() => {
+    dispatch(getAllChatsInfo());
+  }, []);
 
   useEffect(() => {
     nextRef.current = { next };
   }, [next]);
 
-  useLazyLoad(
-    '#chat-menu-scroll div',
-    handleGetMoreChatsInfo,
-    [loading],
-    () => nextRef.current.next
-  );
+  // TO-DO -> lazy load
+  // useLazyLoad(
+  //   '#chat-menu-scroll div',
+  //   handleGetMoreChatsInfo,
+  //   [loading],
+  //   () => nextRef.current.next
+  // );
 
   const openChat = (id) => {
     dispatch(setConversationToRead(id));
@@ -83,31 +89,40 @@ const ChatMenu = ({ match, location }) => {
       </div>
       <div className="chat-menu-list">
         <Scrollbars id="chat-menu-scroll">
-          {items.map((item, index) => {
-            return (
-              <div
-                key={`chat-item-${item.patient.id}${index}`}
-                onClick={() => openChat(item.patient.id)}
-                className={chatListItemStyle(items.length - 1, item, index, id)}
-              >
-                <AvatarStatus
-                  src={item.patient.picture}
-                  name={item.patient.full_name}
-                  subTitle={item.last_message.text}
-                />
-                <div className="text-right">
-                  <div className="chat-menu-list-item-time">
-                    {formatMessageTimestamp(item.last_message.created_at)}
-                  </div>
-                  {item?.last_message.status === MESSAGE_STATUS.SENT ? (
-                    <Badge count={1} style={{ backgroundColor: COLOR_1 }} />
-                  ) : (
-                    <span></span>
+          {loading ? (
+            <Loading />
+          ) : (
+            items.map((item, index) => {
+              return (
+                <div
+                  key={`chat-item-${item.patient.id}${index}`}
+                  onClick={() => openChat(item.patient.id)}
+                  className={chatListItemStyle(
+                    items.length - 1,
+                    item.patient.id,
+                    index,
+                    id
                   )}
+                >
+                  <AvatarStatus
+                    src={item.patient.picture}
+                    name={item.patient.full_name}
+                    subTitle={item.last_message.text}
+                  />
+                  <div className="text-right">
+                    <div className="chat-menu-list-item-time">
+                      {formatMessageTimestamp(item.last_message.created_at)}
+                    </div>
+                    {item?.last_message.status === MESSAGE_STATUS.SENT ? (
+                      <Badge count={1} style={{ backgroundColor: COLOR_1 }} />
+                    ) : (
+                      <span></span>
+                    )}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })
+          )}
         </Scrollbars>
       </div>
     </div>
