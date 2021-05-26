@@ -3,9 +3,15 @@ export const MESSAGE_TYPE = {
   TEXT: 'text',
   IMAGE: 'image',
   FILE: 'file',
+  DIVIDER: 'DIVIDER',
 };
 
 export const MESSAGE_FROM = {
   OPPOSITE: 'opposite',
   ME: 'me',
+};
+
+export const MESSAGE_STATUS = {
+  SENT: 'SENT',
+  READ: 'READ',
 };

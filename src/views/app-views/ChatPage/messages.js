@@ -31,4 +31,8 @@ export default defineMessages({
     id: `${scope}.chat.type_a_message_placeholder`,
     defaultMessage: 'Type a message...',
   },
+  rasaPaused: {
+    id: `${scope}.chat.rasa_paused`,
+    defaultMessage: 'Rasa paussed',
+  },
 });
