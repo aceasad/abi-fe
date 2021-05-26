@@ -38,26 +38,20 @@ export const mapEmptyStingObjectFeildsToNull = (obj) =>
 
 export const chatListItemStyle = (
   chatListLength,
-  currentItem,
+  currentItemId,
   currentItemIndex,
   selectedItemId
 ) => {
   const lastItem = currentItemIndex === chatListLength - 1 ? 'last' : '';
-  const selectedItem = currentItem.id === selectedItemId ? 'selected' : '';
+  const selectedItem = currentItemId === selectedItemId ? 'selected' : '';
 
   return `chat-menu-list-item ${lastItem} ${selectedItem}`;
 };
 
 export const singleChatMessageStyle = (message) => {
   const messageTypeStyle =
-    message.msgType === MESSAGE_TYPE.DATE ? 'datetime' : '';
-  const messageFromStyle =
-    message.from === MESSAGE_FROM.OPPOSITE
-      ? 'msg-recipient'
-      : message.from === MESSAGE_FROM.ME
-      ? 'msg-sent'
-      : '';
-
+    message?.type === MESSAGE_TYPE.DIVIDER ? 'datetime' : '';
+  const messageFromStyle = message.is_answer ? 'msg-sent' : 'msg-recipient';
   return `msg ${messageTypeStyle} ${messageFromStyle}`;
 };
 
@@ -104,3 +98,50 @@ export const formHasError = (fields, errors) =>
   fields.some((fieldName) => !!errors[fieldName]);
 
 export const generateKey = () => Math.random().toString(36).substring(7);
+
+export const formatMessageTimestamp = (timestamp) => {
+  const momentDate = moment(timestamp).local();
+  const isSame = moment().local().isSame(momentDate, 'd');
+  return momentDate.format(isSame ? 'h:mm a' : 'DD/MM/YYYY');
+};
+
+export const formatMessagesTimestampMinutes = (timestamp) =>
+  moment(timestamp).local().format('h:mm a');
+
+export const isSameDay = (timestamp1, timestamp2) =>
+  moment(timestamp1).local().isSame(moment(timestamp2).local(), 'd');
+
+export const formatMessagesTimestampDate = (timestamp) =>
+  moment(timestamp).local().format('DD/MM/YYYY');
+
+export const generateDividerMessage = (date) => {
+  return {
+    created_at: formatMessagesTimestampDate(date),
+    type: MESSAGE_TYPE.DIVIDER,
+    id: 'divider',
+  };
+};
+
+// hasMoreMessages - if there is more messages on BE for lazy load
+// If there is no more messages to load -> add date divider as first element
+export const addDividers = (messages, hasMoreMessages) => {
+  if (messages.length === 1) {
+    return [generateDividerMessage(messages[0].created_at), ...messages];
+  }
+  const added = messages.reduce((acc, item) => {
+    if (acc.length) {
+      if (isSameDay(acc[acc.length - 1].created_at, item.created_at)) {
+        return [...acc, item];
+      } else {
+        return [...acc, generateDividerMessage(item.created_at), item];
+      }
+    } else {
+      return [item];
+    }
+  }, []);
+
+  if (!hasMoreMessages && added.length) {
+    return [generateDividerMessage(added[0].created_at), ...added];
+  }
+  return added;
+};

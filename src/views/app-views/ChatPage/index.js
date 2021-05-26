@@ -1,9 +1,9 @@
-import React from 'react';
+import { Button, PageHeader } from 'antd';
 import InnerAppLayout from 'layouts/inner-app-layout';
+import React from 'react';
+import { useIntl } from 'react-intl';
 import ChatContent from './ChatContent';
 import ChatMenu from './ChatMenu';
-import { Button, PageHeader } from 'antd';
-import { useIntl } from 'react-intl';
 import messages from './messages';
 import { useSocket } from 'utils/hooks';
 import { WS_CHAT_URL } from 'constants/ApiConstant';
@@ -25,11 +25,12 @@ const Chat = (props) => {
         className="p-0 mb-4"
         title={formatMessage(messages.conversationsTitle)}
         extra={[
-          <Button type="primary">
+          <Button type="primary" key="mass-invites-button">
             {formatMessage(messages.conversationsMassInvites)}
           </Button>,
         ]}
       />
+
       <div className="chat">
         <InnerAppLayout
           sideContent={<ChatMenu {...props} />}
