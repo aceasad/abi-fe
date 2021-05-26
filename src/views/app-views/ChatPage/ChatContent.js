@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import Conversation from './Conversation';
 
@@ -12,11 +12,14 @@ const ConversationEmpty = () => (
 );
 
 const ChatContent = ({ match }) => {
-  return (
-    <Switch>
-      <Route path={`${match.url}/:id`} component={Conversation} />
-      <Route path={`${match.url}`} component={ConversationEmpty} />
-    </Switch>
+  return useMemo(
+    () => (
+      <Switch>
+        <Route path={`${match.url}/:id`} component={Conversation} />
+        <Route path={`${match.url}`} component={ConversationEmpty} />
+      </Switch>
+    ),
+    [match]
   );
 };
 

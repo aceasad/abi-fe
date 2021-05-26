@@ -1,4 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  useCallback,
+} from 'react';
 import ChatData from 'assets/data/chat.data.json';
 import { Badge, Input } from 'antd';
 import AvatarStatus from 'components/shared-components/AvatarStatus';
@@ -8,12 +14,18 @@ import { useHistory } from 'react-router-dom';
 import { useIntl } from 'react-intl';
 import messages from './messages';
 import { chatListItemStyle, formatMessageTimestamp } from 'utils/helpers';
-import { getAllChatsInfo, getMoreChatsInfo } from 'redux/actions/Chats';
+import {
+  getAllChatsInfo,
+  getMoreChatsInfo,
+  setConversationToRead,
+  searchConversations,
+} from 'redux/actions/Chats';
 import { useDispatch, useSelector } from 'react-redux';
 import { makeSelectAllChatsInfo } from 'redux/selectors/Chats';
 import Loading from 'components/shared-components/Loading';
-import { useLazyLoad } from 'utils/hooks';
+import { useDebounce, useLazyLoad } from 'utils/hooks';
 import Scrollbars from 'react-custom-scrollbars';
+import { MESSAGE_STATUS } from 'constants/ChatConstants';
 
 const ChatMenu = ({ match, location }) => {
   const history = useHistory();
@@ -22,9 +34,17 @@ const ChatMenu = ({ match, location }) => {
 
   const nextRef = useRef(null);
 
+  const handleGetMoreChatsInfo = useCallback(
+    () => dispatch(getMoreChatsInfo()),
+    [dispatch]
+  );
+
+  const [query, setQuery] = useState('');
   const id = parseInt(location.pathname.match(/\/([^/]+)\/?$/)[1]);
 
-  const { items, next } = useSelector(makeSelectAllChatsInfo());
+  const { items, next, loading } = useSelector(makeSelectAllChatsInfo());
+
+  const debouncedSearch = useDebounce(query, 500);
 
   useEffect(() => {
     nextRef.current = { next };
@@ -32,20 +52,25 @@ const ChatMenu = ({ match, location }) => {
 
   useLazyLoad(
     '#chat-menu-scroll div',
-    () => {
-      dispatch(getMoreChatsInfo());
-    },
-    [],
+    handleGetMoreChatsInfo,
+    [loading],
     () => nextRef.current.next
   );
 
   const openChat = (id) => {
+    dispatch(setConversationToRead(id));
     history.push(`${match.url}/${id}`);
   };
 
   const searchOnChange = (e) => {
-    // TO-DO - Elastic Search
+    setQuery(e.target.value);
   };
+
+  useEffect(() => {
+    if (query === debouncedSearch) {
+      dispatch(searchConversations(query));
+    }
+  }, [debouncedSearch]);
 
   return (
     <div className="chat-menu">
@@ -61,7 +86,7 @@ const ChatMenu = ({ match, location }) => {
           {items.map((item, index) => {
             return (
               <div
-                key={`chat-item-${item.patient.id}`}
+                key={`chat-item-${item.patient.id}${index}`}
                 onClick={() => openChat(item.patient.id)}
                 className={chatListItemStyle(items.length - 1, item, index, id)}
               >
@@ -74,13 +99,10 @@ const ChatMenu = ({ match, location }) => {
                   <div className="chat-menu-list-item-time">
                     {formatMessageTimestamp(item.last_message.created_at)}
                   </div>
-                  {!item?.unread ? (
-                    <span></span>
+                  {item?.last_message.status === MESSAGE_STATUS.SENT ? (
+                    <Badge count={1} style={{ backgroundColor: COLOR_1 }} />
                   ) : (
-                    <Badge
-                      count={item.unread}
-                      style={{ backgroundColor: COLOR_1 }}
-                    />
+                    <span></span>
                   )}
                 </div>
               </div>
@@ -92,4 +114,4 @@ const ChatMenu = ({ match, location }) => {
   );
 };
 
-export default React.memo(ChatMenu);
+export default ChatMenu;

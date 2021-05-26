@@ -28,6 +28,7 @@ const makeSelectSingleChat = () =>
   createSelector(selectChatsDomain, (substate) => ({
     items: substate.single.items,
     loading: substate.single.loading,
+    next: substate.single.next,
   }));
 
 const makeSelectSingleChatInfo = (patientId) =>

@@ -49,8 +49,8 @@ export const chatListItemStyle = (
 };
 
 export const singleChatMessageStyle = (message) => {
-  const messageTypeStyle = '';
-  //const messageTypeStyle =  // message?.msgType === MESSAGE_TYPE.DATE ? 'datetime' : '';
+  const messageTypeStyle =
+    message?.type === MESSAGE_TYPE.DIVIDER ? 'datetime' : '';
   const messageFromStyle = message.is_answer ? 'msg-sent' : 'msg-recipient';
   return `msg ${messageTypeStyle} ${messageFromStyle}`;
 };
@@ -114,3 +114,11 @@ export const isSameDay = (timestamp1, timestamp2) =>
 
 export const formatMessagesTimestampDate = (timestamp) =>
   moment(timestamp).local().format('DD/MM/YYYY');
+
+export const generateDividerMessage = (date) => {
+  return {
+    created_at: formatMessagesTimestampDate(date),
+    type: MESSAGE_TYPE.DIVIDER,
+    id: 'divider',
+  };
+};

@@ -7,6 +7,10 @@ import {
 const ENDPOINTS = {
   SINGLE_CHAT: '/messages/conversations/:patientId/',
   ALL_CHATS: '/messages/conversations-info/',
+  SEARCH_CHATS: '/messages/search-conversations/',
+  MARK_CONVERSATION_AS_READ:
+    '/messages/conversations/:patientId/mark-conversation-as-read/',
+  TOGGLE_RASA_ACTIVITY: '/patients/:patientId/toggle-rasa/',
 };
 
 class ChatService extends ApiService {
@@ -30,6 +34,19 @@ class ChatService extends ApiService {
     next
       ? this.apiClient.get(next)
       : this.apiClient.get(ENDPOINTS.ALL_CHATS, { params: { limit } });
+
+  searchConversations = (query) =>
+    this.apiClient.get(ENDPOINTS.SEARCH_CHATS, { params: { query } });
+
+  markConversationAsRead = (patientId) =>
+    this.apiClient.put(
+      ENDPOINTS.MARK_CONVERSATION_AS_READ.replace(':patientId', patientId)
+    );
+
+  toggleRasaActivity = (patientId) =>
+    this.apiClient.put(
+      ENDPOINTS.TOGGLE_RASA_ACTIVITY.replace(':patientId', patientId)
+    );
 }
 
 const chatService = new ChatService();

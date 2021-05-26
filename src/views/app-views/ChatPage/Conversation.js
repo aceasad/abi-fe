@@ -1,17 +1,12 @@
-import React, { Fragment, useEffect, useRef, useState } from 'react';
-import ChatData from 'assets/data/chat.data.json';
+import React, { Fragment, useEffect, useRef } from 'react';
 import { Avatar, Divider, Input, Form, Button, Menu } from 'antd';
 import {
-  FileOutlined,
   SendOutlined,
-  PaperClipOutlined,
-  SmileOutlined,
   AudioMutedOutlined,
   UserOutlined,
   DeleteOutlined,
 } from '@ant-design/icons';
 import { Scrollbars } from 'react-custom-scrollbars';
-import Flex from 'components/shared-components/Flex';
 import EllipsisDropdown from 'components/shared-components/EllipsisDropdown';
 import { MESSAGE_TYPE, MESSAGE_FROM } from 'constants/ChatConstants';
 import { useIntl } from 'react-intl';
@@ -20,16 +15,26 @@ import { useParams } from 'react-router-dom';
 import {
   formatMessagesTimestampDate,
   formatMessagesTimestampMinutes,
+  generateDividerMessage,
+  generateKey,
   isSameDay,
   singleChatMessageStyle,
 } from 'utils/helpers';
 import { useDispatch, useSelector } from 'react-redux';
-import { getSingleChat } from 'redux/actions/Chats';
+import {
+  getMoreSingleChatMessages,
+  getSingleChat,
+  toggleRasaActivity,
+} from 'redux/actions/Chats';
 import {
   makeSelectSingleChat,
   makeSelectSingleChatInfo,
 } from 'redux/selectors/Chats';
 import Loading from 'components/shared-components/Loading';
+import { useLazyLoad } from 'utils/hooks';
+import { useCallback } from 'react';
+import Checkbox from 'antd/lib/checkbox/Checkbox';
+import { useToggleRasaActivity } from 'queries/shared';
 
 const Conversation = ({
   conversationId,
@@ -39,13 +44,12 @@ const Conversation = ({
   BackAction = false,
 }) => {
   const formRef = useRef();
-  const chatBodyRef = useRef();
+  const chatBodyRef = useRef(null);
+  const nextRef = useRef(null);
   const params = useParams();
 
   const id = parseInt(params.id || conversationId);
-  const [info, setInfo] = useState({});
-  const [messageList, setMessageList] = useState([]);
-  const { items, loading } = useSelector(makeSelectSingleChat());
+  const { items, loading, next } = useSelector(makeSelectSingleChat());
   const { chatInfo } = useSelector(makeSelectSingleChatInfo(id));
 
   const { formatMessage } = useIntl();
@@ -53,23 +57,14 @@ const Conversation = ({
 
   useEffect(() => {
     getConversation(id);
-    scrollToBottom();
   }, [params.id]);
 
-  useEffect(() => {
-    setMessageList(items);
-    scrollToBottom();
-  }, [items]);
-
-  useEffect(() => {
-    setInfo(chatInfo);
-    scrollToBottom();
-  }, [chatInfo]);
-
+  const handleGetMoreSingleMessages = useCallback(
+    () => dispatch(getMoreSingleChatMessages({ patientId: params.id })),
+    [params, dispatch]
+  );
   const getConversation = (currentId) => {
-    dispatch(
-      getSingleChat({ patientId: currentId, afterEffect: scrollToBottom })
-    );
+    dispatch(getSingleChat({ patientId: currentId }));
   };
 
   const scrollToBottom = () => {
@@ -80,25 +75,37 @@ const Conversation = ({
     scrollToBottom();
   }, [chatBodyRef.current]);
 
+  useEffect(() => {
+    nextRef.current = { next };
+  }, [next]);
+
+  // TO-DO - Add lazy load
+  // useLazyLoad(
+  //   '#single-chat-scroll div',
+  //   handleGetMoreSingleMessages,
+  //   [loading],
+  //   () => nextRef.current.next,
+  //   false
+  // );
+
   const onSend = (values) => {
-    if (values.newMessage) {
-      const newMessageData = {
-        avatar: '',
-        from: MESSAGE_FROM.ME,
-        msgType: MESSAGE_TYPE.TEXT,
-        text: values.newMessage,
-        time: '',
-      };
-      formRef.current.setFieldsValue({
-        newMessage: '',
-      });
-      setMessageList([...messageList, newMessageData]);
-    }
+    // TO-DO
   };
 
-  const chatContentHeader = (name) => (
+  const { mutate } = useToggleRasaActivity();
+
+  const chatContentHeader = (name, isRasaPaused) => (
     <div className="chat-content-header">
       {showTitle && <h4 className="mb-0">{name}</h4>}
+      <Checkbox
+        key={`checkbox-rasa-${generateKey()}`}
+        defaultChecked={isRasaPaused}
+        onChange={() =>
+          mutate(id, { onSuccess: () => dispatch(toggleRasaActivity(id)) })
+        }
+      >
+        {formatMessage(messages.rasaPaused)}
+      </Checkbox>
       {isMenuVisible && (
         <div>
           <EllipsisDropdown menu={renderMenu} />
@@ -108,15 +115,9 @@ const Conversation = ({
     </div>
   );
 
-  const generateDividerMessage = (date) => {
-    return {
-      created_at: formatMessagesTimestampDate(date),
-      type: 'DIVIDER',
-      id: 'divider',
-    };
-  };
-
-  const addDividers = (messages) => {
+  // hasMoreMessages - if there is more messages on BE for lazy load
+  // If there is no more messages to load -> add date divider as first element
+  const addDividers = (messages, hasMoreMessages) => {
     if (messages.length === 1) {
       return [generateDividerMessage(messages[0].created_at), ...messages];
     }
@@ -137,41 +138,38 @@ const Conversation = ({
           }
         }
       });
+    if (!hasMoreMessages && added.length) {
+      return [generateDividerMessage(added[0].created_at), ...added];
+    }
     return added;
   };
 
   const chatContentBody = (messages) => {
     const messagesWithDividers = addDividers(messages);
     return (
-      <div className="chat-content-body">
-        <Scrollbars ref={chatBodyRef} autoHide>
-          {messagesWithDividers &&
-            messagesWithDividers.map((message, index) => (
-              <div
-                key={`msg-${message.id}-${index}`}
-                className={singleChatMessageStyle(message)}
-              >
-                {message?.type === 'DIVIDER' ? (
-                  <Divider>{message.created_at}</Divider>
-                ) : !message.is_answer ? (
-                  <div className="mr-2">
-                    <Avatar src={info && info.patient.picture} />
-                  </div>
-                ) : null}
-                {message.text ? (
-                  <div className={`bubble`}>
-                    <div className="bubble-wrapper">
-                      <span>{message.text}</span>
-                    </div>
-                    <span>
-                      {formatMessagesTimestampMinutes(message.created_at)}
-                    </span>
-                  </div>
-                ) : null}
+      messagesWithDividers &&
+      messagesWithDividers.map((message, index) => (
+        <div
+          key={`msg-${message.id}-${index}`}
+          className={singleChatMessageStyle(message)}
+        >
+          {message?.type === MESSAGE_TYPE.DIVIDER ? (
+            <Divider>{message.created_at}</Divider>
+          ) : !message.is_answer ? (
+            <div className="mr-2">
+              <Avatar src={chatInfo && chatInfo.patient.picture} />
+            </div>
+          ) : null}
+          {message.text ? (
+            <div className={`bubble`}>
+              <div className="bubble-wrapper">
+                <span>{message.text}</span>
               </div>
-            ))}
-        </Scrollbars>
-      </div>
+              <span>{formatMessagesTimestampMinutes(message.created_at)}</span>
+            </div>
+          ) : null}
+        </div>
+      ))
     );
   };
 
@@ -233,8 +231,20 @@ const Conversation = ({
 
   return (
     <div className="chat-content">
-      {chatContentHeader(title ? title : info?.patient?.full_name)}
-      {loading ? <Loading /> : chatContentBody(messageList, id)}
+      {chatContentHeader(
+        title ? title : chatInfo?.patient?.full_name,
+        chatInfo?.patient.is_rasa_paused
+      )}
+      <div className="chat-content-body">
+        <Scrollbars
+          key={generateKey()}
+          ref={chatBodyRef}
+          autoHide={false}
+          id="single-chat-scroll"
+        >
+          {loading ? <Loading /> : chatContentBody(items, next)}
+        </Scrollbars>
+      </div>
       {chatContentFooter()}
     </div>
   );

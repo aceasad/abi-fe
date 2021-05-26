@@ -1,6 +1,7 @@
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import anamnesisService from 'services/AnamnesisService';
 import AppointmentService from 'services/AppointmentService';
+import chatService from 'services/ChatService';
 
 export const useGetAvailableTimeslots = (
   doctor,
@@ -48,3 +49,6 @@ export const useGetOperationTypes = (organization, data, next, enabled) =>
       onSuccess: ({ data }) => data,
     }
   );
+
+export const useToggleRasaActivity = () =>
+  useMutation(chatService.toggleRasaActivity);

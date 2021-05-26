@@ -5,10 +5,13 @@ import {
   GET_MORE_CHATS_INFO,
   GET_MORE_SINGLE_CHAT_MESSAGES,
   GET_SINGLE_CHAT,
+  SEARCH_CONVERSATIONS,
   SET_ALL_CHATS_INFO,
   SET_ALL_CHATS_INFO_LOADING,
+  SET_CONVERSATION_TO_READ,
   SET_SINGLE_CHAT,
   SET_SINGLE_CHAT_LOADING,
+  TOGGLE_RASA_ACTIVITY,
 } from 'redux/constants/Chats';
 
 export const getSingleChat = (payload) => ({
@@ -57,5 +60,20 @@ export const getMoreChatsInfo = () => ({
 
 export const getMoreSingleChatMessages = (payload) => ({
   type: GET_MORE_SINGLE_CHAT_MESSAGES,
+  payload,
+});
+
+export const searchConversations = (payload) => ({
+  type: SEARCH_CONVERSATIONS,
+  payload,
+});
+
+export const setConversationToRead = (payload) => ({
+  type: SET_CONVERSATION_TO_READ,
+  payload,
+});
+
+export const toggleRasaActivity = (payload) => ({
+  type: TOGGLE_RASA_ACTIVITY,
   payload,
 });

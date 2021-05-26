@@ -12,7 +12,6 @@ import Loading from 'components/shared-components/Loading';
 
 const Chat = (props) => {
   const { formatMessage } = useIntl();
-  const { items } = useSelector(makeSelectAllChatsInfo());
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -30,19 +29,16 @@ const Chat = (props) => {
           </Button>,
         ]}
       />
-      {!items.length ? (
-        <Loading />
-      ) : (
-        <div className="chat">
-          <InnerAppLayout
-            sideContent={<ChatMenu {...props} />}
-            mainContent={<ChatContent {...props} />}
-            sideContentWidth={450}
-            sideContentGutter={false}
-            border
-          />
-        </div>
-      )}
+
+      <div className="chat">
+        <InnerAppLayout
+          sideContent={<ChatMenu {...props} />}
+          mainContent={<ChatContent {...props} />}
+          sideContentWidth={450}
+          sideContentGutter={false}
+          border
+        />
+      </div>
     </>
   );
 };
