@@ -11,7 +11,7 @@ const ChatContentBody = ({ messages, patientPicture }) => {
     return message.text ? (
       <div className={`bubble`}>
         <div className="bubble-wrapper">
-          <span>{message.text}</span>
+          <span style={{ whiteSpace: 'pre-wrap' }}>{message.text}</span>
         </div>
         <span>{formatMessagesTimestampMinutes(message.created_at)}</span>
       </div>
