@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import Conversation from './Conversation';
 
 const ConversationEmpty = () => (
@@ -11,10 +11,12 @@ const ConversationEmpty = () => (
   </div>
 );
 
-const ChatContent = ({ match }) => {
+const ChatContent = () => {
+  const match = useRouteMatch();
   return useMemo(
     () => (
       <Switch>
+        {console.log('Switch RERENDER')}
         <Route path={`${match.url}/:id`} component={Conversation} />
         <Route path={`${match.url}`} component={ConversationEmpty} />
       </Switch>
