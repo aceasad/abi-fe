@@ -6,19 +6,41 @@ import ChatContent from './ChatContent';
 import ChatMenu from './ChatMenu';
 import messages from './messages';
 import { useSocket } from 'utils/hooks';
-import { WS_CHAT_URL } from 'constants/ApiConstant';
+import { useDispatch, useSelector } from 'react-redux';
+import { makeSelectLoginDetails } from 'redux/selectors/Auth';
+import { createWebsocketUrl, parseReceivedEvent } from 'utils/helpers';
+import { addOneMessage } from 'redux/actions/Chats';
 
-const Chat = (props) => {
+const Chat = () => {
   const { formatMessage } = useIntl();
 
-  const socket = useSocket({
-    url: WS_CHAT_URL,
+  const { token } = useSelector(makeSelectLoginDetails());
+
+  const dispatch = useDispatch();
+
+  const socketUrl = createWebsocketUrl(token);
+
+  const handleReceiveMessage = (event) => {
+    const parsedMessage = parseReceivedEvent(event);
+    dispatch(addOneMessage(parsedMessage));
+  };
+
+  const [socket, socketOpen] = useSocket({
+    url: socketUrl,
     onmessage: (e) => {
-      // TO DO
-      console.log(e);
+      handleReceiveMessage(e);
+    },
+    onopen: (e) => {
+      console.log('open');
     },
   });
 
+  // TO-DO
+  // ne razumem zasto moram sa useMemo
+  // bez useMemo se ova komponenta rerenderuje svaki put kad promenim chat
+  // a ne menjaju joj se props (NEMA PROPS!!)
+  // takodje, parent komponenta od ove komponente (AppViews) se NE re-renderuje!!!
+  // WTF
   return (
     <>
       <PageHeader
@@ -33,8 +55,10 @@ const Chat = (props) => {
 
       <div className="chat">
         <InnerAppLayout
-          sideContent={<ChatMenu {...props} />}
-          mainContent={<ChatContent {...props} />}
+          sideContent={<ChatMenu />}
+          mainContent={
+            <ChatContent socket={socket} isSocketOpen={socketOpen} />
+          }
           sideContentWidth={450}
           sideContentGutter={false}
           border

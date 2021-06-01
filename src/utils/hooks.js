@@ -52,7 +52,7 @@ export const useLazyLoad = (
 
 export const useSocket = ({ url, onmessage = () => {}, onopen = () => {} }) => {
   const socket = useRef();
-
+  const [socketOpen, setSocketOpen] = useState(false);
   useEffect(() => {
     try {
       socket.current = new WebSocket(url);
@@ -60,12 +60,19 @@ export const useSocket = ({ url, onmessage = () => {}, onopen = () => {} }) => {
       socket.current.onopen = onopen;
       socket.current.onclose = () => {
         // TO DO - Reconnect if it's not unmount
+        setSocketOpen(false);
+        console.log('disconencted');
+        socket.current = null;
       };
-    } catch {}
+
+      setSocketOpen(true);
+    } catch (e) {
+      console.log('error..');
+    }
     return () => {
       if (socket) socket.current.close();
     };
   }, []);
 
-  return socket.current;
+  return [socket.current, socketOpen];
 };

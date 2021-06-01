@@ -113,7 +113,8 @@ const ChatMenu = ({ match, location }) => {
                     <div className="chat-menu-list-item-time">
                       {formatMessageTimestamp(item.last_message.created_at)}
                     </div>
-                    {item?.last_message.status === MESSAGE_STATUS.SENT ? (
+                    {item?.last_message.status === MESSAGE_STATUS.SENT &&
+                    !item?.last_message.is_answer ? (
                       <Badge count={1} style={{ backgroundColor: COLOR_1 }} />
                     ) : (
                       <span></span>

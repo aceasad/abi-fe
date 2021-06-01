@@ -11,15 +11,21 @@ const ConversationEmpty = () => (
   </div>
 );
 
-const ChatContent = ({ match }) => {
+const ChatContent = ({ socket, isSocketOpen }) => {
+  const match = useRouteMatch();
   return useMemo(
     () => (
       <Switch>
-        <Route path={`${match.url}/:id`} component={Conversation} />
+        <Route
+          path={`${match.url}/:id`}
+          component={() => (
+            <Conversation socket={socket} isSocketOpen={isSocketOpen} />
+          )}
+        />
         <Route path={`${match.url}`} component={ConversationEmpty} />
       </Switch>
     ),
-    [match]
+    [match, isSocketOpen]
   );
 };
 

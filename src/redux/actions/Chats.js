@@ -1,6 +1,7 @@
 import {
   ADD_MORE_TO_ALL_CHATS_INFO,
   ADD_MORE_TO_SINGLE_CHAT,
+  ADD_ONE_MESSAGE,
   GET_ALL_CHATS_INFO,
   GET_MORE_CHATS_INFO,
   GET_MORE_SINGLE_CHAT_MESSAGES,
@@ -75,5 +76,10 @@ export const setConversationToRead = (payload) => ({
 
 export const toggleRasaActivity = (payload) => ({
   type: TOGGLE_RASA_ACTIVITY,
+  payload,
+});
+
+export const addOneMessage = (payload) => ({
+  type: ADD_ONE_MESSAGE,
   payload,
 });

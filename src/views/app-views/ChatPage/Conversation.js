@@ -1,27 +1,19 @@
-import React, { Fragment, useEffect, useRef } from 'react';
-import { Avatar, Divider, Input, Form, Button, Menu } from 'antd';
 import {
-  SendOutlined,
   AudioMutedOutlined,
-  UserOutlined,
   DeleteOutlined,
+  SendOutlined,
+  UserOutlined,
 } from '@ant-design/icons';
-import { Scrollbars } from 'react-custom-scrollbars';
+import { Button, Form, Input, Menu } from 'antd';
+import Checkbox from 'antd/lib/checkbox/Checkbox';
 import EllipsisDropdown from 'components/shared-components/EllipsisDropdown';
-import { MESSAGE_TYPE, MESSAGE_FROM } from 'constants/ChatConstants';
+import Loading from 'components/shared-components/Loading';
+import { useToggleRasaActivity } from 'queries/shared';
+import React, { Fragment, useCallback, useEffect, useRef } from 'react';
+import { Scrollbars } from 'react-custom-scrollbars';
 import { useIntl } from 'react-intl';
-import messages from './messages';
-import { useParams } from 'react-router-dom';
-import {
-  addDividers,
-  formatMessagesTimestampDate,
-  formatMessagesTimestampMinutes,
-  generateDividerMessage,
-  generateKey,
-  isSameDay,
-  singleChatMessageStyle,
-} from 'utils/helpers';
 import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import {
   getMoreSingleChatMessages,
   getSingleChat,
@@ -31,12 +23,13 @@ import {
   makeSelectSingleChat,
   makeSelectSingleChatInfo,
 } from 'redux/selectors/Chats';
-import Loading from 'components/shared-components/Loading';
-import { useLazyLoad } from 'utils/hooks';
-import { useCallback } from 'react';
-import Checkbox from 'antd/lib/checkbox/Checkbox';
-import { useToggleRasaActivity } from 'queries/shared';
+import {
+  addDividers,
+  formatMessageForSocketSend,
+  generateKey,
+} from 'utils/helpers';
 import ChatContentBody from './ChatContentBody';
+import messages from './messages';
 
 const Conversation = ({
   conversationId,
@@ -44,6 +37,8 @@ const Conversation = ({
   title,
   showTitle = true,
   BackAction = false,
+  socket,
+  isSocketOpen,
 }) => {
   const formRef = useRef();
   const chatBodyRef = useRef(null);
@@ -74,12 +69,14 @@ const Conversation = ({
   };
 
   useEffect(() => {
-    scrollToBottom();
-  }, [chatBodyRef.current]);
+    if (!loading) {
+      scrollToBottom();
+    }
+  }, [loading, items]);
 
-  useEffect(() => {
-    nextRef.current = { next };
-  }, [next]);
+  // useEffect(() => {
+  //   nextRef.current = { next };
+  // }, [next]);
 
   // TO-DO - Add lazy load
   // useLazyLoad(
@@ -90,8 +87,10 @@ const Conversation = ({
   //   false
   // );
 
-  const onSend = (values) => {
-    // TO-DO
+  const onSend = ({ newMessage }) => {
+    if (newMessage) {
+      newMessage && socket.send(formatMessageForSocketSend(newMessage, id));
+    }
   };
 
   const { mutate, isLoading } = useToggleRasaActivity();
@@ -203,7 +202,7 @@ const Conversation = ({
           )}
         </Scrollbars>
       </div>
-      {chatContentFooter()}
+      <ChatContentFooter onSend={onSend} isSocketOpen={isSocketOpen} />
     </div>
   );
 };

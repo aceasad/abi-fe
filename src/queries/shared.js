@@ -52,3 +52,6 @@ export const useGetOperationTypes = (organization, data, next, enabled) =>
 
 export const useToggleRasaActivity = () =>
   useMutation(chatService.toggleRasaActivity);
+
+export const useMarkConversationAsRead = () =>
+  useMutation(chatService.markConversationAsRead);
