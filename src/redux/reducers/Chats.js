@@ -37,9 +37,7 @@ const chats = (state = initialState, action) =>
             1,
           offset: action.payload.results.length,
           chatInfo: {
-            patient: state.items.find(
-              (item) => item.patient.id === action.payload.results[0].patient
-            ).patient,
+            patient: action.payload.results[0].patient,
           },
         };
         break;
@@ -92,17 +90,15 @@ const chats = (state = initialState, action) =>
         );
         break;
       case TOGGLE_RASA_ACTIVITY:
-        draft.items = state.items.map((item) => {
-          return item.patient.id === action.payload
-            ? {
-                patient: {
-                  ...item.patient,
-                  is_rasa_paused: !item.patient.is_rasa_paused,
-                },
-                last_message: item.last_message,
-              }
-            : item;
-        });
+        draft.single = {
+          ...state.single,
+          chatInfo: {
+            patient: {
+              ...state.single.chatInfo.patient,
+              is_rasa_paused: !state.single.chatInfo.patient.is_rasa_paused,
+            },
+          },
+        };
         break;
       case ADD_ONE_MESSAGE: {
         const foundChat = state.items.find(

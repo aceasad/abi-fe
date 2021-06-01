@@ -1,6 +1,6 @@
 import { Button, PageHeader } from 'antd';
 import InnerAppLayout from 'layouts/inner-app-layout';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useIntl } from 'react-intl';
 import ChatContent from './ChatContent';
 import ChatMenu from './ChatMenu';

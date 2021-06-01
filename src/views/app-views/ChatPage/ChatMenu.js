@@ -10,7 +10,12 @@ import { Badge, Input } from 'antd';
 import AvatarStatus from 'components/shared-components/AvatarStatus';
 import { COLOR_1 } from 'constants/ChartConstant';
 import { SearchOutlined } from '@ant-design/icons';
-import { useHistory } from 'react-router-dom';
+import {
+  useHistory,
+  useLocation,
+  useParams,
+  useRouteMatch,
+} from 'react-router-dom';
 import { useIntl } from 'react-intl';
 import messages from './messages';
 import { chatListItemStyle, formatMessageTimestamp } from 'utils/helpers';
@@ -27,40 +32,39 @@ import { useDebounce, useLazyLoad } from 'utils/hooks';
 import Scrollbars from 'react-custom-scrollbars';
 import { MESSAGE_STATUS } from 'constants/ChatConstants';
 
-const ChatMenu = ({ match, location }) => {
+const ChatMenu = () => {
   const history = useHistory();
+  const location = useLocation();
+  const match = useRouteMatch();
   const { formatMessage } = useIntl();
   const dispatch = useDispatch();
 
+  const currentChatID = parseInt(location.pathname.match(/\/([^/]+)\/?$/)[1]);
+  const [query, setQuery] = useState('');
+  const debouncedSearch = useDebounce(query, 500);
+
   const nextRef = useRef(null);
+
+  const { items, next, loading } = useSelector(makeSelectAllChatsInfo);
+
+  useEffect(() => {
+    // this will trigger iniitial data load
+    if (query === debouncedSearch) {
+      dispatch(searchConversations(query));
+    }
+  }, [debouncedSearch]);
 
   const handleGetMoreChatsInfo = useCallback(
     () => dispatch(getMoreChatsInfo()),
     [dispatch]
   );
 
-  const [query, setQuery] = useState('');
-
-  const id = parseInt(location.pathname.match(/\/([^/]+)\/?$/)[1]);
-
-  const { items, next, loading } = useSelector(makeSelectAllChatsInfo);
-
-  const debouncedSearch = useDebounce(query, 500);
-
-  useEffect(() => {
-    dispatch(getAllChatsInfo());
-  }, []);
-
-  useEffect(() => {
-    nextRef.current = { next };
-  }, [next]);
-
   // TO-DO -> lazy load
   // useLazyLoad(
   //   '#chat-menu-scroll div',
   //   handleGetMoreChatsInfo,
   //   [loading],
-  //   () => nextRef.current.next
+  //   () => next
   // );
 
   const openChat = (id) => {
@@ -71,12 +75,6 @@ const ChatMenu = ({ match, location }) => {
   const searchOnChange = (e) => {
     setQuery(e.target.value);
   };
-
-  useEffect(() => {
-    if (query === debouncedSearch) {
-      dispatch(searchConversations(query));
-    }
-  }, [debouncedSearch]);
 
   return (
     <div className="chat-menu">
@@ -101,7 +99,7 @@ const ChatMenu = ({ match, location }) => {
                     items.length - 1,
                     item.patient.id,
                     index,
-                    id
+                    currentChatID
                   )}
                 >
                   <AvatarStatus
