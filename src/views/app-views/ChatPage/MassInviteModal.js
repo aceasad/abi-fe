@@ -105,7 +105,7 @@ const MassInviteModal = ({ isModalVisible, closeModal }) => {
                   name="ageTo"
                   placeholder={formatMessage(messages.ageToLabel)}
                   errorTexts={{
-                    label: formatMessage(messages.ageFromLabel),
+                    label: formatMessage(messages.ageToLabel),
                     minNumber: MASS_INVITE_MIN_AGE,
                     maxNumber: MASS_INVITE_MAX_AGE,
                     thisLabel: formatMessage(messages.ageToLabel),
