@@ -31,9 +31,7 @@ const Chat = () => {
     onmessage: (e) => {
       handleReceiveMessage(e);
     },
-    onopen: (e) => {
-      console.log('open');
-    },
+    errorMessage: formatMessage(messages.socketErrorMessage),
   });
 
   const [isModalVisible, setIsModalVisible] = useState(false);

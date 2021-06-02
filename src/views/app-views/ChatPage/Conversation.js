@@ -23,7 +23,6 @@ const Conversation = ({
 }) => {
   const formRef = useRef();
   const chatBodyRef = useRef(null);
-  //const nextRef = useRef(null);
   const params = useParams();
 
   const id = parseInt(params.id || conversationId);
@@ -53,19 +52,6 @@ const Conversation = ({
       scrollToBottom();
     }
   }, [loading, items]);
-
-  // useEffect(() => {
-  //   nextRef.current = { next };
-  // }, [next]);
-
-  // TO-DO - Add lazy load
-  // useLazyLoad(
-  //   '#single-chat-scroll div',
-  //   handleGetMoreSingleMessages,
-  //   [loading],
-  //   () => nextRef.current.next,
-  //   false
-  // );
 
   const onSend = ({ newMessage }) => {
     if (newMessage) {

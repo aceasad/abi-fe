@@ -88,4 +88,8 @@ export default defineMessages({
     id: `${scope}.text.invite_sent`,
     defaultMessage: 'Mass Invite sent!',
   },
+  socketErrorMessage: {
+    id: `${scope}.chat.socket_error_message`,
+    defaultMessage: 'Please refresh page to reconnect',
+  },
 });

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { message } from 'antd';
 
 export const useDebounce = (value, timeout) => {
   let [debouncedValue, setDebouncedValue] = useState(value);
@@ -50,7 +51,12 @@ export const useLazyLoad = (
   }, dependencies);
 };
 
-export const useSocket = ({ url, onmessage = () => {}, onopen = () => {} }) => {
+export const useSocket = ({
+  url,
+  onmessage = () => {},
+  onopen = () => {},
+  errorMessage,
+}) => {
   const socket = useRef();
   const [socketOpen, setSocketOpen] = useState(false);
   useEffect(() => {
@@ -61,16 +67,18 @@ export const useSocket = ({ url, onmessage = () => {}, onopen = () => {} }) => {
       socket.current.onclose = () => {
         // TO DO - Reconnect if it's not unmount
         setSocketOpen(false);
-        console.log('disconencted');
         socket.current = null;
+        message.warning(errorMessage);
       };
 
       setSocketOpen(true);
     } catch (e) {
-      console.log('error..');
+      setSocketOpen(false);
+      socket.current = null;
+      message.warning(errorMessage);
     }
     return () => {
-      if (socket) socket.current.close();
+      if (socket.current) socket.current.close();
     };
   }, []);
 

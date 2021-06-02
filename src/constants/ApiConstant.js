@@ -13,5 +13,4 @@ export const ORDERING = {
   ASC: 'ascend',
 };
 
-export const WS_CHAT_URL = `ws://${env.SOCKETS_DOMAIN}/ws/chat`;
-export const WSS_CHAT_URL = `wss://${env.SOCKETS_DOMAIN}/ws/chat`;
+export const WS_CHAT_URL = env.SOCKETS_DOMAIN;
