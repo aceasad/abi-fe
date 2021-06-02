@@ -28,3 +28,6 @@ export const chatBaseState = {
   next: null,
   offset: 0,
 };
+
+export const MASS_INVITE_MIN_AGE = 18;
+export const MASS_INVITE_MAX_AGE = 100;

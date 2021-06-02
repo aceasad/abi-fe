@@ -33,7 +33,15 @@ export default defineMessages({
   },
   greatherThan: {
     id: `${scope}.validations.greater_than_number`,
-    defaultMessage: '{label} must be greather than {number}',
+    defaultMessage: '{label} must be greather than {minNumber}',
+  },
+  lowerThan: {
+    id: `${scope}.validations.lower_than_number`,
+    defaultMessage: '{label} must be lower than {maxNumber}',
+  },
+  moreThanAnother: {
+    id: `${scope}.validations.more_than_another`,
+    defaultMessage: '{thisLabel} must be greater than {anotherLabel}',
   },
   matches: {
     id: `${scope}.validations.matches`,
@@ -42,5 +50,9 @@ export default defineMessages({
   endTimeTimeGreatherThenStart: {
     id: `${scope}.validations.end_greather_then_start`,
     defaultMessage: 'End time must be greather than start time',
+  },
+  emptyArray: {
+    id: `${scope}.validations.empty_array`,
+    defaultMessage: 'Please select at least one option',
   },
 });
