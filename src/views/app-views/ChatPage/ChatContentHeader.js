@@ -62,7 +62,7 @@ const ChatContentHeader = ({
         {!chatLoading && (
           <Checkbox
             key={`checkbox-rasa-x`}
-            defaultChecked={chatInfo.patient.isRasaPaused}
+            defaultChecked={chatInfo.patient.is_rasa_paused}
             disabled={isLoading}
             onChange={() =>
               mutate(chatInfo.patient.id, {
