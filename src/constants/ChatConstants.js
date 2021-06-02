@@ -15,3 +15,16 @@ export const MESSAGE_STATUS = {
   SENT: 'SENT',
   READ: 'READ',
 };
+
+export const chatBaseState = {
+  items: [],
+  count: 0,
+  page: 1,
+  loading: true,
+  field: '',
+  order: '',
+  search: '',
+  single: null,
+  next: null,
+  offset: 0,
+};

@@ -35,4 +35,8 @@ export default defineMessages({
     id: `${scope}.chat.rasa_paused`,
     defaultMessage: 'Rasa paussed',
   },
+  socketErrorMessage: {
+    id: `${scope}.chat.socket_error_message`,
+    defaultMessage: 'Please refresh page to reconnect',
+  },
 });

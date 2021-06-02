@@ -6,17 +6,31 @@ import ChatContent from './ChatContent';
 import ChatMenu from './ChatMenu';
 import messages from './messages';
 import { useSocket } from 'utils/hooks';
-import { WS_CHAT_URL } from 'constants/ApiConstant';
+import { useDispatch, useSelector } from 'react-redux';
+import { makeSelectLoginDetails } from 'redux/selectors/Auth';
+import { createWebsocketUrl, parseReceivedEvent } from 'utils/helpers';
+import { addOneMessage } from 'redux/actions/Chats';
 
 const Chat = () => {
   const { formatMessage } = useIntl();
 
-  const socket = useSocket({
-    url: WS_CHAT_URL,
+  const { token } = useSelector(makeSelectLoginDetails());
+
+  const dispatch = useDispatch();
+
+  const socketUrl = createWebsocketUrl(token);
+
+  const handleReceiveMessage = (event) => {
+    const parsedMessage = parseReceivedEvent(event);
+    dispatch(addOneMessage(parsedMessage));
+  };
+
+  const [socket, socketOpen] = useSocket({
+    url: socketUrl,
     onmessage: (e) => {
-      // TO DO
-      console.log(e);
+      handleReceiveMessage(e);
     },
+    errorMessage: formatMessage(messages.socketErrorMessage),
   });
 
   // TO-DO
@@ -25,32 +39,30 @@ const Chat = () => {
   // a ne menjaju joj se props (NEMA PROPS!!)
   // takodje, parent komponenta od ove komponente (AppViews) se NE re-renderuje!!!
   // WTF
-  return useMemo(
-    () => (
-      <>
-        {console.log('index RERENDER')}
-        <PageHeader
-          className="p-0 mb-4"
-          title={formatMessage(messages.conversationsTitle)}
-          extra={[
-            <Button type="primary" key="mass-invites-button">
-              {formatMessage(messages.conversationsMassInvites)}
-            </Button>,
-          ]}
-        />
+  return (
+    <>
+      <PageHeader
+        className="p-0 mb-4"
+        title={formatMessage(messages.conversationsTitle)}
+        extra={[
+          <Button type="primary" key="mass-invites-button">
+            {formatMessage(messages.conversationsMassInvites)}
+          </Button>,
+        ]}
+      />
 
-        <div className="chat">
-          <InnerAppLayout
-            sideContent={<ChatMenu />}
-            mainContent={<ChatContent />}
-            sideContentWidth={450}
-            sideContentGutter={false}
-            border
-          />
-        </div>
-      </>
-    ),
-    []
+      <div className="chat">
+        <InnerAppLayout
+          sideContent={<ChatMenu />}
+          mainContent={
+            <ChatContent socket={socket} isSocketOpen={socketOpen} />
+          }
+          sideContentWidth={450}
+          sideContentGutter={false}
+          border
+        />
+      </div>
+    </>
   );
 };
 

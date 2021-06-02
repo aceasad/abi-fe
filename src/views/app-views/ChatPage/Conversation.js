@@ -1,7 +1,6 @@
 import Loading from 'components/shared-components/Loading';
 import React, { useCallback, useEffect, useRef } from 'react';
 import { Scrollbars } from 'react-custom-scrollbars';
-import { useIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { getMoreSingleChatMessages, getSingleChat } from 'redux/actions/Chats';
@@ -9,7 +8,7 @@ import {
   makeSelectSingleChat,
   makeSelectSingleChatInfo,
 } from 'redux/selectors/Chats';
-import { addDividers } from 'utils/helpers';
+import { addDividers, formatMessageForSocketSend } from 'utils/helpers';
 import ChatContentBody from './ChatContentBody';
 import ChatContentFooter from './ChatContentFooter';
 import ChatContentHeader from './ChatContentHeader';
@@ -19,10 +18,11 @@ const Conversation = ({
   isMenuVisible = true,
   showTitle = true,
   BackAction = false,
+  socket,
+  isSocketOpen,
 }) => {
   const formRef = useRef();
   const chatBodyRef = useRef(null);
-  //const nextRef = useRef(null);
   const params = useParams();
 
   const id = parseInt(params.id || conversationId);
@@ -44,33 +44,19 @@ const Conversation = ({
   };
 
   const scrollToBottom = () => {
-    console.log('scrollll');
-    console.log(chatBodyRef.current);
     chatBodyRef.current && chatBodyRef.current.scrollToBottom();
   };
 
-  // useEffect(() => {
-  //   console.log('aa');
-  //   console.log('chatBodyRef: ', chatBodyRef.current);
-  //   //scrollToBottom();
-  // }, [chatBodyRef.current]);
+  useEffect(() => {
+    if (!loading) {
+      scrollToBottom();
+    }
+  }, [loading, items]);
 
-  // useEffect(() => {
-  //   nextRef.current = { next };
-  //   console.log('bb');
-  // }, [next]);
-
-  // TO-DO - Add lazy load
-  // useLazyLoad(
-  //   '#single-chat-scroll div',
-  //   handleGetMoreSingleMessages,
-  //   [loading],
-  //   () => nextRef.current.next,
-  //   false
-  // );
-
-  const onSend = (values) => {
-    // TO-DO
+  const onSend = ({ newMessage }) => {
+    if (newMessage) {
+      newMessage && socket.send(formatMessageForSocketSend(newMessage, id));
+    }
   };
 
   const chatContentBody = (messages, next, patientPicture) =>
@@ -103,7 +89,7 @@ const Conversation = ({
           )}
         </Scrollbars>
       </div>
-      <ChatContentFooter onSend={onSend} />
+      <ChatContentFooter onSend={onSend} isSocketOpen={isSocketOpen} />
     </div>
   );
 };

@@ -1,3 +1,4 @@
+import { WS_CHAT_URL } from 'constants/ApiConstant';
 import { MESSAGE_TYPE, MESSAGE_FROM } from 'constants/ChatConstants';
 import { MONTH_FORMAT_MM, YEAR_FORMAT_YYYY } from 'constants/DateConstant';
 import moment from 'moment';
@@ -145,3 +146,12 @@ export const addDividers = (messages, hasMoreMessages) => {
   }
   return added;
 };
+
+export const createWebsocketUrl = (token) => {
+  return `${WS_CHAT_URL}?token=${token}`;
+};
+
+export const formatMessageForSocketSend = (text, patientId) =>
+  JSON.stringify({ text, patient_id: patientId });
+
+export const parseReceivedEvent = (event) => JSON.parse(event.data);

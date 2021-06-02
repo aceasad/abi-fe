@@ -18,6 +18,7 @@ const makeSelectSingleChatRequestData = createSelector(
     next: substate.single.next,
     page: substate.single.page,
     count: substate.single.count,
+    offset: substate.single.offset,
   })
 );
 

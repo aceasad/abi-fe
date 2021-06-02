@@ -16,19 +16,15 @@ const ENDPOINTS = {
 class ChatService extends ApiService {
   getSingleChat = (
     patientId,
-    next = null,
+    offset = 0,
     limit = CHAT_MESSAGES_PAGINATION_LIMIT
   ) =>
-    next
-      ? this.apiClient.get(next)
-      : this.apiClient.get(
-          ENDPOINTS.SINGLE_CHAT.replace(':patientId', patientId),
-          {
-            params: {
-              limit,
-            },
-          }
-        );
+    this.apiClient.get(ENDPOINTS.SINGLE_CHAT.replace(':patientId', patientId), {
+      params: {
+        limit,
+        offset,
+      },
+    });
 
   getAllChatInformation = (next = null, limit = ALL_CHATS_PAGINATION_LIMIT) =>
     next
