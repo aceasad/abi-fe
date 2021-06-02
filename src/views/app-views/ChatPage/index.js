@@ -30,9 +30,7 @@ const Chat = () => {
     onmessage: (e) => {
       handleReceiveMessage(e);
     },
-    onopen: (e) => {
-      console.log('open');
-    },
+    errorMessage: formatMessage(messages.socketErrorMessage),
   });
 
   // TO-DO
