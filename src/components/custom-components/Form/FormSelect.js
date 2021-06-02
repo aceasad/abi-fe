@@ -51,11 +51,7 @@ const FormSelect = ({
         value={defaultOption || null}
         placeholder={placeholderText}
         onChange={handleSelected}
-        onBlur={() => {
-          console.log('blur');
-          console.log('touched:', touched);
-          setFieldTouched(field.name, true);
-        }}
+        onBlur={() => setFieldTouched(field.name, true)}
       >
         {options.map((item) => (
           <Option key={item.id} value={item.id}>

@@ -63,7 +63,7 @@ const MassInviteModal = ({ isModalVisible, closeModal }) => {
           visible={isModalVisible}
           destroyOnClose
           onCancel={() => closeModal()}
-          afterClose={() => resetForm()}
+          afterClose={resetForm}
           footer={[
             <Button key="cancel-btn" onClick={() => closeModal()}>
               {formatMessage(messages.cancelButton)}

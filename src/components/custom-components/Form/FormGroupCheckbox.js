@@ -20,13 +20,13 @@ const FormGroupCheckbox = ({
       label,
     });
 
-  const triggerError = () => {
+  const shouldShowError = () => {
     return touched[field.name] && errors[field.name];
   };
 
   const showError = () => {
     return (
-      triggerError() &&
+      shouldShowError() &&
       (errorTexts
         ? formatMessage(errors[field.name], errorTexts)
         : defaultErrorMessage())
@@ -37,7 +37,7 @@ const FormGroupCheckbox = ({
     <Form.Item
       required={required}
       label={label}
-      validateStatus={triggerError() && 'error'}
+      validateStatus={shouldShowError() && 'error'}
       help={showError()}
     >
       <Checkbox.Group options={options} onChange={onChange} />

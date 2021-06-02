@@ -38,12 +38,6 @@ const Chat = () => {
 
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  // TO-DO
-  // ne razumem zasto moram sa useMemo
-  // bez useMemo se ova komponenta rerenderuje svaki put kad promenim chat
-  // a ne menjaju joj se props (NEMA PROPS!!)
-  // takodje, parent komponenta od ove komponente (AppViews) se NE re-renderuje!!!
-  // WTF
   return (
     <>
       <PageHeader
