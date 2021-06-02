@@ -24,7 +24,6 @@ const FormSelect = ({
 
   const handleSelected = (value) => {
     setFieldValue(field.name, value);
-    setFieldTouched(field.name, true);
     afterSelectChange(setFieldValue, afterSelectChangeFieldName, value);
   };
 

@@ -11,6 +11,10 @@ import {
   MIN_PHONE_LENGTH,
   MAX_PHONE_LENGTH,
 } from '../constants/ClinicConstants';
+import {
+  MASS_INVITE_MAX_AGE,
+  MASS_INVITE_MIN_AGE,
+} from 'constants/ChatConstants';
 
 const passwordValidation = Yup.string()
   .matches(passwordFormat)
@@ -153,4 +157,19 @@ export const endAppointmentSchema = Yup.object().shape({
     is: false,
     then: Yup.string().required(),
   }),
+});
+
+export const massInviteSchema = Yup.object().shape({
+  ageFrom: Yup.number()
+    .min(MASS_INVITE_MIN_AGE)
+    .max(MASS_INVITE_MAX_AGE)
+    .required(),
+  ageTo: Yup.number()
+    .min(MASS_INVITE_MIN_AGE)
+    .max(MASS_INVITE_MAX_AGE)
+    .moreThan(Yup.ref('ageFrom'))
+    .required(),
+  template: Yup.number().required(),
+  appointmentType: Yup.number().required(),
+  gender: Yup.array().min(1).required(),
 });

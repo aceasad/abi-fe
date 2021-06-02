@@ -116,8 +116,6 @@ const chats = (state = initialState, action) =>
               next: null,
               offset: state.single.offset + 1,
             };
-            // DISPATCHUJ AKCIJU DA SETUJE STATUS PORUKE NA 'READ' i UPDATE-UJ TO U last_message da ne bi izlazio indikator za unread
-
             // if conversation is not active
           } else {
             draft.items = [

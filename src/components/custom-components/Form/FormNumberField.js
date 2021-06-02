@@ -14,6 +14,8 @@ function FormNumberField({
   tooltipText,
   required,
   decimals = 0,
+  min = Number.MIN_SAFE_INTEGER,
+  max = Number.MAX_SAFE_INTEGER,
   ...props
 }) {
   const { formatMessage } = useIntl();
@@ -44,6 +46,8 @@ function FormNumberField({
         onChange={handleNumberChange}
         onBlur={handleBlur}
         value={field.value}
+        min={min}
+        max={max}
         {...props}
       />
       <div className="authentication-error">

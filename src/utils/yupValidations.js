@@ -15,8 +15,13 @@ Yup.setLocale({
   },
   number: {
     min: messages.greatherThan,
+    max: messages.lowerThan,
     positive: messages.positiveNumber,
     matches: messages.matches,
+    moreThan: messages.moreThanAnother,
+  },
+  array: {
+    min: messages.emptyArray,
   },
 });
 
