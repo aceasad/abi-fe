@@ -391,6 +391,7 @@
   "chat_page.label.template": "Template",
   "chat_page.label.message": "Message:",
   "chat_page.label.mass_invites": "Mass Invites",
+  "chat_page.label.number_of_invites": "Number of invites: ",
   "chat_page.menu.user_info_label": "",
   "chat_page.menu.mute_chat": "Mute Chat",
   "chat_page.menu.delete_chat": "Delete Chat",
