@@ -50,6 +50,7 @@ const PatientOverview = ({ patientId, showList, updatePatient }) => {
     height: formatMessage(messages.height),
     weight: formatMessage(messages.weight),
     phone_number: formatMessage(messages.phoneNumber),
+    email: formatMessage(messages.email),
     area_of_living: formatMessage(messages.areaOfLiving),
     material_status: formatMessage(messages.materialStatus),
     number_of_dependants: formatMessage(messages.numberOfDependants),

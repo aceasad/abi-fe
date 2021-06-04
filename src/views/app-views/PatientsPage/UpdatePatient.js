@@ -38,12 +38,14 @@ const UpdatePatient = ({ showList, patientId }) => {
     message.success(formatMessage(messages.patientUpdated));
   };
 
-  const handleSubmit = (values) => {
+  const handleSubmit = (values, setErrors, enableRedirect) => {
     dispatch(
       editPatient({
         id: patientId,
         data: filterEmptyObjectFeilds(values),
         afterUpdate,
+        enableRedirect,
+        setErrors,
       })
     );
   };
@@ -69,6 +71,7 @@ const UpdatePatient = ({ showList, patientId }) => {
         weight: '',
         ethnicity: '',
         phone_number: '',
+        email: '',
         area_of_living: '',
         material_status: '',
         number_of_dependants: '',
