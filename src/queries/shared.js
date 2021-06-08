@@ -2,6 +2,7 @@ import { useMutation, useQuery } from 'react-query';
 import anamnesisService from 'services/AnamnesisService';
 import AppointmentService from 'services/AppointmentService';
 import chatService from 'services/ChatService';
+import patientService from 'services/PatientService';
 
 export const useGetAvailableTimeslots = (
   doctor,
@@ -47,6 +48,23 @@ export const useGetOperationTypes = (organization, data, next, enabled) =>
       enabled,
       refetchOnWindowFocus: false,
       onSuccess: ({ data }) => data,
+    }
+  );
+
+export const useGetMassInvitePatientCount = (
+  ageFrom,
+  ageTo,
+  gender,
+  enabled,
+  successCallback
+) =>
+  useQuery(
+    ['getMassInvitePatientsCount', ageFrom, ageTo, gender, enabled],
+    () => patientService.getMassInvitePatientCount(ageFrom, ageTo, gender),
+    {
+      enabled,
+      refetchOnWindowFocus: false,
+      onSuccess: (data) => successCallback(data.data),
     }
   );
 

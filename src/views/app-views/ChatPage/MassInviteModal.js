@@ -6,7 +6,7 @@ import FormNumberField from 'components/custom-components/Form/FormNumberField';
 import FormSelect from 'components/custom-components/Form/FormSelect';
 import RowColumnField from 'components/custom-components/Form/RowColumnField';
 import { Field, Formik } from 'formik';
-import React from 'react';
+import React, { useState } from 'react';
 import { massInviteSchema } from 'utils/validations';
 import { GENDER } from 'constants/UserConstants';
 import messages from './messages';
@@ -17,6 +17,7 @@ import {
 } from 'constants/ChatConstants';
 import TextArea from 'antd/lib/input/TextArea';
 import { message } from 'antd';
+import PatientCountField from './PatientCountField';
 
 const MassInviteModal = ({ isModalVisible, closeModal }) => {
   const { formatMessage } = useIntl();
@@ -51,6 +52,8 @@ const MassInviteModal = ({ isModalVisible, closeModal }) => {
     closeModal();
   };
 
+  const [numberOfInvites, setNumberOfInvites] = useState(0);
+
   return (
     <Formik
       initialValues={initialState}
@@ -71,7 +74,7 @@ const MassInviteModal = ({ isModalVisible, closeModal }) => {
             <Button
               key="submit"
               type="primary"
-              disabled={!dirty || !isValid}
+              disabled={!dirty || !isValid || !numberOfInvites}
               onClick={handleSubmit}
             >
               {formatMessage(messages.sendButton)}
@@ -123,6 +126,13 @@ const MassInviteModal = ({ isModalVisible, closeModal }) => {
               options={GENDER_CHOICES}
               required
             />
+            {!!values.ageFrom && !!values.ageTo && !!values.gender.length && (
+              <RowColumnField
+                span={24}
+                component={PatientCountField}
+                setNumberOfInvites={setNumberOfInvites}
+              />
+            )}
             <RowColumnField
               span={24}
               label={formatMessage(messages.appointmentTypeLabel)}

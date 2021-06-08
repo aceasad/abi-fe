@@ -92,4 +92,8 @@ export default defineMessages({
     id: `${scope}.chat.socket_error_message`,
     defaultMessage: 'Please refresh page to reconnect',
   },
+  numberOfInvitesLabel: {
+    id: `${scope}.label.number_of_invites`,
+    defaultMessage: 'Number of invites: ',
+  },
 });
