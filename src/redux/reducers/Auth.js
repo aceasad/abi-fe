@@ -27,7 +27,7 @@ const initState = {
   redirect: '',
   isSent: null,
   isReset: null,
-  token: getLocalStorageItem(AUTH_TOKEN)?.access,
+  token: getLocalStorageItem(AUTH_TOKEN),
   user: null,
 };
 

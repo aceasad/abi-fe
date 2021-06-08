@@ -3,14 +3,18 @@ import { Button, Form, Input } from 'antd';
 import React from 'react';
 import { useIntl } from 'react-intl';
 import messages from './messages';
+import WebSocketClient from 'services/WebSocketClient';
 
-const ChatContentFooter = ({ onSend, isSocketOpen }) => {
+const ChatContentFooter = ({ onSend }) => {
   const { formatMessage } = useIntl();
   const [form] = Form.useForm();
   const handleSend = (values) => {
     form.resetFields(['newMessage']);
     onSend(values);
   };
+
+  const isSocketOpen = WebSocketClient.isConnected();
+
   return (
     <div className="chat-content-footer">
       <Form form={form} name="msgInput" onFinish={handleSend} className="w-100">

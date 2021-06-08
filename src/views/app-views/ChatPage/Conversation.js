@@ -12,16 +12,14 @@ import { addDividers, formatMessageForSocketSend } from 'utils/helpers';
 import ChatContentBody from './ChatContentBody';
 import ChatContentFooter from './ChatContentFooter';
 import ChatContentHeader from './ChatContentHeader';
+import WebSocketClient from 'services/WebSocketClient';
 
 const Conversation = ({
   conversationId,
   isMenuVisible = true,
   showTitle = true,
   BackAction = false,
-  socket,
-  isSocketOpen,
 }) => {
-  const formRef = useRef();
   const chatBodyRef = useRef(null);
   const params = useParams();
 
@@ -54,9 +52,8 @@ const Conversation = ({
   }, [loading, items]);
 
   const onSend = ({ newMessage }) => {
-    if (newMessage) {
-      newMessage && socket.send(formatMessageForSocketSend(newMessage, id));
-    }
+    newMessage &&
+      WebSocketClient.sendMessage(formatMessageForSocketSend(newMessage, id));
   };
 
   const chatContentBody = (messages, next, patientPicture) =>
@@ -89,7 +86,7 @@ const Conversation = ({
           )}
         </Scrollbars>
       </div>
-      <ChatContentFooter onSend={onSend} isSocketOpen={isSocketOpen} />
+      <ChatContentFooter onSend={onSend} />
     </div>
   );
 };
