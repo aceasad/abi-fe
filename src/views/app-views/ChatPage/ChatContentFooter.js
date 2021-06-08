@@ -3,6 +3,8 @@ import { Button, Form, Input } from 'antd';
 import React from 'react';
 import { useIntl } from 'react-intl';
 import messages from './messages';
+import { useSelector } from 'react-redux';
+import { makeSelectSingleChatInfo } from 'redux/selectors/Chats';
 
 const ChatContentFooter = ({ onSend, isSocketOpen }) => {
   const { formatMessage } = useIntl();
@@ -11,6 +13,9 @@ const ChatContentFooter = ({ onSend, isSocketOpen }) => {
     form.resetFields(['newMessage']);
     onSend(values);
   };
+
+  const { isSendEnabled } = useSelector(makeSelectSingleChatInfo);
+
   return (
     <div className="chat-content-footer">
       <Form form={form} name="msgInput" onFinish={handleSend} className="w-100">
@@ -18,7 +23,7 @@ const ChatContentFooter = ({ onSend, isSocketOpen }) => {
           <Input
             autoComplete="off"
             placeholder={formatMessage(messages.typeAMessagePlaceholder)}
-            disabled={!isSocketOpen}
+            disabled={!(isSocketOpen && !!isSendEnabled)}
             suffix={
               <div className="d-flex align-items-center">
                 <Button
@@ -27,7 +32,7 @@ const ChatContentFooter = ({ onSend, isSocketOpen }) => {
                   size="small"
                   onClick={onSend}
                   htmlType="submit"
-                  disabled={!isSocketOpen}
+                  disabled={!(isSocketOpen && !!isSendEnabled)}
                 >
                   <SendOutlined />
                 </Button>

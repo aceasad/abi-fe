@@ -155,3 +155,8 @@ export const formatMessageForSocketSend = (text, patientId) =>
   JSON.stringify({ text, patient_id: patientId });
 
 export const parseReceivedEvent = (event) => JSON.parse(event.data);
+
+export const isTimestampInTheLast24Hours = (timestamp) => {
+  const oneDayAgo = moment().local().subtract(24, 'hours');
+  return moment(timestamp).local().isSameOrAfter(oneDayAgo);
+};
