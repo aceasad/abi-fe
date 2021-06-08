@@ -27,9 +27,14 @@ const CreatePatient = ({ showList }) => {
     message.success(formatMessage(messages.patientCreated));
   };
 
-  const handleSubmit = (values) => {
+  const handleSubmit = (values, setErrors, enableRedirect) => {
     dispatch(
-      createPatient({ data: filterEmptyObjectFeilds(values), afterCreate })
+      createPatient({
+        data: filterEmptyObjectFeilds(values),
+        afterCreate,
+        enableRedirect,
+        setErrors,
+      })
     );
   };
 
@@ -48,6 +53,7 @@ const CreatePatient = ({ showList }) => {
         weight: '',
         ethnicity: '',
         phone_number: '',
+        email: '',
         area_of_living: '',
         material_status: '',
         number_of_dependants: '',
