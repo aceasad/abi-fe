@@ -148,7 +148,7 @@ export const addDividers = (messages, hasMoreMessages) => {
 };
 
 export const createWebsocketUrl = (token) => {
-  return `${WS_CHAT_URL}?token=${token}`;
+  return `${WS_CHAT_URL}?token=${token.access}`;
 };
 
 export const formatMessageForSocketSend = (text, patientId) =>
