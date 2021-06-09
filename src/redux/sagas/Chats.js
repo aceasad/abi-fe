@@ -34,15 +34,14 @@ export function* getSingleChat({ payload }) {
 export function* getMoreSingleChatMessages({ payload }) {
   try {
     yield put(setSingleChatLoading(true));
-    const { next } = yield select(makeSelectSingleChatRequestData);
-    if (next) {
-      const { data } = yield call(
-        chatService.getSingleChat,
-        payload.patientId,
-        next
-      );
-      yield put(addMoreToSingleChat(data));
-    }
+    const { offset } = yield select(makeSelectSingleChatRequestData);
+
+    const { data } = yield call(
+      chatService.getSingleChat,
+      payload.patientId,
+      offset
+    );
+    yield put(addMoreToSingleChat(data));
   } catch (err) {
   } finally {
     yield put(setSingleChatLoading(false));
@@ -63,8 +62,8 @@ export function* getAllChatsInfo() {
 export function* getMoreChatsInfo() {
   try {
     yield put(setAllChatsInfoLoading(true));
-    const { next } = yield select(makeSelectAllChatsInfoRequestData);
-    const { data } = yield call(chatService.getAllChatInformation, next);
+    const { offset } = yield select(makeSelectAllChatsInfoRequestData);
+    const { data } = yield call(chatService.getAllChatInformation, offset);
     yield put(addMoreToAllChatsInfo(data));
   } catch (err) {
   } finally {

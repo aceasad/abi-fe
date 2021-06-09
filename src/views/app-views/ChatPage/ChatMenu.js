@@ -44,8 +44,12 @@ const ChatMenu = () => {
   const debouncedSearch = useDebounce(query, 500);
 
   const nextRef = useRef(null);
+  const menuRef = useRef(null);
+  const scrollHeightRef = useRef(0);
 
-  const { items, next, loading } = useSelector(makeSelectAllChatsInfo);
+  const { items, next, loading, scrollDown } = useSelector(
+    makeSelectAllChatsInfo
+  );
 
   useEffect(() => {
     // this will trigger iniitial data load
@@ -54,18 +58,21 @@ const ChatMenu = () => {
     }
   }, [debouncedSearch]);
 
+  useEffect(() => {
+    nextRef.current = next;
+  }, [next]);
+
   const handleGetMoreChatsInfo = useCallback(
     () => dispatch(getMoreChatsInfo()),
     [dispatch]
   );
 
-  // TO-DO -> lazy load
-  // useLazyLoad(
-  //   '#chat-menu-scroll div',
-  //   handleGetMoreChatsInfo,
-  //   [loading],
-  //   () => next
-  // );
+  useLazyLoad(
+    '#chat-menu-scroll div',
+    handleGetMoreChatsInfo,
+    [loading],
+    () => !!nextRef.current
+  );
 
   const openChat = (id) => {
     dispatch(setConversationToRead(id));
@@ -75,6 +82,20 @@ const ChatMenu = () => {
   const searchOnChange = (e) => {
     setQuery(e.target.value);
   };
+
+  const stopScroll = () => {
+    menuRef.current &&
+      menuRef.current.scrollTop(
+        menuRef.current.getScrollHeight() - scrollHeightRef.current
+      );
+  };
+
+  useEffect(() => {
+    if (scrollDown) {
+      stopScroll();
+    }
+    scrollHeightRef.current = menuRef.current.getScrollHeight();
+  }, [items]);
 
   return (
     <div className="chat-menu">
@@ -86,42 +107,38 @@ const ChatMenu = () => {
         />
       </div>
       <div className="chat-menu-list">
-        <Scrollbars id="chat-menu-scroll">
-          {loading ? (
-            <Loading />
-          ) : (
-            items.map((item, index) => {
-              return (
-                <div
-                  key={`chat-item-${item.patient.id}${index}`}
-                  onClick={() => openChat(item.patient.id)}
-                  className={chatListItemStyle(
-                    items.length - 1,
-                    item.patient.id,
-                    index,
-                    currentChatID
-                  )}
-                >
-                  <AvatarStatus
-                    src={item.patient.picture}
-                    name={item.patient.full_name}
-                    subTitle={item.last_message.text}
-                  />
-                  <div className="text-right">
-                    <div className="chat-menu-list-item-time">
-                      {formatMessageTimestamp(item.last_message.created_at)}
-                    </div>
-                    {item?.last_message.status === MESSAGE_STATUS.SENT &&
-                    !item?.last_message.is_answer ? (
-                      <Badge count={1} style={{ backgroundColor: COLOR_1 }} />
-                    ) : (
-                      <span></span>
-                    )}
+        <Scrollbars id="chat-menu-scroll" ref={menuRef}>
+          {items.map((item, index) => {
+            return (
+              <div
+                key={`chat-item-${item.patient.id}${index}`}
+                onClick={() => openChat(item.patient.id)}
+                className={chatListItemStyle(
+                  items.length,
+                  item.patient.id,
+                  index,
+                  currentChatID
+                )}
+              >
+                <AvatarStatus
+                  src={item.patient.picture}
+                  name={item.patient.full_name}
+                  subTitle={item.last_message.text}
+                />
+                <div className="text-right">
+                  <div className="chat-menu-list-item-time">
+                    {formatMessageTimestamp(item.last_message.created_at)}
                   </div>
+                  {item?.last_message.status === MESSAGE_STATUS.SENT &&
+                  !item?.last_message.is_answer ? (
+                    <Badge count={1} style={{ backgroundColor: COLOR_1 }} />
+                  ) : (
+                    <span></span>
+                  )}
                 </div>
-              );
-            })
-          )}
+              </div>
+            );
+          })}
         </Scrollbars>
       </div>
     </div>

@@ -27,6 +27,7 @@ export const chatBaseState = {
   single: null,
   next: null,
   offset: 0,
+  scrollDown: true,
 };
 
 export const MASS_INVITE_MIN_AGE = 18;

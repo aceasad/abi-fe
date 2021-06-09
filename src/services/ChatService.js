@@ -26,10 +26,8 @@ class ChatService extends ApiService {
       },
     });
 
-  getAllChatInformation = (next = null, limit = ALL_CHATS_PAGINATION_LIMIT) =>
-    next
-      ? this.apiClient.get(next)
-      : this.apiClient.get(ENDPOINTS.ALL_CHATS, { params: { limit } });
+  getAllChatInformation = (offset = 0, limit = ALL_CHATS_PAGINATION_LIMIT) =>
+    this.apiClient.get(ENDPOINTS.ALL_CHATS, { params: { limit, offset } });
 
   searchConversations = (query) =>
     this.apiClient.get(ENDPOINTS.SEARCH_CHATS, { params: { query } });
