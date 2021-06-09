@@ -12,6 +12,8 @@ import { createWebsocketUrl, parseReceivedEvent } from 'utils/helpers';
 import { addOneMessage } from 'redux/actions/Chats';
 import MassInviteModal from './MassInviteModal';
 import WebSocketClient from 'services/WebSocketClient';
+import { MESSAGE_STATUS } from 'constants/ChatConstants';
+import { useMarkConversationAsRead } from 'queries/shared';
 
 const Chat = () => {
   const { formatMessage } = useIntl();
@@ -20,9 +22,17 @@ const Chat = () => {
 
   const dispatch = useDispatch();
 
+  const { mutate } = useMarkConversationAsRead();
+
   const handleReceiveMessage = (event) => {
     const parsedMessage = parseReceivedEvent(event);
     dispatch(addOneMessage(parsedMessage));
+    if (
+      parsedMessage.is_answer === 0 &&
+      parsedMessage.status === MESSAGE_STATUS.SENT
+    ) {
+      mutate(parsedMessage.patient.id);
+    }
   };
 
   const [isModalVisible, setIsModalVisible] = useState(false);
