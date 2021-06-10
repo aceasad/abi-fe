@@ -1,10 +1,10 @@
-export const COLOR_1 = '#3e82f7'; // blue
-export const COLOR_2 = '#04d182'; // cyan
-export const COLOR_3 = '#ff6b72'; // volcano
-export const COLOR_4 = '#ffc107'; // gold
-export const COLOR_5 = '#a461d8'; // purple
-export const COLOR_6 = '#fa8c16'; // orange
-export const COLOR_7 = '#17bcff'; // geekblue
+export const COLOR_1 = '#0F468C'; // blue
+export const COLOR_2 = '#18D9C5'; // cyan
+export const COLOR_3 = '#E880FF'; // rose
+export const COLOR_4 = '#FFBFB0'; // orange-rose
+export const COLOR_5 = '#121E38'; // dark blue
+export const COLOR_6 = '#5D4EBF'; // purple
+export const COLOR_7 = '#8C3B87'; // dark rose
 
 export const COLOR_1_LIGHT = 'rgba(62, 130, 247, 0.15)';
 export const COLOR_2_LIGHT = 'rgba(4, 209, 130, 0.1)';
@@ -170,7 +170,7 @@ export const apexPieChartDefaultOption = {
             },
           },
         },
-        size: '87%',
+        size: '60%',
       },
     },
   },

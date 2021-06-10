@@ -1,17 +1,22 @@
 import React from 'react';
 import { Card } from 'antd';
-import ApexChart from 'react-apexcharts';
+import Chart from 'react-apexcharts';
 import { apexPieChartDefaultOption } from 'constants/ChartConstant';
 import PropTypes from 'prop-types';
 
 const defaultOption = apexPieChartDefaultOption;
 
-const Chart = (props) => {
-  return <ApexChart {...props} />;
-};
-
 const DonutChartWidget = (props) => {
-  const { series, customOptions, labels, width, height, title, extra } = props;
+  const {
+    series,
+    customOptions,
+    labels,
+    width,
+    height,
+    title,
+    extra,
+    type,
+  } = props;
   let options = defaultOption;
   options.labels = labels;
   options.plotOptions.pie.donut.labels.total.label = title;
@@ -23,9 +28,9 @@ const DonutChartWidget = (props) => {
   }
   return (
     <Card>
-      <div className="text-center">
+      <div className="text-left">
         <Chart
-          type="donut"
+          type={type}
           options={options}
           series={series}
           width={width}

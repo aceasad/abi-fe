@@ -11,7 +11,7 @@ import { makeSelectStaff, makeSelectPagination } from 'redux/selectors/Staff';
 import Loading from 'components/shared-components/Loading';
 import Modal from 'components/shared-components/Modal';
 import { deleteStaff } from 'redux/actions/Staff';
-import { message, List, Button, PageHeader } from 'antd';
+import { message, List, Button, PageHeader, Typography } from 'antd';
 
 export const OPTION_KEYS = {
   EDIT: '1',
@@ -69,7 +69,11 @@ const StaffList = ({ showCreate, editUser, seeAppointments }) => {
     <>
       <PageHeader
         className="p-0 mb-4"
-        title={formatMessage(messages.staff)}
+        title={
+          <Typography.Title level={2} className="mb-0">
+            {formatMessage(messages.staff)}
+          </Typography.Title>
+        }
         extra={[
           <Button type="primary" onClick={showCreate}>
             {formatMessage(messages.addNewStaff)}

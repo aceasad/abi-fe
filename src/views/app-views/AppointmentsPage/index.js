@@ -1,4 +1,4 @@
-import { Button, PageHeader, Space } from 'antd';
+import { Button, PageHeader, Space, Typography } from 'antd';
 import React, { useState } from 'react';
 import CalendarPage from '../CalendarPage';
 import { useIntl } from 'react-intl';
@@ -17,7 +17,11 @@ const AppointmentsPage = () => {
     <>
       <PageHeader
         className="p-0 mb-4"
-        title={formatMessage({ id: 'appointments_page.title' })}
+        title={
+          <Typography.Title level={2} className="mb-0">
+            {formatMessage({ id: 'appointments_page.title' })}
+          </Typography.Title>
+        }
         extra={[
           <Space key="0">
             <Button>

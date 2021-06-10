@@ -4,13 +4,13 @@ import { DownOutlined } from '@ant-design/icons';
 
 const { Panel } = Collapse;
 
-const OverviewList = ({ title, listData }) => {
+const OverviewList = ({ title, listData, startOpen }) => {
   const [isCollapseOpen, setIsCollapseOpen] = useState(false);
 
   const collapseHeader = (
     <>
       <div className="d-flex justify-content-between align-items-center">
-        <Typography.Title level={2} className="mb-0">
+        <Typography.Title level={4} className="text-primary mb-0">
           {title}
         </Typography.Title>
         <DownOutlined
@@ -26,8 +26,10 @@ const OverviewList = ({ title, listData }) => {
       ghost
       className="mb-4"
       onChange={() => setIsCollapseOpen(!isCollapseOpen)}
+      defaultActiveKey={startOpen ? ['1'] : null}
     >
       <Panel
+        key="1"
         className="overview-collapse"
         header={collapseHeader}
         showArrow={false}
