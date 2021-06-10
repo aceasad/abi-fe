@@ -15,7 +15,7 @@ const ChatContentFooter = ({ onSend }) => {
     onSend(values);
   };
 
-  const { isSendEnabled } = useSelector(makeSelectSingleChatInfo);
+  const { chatInfo } = useSelector(makeSelectSingleChatInfo);
   const isSocketOpen = WebSocketClient.isConnected();
 
   return (
@@ -25,7 +25,7 @@ const ChatContentFooter = ({ onSend }) => {
           <Input
             autoComplete="off"
             placeholder={formatMessage(messages.typeAMessagePlaceholder)}
-            disabled={!(isSocketOpen && !!isSendEnabled)}
+            disabled={!(isSocketOpen && !!chatInfo.isSendEnabled)}
             suffix={
               <div className="d-flex align-items-center">
                 <Button
@@ -34,7 +34,7 @@ const ChatContentFooter = ({ onSend }) => {
                   size="small"
                   onClick={onSend}
                   htmlType="submit"
-                  disabled={!(isSocketOpen && !!isSendEnabled)}
+                  disabled={!(isSocketOpen && !!chatInfo.isSendEnabled)}
                 >
                   <SendOutlined />
                 </Button>

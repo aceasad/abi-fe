@@ -72,7 +72,7 @@ export const LoginForm = () => {
           marginBottom: showMessage ? 20 : 0,
         }}
       >
-        {showMessage && formatMessage(message)}
+        {showMessage && message && formatMessage(message)}
       </motion.div>
 
       <Formik
