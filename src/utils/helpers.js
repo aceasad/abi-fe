@@ -156,6 +156,11 @@ export const formatMessageForSocketSend = (text, patientId) =>
 
 export const parseReceivedEvent = (event) => JSON.parse(event.data);
 
+export const isTimestampInTheLast24Hours = (timestamp) => {
+  const oneDayAgo = moment().local().subtract(24, 'hours');
+  return moment(timestamp).local().isSameOrAfter(oneDayAgo);
+};
+
 export const updateChatMenuItems = (
   selectedChat,
   newMessagePayload,

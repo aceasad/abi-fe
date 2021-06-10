@@ -30,15 +30,16 @@ const chats = (state = initialState, action) =>
       case SET_SINGLE_CHAT:
         draft.single = {
           ...state.single,
-          items: action.payload.results.reverse(),
+          items: action.payload.results.items.reverse(),
           count: action.payload.count,
           next: action.payload.next,
           page:
             Math.floor(action.payload.count / CHAT_MESSAGES_PAGINATION_LIMIT) +
             1,
-          offset: action.payload.results.length,
+          offset: action.payload.results.items.length,
           chatInfo: {
-            patient: action.payload.results[0].patient,
+            patient: action.payload.results.items[0].patient,
+            isSendEnabled: action.payload.results.is_conversation_enabled,
           },
         };
         break;
@@ -63,7 +64,10 @@ const chats = (state = initialState, action) =>
       case ADD_MORE_TO_SINGLE_CHAT:
         draft.single = {
           ...state.single,
-          items: [...action.payload.results.reverse(), ...state.single.items],
+          items: [
+            ...action.payload.results.items.reverse(),
+            ...state.single.items,
+          ],
           count: action.payload.count,
           next: action.payload.next,
           page:

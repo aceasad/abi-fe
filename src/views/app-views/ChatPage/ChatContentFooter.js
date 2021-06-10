@@ -3,6 +3,8 @@ import { Button, Form, Input } from 'antd';
 import React from 'react';
 import { useIntl } from 'react-intl';
 import messages from './messages';
+import { useSelector } from 'react-redux';
+import { makeSelectSingleChatInfo } from 'redux/selectors/Chats';
 import WebSocketClient from 'services/WebSocketClient';
 
 const ChatContentFooter = ({ onSend }) => {
@@ -13,6 +15,7 @@ const ChatContentFooter = ({ onSend }) => {
     onSend(values);
   };
 
+  const { isSendEnabled } = useSelector(makeSelectSingleChatInfo);
   const isSocketOpen = WebSocketClient.isConnected();
 
   return (
@@ -22,7 +25,7 @@ const ChatContentFooter = ({ onSend }) => {
           <Input
             autoComplete="off"
             placeholder={formatMessage(messages.typeAMessagePlaceholder)}
-            disabled={!isSocketOpen}
+            disabled={!(isSocketOpen && !!isSendEnabled)}
             suffix={
               <div className="d-flex align-items-center">
                 <Button
@@ -31,7 +34,7 @@ const ChatContentFooter = ({ onSend }) => {
                   size="small"
                   onClick={onSend}
                   htmlType="submit"
-                  disabled={!isSocketOpen}
+                  disabled={!(isSocketOpen && !!isSendEnabled)}
                 >
                   <SendOutlined />
                 </Button>
