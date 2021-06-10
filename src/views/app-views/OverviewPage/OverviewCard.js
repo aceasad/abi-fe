@@ -13,7 +13,7 @@ const OverviewCard = ({ span, title, tooltip, content }) => {
         title={<span className="text-wrap font-size-base">{title}</span>}
       >
         <Flex justifyContent="between" alignItems="baseline">
-          <Title level={2} className="text-break">
+          <Title level={1} className="text-break">
             {content}
           </Title>
           <Tooltip title={tooltip} placement="bottom">
