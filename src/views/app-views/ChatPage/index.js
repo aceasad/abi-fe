@@ -1,6 +1,6 @@
 import { Button, PageHeader } from 'antd';
 import InnerAppLayout from 'layouts/inner-app-layout';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
 import ChatContent from './ChatContent';
 import ChatMenu from './ChatMenu';
@@ -11,6 +11,9 @@ import { makeSelectLoginDetails } from 'redux/selectors/Auth';
 import { createWebsocketUrl, parseReceivedEvent } from 'utils/helpers';
 import { addOneMessage } from 'redux/actions/Chats';
 import MassInviteModal from './MassInviteModal';
+import WebSocketClient from 'services/WebSocketClient';
+import { MESSAGE_STATUS } from 'constants/ChatConstants';
+import { useMarkConversationAsRead } from 'queries/shared';
 
 const Chat = () => {
   const { formatMessage } = useIntl();
@@ -19,22 +22,36 @@ const Chat = () => {
 
   const dispatch = useDispatch();
 
-  const socketUrl = createWebsocketUrl(token);
+  const { mutate } = useMarkConversationAsRead();
 
   const handleReceiveMessage = (event) => {
     const parsedMessage = parseReceivedEvent(event);
     dispatch(addOneMessage(parsedMessage));
+    if (
+      parsedMessage.is_answer === 0 &&
+      parsedMessage.status === MESSAGE_STATUS.SENT
+    ) {
+      mutate(parsedMessage.patient.id);
+    }
   };
 
-  const [socket, socketOpen] = useSocket({
-    url: socketUrl,
-    onmessage: (e) => {
-      handleReceiveMessage(e);
-    },
-    errorMessage: formatMessage(messages.socketErrorMessage),
-  });
-
   const [isModalVisible, setIsModalVisible] = useState(false);
+
+  useEffect(() => {
+    WebSocketClient.isComponentMounted = true;
+    return () => {
+      WebSocketClient.isComponentMounted = false;
+      WebSocketClient.closeConnection();
+    };
+  }, []);
+
+  useEffect(() => {
+    const socketUrl = createWebsocketUrl(token);
+    if (token) {
+      WebSocketClient.connect(socketUrl, () => {}, handleReceiveMessage);
+      WebSocketClient.waitForConnection();
+    }
+  }, [token]);
 
   return (
     <>
@@ -55,9 +72,7 @@ const Chat = () => {
       <div className="chat">
         <InnerAppLayout
           sideContent={<ChatMenu />}
-          mainContent={
-            <ChatContent socket={socket} isSocketOpen={socketOpen} />
-          }
+          mainContent={<ChatContent />}
           sideContentWidth={450}
           sideContentGutter={false}
           border

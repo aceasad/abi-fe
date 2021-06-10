@@ -11,6 +11,7 @@ const ENDPOINTS = {
   GET_SCHEDULED_APPOINTMENTS: '/appointments/scheduled-appointments/',
   GET_APPOINTMENT_HISTORY: '/appointments/passed-appointments/',
   SEARCH_PATIENTS: '/patients-search/',
+  GET_MASS_INVITE_PATIENTS_COUNT: '/patients/mass-invite-patients-count/',
 };
 
 class PatientService extends ApiService {
@@ -67,6 +68,15 @@ class PatientService extends ApiService {
         });
 
   getMoreSearchResults = (next) => next && this.apiClient.get(next);
+
+  getMassInvitePatientCount = (ageFrom, ageTo, gender) =>
+    this.apiClient.get(ENDPOINTS.GET_MASS_INVITE_PATIENTS_COUNT, {
+      params: {
+        ageFrom,
+        ageTo,
+        gender,
+      },
+    });
 }
 
 const patientService = new PatientService();

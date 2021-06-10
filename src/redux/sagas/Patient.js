@@ -39,6 +39,7 @@ import {
 } from '../selectors/Patient';
 import { getPreviousOperations } from './Anemnesis';
 import { getMedicalConditions } from './Anemnesis';
+import messages from 'views/app-views/PatientsPage/messages';
 
 function* getPatients() {
   try {
@@ -77,9 +78,13 @@ function* createPatient({ payload }) {
   try {
     yield put(setPatientLoading(true));
     yield call(patientService.createPatient, payload.data);
+    yield payload.enableRedirect();
     yield payload.afterCreate();
     yield getPatients();
   } catch (err) {
+    if (err?.response?.status === 400) {
+      yield payload.setErrors({ email: messages.emailAlreadyTaken });
+    }
   } finally {
     yield put(setPatientLoading(false));
   }
@@ -100,9 +105,13 @@ function* updatePatient({ payload }) {
   try {
     yield put(setPatientLoading(true));
     yield call(patientService.updatePatient, payload.id, payload.data);
+    yield payload.enableRedirect();
     yield payload.afterUpdate();
     yield put(modifyPatient(payload.data));
   } catch (err) {
+    if (err?.response?.status === 400) {
+      yield payload.setErrors({ email: messages.emailAlreadyTaken });
+    }
   } finally {
     yield put(setPatientLoading(false));
   }

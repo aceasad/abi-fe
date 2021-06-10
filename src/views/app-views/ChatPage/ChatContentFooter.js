@@ -5,8 +5,9 @@ import { useIntl } from 'react-intl';
 import messages from './messages';
 import { useSelector } from 'react-redux';
 import { makeSelectSingleChatInfo } from 'redux/selectors/Chats';
+import WebSocketClient from 'services/WebSocketClient';
 
-const ChatContentFooter = ({ onSend, isSocketOpen }) => {
+const ChatContentFooter = ({ onSend }) => {
   const { formatMessage } = useIntl();
   const [form] = Form.useForm();
   const handleSend = (values) => {
@@ -15,6 +16,7 @@ const ChatContentFooter = ({ onSend, isSocketOpen }) => {
   };
 
   const { isSendEnabled } = useSelector(makeSelectSingleChatInfo);
+  const isSocketOpen = WebSocketClient.isConnected();
 
   return (
     <div className="chat-content-footer">

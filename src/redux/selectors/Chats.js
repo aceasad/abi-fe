@@ -9,6 +9,7 @@ const makeSelectAllChatsInfoRequestData = createSelector(
     next: substate.next,
     page: substate.page,
     count: substate.count,
+    offset: substate.offset,
   })
 );
 
@@ -28,6 +29,7 @@ const makeSelectAllChatsInfo = createSelector(
     items: substate.items,
     loading: substate.loading,
     next: substate.next,
+    scrollDown: substate.scrollDown,
   })
 );
 
@@ -35,6 +37,7 @@ const makeSelectSingleChat = createSelector(selectChatsDomain, (substate) => ({
   items: substate.single.items,
   loading: substate.single.loading,
   next: substate.single.next,
+  scrollDown: substate.single.scrollDown,
 }));
 
 const makeSelectSingleChatInfo = createSelector(

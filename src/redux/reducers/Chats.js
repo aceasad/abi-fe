@@ -16,6 +16,7 @@ import {
   CHAT_MESSAGES_PAGINATION_LIMIT,
 } from 'constants/ApiConstant';
 import { MESSAGE_STATUS } from 'constants/ChatConstants';
+import { updateChatMenuItems, updateConversation } from 'utils/helpers';
 
 const initialState = {
   ...chatBaseState,
@@ -55,6 +56,7 @@ const chats = (state = initialState, action) =>
         draft.page =
           Math.floor(action.payload.count / ALL_CHATS_PAGINATION_LIMIT) + 1;
         draft.offset = action.payload.results.length;
+        draft.scrollDown = false;
         break;
       case SET_ALL_CHATS_INFO_LOADING:
         draft.loading = action.payload;
@@ -71,6 +73,8 @@ const chats = (state = initialState, action) =>
           page:
             Math.floor(action.payload.count / CHAT_MESSAGES_PAGINATION_LIMIT) +
             1,
+          offset: action.payload.results.length + state.single.items.length,
+          scrollDown: false,
         };
         break;
       case ADD_MORE_TO_ALL_CHATS_INFO:
@@ -79,6 +83,8 @@ const chats = (state = initialState, action) =>
         draft.next = action.payload.next;
         draft.page =
           Math.floor(action.payload.count / ALL_CHATS_PAGINATION_LIMIT) + 1;
+        draft.offset = action.payload.results.length + state.offset;
+        draft.scrollDown = true;
         break;
       case SET_CONVERSATION_TO_READ:
         draft.items = state.items.map((item) =>
@@ -108,51 +114,31 @@ const chats = (state = initialState, action) =>
         const foundChat = state.items.find(
           (item) => item.patient.id === action.payload.patient.id
         );
-        // conversation already in REDUX
+        // conversation already in Redux Store
         if (foundChat) {
           // is this conversation active
           if (state.single.chatInfo.patient.id === foundChat.patient.id) {
-            draft.single = {
-              ...state.single,
-              items: [...state.single.items, action.payload],
-              count: state.single.count + 1,
-              page: 1,
-              next: null,
-              offset: state.single.offset + 1,
-            };
+            draft.single = updateConversation(state.single, action.payload);
+            draft.items = updateChatMenuItems(
+              foundChat,
+              action.payload,
+              state.items,
+              true
+            );
             // if conversation is not active
           } else {
-            draft.items = [
-              {
-                patient: foundChat.patient,
-                last_message: {
-                  id: action.payload.id,
-                  text: action.payload.text,
-                  created_at: action.payload.created_at,
-                  status: action.payload.status,
-                  is_answer: action.payload.is_answer,
-                },
-              },
-              ...state.items.filter(
-                (item) => item.patient.id !== foundChat.patient.id
-              ),
-            ];
+            draft.items = updateChatMenuItems(
+              foundChat,
+              action.payload,
+              state.items,
+              false
+            );
           }
           // Conversation is not in redux yet --> create new conversation
         } else {
-          draft.items = [
-            {
-              patient: action.payload.patient,
-              last_message: {
-                id: action.payload.id,
-                text: action.payload.text,
-                created_at: action.payload.created_at,
-                status: action.payload.status,
-                is_answer: action.payload.is_answer,
-              },
-            },
-            ...state.items,
-          ];
+          draft.items = updateChatMenuItems(null, action.payload, state.items);
+          draft.count = state.count + 1;
+          draft.offset = state.offset + 1;
         }
         break;
       }

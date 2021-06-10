@@ -51,6 +51,9 @@ const PatientForm = ({
     message.success(formatMessage(messages.operationTypeDeleted));
   };
 
+  const handleSubmitWrapper = (values, { setErrors }) =>
+    handleSubmit(values, setErrors, enableRedirect);
+
   const deleteOperationType = ({ item, action }) => {
     Modal.confirm({
       title: formatMessage(messages.deleteOperationType, {
@@ -131,7 +134,7 @@ const PatientForm = ({
         },
       }}
       innerRef={formRef}
-      onSubmit={handleSubmit}
+      onSubmit={handleSubmitWrapper}
       validationSchema={patientSchema}
     >
       {({ values, dirty, isValid, handleSubmit, setFieldValue }) => (
@@ -143,7 +146,6 @@ const PatientForm = ({
                 showDiscardModal(true);
               }}
               primaryAction={() => {
-                enableRedirect();
                 handleSubmit();
               }}
               primaryDisabled={!isValid || !dirty || loading}
@@ -268,6 +270,15 @@ const PatientForm = ({
                       }}
                     />
                   </Row>
+                  <Row gutter={16}>
+                    <ColumnField
+                      span={12}
+                      component={FormField}
+                      label={formatMessage(messages.email)}
+                      name="email"
+                      required
+                    />
+                  </Row>
                 </Col>
               </Row>
 
@@ -352,7 +363,6 @@ const PatientForm = ({
 
           <Button
             onClick={() => {
-              enableRedirect();
               handleSubmit();
             }}
             type="primary"

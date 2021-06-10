@@ -79,6 +79,10 @@ export default defineMessages({
     id: `${detailScope}.side.title.personal`,
     defaultMessage: 'Edit patient',
   },
+  emailAlreadyTaken: {
+    id: `${detailScope}.error.email_already_exists`,
+    defaultMessage: 'Email is already taken',
+  },
   dateOfBirth: {
     id: `${detailScope}.side.form.date_of_birth`,
     defaultMessage: 'Date of birth',
@@ -122,6 +126,10 @@ export default defineMessages({
   education: {
     id: `${detailScope}.side.form.educational_background`,
     defaultMessage: 'Employment Status',
+  },
+  email: {
+    id: `${detailScope}.side.form.email`,
+    defaultMessage: 'Email',
   },
   insurance: {
     id: `${detailScope}.side.form.insurance`,

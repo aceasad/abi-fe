@@ -1,5 +1,5 @@
 import { WS_CHAT_URL } from 'constants/ApiConstant';
-import { MESSAGE_TYPE, MESSAGE_FROM } from 'constants/ChatConstants';
+import { MESSAGE_TYPE, MESSAGE_STATUS } from 'constants/ChatConstants';
 import { MONTH_FORMAT_MM, YEAR_FORMAT_YYYY } from 'constants/DateConstant';
 import moment from 'moment';
 
@@ -148,7 +148,7 @@ export const addDividers = (messages, hasMoreMessages) => {
 };
 
 export const createWebsocketUrl = (token) => {
-  return `${WS_CHAT_URL}?token=${token}`;
+  return `${WS_CHAT_URL}?token=${token.access}`;
 };
 
 export const formatMessageForSocketSend = (text, patientId) =>
@@ -159,4 +159,47 @@ export const parseReceivedEvent = (event) => JSON.parse(event.data);
 export const isTimestampInTheLast24Hours = (timestamp) => {
   const oneDayAgo = moment().local().subtract(24, 'hours');
   return moment(timestamp).local().isSameOrAfter(oneDayAgo);
+};
+
+export const updateChatMenuItems = (
+  selectedChat,
+  newMessagePayload,
+  chatMenuItems,
+  isChatOpen
+) => {
+  const lastMessage = {
+    id: newMessagePayload.id,
+    text: newMessagePayload.text,
+    created_at: newMessagePayload.created_at,
+    status: isChatOpen ? MESSAGE_STATUS.READ : newMessagePayload.status,
+    is_answer: newMessagePayload.is_answer,
+  };
+
+  return selectedChat
+    ? [
+        {
+          patient: selectedChat.patient,
+          last_message: lastMessage,
+        },
+        ...chatMenuItems.filter(
+          (item) => item.patient.id !== selectedChat.patient.id
+        ),
+      ]
+    : [
+        {
+          patient: newMessagePayload.patient,
+          last_message: lastMessage,
+        },
+        ...chatMenuItems,
+      ];
+};
+
+export const updateConversation = (conversation, newMessagePayload) => {
+  return {
+    ...conversation,
+    items: [...conversation.items, newMessagePayload],
+    count: conversation.count + 1,
+    offset: conversation.offset + 1,
+    scrollDown: true,
+  };
 };

@@ -1,5 +1,5 @@
 import Loading from 'components/shared-components/Loading';
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
@@ -12,21 +12,24 @@ import { addDividers, formatMessageForSocketSend } from 'utils/helpers';
 import ChatContentBody from './ChatContentBody';
 import ChatContentFooter from './ChatContentFooter';
 import ChatContentHeader from './ChatContentHeader';
+import WebSocketClient from 'services/WebSocketClient';
+import { useLazyLoad } from 'utils/hooks';
 
 const Conversation = ({
   conversationId,
   isMenuVisible = true,
   showTitle = true,
   BackAction = false,
-  socket,
-  isSocketOpen,
 }) => {
-  const formRef = useRef();
   const chatBodyRef = useRef(null);
+  const nextRef = useRef(null);
   const params = useParams();
+  const scrollHeightRef = useRef(0);
 
   const id = parseInt(params.id || conversationId);
-  const { items, loading, next } = useSelector(makeSelectSingleChat);
+  const { items, loading, next, scrollDown } = useSelector(
+    makeSelectSingleChat
+  );
   const { chatInfo } = useSelector(makeSelectSingleChatInfo);
 
   const dispatch = useDispatch();
@@ -47,16 +50,29 @@ const Conversation = ({
     chatBodyRef.current && chatBodyRef.current.scrollToBottom();
   };
 
+  const stopScroll = () => {
+    chatBodyRef.current &&
+      chatBodyRef.current.scrollTop(
+        chatBodyRef.current.getScrollHeight() - scrollHeightRef.current
+      );
+  };
+
   useEffect(() => {
-    if (!loading) {
+    if (scrollDown) {
       scrollToBottom();
+    } else {
+      stopScroll();
     }
-  }, [loading, items]);
+    scrollHeightRef.current = chatBodyRef.current.getScrollHeight();
+  }, [items]);
+
+  useEffect(() => {
+    nextRef.current = next;
+  }, [next]);
 
   const onSend = ({ newMessage }) => {
-    if (newMessage) {
-      newMessage && socket.send(formatMessageForSocketSend(newMessage, id));
-    }
+    newMessage &&
+      WebSocketClient.sendMessage(formatMessageForSocketSend(newMessage, id));
   };
 
   const chatContentBody = (messages, next, patientPicture) =>
@@ -66,6 +82,14 @@ const Conversation = ({
         patientPicture={patientPicture}
       />
     ) : null;
+
+  useLazyLoad(
+    '#single-chat-scroll div',
+    handleGetMoreSingleMessages,
+    [],
+    () => !!nextRef.current,
+    false
+  );
 
   return (
     <div className="chat-content">
@@ -82,14 +106,11 @@ const Conversation = ({
           autoHide={false}
           id="single-chat-scroll"
         >
-          {loading ? (
-            <Loading />
-          ) : (
-            chatContentBody(items, next, chatInfo.patient.picture)
-          )}
+          {chatInfo?.patient &&
+            chatContentBody(items, next, chatInfo.patient.picture)}
         </Scrollbars>
       </div>
-      <ChatContentFooter onSend={onSend} isSocketOpen={isSocketOpen} />
+      <ChatContentFooter onSend={onSend} />
     </div>
   );
 };

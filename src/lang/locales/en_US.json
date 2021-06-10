@@ -304,6 +304,7 @@
   "patient_details.side.form.weight": "Weight",
   "patient_details.side.form.ethnicity": "Ethnicity",
   "patient_details.side.form.phone_number": "Phone Number",
+  "patient_details.side.form.email": "Email",
   "patient_details.side.form.area_of_living": "Area of Living",
   "patient_details.side.form.marital_status": "Marital Status",
   "patient_details.side.form.number_of_dependants": "Number of Dependants",
@@ -313,6 +314,7 @@
   "patient_details.error.phone_format": "Phone must be in valid format",
   "patient_details.text.patient_created": "Patient Created",
   "patient_details.text.patient_updated": "Patient Updated",
+  "patient_details.error.email_already_exists": "Email is already taken",
 
   "patients_page.option.details": "Patient Details",
   "patients_page.option.delete": "Delete Patient",
@@ -391,6 +393,7 @@
   "chat_page.label.template": "Template",
   "chat_page.label.message": "Message:",
   "chat_page.label.mass_invites": "Mass Invites",
+  "chat_page.label.number_of_invites": "Number of invites: ",
   "chat_page.menu.user_info_label": "",
   "chat_page.menu.mute_chat": "Mute Chat",
   "chat_page.menu.delete_chat": "Delete Chat",
