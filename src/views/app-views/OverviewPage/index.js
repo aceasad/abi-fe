@@ -1,10 +1,14 @@
-import { Col, PageHeader, Row, Select } from 'antd';
+import { Col, PageHeader, Row, Select, Typography } from 'antd';
 import React, { useState } from 'react';
 import { useIntl } from 'react-intl';
 import messages from './messages';
 import OverviewList from './OverviewList';
-import OverviewTable from './OverviewTable';
-import GroupsCollapse from './Groups/GroupsCollapse';
+// import OverviewTable from './OverviewTable';
+import GroupCollapse from './Groups/GroupCollapse';
+import Booking from './Groups/Booking';
+import Appointments from './Groups/Appointments';
+import AbiData from './Groups/AbiData';
+import Uptake from './Groups/Uptake';
 
 const { Option } = Select;
 
@@ -22,7 +26,11 @@ const OverviewPage = () => {
     <>
       <PageHeader
         className="p-0 mb-4"
-        title={formatMessage(messages.title)}
+        title={
+          <Typography.Title level={2} className="mb-0">
+            {formatMessage(messages.title)}
+          </Typography.Title>
+        }
         extra={[
           <Select
             key="0"
@@ -38,14 +46,38 @@ const OverviewPage = () => {
           </Select>,
         ]}
       />
-      <OverviewTable />
+      {/* <OverviewTable /> */}
       <Row gutter={48}>
         <Col span={13} className="mt-4">
-          <OverviewList title={formatMessage(messages.listAttention)} />
-          <OverviewList title={formatMessage(messages.listScreening)} />
+          <GroupCollapse
+            startOpen
+            title={formatMessage(messages.bookingTitle)}
+            group={<Booking />}
+          />
+          <OverviewList
+            startOpen
+            title={formatMessage(messages.listAttention)}
+          />
+          <OverviewList
+            startOpen
+            title={formatMessage(messages.listScreening)}
+          />
         </Col>
         <Col span={11} className="mt-4">
-          <GroupsCollapse />
+          <GroupCollapse
+            startOpen
+            title={formatMessage(messages.asaDataTitle)}
+            group={<AbiData />}
+          />
+          <GroupCollapse
+            title={formatMessage(messages.uptakeTitle)}
+            group={<Uptake />}
+          />
+          <GroupCollapse
+            startOpen
+            title={formatMessage(messages.appointmentsTitle)}
+            group={<Appointments />}
+          />
         </Col>
       </Row>
     </>

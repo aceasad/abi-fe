@@ -1,4 +1,4 @@
-import { Button, PageHeader } from 'antd';
+import { Button, PageHeader, Typography } from 'antd';
 import InnerAppLayout from 'layouts/inner-app-layout';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
@@ -57,7 +57,11 @@ const Chat = () => {
     <>
       <PageHeader
         className="p-0 mb-4"
-        title={formatMessage(messages.conversationsTitle)}
+        title={
+          <Typography.Title level={2} className="mb-0">
+            {formatMessage(messages.conversationsTitle)}
+          </Typography.Title>
+        }
         extra={[
           <Button
             type="primary"

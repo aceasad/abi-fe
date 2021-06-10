@@ -10,7 +10,6 @@ const { Title } = Typography;
 const dummyData = {
   tooltip: 'About this card.',
   invite: '32',
-  efficiency: '5x',
   invitation: '34%',
 };
 
@@ -19,21 +18,12 @@ const Booking = () => {
 
   return (
     <div className="mb-4">
-      <Title level={4} className="text-primary mb-3">
-        {formatMessage(messages.bookingTitle)}
-      </Title>
       <GroupRow>
         <OverviewCard
           span={12}
           title={formatMessage(messages.bookingAfterInvite)}
           tooltip={dummyData.tooltip}
           content={dummyData.invite}
-        />
-        <OverviewCard
-          span={12}
-          title={formatMessage(messages.bookingEfficiency)}
-          tooltip={dummyData.tooltip}
-          content={dummyData.efficiency}
         />
         <OverviewCard
           span={12}

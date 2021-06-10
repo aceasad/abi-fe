@@ -19,9 +19,6 @@ const Appointments = () => {
 
   return (
     <div className="mb-4">
-      <Title level={4} className="text-primary mb-3">
-        {formatMessage(messages.appointmentsTitle)}
-      </Title>
       <GroupRow appointments>
         <Row gutter={16}>
           <OverviewCard
