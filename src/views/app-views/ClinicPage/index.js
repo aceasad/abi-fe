@@ -14,7 +14,11 @@ const ClinicPage = ({ localization = true }) => {
   return (
     <>
       <PageHeader
-        title={localeString(localization, 'clinic_page.header.title')}
+        title={
+          <Typography.Title level={2} className="mb-0">
+            {localeString(localization, 'clinic_page.header.title')}
+          </Typography.Title>
+        }
         extra={[
           <Button
             key="0"

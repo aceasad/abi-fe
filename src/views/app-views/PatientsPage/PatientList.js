@@ -10,6 +10,7 @@ import {
   message,
   PageHeader,
   Space,
+  Typography,
 } from 'antd';
 import { EditFilled, DeleteOutlined, SearchOutlined } from '@ant-design/icons';
 import EllipsisDropdown from 'components/shared-components/EllipsisDropdown';
@@ -127,7 +128,11 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
     <>
       <PageHeader
         className="p-0 mb-4"
-        title={formatMessage(messages.patientsTitle)}
+        title={
+          <Typography.Title level={2} className="mb-0">
+            {formatMessage(messages.patientsTitle)}
+          </Typography.Title>
+        }
         extra={[
           <Space key="0">
             <form onSubmit={handleSearch}>

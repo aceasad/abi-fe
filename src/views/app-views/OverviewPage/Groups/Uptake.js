@@ -20,9 +20,6 @@ const Uptake = () => {
 
   return (
     <div className="mb-4">
-      <Title level={4} className="text-primary mb-3">
-        {formatMessage(messages.uptakeTitle)}
-      </Title>
       <GroupRow>
         <OverviewCard
           span={12}

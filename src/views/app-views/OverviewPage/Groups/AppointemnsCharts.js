@@ -1,4 +1,4 @@
-import { Card, Col, Row } from 'antd';
+import { Card, Col, Row, Typography } from 'antd';
 import React from 'react';
 import { useIntl } from 'react-intl';
 import messages from '../messages';
@@ -86,9 +86,9 @@ const AppointmentsCharts = () => {
         <Card
           className="height-100 d-flex flex-column justify-content-between"
           title={
-            <span className="text-wrap font-size-base">
+            <Typography.Title level={4} className="text-wrap">
               {formatMessage(messages.appointmentsPreferences)}
-            </span>
+            </Typography.Title>
           }
         >
           <div className="mb-4">

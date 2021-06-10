@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, PageHeader } from 'antd';
+import { Button, PageHeader, Typography } from 'antd';
 
 const PageHeaderComponent = ({
   title,
@@ -13,7 +13,11 @@ const PageHeaderComponent = ({
   return (
     <PageHeader
       className="p-0 mb-4"
-      title={title}
+      title={
+        <Typography.Title level={2} className="mb-0">
+          {title}
+        </Typography.Title>
+      }
       extra={[
         <Button key="10" onClick={handleSecondaryClick}>
           {secondaryAction}

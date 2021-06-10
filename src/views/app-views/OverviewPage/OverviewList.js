@@ -10,7 +10,7 @@ const OverviewList = ({ title, listData }) => {
   const collapseHeader = (
     <>
       <div className="d-flex justify-content-between align-items-center">
-        <Typography.Title level={2} className="mb-0">
+        <Typography.Title level={4} className="text-primary mb-0">
           {title}
         </Typography.Title>
         <DownOutlined
