@@ -11,6 +11,7 @@ import {
   COLOR_5,
   COLOR_6,
 } from 'constants/ChartConstant';
+import DonutChartWidget from 'components/shared-components/DonutChartWidget';
 
 const dummyData = {
   morning: 40,
@@ -39,12 +40,10 @@ const AppointmentsCharts = () => {
         value: dummyData.evening,
       }),
     ],
-    datasets: [
-      {
-        data: [dummyData.morning, dummyData.afternoon, dummyData.evening],
-        backgroundColor: [COLOR_1, COLOR_2, COLOR_3],
-      },
-    ],
+    datasets: {
+      data: [dummyData.morning, dummyData.afternoon, dummyData.evening],
+      backgroundColor: [COLOR_1, COLOR_2, COLOR_3],
+    },
   };
 
   const dataDayOfWeek = {
@@ -68,19 +67,17 @@ const AppointmentsCharts = () => {
         value: dummyData.sat,
       }),
     ],
-    datasets: [
-      {
-        data: [
-          dummyData.mon,
-          dummyData.tue,
-          dummyData.wed,
-          dummyData.thur,
-          dummyData.fri,
-          dummyData.sat,
-        ],
-        backgroundColor: [COLOR_1, COLOR_2, COLOR_3, COLOR_4, COLOR_5, COLOR_6],
-      },
-    ],
+    datasets: {
+      data: [
+        dummyData.mon,
+        dummyData.tue,
+        dummyData.wed,
+        dummyData.thur,
+        dummyData.fri,
+        dummyData.sat,
+      ],
+      backgroundColor: [COLOR_1, COLOR_2, COLOR_3, COLOR_4, COLOR_5, COLOR_6],
+    },
   };
 
   return (
@@ -95,25 +92,35 @@ const AppointmentsCharts = () => {
           }
         >
           <div className="mb-4">
-            <Doughnut
-              data={dataTimeOfDay}
-              options={{
+            <DonutChartWidget
+              series={dataTimeOfDay.datasets.data}
+              labels={dataTimeOfDay.labels}
+              customOptions={{
+                colors: dataTimeOfDay.datasets.backgroundColor,
                 legend: {
                   position: 'right',
-                  labels: { fontSize: 12, padding: 5 },
+                },
+                dataLabels: {
+                  enabled: true,
+                  formatter: function (val) {
+                    return val + '%';
+                  },
                 },
               }}
+              type="donut"
             />
           </div>
           <div className="mb-4">
-            <Doughnut
-              data={dataDayOfWeek}
-              options={{
+            <DonutChartWidget
+              series={dataDayOfWeek.datasets.data}
+              labels={dataDayOfWeek.labels}
+              customOptions={{
+                colors: dataDayOfWeek.datasets.backgroundColor,
                 legend: {
                   position: 'left',
-                  labels: { fontSize: 12, padding: 5 },
                 },
               }}
+              type="pie"
             />
           </div>
         </Card>
