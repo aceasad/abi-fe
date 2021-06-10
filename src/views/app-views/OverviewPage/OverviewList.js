@@ -4,7 +4,7 @@ import { DownOutlined } from '@ant-design/icons';
 
 const { Panel } = Collapse;
 
-const OverviewList = ({ title, listData }) => {
+const OverviewList = ({ title, listData, startOpen }) => {
   const [isCollapseOpen, setIsCollapseOpen] = useState(false);
 
   const collapseHeader = (
@@ -26,8 +26,10 @@ const OverviewList = ({ title, listData }) => {
       ghost
       className="mb-4"
       onChange={() => setIsCollapseOpen(!isCollapseOpen)}
+      defaultActiveKey={startOpen ? ['1'] : null}
     >
       <Panel
+        key="1"
         className="overview-collapse"
         header={collapseHeader}
         showArrow={false}
