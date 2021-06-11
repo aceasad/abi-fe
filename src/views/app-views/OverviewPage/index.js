@@ -52,7 +52,7 @@ const OverviewPage = () => {
           <GroupCollapse
             startOpen
             title={formatMessage(messages.bookingTitle)}
-            group={<Booking />}
+            group={<Booking title={formatMessage(messages.bookingTitle)} />}
           />
           <OverviewList
             startOpen
@@ -67,16 +67,18 @@ const OverviewPage = () => {
           <GroupCollapse
             startOpen
             title={formatMessage(messages.asaDataTitle)}
-            group={<AbiData />}
+            group={<AbiData title={formatMessage(messages.asaDataTitle)} />}
           />
           <GroupCollapse
             title={formatMessage(messages.uptakeTitle)}
-            group={<Uptake />}
+            group={<Uptake title={formatMessage(messages.uptakeTitle)} />}
           />
           <GroupCollapse
             startOpen
             title={formatMessage(messages.appointmentsTitle)}
-            group={<Appointments />}
+            group={
+              <Appointments title={formatMessage(messages.appointmentsTitle)} />
+            }
           />
         </Col>
       </Row>
