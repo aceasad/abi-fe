@@ -86,7 +86,7 @@ const auth = (state = initState, action) =>
         };
         break;
       case SET_TOKEN:
-        draft.token = action.payload.access;
+        draft.token = action.payload;
         break;
       case SEND_FORGOT_PASSWORD_EMAIL_SUCCESS:
         draft.isSent = true;
