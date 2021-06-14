@@ -1,12 +1,11 @@
-import { Row, Typography } from 'antd';
+import { Row } from 'antd';
 import React from 'react';
 import { useIntl } from 'react-intl';
 import OverviewCard from '../OverviewCard';
 import messages from '../messages';
 import AppointmentsCharts from './AppointemnsCharts';
 import GroupRow from './GroupRow';
-
-const { Title } = Typography;
+import { MdAssignmentLate, MdMoneyOff } from 'react-icons/md';
 
 const dummyData = {
   missed: '30/200',
@@ -14,7 +13,7 @@ const dummyData = {
   tooltip: 'About this card.',
 };
 
-const Appointments = () => {
+const Appointments = ({ title }) => {
   const { formatMessage } = useIntl();
 
   return (
@@ -26,12 +25,16 @@ const Appointments = () => {
             title={formatMessage(messages.appointmentsMissed)}
             tooltip={dummyData.tooltip}
             content={dummyData.missed}
+            styleTitle={title}
+            icon={<MdAssignmentLate color="#ffffff" size="20" />}
           />
           <OverviewCard
             span={12}
             title={formatMessage(messages.appointmentsCostOfMissed)}
             tooltip={dummyData.tooltip}
             content={dummyData.cost}
+            styleTitle={title}
+            icon={<MdMoneyOff color="#ffffff" size="20" />}
           />
         </Row>
         <AppointmentsCharts />

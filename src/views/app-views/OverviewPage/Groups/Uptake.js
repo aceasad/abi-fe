@@ -1,11 +1,9 @@
-import { Typography } from 'antd';
 import React from 'react';
 import { useIntl } from 'react-intl';
 import OverviewCard from '../OverviewCard';
 import messages from '../messages';
 import GroupRow from './GroupRow';
-
-const { Title } = Typography;
+import { MdSystemUpdateAlt, MdInsertChart, MdLooks } from 'react-icons/md';
 
 const dummyData = {
   tooltip: 'About this card.',
@@ -15,7 +13,7 @@ const dummyData = {
   coverageProp: '73.5%',
 };
 
-const Uptake = () => {
+const Uptake = ({ title }) => {
   const { formatMessage } = useIntl();
 
   return (
@@ -26,24 +24,32 @@ const Uptake = () => {
           title={formatMessage(messages.uptakeProportion)}
           tooltip={dummyData.tooltip}
           content={dummyData.proportion}
+          styleTitle={title}
+          icon={<MdSystemUpdateAlt color="#ffffff" size="20" />}
         />
         <OverviewCard
           span={12}
           title={formatMessage(messages.uptakeAverage)}
           tooltip={dummyData.tooltip}
           content={dummyData.average}
+          styleTitle={title}
+          icon={<MdInsertChart color="#ffffff" size="20" />}
         />
         <OverviewCard
           span={12}
           title={formatMessage(messages.uptakeCoverageProportion)}
           tooltip={dummyData.tooltip}
           content={dummyData.coverage}
+          styleTitle={title}
+          icon={<MdLooks color="#ffffff" size="20" />}
         />
         <OverviewCard
           span={12}
           title={formatMessage(messages.uptakeCoverageAverage)}
           tooltip={dummyData.tooltip}
           content={dummyData.coverageProp}
+          styleTitle={title}
+          icon={<MdInsertChart color="#ffffff" size="20" />}
         />
       </GroupRow>
     </div>

@@ -1,11 +1,9 @@
-import { Typography } from 'antd';
 import React from 'react';
 import { useIntl } from 'react-intl';
 import OverviewCard from '../OverviewCard';
 import messages from '../messages';
 import GroupRow from './GroupRow';
-
-const { Title } = Typography;
+import { MdLoop, MdAttachMoney } from 'react-icons/md';
 
 const dummyData = {
   efficiency: '5x',
@@ -13,7 +11,7 @@ const dummyData = {
   tooltip: 'About this card.',
 };
 
-const AbiData = () => {
+const AbiData = ({ title }) => {
   const { formatMessage } = useIntl();
 
   return (
@@ -24,12 +22,16 @@ const AbiData = () => {
           title={formatMessage(messages.asaDataEfficiency)}
           tooltip={dummyData.tooltip}
           content={dummyData.efficiency}
+          styleTitle={title}
+          icon={<MdLoop color="#ffffff" size="20" />}
         />
         <OverviewCard
           span={12}
           title={formatMessage(messages.asaDataRevenueSaved)}
           tooltip={dummyData.tooltip}
           content={dummyData.saved}
+          styleTitle={title}
+          icon={<MdAttachMoney color="#ffffff" size="20" />}
         />
       </GroupRow>
     </div>
