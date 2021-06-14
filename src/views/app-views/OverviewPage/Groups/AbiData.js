@@ -4,6 +4,7 @@ import OverviewCard from '../OverviewCard';
 import messages from '../messages';
 import GroupRow from './GroupRow';
 import { MdLoop, MdAttachMoney } from 'react-icons/md';
+import Pound from '../../../../components/icons/Pound.js';
 
 const dummyData = {
   efficiency: '5x',
@@ -31,7 +32,7 @@ const AbiData = ({ title }) => {
           tooltip={dummyData.tooltip}
           content={dummyData.saved}
           styleTitle={title}
-          icon={<MdAttachMoney color="#ffffff" size="20" />}
+          icon={<Pound color="#ffffff" size="20" />}
         />
       </GroupRow>
     </div>

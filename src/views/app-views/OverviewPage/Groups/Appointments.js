@@ -6,6 +6,7 @@ import messages from '../messages';
 import AppointmentsCharts from './AppointemnsCharts';
 import GroupRow from './GroupRow';
 import { MdAssignmentLate, MdMoneyOff } from 'react-icons/md';
+import PoundCrossedOut from '../../../../components/icons/PoundCrossedOut.js';
 
 const dummyData = {
   missed: '30/200',
@@ -34,7 +35,7 @@ const Appointments = ({ title }) => {
             tooltip={dummyData.tooltip}
             content={dummyData.cost}
             styleTitle={title}
-            icon={<MdMoneyOff color="#ffffff" size="20" />}
+            icon={<PoundCrossedOut color="#ffffff" size="20" />}
           />
         </Row>
         <AppointmentsCharts />
