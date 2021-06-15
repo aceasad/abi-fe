@@ -7,8 +7,10 @@ import AppointmentsCharts from './AppointemnsCharts';
 import GroupRow from './GroupRow';
 import { useSelector } from 'react-redux';
 import { makeSelectAppointmentData } from 'redux/selectors/Overview';
+import { MdAssignmentLate, MdMoneyOff } from 'react-icons/md';
+import PoundCrossedOut from '../../../../components/icons/PoundCrossedOut.js';
 
-const Appointments = () => {
+const Appointments = ({ title }) => {
   const { formatMessage } = useIntl();
   const {
     missedAppointmentsScreening,
@@ -25,6 +27,8 @@ const Appointments = () => {
               title={formatMessage(messages.appointmentsMissed)}
               tooltip={formatMessage(messages.appointmentsMissedTooltip)}
               content={missedAppointmentsScreening}
+              styleTitle={title}
+              icon={<MdAssignmentLate color="#ffffff" size="20" />}
             />
             <OverviewCard
               span={12}
@@ -33,6 +37,8 @@ const Appointments = () => {
               content={`£${costOfMissedAppointments.toLocaleString('en-US', {
                 maximumFractionDigits: 2,
               })}`}
+              styleTitle={title}
+              icon={<PoundCrossedOut color="#ffffff" size="20" />}
             />
           </Row>
           <AppointmentsCharts />

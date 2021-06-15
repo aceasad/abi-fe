@@ -5,8 +5,10 @@ import messages from '../messages';
 import GroupRow from './GroupRow';
 import { useSelector } from 'react-redux';
 import { makeSelectAsaData } from 'redux/selectors/Overview';
+import { MdLoop, MdAttachMoney } from 'react-icons/md';
+import Pound from '../../../../components/icons/Pound.js';
 
-const AbiData = () => {
+const AbiData = ({ title }) => {
   const { formatMessage } = useIntl();
   const { asaEfficiency, revenueSaved, loading } = useSelector(
     makeSelectAsaData
@@ -21,6 +23,8 @@ const AbiData = () => {
             title={formatMessage(messages.asaDataEfficiency)}
             tooltip={formatMessage(messages.asaEfficiencyTooltip)}
             content={`${asaEfficiency}x`}
+            styleTitle={title}
+            icon={<MdLoop color="#ffffff" size="20" />}
           />
           <OverviewCard
             span={12}
@@ -29,6 +33,8 @@ const AbiData = () => {
             content={`£${revenueSaved.toLocaleString('en-US', {
               maximumFractionDigits: 2,
             })}`}
+            styleTitle={title}
+            icon={<Pound color="#ffffff" size="20" />}
           />
         </GroupRow>
       )}

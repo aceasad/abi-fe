@@ -34,7 +34,7 @@ const OverviewList = ({ title, listData, startOpen }) => {
         header={collapseHeader}
         showArrow={false}
       >
-        <Card className="mt-4">
+        <Card className="mt-4 shadow-basic">
           <List
             itemLayout="horizontal"
             dataSource={listData}
