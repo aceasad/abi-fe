@@ -1,37 +1,37 @@
-import { Typography } from 'antd';
 import React from 'react';
 import { useIntl } from 'react-intl';
 import OverviewCard from '../OverviewCard';
 import messages from '../messages';
 import GroupRow from './GroupRow';
-
-const { Title } = Typography;
-
-const dummyData = {
-  efficiency: '5x',
-  saved: '£21,291.99',
-  tooltip: 'About this card.',
-};
+import { useSelector } from 'react-redux';
+import { makeSelectAsaData } from 'redux/selectors/Overview';
 
 const AbiData = () => {
   const { formatMessage } = useIntl();
+  const { asaEfficiency, revenueSaved, loading } = useSelector(
+    makeSelectAsaData
+  );
 
   return (
     <div className="mb-4">
-      <GroupRow>
-        <OverviewCard
-          span={12}
-          title={formatMessage(messages.asaDataEfficiency)}
-          tooltip={dummyData.tooltip}
-          content={dummyData.efficiency}
-        />
-        <OverviewCard
-          span={12}
-          title={formatMessage(messages.asaDataRevenueSaved)}
-          tooltip={dummyData.tooltip}
-          content={dummyData.saved}
-        />
-      </GroupRow>
+      {!loading && (
+        <GroupRow>
+          <OverviewCard
+            span={12}
+            title={formatMessage(messages.asaDataEfficiency)}
+            tooltip={formatMessage(messages.asaEfficiencyTooltip)}
+            content={`${asaEfficiency}x`}
+          />
+          <OverviewCard
+            span={12}
+            title={formatMessage(messages.asaDataRevenueSaved)}
+            tooltip={formatMessage(messages.revenueSavedTooltip)}
+            content={`£${revenueSaved.toLocaleString('en-US', {
+              maximumFractionDigits: 2,
+            })}`}
+          />
+        </GroupRow>
+      )}
     </div>
   );
 };

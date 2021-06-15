@@ -1,5 +1,5 @@
 import { Col, PageHeader, Row, Select, Typography } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import messages from './messages';
 import OverviewList from './OverviewList';
@@ -9,11 +9,14 @@ import Booking from './Groups/Booking';
 import Appointments from './Groups/Appointments';
 import AbiData from './Groups/AbiData';
 import Uptake from './Groups/Uptake';
+import { useDispatch } from 'react-redux';
+import { getOverviewData } from 'redux/actions/Overview';
 
 const { Option } = Select;
 
 const OverviewPage = () => {
   const { formatMessage } = useIntl();
+  const dispatch = useDispatch();
   const filters = [
     { value: 'today', label: formatMessage(messages.selectToday) },
     { value: 'week', label: formatMessage(messages.selectWeek) },
@@ -21,6 +24,10 @@ const OverviewPage = () => {
     { value: 'year', label: formatMessage(messages.selectYear) },
   ];
   const [filterValue, setFilterValue] = useState(filters[0].value);
+
+  useEffect(() => {
+    dispatch(getOverviewData({ interval: filterValue }));
+  }, [filterValue]);
 
   return (
     <>

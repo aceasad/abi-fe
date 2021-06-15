@@ -10,6 +10,7 @@ import user from './User';
 import appointment from './Appointment';
 import anemnesis from './Anemnesis';
 import chats from './Chats';
+import overview from './Overview';
 import { connectRouter } from 'connected-react-router';
 import { SIGNOUT_SUCCESS } from 'redux/constants/Auth';
 
@@ -27,6 +28,7 @@ export default (history) => {
     appointment,
     anemnesis,
     chats,
+    overview,
     language: languageReducer,
   });
 
