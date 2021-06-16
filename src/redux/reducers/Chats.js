@@ -73,7 +73,8 @@ const chats = (state = initialState, action) =>
           page:
             Math.floor(action.payload.count / CHAT_MESSAGES_PAGINATION_LIMIT) +
             1,
-          offset: action.payload.results.length + state.single.items.length,
+          offset:
+            action.payload.results.items.length + state.single.items.length,
           scrollDown: false,
         };
         break;
