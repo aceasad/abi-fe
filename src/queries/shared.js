@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from 'react-query';
 import anamnesisService from 'services/AnamnesisService';
+import appointmentService from 'services/AppointmentService';
 import AppointmentService from 'services/AppointmentService';
 import chatService from 'services/ChatService';
 import patientService from 'services/PatientService';
@@ -65,6 +66,26 @@ export const useGetMassInvitePatientCount = (
       enabled,
       refetchOnWindowFocus: false,
       onSuccess: (data) => successCallback(data.data),
+    }
+  );
+
+export const useGetMassInviteMessageTemplates = (setTemplates) =>
+  useQuery(
+    ['getMassInviteMessageTemplates'],
+    () => chatService.getMessageTemplates(),
+    {
+      refetchOnWindowFocus: false,
+      onSuccess: (data) => setTemplates(data.data),
+    }
+  );
+
+export const useGetAppointmentTypes = (setAppointmentTypes) =>
+  useQuery(
+    ['getAppointmentTypes'],
+    () => appointmentService.getAppointmentTypes(),
+    {
+      refetchOnWindowFocus: false,
+      onSuccess: (data) => setAppointmentTypes(data.data.results),
     }
   );
 

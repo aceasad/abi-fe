@@ -31,7 +31,8 @@ const AbiData = ({ title }) => {
             title={formatMessage(messages.asaDataRevenueSaved)}
             tooltip={formatMessage(messages.revenueSavedTooltip)}
             content={`£${revenueSaved.toLocaleString('en-US', {
-              maximumFractionDigits: 2,
+              maximumFractionDigits: 0,
+              minimumFractionDigits: 0,
             })}`}
             styleTitle={title}
             icon={<Pound color="#ffffff" size="20" />}

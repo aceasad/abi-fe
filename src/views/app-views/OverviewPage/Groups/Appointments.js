@@ -35,7 +35,8 @@ const Appointments = ({ title }) => {
               title={formatMessage(messages.appointmentsCostOfMissed)}
               tooltip={formatMessage(messages.appointmentsCostOfMissedTooltip)}
               content={`£${costOfMissedAppointments.toLocaleString('en-US', {
-                maximumFractionDigits: 2,
+                maximumFractionDigits: 0,
+                minimumFractionDigits: 0,
               })}`}
               styleTitle={title}
               icon={<PoundCrossedOut color="#ffffff" size="20" />}

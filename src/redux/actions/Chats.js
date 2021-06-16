@@ -7,6 +7,7 @@ import {
   GET_MORE_SINGLE_CHAT_MESSAGES,
   GET_SINGLE_CHAT,
   SEARCH_CONVERSATIONS,
+  SEND_MASS_INVITE,
   SET_ALL_CHATS_INFO,
   SET_ALL_CHATS_INFO_LOADING,
   SET_CONVERSATION_TO_READ,
@@ -81,5 +82,10 @@ export const toggleRasaActivity = (payload) => ({
 
 export const addOneMessage = (payload) => ({
   type: ADD_ONE_MESSAGE,
+  payload,
+});
+
+export const sendMassInvite = (payload) => ({
+  type: SEND_MASS_INVITE,
   payload,
 });

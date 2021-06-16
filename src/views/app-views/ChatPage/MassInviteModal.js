@@ -18,10 +18,17 @@ import {
 import TextArea from 'antd/lib/input/TextArea';
 import { message } from 'antd';
 import PatientCountField from './PatientCountField';
+import { useDispatch } from 'react-redux';
+import { sendMassInvite } from 'redux/actions/Chats';
+import {
+  useGetAppointmentTypes,
+  useGetMassInviteMessageTemplates,
+} from 'queries/shared';
 
 const MassInviteModal = ({ isModalVisible, closeModal }) => {
   const { formatMessage } = useIntl();
 
+  const dispatch = useDispatch();
   const initialState = {
     ageFrom: '',
     ageTo: '',
@@ -36,31 +43,35 @@ const MassInviteModal = ({ isModalVisible, closeModal }) => {
     { value: GENDER.OTHER, label: formatMessage(messages.other) },
   ];
 
-  const MESSAGE_TEMPLATES = [
-    { id: 1, text: 'Immunization template' },
-    { id: 2, text: 'Screening template' },
-    { id: 3, text: 'Universal template' },
-  ];
+  const [templates, setTemplates] = useState([]);
+  const [appointmentTypes, setAppointmentTypes] = useState([]);
+  const [numberOfInvites, setNumberOfInvites] = useState(0);
 
-  const APPOINTMENT_TYPES = [
-    { id: 1, name: 'Immunization' },
-    { id: 2, name: 'Screening' },
-  ];
+  useGetMassInviteMessageTemplates(setTemplates);
+  useGetAppointmentTypes(setAppointmentTypes);
 
-  const handleSubmit = () => {
+  const handleSubmit = (values) => {
+    const obj = {
+      message_template: values.template,
+      age_from: Number(values.ageFrom),
+      age_to: Number(values.ageTo),
+      appointment_type: values.appointmentType,
+      genders: values.gender,
+    };
+
+    dispatch(sendMassInvite(obj));
     message.success(formatMessage(messages.inviteSent));
     closeModal();
   };
-
-  const [numberOfInvites, setNumberOfInvites] = useState(0);
 
   return (
     <Formik
       initialValues={initialState}
       validationSchema={massInviteSchema}
       validateOnMount
+      onSubmit={handleSubmit}
     >
-      {({ values, dirty, isValid, resetForm }) => (
+      {({ values, dirty, isValid, resetForm, handleSubmit }) => (
         <Modal
           title={formatMessage(messages.massInvitesLabel)}
           visible={isModalVisible}
@@ -138,7 +149,7 @@ const MassInviteModal = ({ isModalVisible, closeModal }) => {
               label={formatMessage(messages.appointmentTypeLabel)}
               name="appointmentType"
               component={FormSelect}
-              options={APPOINTMENT_TYPES}
+              options={appointmentTypes}
               optionField="name"
               defaultOption={values.appointmentType}
               required
@@ -148,8 +159,8 @@ const MassInviteModal = ({ isModalVisible, closeModal }) => {
               label={formatMessage(messages.templateLabel)}
               name="template"
               component={FormSelect}
-              options={MESSAGE_TEMPLATES}
-              optionField="text"
+              options={templates}
+              optionField="name"
               defaultOption={values.template}
               required
             />
@@ -160,9 +171,7 @@ const MassInviteModal = ({ isModalVisible, closeModal }) => {
                 disabled
                 rows={5}
                 value={
-                  MESSAGE_TEMPLATES.find((item) => item.id === values.template)[
-                    'text'
-                  ]
+                  templates.find((item) => item.id === values.template)['text']
                 }
               />
             )}
