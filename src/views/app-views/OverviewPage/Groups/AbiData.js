@@ -24,7 +24,7 @@ const AbiData = ({ title }) => {
             tooltip={formatMessage(messages.asaEfficiencyTooltip)}
             content={`${asaEfficiency}x`}
             styleTitle={title}
-            icon={<MdLoop color="#ffffff" size="20" />}
+            icon={<MdLoop color="#ffffff" size="40" />}
           />
           <OverviewCard
             span={12}
@@ -34,7 +34,8 @@ const AbiData = ({ title }) => {
               maximumFractionDigits: 2,
             })}`}
             styleTitle={title}
-            icon={<Pound color="#ffffff" size="20" />}
+            icon={<Pound color="#ffffff" size="40" />}
+            responsiveScore
           />
         </GroupRow>
       )}

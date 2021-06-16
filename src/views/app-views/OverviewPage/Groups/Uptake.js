@@ -23,7 +23,7 @@ const Uptake = ({ title }) => {
           tooltip={formatMessage(messages.uptakeProportionTooltip)}
           content={`${uptake}%`}
           styleTitle={title}
-          icon={<MdSystemUpdateAlt color="#ffffff" size="20" />}
+          icon={<MdSystemUpdateAlt color="#ffffff" size="40" />}
         />
         <OverviewCard
           span={12}
@@ -31,7 +31,7 @@ const Uptake = ({ title }) => {
           tooltip={formatMessage(messages.uptakeAverageTooltip)}
           content={`${uptakeAverage}%`}
           styleTitle={title}
-          icon={<MdInsertChart color="#ffffff" size="20" />}
+          icon={<MdInsertChart color="#ffffff" size="40" />}
         />
         <OverviewCard
           span={12}
@@ -39,7 +39,7 @@ const Uptake = ({ title }) => {
           tooltip={formatMessage(messages.uptakeCoverageProportionTooltip)}
           content={`${coverage}%`}
           styleTitle={title}
-          icon={<MdLooks color="#ffffff" size="20" />}
+          icon={<MdLooks color="#ffffff" size="40" />}
         />
         <OverviewCard
           span={12}
@@ -47,7 +47,7 @@ const Uptake = ({ title }) => {
           tooltip={formatMessage(messages.uptakeCoverageAverageTooltip)}
           content={`${coverageAverage}%`}
           styleTitle={title}
-          icon={<MdInsertChart color="#ffffff" size="20" />}
+          icon={<MdInsertChart color="#ffffff" size="40" />}
         />
       </GroupRow>
     </div>

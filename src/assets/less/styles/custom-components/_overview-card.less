@@ -1,31 +1,50 @@
+.overview-card-on-hover(@class-name, @color-name) {
+  .overview-card--hover-@{class-name} {
+    transition: box-shadow 250ms ease-in-out, border 250ms ease-in-out;
+
+    &:hover {
+      border: 1px solid @color-name;
+      box-shadow: 0 1px 2px -2px rgba(@color-name, 0.16),
+        0 3px 6px 0 rgba(@color-name, 0.12),
+        0 5px 12px 4px rgba(@color-name, 0.09);
+
+      .overview-card__icon {
+        box-shadow: 0 0 12px rgba(@color-name, 0.9);
+      }
+    }
+
+    .overview-card__icon--@{class-name} {
+      background-color: @color-name;
+      box-shadow: 0 0 8px rgba(@color-name, 0.8);
+      transition: box-shadow 250ms ease-in-out;
+    }
+  }
+}
+
+.overview-card-on-hover(booking, @asa-booking);
+.overview-card-on-hover(appointments, @asa-appointments);
+.overview-card-on-hover(uptake, @asa-uptake);
+.overview-card-on-hover(asa-data, @asa-data);
+
 .overview-card__icon {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 3rem;
-  height: 3rem;
+  width: 4rem;
+  height: 4rem;
   margin-bottom: 1rem;
-  border-radius: @border-radius-sm;
+  border-radius: @border-radius-base;
 }
 
-.overview-card__icon--booking {
-  background-color: @asa-booking;
-  box-shadow: 0 0 6px rgba(@asa-booking, 0.8);
-}
-
-.overview-card__icon--asa-data {
-  background-color: @asa-primary;
-  box-shadow: 0 0 6px rgba(@asa-primary, 0.8);
-}
-
-.overview-card__icon--uptake {
-  background-color: @asa-uptake;
-  box-shadow: 0 0 6px rgba(@asa-uptake, 0.8);
-}
-
-.overview-card__icon--appointments {
-  background-color: @asa-appointments;
-  box-shadow: 0 0 6px rgba(@asa-appointments, 0.8);
+.overview-card__score {
+  &.ant-typography {
+    @media (max-width: @screen-xl) {
+      font-size: @heading-2-size;
+    }
+    @media (max-width: 1200px) {
+      font-size: @heading-3-size;
+    }
+  }
 }
 
 .text--booking {
@@ -33,7 +52,7 @@
 }
 
 .text--asa-data {
-  color: @asa-primary !important;
+  color: @asa-data !important;
 }
 
 .text--uptake {

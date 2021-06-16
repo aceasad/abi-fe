@@ -5,13 +5,22 @@ import { QuestionCircleFilled } from '@ant-design/icons';
 
 const { Title } = Typography;
 
-const OverviewCard = ({ span, title, tooltip, content, styleTitle, icon }) => {
+const OverviewCard = ({
+  span,
+  title,
+  tooltip,
+  content,
+  styleTitle,
+  icon,
+  responsiveScore,
+  noTooltip,
+}) => {
   const getClassTitle = () => styleTitle.split(' ').join('-').toLowerCase();
 
   return (
     <Col span={span} className="mb-3">
       <Card
-        className="height-100 d-flex flex-column justify-content-between m-0"
+        className={`height-100 d-flex flex-column justify-content-between m-0 overview-card--hover-${getClassTitle()}`}
         bodyStyle={{ height: '100%' }}
       >
         <Flex flexDirection="column height-100">
@@ -28,12 +37,19 @@ const OverviewCard = ({ span, title, tooltip, content, styleTitle, icon }) => {
             alignItems="baseline"
             className="mt-auto"
           >
-            <Title level={1} className="text-break font-weight-bolder mb-0">
+            <Title
+              level={1}
+              className={`text-break font-weight-bolder mb-0 ${
+                responsiveScore ? 'overview-card__score' : ''
+              }`}
+            >
               {content}
             </Title>
-            <Tooltip title={tooltip} placement="bottom">
-              <QuestionCircleFilled />
-            </Tooltip>
+            {!noTooltip && (
+              <Tooltip title={tooltip} placement="bottom">
+                <QuestionCircleFilled />
+              </Tooltip>
+            )}
           </Flex>
         </Flex>
       </Card>
