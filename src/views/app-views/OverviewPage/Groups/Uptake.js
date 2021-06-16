@@ -1,22 +1,18 @@
-import { Typography } from 'antd';
 import React from 'react';
 import { useIntl } from 'react-intl';
 import OverviewCard from '../OverviewCard';
 import messages from '../messages';
 import GroupRow from './GroupRow';
+import { useSelector } from 'react-redux';
+import { makeSelectUptakeData } from 'redux/selectors/Overview';
+import { MdSystemUpdateAlt, MdInsertChart, MdLooks } from 'react-icons/md';
 
-const { Title } = Typography;
-
-const dummyData = {
-  tooltip: 'About this card.',
-  proportion: '75%',
-  average: '70%',
-  coverage: '75%',
-  coverageProp: '73.5%',
-};
-
-const Uptake = () => {
+const Uptake = ({ title }) => {
   const { formatMessage } = useIntl();
+
+  const { coverage, uptake, coverageAverage, uptakeAverage } = useSelector(
+    makeSelectUptakeData
+  );
 
   return (
     <div className="mb-4">
@@ -24,26 +20,34 @@ const Uptake = () => {
         <OverviewCard
           span={12}
           title={formatMessage(messages.uptakeProportion)}
-          tooltip={dummyData.tooltip}
-          content={dummyData.proportion}
+          tooltip={formatMessage(messages.uptakeProportionTooltip)}
+          content={`${uptake}%`}
+          styleTitle={title}
+          icon={<MdSystemUpdateAlt color="#ffffff" size="20" />}
         />
         <OverviewCard
           span={12}
           title={formatMessage(messages.uptakeAverage)}
-          tooltip={dummyData.tooltip}
-          content={dummyData.average}
+          tooltip={formatMessage(messages.uptakeAverageTooltip)}
+          content={`${uptakeAverage}%`}
+          styleTitle={title}
+          icon={<MdInsertChart color="#ffffff" size="20" />}
         />
         <OverviewCard
           span={12}
           title={formatMessage(messages.uptakeCoverageProportion)}
-          tooltip={dummyData.tooltip}
-          content={dummyData.coverage}
+          tooltip={formatMessage(messages.uptakeCoverageProportionTooltip)}
+          content={`${coverage}%`}
+          styleTitle={title}
+          icon={<MdLooks color="#ffffff" size="20" />}
         />
         <OverviewCard
           span={12}
           title={formatMessage(messages.uptakeCoverageAverage)}
-          tooltip={dummyData.tooltip}
-          content={dummyData.coverageProp}
+          tooltip={formatMessage(messages.uptakeCoverageAverageTooltip)}
+          content={`${coverageAverage}%`}
+          styleTitle={title}
+          icon={<MdInsertChart color="#ffffff" size="20" />}
         />
       </GroupRow>
     </div>

@@ -45,6 +45,7 @@ const IndustryAverage = () => {
     ? industryAverage
     : {
         cost_of_missed_appointments: 0,
+        average_appointment_cost: 0,
         did_not_attend: 0,
         uptake: 0,
         coverage: 0,
@@ -71,6 +72,21 @@ const IndustryAverage = () => {
           <Form layout="vertical" name="login-form">
             <Row gutter={32} align="bottom">
               <Col xs={24} sm={24} md={12} xxl={8}>
+                <RowColumnField
+                  span={24}
+                  style={{ width: '100%' }}
+                  component={FormNumberField}
+                  label={formatMessage(messages.cost_of_missed_appointments)}
+                  name={'average_appointment_cost'}
+                  min={0}
+                  onKeyDown={filterNumberInput}
+                  step={0.1}
+                  decimals={1}
+                  errorTexts={{
+                    label: formatMessage(messages.average_appointment_cost),
+                    maxValue: maxDigits,
+                  }}
+                />
                 <RowColumnField
                   span={24}
                   style={{ width: '100%' }}

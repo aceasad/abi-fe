@@ -67,6 +67,7 @@ export const resetPasswordSchema = Yup.object().shape({
 
 export const industryAveragesSchema = Yup.object().shape({
   cost_of_missed_appointments: Yup.string().max(maxDigits).required(),
+  average_appointment_cost: Yup.string().max(maxDigits).required(),
   did_not_attend: Yup.string().max(maxDigits).required(),
   uptake: Yup.string().max(maxDigits).required(),
   coverage: Yup.string().max(maxDigits).required(),

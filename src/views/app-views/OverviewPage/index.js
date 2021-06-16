@@ -1,5 +1,5 @@
 import { Col, PageHeader, Row, Select, Typography } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import messages from './messages';
 import OverviewList from './OverviewList';
@@ -9,11 +9,14 @@ import Booking from './Groups/Booking';
 import Appointments from './Groups/Appointments';
 import AbiData from './Groups/AbiData';
 import Uptake from './Groups/Uptake';
+import { useDispatch } from 'react-redux';
+import { getOverviewData } from 'redux/actions/Overview';
 
 const { Option } = Select;
 
 const OverviewPage = () => {
   const { formatMessage } = useIntl();
+  const dispatch = useDispatch();
   const filters = [
     { value: 'today', label: formatMessage(messages.selectToday) },
     { value: 'week', label: formatMessage(messages.selectWeek) },
@@ -21,6 +24,10 @@ const OverviewPage = () => {
     { value: 'year', label: formatMessage(messages.selectYear) },
   ];
   const [filterValue, setFilterValue] = useState(filters[0].value);
+
+  useEffect(() => {
+    dispatch(getOverviewData({ interval: filterValue }));
+  }, [filterValue]);
 
   return (
     <>
@@ -52,7 +59,7 @@ const OverviewPage = () => {
           <GroupCollapse
             startOpen
             title={formatMessage(messages.bookingTitle)}
-            group={<Booking />}
+            group={<Booking title={formatMessage(messages.bookingTitle)} />}
           />
           <OverviewList
             startOpen
@@ -67,16 +74,18 @@ const OverviewPage = () => {
           <GroupCollapse
             startOpen
             title={formatMessage(messages.asaDataTitle)}
-            group={<AbiData />}
+            group={<AbiData title={formatMessage(messages.asaDataTitle)} />}
           />
           <GroupCollapse
             title={formatMessage(messages.uptakeTitle)}
-            group={<Uptake />}
+            group={<Uptake title={formatMessage(messages.uptakeTitle)} />}
           />
           <GroupCollapse
             startOpen
             title={formatMessage(messages.appointmentsTitle)}
-            group={<Appointments />}
+            group={
+              <Appointments title={formatMessage(messages.appointmentsTitle)} />
+            }
           />
         </Col>
       </Row>
