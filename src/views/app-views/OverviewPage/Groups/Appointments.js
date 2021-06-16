@@ -28,7 +28,8 @@ const Appointments = ({ title }) => {
               tooltip={formatMessage(messages.appointmentsMissedTooltip)}
               content={missedAppointmentsScreening}
               styleTitle={title}
-              icon={<MdAssignmentLate color="#ffffff" size="20" />}
+              icon={<MdAssignmentLate color="#ffffff" size="40" />}
+              noTooltip
             />
             <OverviewCard
               span={12}
@@ -38,7 +39,8 @@ const Appointments = ({ title }) => {
                 maximumFractionDigits: 2,
               })}`}
               styleTitle={title}
-              icon={<PoundCrossedOut color="#ffffff" size="20" />}
+              icon={<PoundCrossedOut color="#ffffff" size="40" />}
+              noTooltip
             />
           </Row>
           <AppointmentsCharts />

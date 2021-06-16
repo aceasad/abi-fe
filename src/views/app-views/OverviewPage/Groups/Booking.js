@@ -24,7 +24,8 @@ const Booking = ({ title }) => {
             tooltip={formatMessage(messages.bookingAfterInviteTooltip)}
             content={bookingMadeAfterInvite}
             styleTitle={title}
-            icon={<MdAssignmentTurnedIn color="#ffffff" size="20" />}
+            icon={<MdAssignmentTurnedIn color="#ffffff" size="40" />}
+            noTooltip
           />
           <OverviewCard
             span={12}
@@ -32,7 +33,7 @@ const Booking = ({ title }) => {
             tooltip={formatMessage(messages.bookingInvitationTooltip)}
             content={`${invitationRate}%`}
             styleTitle={title}
-            icon={<MdShowChart color="#ffffff" size="20" />}
+            icon={<MdShowChart color="#ffffff" size="40" />}
           />
         </GroupRow>
       )}
