@@ -11,6 +11,10 @@ export default defineMessages({
     id: `${scope}.input_label.cost_of_missed_appointments`,
     defaultMessage: 'Cost of missed appointments',
   },
+  average_appointment_cost: {
+    id: `${scope}.input_label.average_appointment_cost`,
+    defaultMessage: 'Average appointment cost',
+  },
   did_not_attend: {
     id: `${scope}.input_label.did_not_attend`,
     defaultMessage: 'Did not attend - National Average %',

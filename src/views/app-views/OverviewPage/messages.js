@@ -123,6 +123,10 @@ export default defineMessages({
     id: `${scope}.appointments.chart.sat`,
     defaultMessage: 'Sat',
   },
+  appointmentsChartSun: {
+    id: `${scope}.appointments.chart.sun`,
+    defaultMessage: 'Sun',
+  },
   listAttention: {
     id: `${scope}.list.attention`,
     defaultMessage: 'Messages requiring immediate attention',
@@ -174,5 +178,49 @@ export default defineMessages({
   tableDropdownAiReachout: {
     id: `${scope}.table.dropdown.reachout`,
     defaultMessage: 'AI Reachout',
+  },
+  asaEfficiencyTooltip: {
+    id: `${scope}.asa_data.tooltip.asa_efficiency`,
+    defaultMessage: 'ASA Efficiency',
+  },
+  revenueSavedTooltip: {
+    id: `${scope}.asa_data.tooltip.revenue_saved`,
+    defaultMessage: 'Revenue saved due to ASA',
+  },
+  appointmentsMissedTooltip: {
+    id: `${scope}.appointments.tooltip.missed`,
+    defaultMessage: 'Missed appointments: Screening',
+  },
+  appointmentsCostOfMissedTooltip: {
+    id: `${scope}.appointments.tooltip.cost_of_missed`,
+    defaultMessage: 'Cost of missed appointments',
+  },
+  uptakeProportionTooltip: {
+    id: `${scope}.uptake.tooltip.proportion`,
+    defaultMessage: 'Uptake',
+  },
+  uptakeCoverageProportionTooltip: {
+    id: `${scope}.uptake.tooltip.coverage_proportion`,
+    defaultMessage: 'Coverage',
+  },
+  uptakeAverageTooltip: {
+    id: `${scope}.uptake.tooltip.average`,
+    defaultMessage: 'Uptake - country average',
+  },
+  uptakeCoverageAverageTooltip: {
+    id: `${scope}.uptake.tooltip.coverage_average`,
+    defaultMessage: 'Coverage - country average',
+  },
+  bookingAfterInviteTooltip: {
+    id: `${scope}.booking.tooltip.after_invite`,
+    defaultMessage: 'Bookings made after sending invite',
+  },
+  bookingEfficiencyTooltip: {
+    id: `${scope}.booking.tooltip.efficiency`,
+    defaultMessage: 'Booking efficiency ',
+  },
+  bookingInvitationTooltip: {
+    id: `${scope}.booking.tooltip.invitation_rate`,
+    defaultMessage: 'Invitation rate',
   },
 });

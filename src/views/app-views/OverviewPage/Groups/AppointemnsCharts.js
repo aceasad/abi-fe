@@ -2,7 +2,6 @@ import { Card, Col, Row, Typography } from 'antd';
 import React from 'react';
 import { useIntl } from 'react-intl';
 import messages from '../messages';
-import { Doughnut } from 'react-chartjs-2';
 import {
   COLOR_1,
   COLOR_2,
@@ -10,38 +9,35 @@ import {
   COLOR_4,
   COLOR_5,
   COLOR_6,
+  COLOR_7,
 } from 'constants/ChartConstant';
 import DonutChartWidget from 'components/shared-components/DonutChartWidget';
-
-const dummyData = {
-  morning: 40,
-  afternoon: 35,
-  evening: 25,
-  mon: 20,
-  tue: 30,
-  wed: 15,
-  thur: 15,
-  fri: 12,
-  sat: 8,
-};
+import { useSelector } from 'react-redux';
+import { makeSelectPreferencesData } from 'redux/selectors/Overview';
 
 const AppointmentsCharts = () => {
   const { formatMessage } = useIntl();
 
+  const { preferences } = useSelector(makeSelectPreferencesData);
+
   const dataTimeOfDay = {
     labels: [
       formatMessage(messages.appointmentsChartMorning, {
-        value: dummyData.morning,
+        value: preferences.byPeriod.morning,
       }),
       formatMessage(messages.appointmentsChartAfternoon, {
-        value: dummyData.afternoon,
+        value: preferences.byPeriod.afternoon,
       }),
       formatMessage(messages.appointmentsChartEvening, {
-        value: dummyData.evening,
+        value: preferences.byPeriod.evening,
       }),
     ],
     datasets: {
-      data: [dummyData.morning, dummyData.afternoon, dummyData.evening],
+      data: [
+        preferences.byPeriod.morning,
+        preferences.byPeriod.afternoon,
+        preferences.byPeriod.evening,
+      ],
       backgroundColor: [COLOR_1, COLOR_2, COLOR_3],
     },
   };
@@ -49,34 +45,46 @@ const AppointmentsCharts = () => {
   const dataDayOfWeek = {
     labels: [
       formatMessage(messages.appointmentsChartMon, {
-        value: dummyData.mon,
+        value: preferences.byDay.monday,
       }),
       formatMessage(messages.appointmentsChartTue, {
-        value: dummyData.tue,
+        value: preferences.byDay.tuesday,
       }),
       formatMessage(messages.appointmentsChartWed, {
-        value: dummyData.wed,
+        value: preferences.byDay.wednesday,
       }),
       formatMessage(messages.appointmentsChartThur, {
-        value: dummyData.thur,
+        value: preferences.byDay.thursday,
       }),
       formatMessage(messages.appointmentsChartFri, {
-        value: dummyData.fri,
+        value: preferences.byDay.friday,
       }),
       formatMessage(messages.appointmentsChartSat, {
-        value: dummyData.sat,
+        value: preferences.byDay.saturday,
+      }),
+      formatMessage(messages.appointmentsChartSun, {
+        value: preferences.byDay.sunday,
       }),
     ],
     datasets: {
       data: [
-        dummyData.mon,
-        dummyData.tue,
-        dummyData.wed,
-        dummyData.thur,
-        dummyData.fri,
-        dummyData.sat,
+        preferences.byDay.monday,
+        preferences.byDay.tuesday,
+        preferences.byDay.wednesday,
+        preferences.byDay.thursday,
+        preferences.byDay.friday,
+        preferences.byDay.saturday,
+        preferences.byDay.sunday,
       ],
-      backgroundColor: [COLOR_1, COLOR_2, COLOR_3, COLOR_4, COLOR_5, COLOR_6],
+      backgroundColor: [
+        COLOR_1,
+        COLOR_2,
+        COLOR_3,
+        COLOR_4,
+        COLOR_5,
+        COLOR_6,
+        COLOR_7,
+      ],
     },
   };
 
@@ -103,7 +111,7 @@ const AppointmentsCharts = () => {
                 dataLabels: {
                   enabled: true,
                   formatter: function (val) {
-                    return val + '%';
+                    return +val.toFixed(2) + '%';
                   },
                 },
               }}
