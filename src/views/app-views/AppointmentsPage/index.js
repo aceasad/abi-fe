@@ -24,9 +24,6 @@ const AppointmentsPage = () => {
         }
         extra={[
           <Space key="0">
-            <Button>
-              {formatMessage({ id: 'appointments_page.button.export' })}
-            </Button>
             <Button type="primary" onClick={() => setIsModalVisible(true)}>
               {formatMessage({
                 id: 'appointments_page.button.new_appointment',

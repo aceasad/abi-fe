@@ -160,7 +160,7 @@ const MassInviteModal = ({ isModalVisible, closeModal }) => {
               name="template"
               component={FormSelect}
               options={templates}
-              optionField="name"
+              optionField="title"
               defaultOption={values.template}
               required
             />
