@@ -1,4 +1,4 @@
-import { Button, Col, Row } from 'antd';
+import { Button, Card, Col, Row } from 'antd';
 import Form from 'antd/lib/form/Form';
 import Modal from 'antd/lib/modal/Modal';
 import FormGroupCheckbox from 'components/custom-components/Form/FormGroupCheckbox';
@@ -165,15 +165,9 @@ const MassInviteModal = ({ isModalVisible, closeModal }) => {
               required
             />
             {values.template && (
-              <RowColumnField
-                span={24}
-                component={TextArea}
-                disabled
-                rows={5}
-                value={
-                  templates.find((item) => item.id === values.template)['text']
-                }
-              />
+              <Card>
+                {templates.find((item) => item.id === values.template)['text']}
+              </Card>
             )}
           </Form>
         </Modal>
