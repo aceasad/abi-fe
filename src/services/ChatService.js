@@ -11,6 +11,8 @@ const ENDPOINTS = {
   MARK_CONVERSATION_AS_READ:
     '/messages/conversations/:patientId/mark-conversation-as-read/',
   TOGGLE_RASA_ACTIVITY: '/patients/:patientId/toggle-rasa/',
+  GET_MESSAGE_TEMPLATES: '/message-templates/',
+  SEND_MASS_INVITE: '/messages/send-mass-invite/',
 };
 
 class ChatService extends ApiService {
@@ -41,6 +43,12 @@ class ChatService extends ApiService {
     this.apiClient.put(
       ENDPOINTS.TOGGLE_RASA_ACTIVITY.replace(':patientId', patientId)
     );
+
+  sendMassInvite = (data) =>
+    this.apiClient.post(ENDPOINTS.SEND_MASS_INVITE, data);
+
+  getMessageTemplates = () =>
+    this.apiClient.get(ENDPOINTS.GET_MESSAGE_TEMPLATES);
 }
 
 const chatService = new ChatService();

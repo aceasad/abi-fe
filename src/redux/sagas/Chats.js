@@ -13,6 +13,7 @@ import {
   GET_MORE_SINGLE_CHAT_MESSAGES,
   GET_SINGLE_CHAT,
   SEARCH_CONVERSATIONS,
+  SEND_MASS_INVITE,
 } from 'redux/constants/Chats';
 import {
   makeSelectAllChatsInfoRequestData,
@@ -87,12 +88,21 @@ export function* searchConversations({ payload }) {
   }
 }
 
+export function* sendMassInvite({ payload }) {
+  try {
+    yield call(chatService.sendMassInvite, payload);
+  } catch {
+  } finally {
+  }
+}
+
 export function* chatsSaga() {
   yield takeEvery(GET_SINGLE_CHAT, getSingleChat);
   yield takeEvery(GET_ALL_CHATS_INFO, getAllChatsInfo);
   yield takeEvery(GET_MORE_CHATS_INFO, getMoreChatsInfo);
   yield takeEvery(GET_MORE_SINGLE_CHAT_MESSAGES, getMoreSingleChatMessages);
   yield takeEvery(SEARCH_CONVERSATIONS, searchConversations);
+  yield takeEvery(SEND_MASS_INVITE, sendMassInvite);
 }
 
 export default function* rootSaga() {
