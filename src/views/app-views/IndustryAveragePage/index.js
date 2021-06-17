@@ -76,7 +76,7 @@ const IndustryAverage = () => {
                   span={24}
                   style={{ width: '100%' }}
                   component={FormNumberField}
-                  label={formatMessage(messages.cost_of_missed_appointments)}
+                  label={formatMessage(messages.average_appointment_cost)}
                   name={'average_appointment_cost'}
                   min={0}
                   onKeyDown={filterNumberInput}
