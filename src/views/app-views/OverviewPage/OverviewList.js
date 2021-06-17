@@ -5,7 +5,7 @@ import { DownOutlined } from '@ant-design/icons';
 const { Panel } = Collapse;
 
 const OverviewList = ({ title, listData, startOpen }) => {
-  const [isCollapseOpen, setIsCollapseOpen] = useState(false);
+  const [isCollapseOpen, setIsCollapseOpen] = useState(startOpen);
 
   const collapseHeader = (
     <>

@@ -22,7 +22,7 @@ const CollapseHeader = ({ title, isOpen }) => (
 
 const GroupCollapse = ({ title, group, startOpen }) => {
   const { formatMessage } = useIntl();
-  const [isCollapseOpen, setIsCollapseOpen] = useState(false);
+  const [isCollapseOpen, setIsCollapseOpen] = useState(startOpen);
 
   return (
     <Collapse
