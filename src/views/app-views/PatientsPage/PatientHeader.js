@@ -1,4 +1,4 @@
-import { Button, PageHeader } from 'antd';
+import { Button, PageHeader, Typography } from 'antd';
 import React from 'react';
 import { useIntl } from 'react-intl';
 import messages from './messages';
@@ -14,7 +14,11 @@ const PatientHeader = ({
   return (
     <PageHeader
       className="p-0 mb-4"
-      title={title}
+      title={
+        <Typography.Title level={2} className="mb-0">
+          {title}
+        </Typography.Title>
+      }
       extra={[
         <Button key="0" onClick={secondaryAction}>
           {formatMessage(messages.cancel)}

@@ -5,6 +5,15 @@
 
 .ant-btn {
 
+		&.button__logout {
+				&:not(.ant-btn-primary):not(.ant-btn-dangerous):not(.ant-btn-link) {
+						&:hover,
+						&:focus {
+								color: #ffffff99;
+						}
+				}
+		}
+
     &:not(.ant-btn-primary):not(.ant-btn-dangerous):not(.ant-btn-link) {
         &:hover,
         &:focus {
