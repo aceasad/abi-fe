@@ -86,7 +86,11 @@ export const HeaderNav = (props) => {
             </Menu>
           </div>
           <Space className="nav-right">
-            <Button onClick={() => dispatch(signOut())}>
+            <Button
+              className="button__logout"
+              ghost
+              onClick={() => dispatch(signOut())}
+            >
               <LogoutOutlined />
               {formatMessage({ id: 'login_page.text.log_out' })}
             </Button>

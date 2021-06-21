@@ -9,10 +9,7 @@ const { Panel } = Collapse;
 
 const CollapseHeader = ({ title, isOpen }) => (
   <Flex justifyContent="between" alignItems="center" className="mb-4">
-    <Typography.Title
-      level={3}
-      className={`text--${title.split(' ').join('-').toLowerCase()} mb-0`}
-    >
+    <Typography.Title level={3} className={`text-primary mb-0`}>
       {title}
     </Typography.Title>
 
