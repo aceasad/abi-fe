@@ -96,4 +96,16 @@ export default defineMessages({
     id: `${scope}.label.number_of_invites`,
     defaultMessage: 'Number of invites: ',
   },
+  humanInterventionRequiredFilter: {
+    id: `${scope}.filters.human_invervention_required`,
+    defaultMessage: 'Human intervention required',
+  },
+  likelyToMissNextAppointmentFilter: {
+    id: `${scope}.filters.likely_to_miss_next_appointment`,
+    defaultMessage: 'Likely to miss their next appointment',
+  },
+  allFilter: {
+    id: `${scope}.filters.all`,
+    defaultMessage: 'All',
+  },
 });

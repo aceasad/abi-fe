@@ -32,3 +32,9 @@ export const chatBaseState = {
 
 export const MASS_INVITE_MIN_AGE = 18;
 export const MASS_INVITE_MAX_AGE = 100;
+
+export const CHAT_FILTERS = {
+  HUMAN_INTERVENTION_REQUIRED: 'human_intervention_required',
+  LIKELY_TO_MISS_NEXT_APPOINTMENT: 'likely_to_miss_next_appointment',
+  ALL: 'all',
+};

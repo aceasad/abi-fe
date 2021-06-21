@@ -1,21 +1,9 @@
-import React, {
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-  useCallback,
-} from 'react';
-import ChatData from 'assets/data/chat.data.json';
-import { Badge, Input } from 'antd';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
+import { Badge, Input, Select } from 'antd';
 import AvatarStatus from 'components/shared-components/AvatarStatus';
 import { COLOR_1 } from 'constants/ChartConstant';
 import { SearchOutlined } from '@ant-design/icons';
-import {
-  useHistory,
-  useLocation,
-  useParams,
-  useRouteMatch,
-} from 'react-router-dom';
+import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
 import { useIntl } from 'react-intl';
 import messages from './messages';
 import { chatListItemStyle, formatMessageTimestamp } from 'utils/helpers';
@@ -27,10 +15,10 @@ import {
 } from 'redux/actions/Chats';
 import { useDispatch, useSelector } from 'react-redux';
 import { makeSelectAllChatsInfo } from 'redux/selectors/Chats';
-import Loading from 'components/shared-components/Loading';
 import { useDebounce, useLazyLoad } from 'utils/hooks';
 import Scrollbars from 'react-custom-scrollbars';
-import { MESSAGE_STATUS } from 'constants/ChatConstants';
+import { CHAT_FILTERS, MESSAGE_STATUS } from 'constants/ChatConstants';
+import { Option } from 'antd/lib/mentions';
 
 const ChatMenu = () => {
   const history = useHistory();
@@ -51,10 +39,27 @@ const ChatMenu = () => {
     makeSelectAllChatsInfo
   );
 
+  const CONVERSATION_FILTERS = [
+    {
+      label: formatMessage(messages.allFilter),
+      value: CHAT_FILTERS.ALL,
+    },
+    {
+      label: formatMessage(messages.humanInterventionRequiredFilter),
+      value: CHAT_FILTERS.HUMAN_INTERVENTION_REQUIRED,
+    },
+    {
+      label: formatMessage(messages.likelyToMissNextAppointmentFilter),
+      value: CHAT_FILTERS.LIKELY_TO_MISS_NEXT_APPOINTMENT,
+    },
+  ];
+
+  const [filter, setFilter] = useState(CONVERSATION_FILTERS[0].value);
+
   useEffect(() => {
     // this will trigger iniitial data load
     if (query === debouncedSearch) {
-      dispatch(searchConversations(query));
+      dispatch(searchConversations({ query, filter }));
     }
   }, [debouncedSearch]);
 
@@ -90,6 +95,12 @@ const ChatMenu = () => {
       );
   };
 
+  const handleFilterChange = (selected) => {
+    setFilter(selected);
+    setQuery('');
+    dispatch(getAllChatsInfo(selected));
+  };
+
   useEffect(() => {
     if (scrollDown) {
       stopScroll();
@@ -100,14 +111,28 @@ const ChatMenu = () => {
   return (
     <div className="chat-menu">
       <div className="chat-menu-toolbar">
+        <Select
+          value={filter}
+          onChange={handleFilterChange}
+          style={{ width: '100%' }}
+        >
+          {CONVERSATION_FILTERS.map((item, index) => (
+            <Option key={index} value={item.value}>
+              {item.label}
+            </Option>
+          ))}
+        </Select>
+      </div>
+      <div className="chat-menu-toolbar">
         <Input
           placeholder={formatMessage(messages.searchPlaceholder)}
           onChange={searchOnChange}
+          value={query}
           prefix={<SearchOutlined className="font-size-lg mr-2" />}
         />
       </div>
       <div className="chat-menu-list">
-        <Scrollbars id="chat-menu-scroll" ref={menuRef}>
+        <Scrollbars id="chat-menu-scroll" ref={menuRef} autoHide={false}>
           {items.map((item, index) => {
             return (
               <div

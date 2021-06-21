@@ -3,6 +3,7 @@ import {
   ALL_CHATS_PAGINATION_LIMIT,
   CHAT_MESSAGES_PAGINATION_LIMIT,
 } from 'constants/ApiConstant';
+import { CHAT_FILTERS } from 'constants/ChatConstants';
 
 const ENDPOINTS = {
   SINGLE_CHAT: '/messages/conversations/:patientId/',
@@ -28,11 +29,19 @@ class ChatService extends ApiService {
       },
     });
 
-  getAllChatInformation = (offset = 0, limit = ALL_CHATS_PAGINATION_LIMIT) =>
-    this.apiClient.get(ENDPOINTS.ALL_CHATS, { params: { limit, offset } });
+  getAllChatInformation = (
+    offset = 0,
+    limit = ALL_CHATS_PAGINATION_LIMIT,
+    filter = CHAT_FILTERS.ALL
+  ) =>
+    this.apiClient.get(ENDPOINTS.ALL_CHATS, {
+      params: { limit, offset, filter },
+    });
 
-  searchConversations = (query) =>
-    this.apiClient.get(ENDPOINTS.SEARCH_CHATS, { params: { query } });
+  searchConversations = (queryParams) =>
+    this.apiClient.get(ENDPOINTS.SEARCH_CHATS, {
+      params: { ...queryParams, limit: ALL_CHATS_PAGINATION_LIMIT },
+    });
 
   markConversationAsRead = (patientId) =>
     this.apiClient.put(
