@@ -104,6 +104,7 @@ const chats = (state = initialState, action) =>
         draft.single = {
           ...state.single,
           chatInfo: {
+            ...state.single.chatInfo,
             patient: {
               ...state.single.chatInfo.patient,
               is_rasa_paused: !state.single.chatInfo.patient.is_rasa_paused,
