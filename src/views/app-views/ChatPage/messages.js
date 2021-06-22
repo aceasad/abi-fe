@@ -108,4 +108,12 @@ export default defineMessages({
     id: `${scope}.filters.all`,
     defaultMessage: 'All',
   },
+  pauseRasaPlaceholder: {
+    id: `${scope}.placeholder.pause_rasa`,
+    defaultMessage: 'Please pause chatbot to send a message',
+  },
+  chatDisabledPlaceholder: {
+    id: `${scope}.placeholder.chat_disabled`,
+    defaultMessage: 'Last message was more than 24 hours ago',
+  },
 });

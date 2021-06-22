@@ -400,6 +400,8 @@
   "chat_page.menu.user_info_label": "",
   "chat_page.menu.mute_chat": "Mute Chat",
   "chat_page.menu.delete_chat": "Delete Chat",
+  "chat_page.placeholder.chat_disabled": "Last message was more than 24 hours ago",
+  "chat_page.placeholder.pause_rasa": "Please pause chatbot to send a message",
   "chat_page.title": "Conversations",
   "chat_page.text.invite_sent": "Mass Invite sent!",
 
