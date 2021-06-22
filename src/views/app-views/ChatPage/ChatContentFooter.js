@@ -1,6 +1,6 @@
 import { SendOutlined } from '@ant-design/icons';
 import { Button, Form, Input } from 'antd';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useIntl } from 'react-intl';
 import messages from './messages';
 import { useSelector } from 'react-redux';
@@ -18,14 +18,39 @@ const ChatContentFooter = ({ onSend }) => {
   const { chatInfo } = useSelector(makeSelectSingleChatInfo);
   const isSocketOpen = WebSocketClient.isConnected();
 
+  const generatePlaceholderText = (
+    isSocketOpen,
+    isSendEnabled,
+    isRasaPaused
+  ) => {
+    if (!isRasaPaused) {
+      return formatMessage(messages.pauseRasaPlaceholder);
+    } else if (!(isSocketOpen && !!isSendEnabled)) {
+      return formatMessage(messages.chatDisabledPlaceholder);
+    } else {
+      return formatMessage(messages.typeAMessagePlaceholder);
+    }
+  };
+
+  const isDisabled = useMemo(() => {
+    return (
+      !chatInfo?.patient.is_rasa_paused ||
+      !(isSocketOpen && !!chatInfo?.isSendEnabled)
+    );
+  }, [chatInfo, isSocketOpen]);
+
   return (
     <div className="chat-content-footer">
       <Form form={form} name="msgInput" onFinish={handleSend} className="w-100">
         <Form.Item name="newMessage" className="mb-0">
           <Input
             autoComplete="off"
-            placeholder={formatMessage(messages.typeAMessagePlaceholder)}
-            disabled={!(isSocketOpen && !!chatInfo?.isSendEnabled)}
+            placeholder={generatePlaceholderText(
+              isSocketOpen,
+              !!chatInfo?.isSendEnabled,
+              chatInfo?.patient.is_rasa_paused
+            )}
+            disabled={isDisabled}
             suffix={
               <div className="d-flex align-items-center">
                 <Button
@@ -34,7 +59,7 @@ const ChatContentFooter = ({ onSend }) => {
                   size="small"
                   onClick={onSend}
                   htmlType="submit"
-                  disabled={!(isSocketOpen && !!chatInfo?.isSendEnabled)}
+                  disabled={isDisabled}
                 >
                   <SendOutlined />
                 </Button>
