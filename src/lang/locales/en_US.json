@@ -271,6 +271,7 @@
 
   "industry_average_page.title": "Industry Average",
   "industry_average_page.input_label.cost_of_missed_appointments": "Cost of missed appointments",
+  "industry_average_page.input_label.average_appointment_cost": "Average appointment cost",
   "industry_average_page.input_label.did_not_attend": "Did not attend - National Average %",
   "industry_average_page.input_label.uptake": "Uptake - National Average %",
   "industry_average_page.input_label.coverage": "Coverage - National Average %",
