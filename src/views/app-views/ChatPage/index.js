@@ -9,7 +9,7 @@ import { useSocket } from 'utils/hooks';
 import { useDispatch, useSelector } from 'react-redux';
 import { makeSelectLoginDetails } from 'redux/selectors/Auth';
 import { createWebsocketUrl, parseReceivedEvent } from 'utils/helpers';
-import { addOneMessage } from 'redux/actions/Chats';
+import { addOneMessage, resetChats } from 'redux/actions/Chats';
 import MassInviteModal from './MassInviteModal';
 import WebSocketClient from 'services/WebSocketClient';
 import { MESSAGE_STATUS } from 'constants/ChatConstants';
@@ -42,6 +42,7 @@ const Chat = () => {
     return () => {
       WebSocketClient.isComponentMounted = false;
       WebSocketClient.closeConnection();
+      dispatch(resetChats());
     };
   }, []);
 
@@ -90,4 +91,4 @@ const Chat = () => {
   );
 };
 
-export default Chat;
+export default React.memo(Chat);

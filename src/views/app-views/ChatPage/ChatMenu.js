@@ -90,6 +90,7 @@ const ChatMenu = () => {
 
   const stopScroll = () => {
     menuRef.current &&
+      menuRef.current.getScrollHeight() - scrollHeightRef.current > 2 &&
       menuRef.current.scrollTop(
         menuRef.current.getScrollHeight() - scrollHeightRef.current
       );

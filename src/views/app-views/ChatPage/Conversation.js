@@ -38,10 +38,9 @@ const Conversation = ({
     getConversation(id);
   }, [params.id]);
 
-  const handleGetMoreSingleMessages = useCallback(
-    () => dispatch(getMoreSingleChatMessages({ patientId: params.id })),
-    [params, dispatch]
-  );
+  const handleGetMoreSingleMessages = () => {
+    dispatch(getMoreSingleChatMessages());
+  };
   const getConversation = (patientId) => {
     dispatch(getSingleChat({ patientId }));
   };
