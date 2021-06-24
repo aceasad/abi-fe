@@ -4,6 +4,7 @@ import {
   ADD_MORE_TO_ALL_CHATS_INFO,
   ADD_MORE_TO_SINGLE_CHAT,
   ADD_ONE_MESSAGE,
+  RESET_CHAT_REDUCER,
   SET_ALL_CHATS_INFO,
   SET_ALL_CHATS_INFO_LOADING,
   SET_CONVERSATION_TO_READ,
@@ -143,6 +144,9 @@ const chats = (state = initialState, action) =>
           draft.offset = state.offset + 1;
         }
         break;
+      }
+      case RESET_CHAT_REDUCER: {
+        return initialState;
       }
     }
   });

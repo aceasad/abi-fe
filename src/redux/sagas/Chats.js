@@ -18,6 +18,7 @@ import {
 } from 'redux/constants/Chats';
 import {
   makeSelectAllChatsInfoRequestData,
+  makeSelectSingleChatInfo,
   makeSelectSingleChatRequestData,
 } from 'redux/selectors/Chats';
 import chatService from 'services/ChatService';
@@ -33,14 +34,14 @@ export function* getSingleChat({ payload }) {
   }
 }
 
-export function* getMoreSingleChatMessages({ payload }) {
+export function* getMoreSingleChatMessages() {
   try {
     yield put(setSingleChatLoading(true));
     const { offset } = yield select(makeSelectSingleChatRequestData);
-
+    const { chatInfo } = yield select(makeSelectSingleChatInfo);
     const { data } = yield call(
       chatService.getSingleChat,
-      payload.patientId,
+      chatInfo.patient.id,
       offset
     );
     yield put(addMoreToSingleChat(data));

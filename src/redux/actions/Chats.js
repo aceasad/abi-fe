@@ -6,6 +6,7 @@ import {
   GET_MORE_CHATS_INFO,
   GET_MORE_SINGLE_CHAT_MESSAGES,
   GET_SINGLE_CHAT,
+  RESET_CHAT_REDUCER,
   SEARCH_CONVERSATIONS,
   SEND_MASS_INVITE,
   SET_ALL_CHATS_INFO,
@@ -88,4 +89,8 @@ export const addOneMessage = (payload) => ({
 export const sendMassInvite = (payload) => ({
   type: SEND_MASS_INVITE,
   payload,
+});
+
+export const resetChats = () => ({
+  type: RESET_CHAT_REDUCER,
 });
