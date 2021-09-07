@@ -4,7 +4,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Prerequisites
 
-You need to have NodeJS(https://nodejs.org/en/) installed on your computer in order to run ReactJS application.
+You need to have [NodeJS](https://nodejs.org/en/) installed on your computer in order to run ReactJS application.
 
 ## Available Scripts
 
