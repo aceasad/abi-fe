@@ -2,6 +2,10 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Prerequisites
+
+You need to have NodeJS(https://nodejs.org/en/) installed on your computer in order to run ReactJS application.
+
 ## Available Scripts
 
 In the project directory, you can run:
