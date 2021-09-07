@@ -6,6 +6,9 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 You need to have [NodeJS](https://nodejs.org/en/) installed on your computer in order to run ReactJS application.
 
+Before you run `yarn start` make sure that you have creted `.env` file. 
+Copy content of `.env.example` and paste it in new `.env` file.
+
 ## Available Scripts
 
 In the project directory, you can run:
