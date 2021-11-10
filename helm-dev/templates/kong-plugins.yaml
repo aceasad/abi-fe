@@ -1,0 +1,30 @@
+# # Kong JWT Plugin CRD
+# apiVersion: configuration.konghq.com/v1
+# config:
+#   claims_to_verify:
+#   - exp
+#   cookie_names:
+#   - jwt 
+# kind: KongPlugin
+# metadata:
+#   name: jwt                 
+#   namespace: spryt-dev  # Modalities have to change this value according to their namespace. 
+# plugin: jwt #Kong's inbuilt jwt plugin. Verify requests containing RS256 signed JSON Web Tokens. Token signature is verified using JWT credentials (Public key of certificate used to sign the token by wso2 ) 
+# ---
+
+# # Kong AuthZ Plugin CRD
+# apiVersion: configuration.konghq.com/v1
+# kind: KongPlugin
+# metadata:
+#   name: authz            
+#   namespace: spryt-dev # Modalities have to change this value according to their namespace.
+# plugin: authz #Custom plugin, which does the authorization check using the PDP api of wso2.
+# ---
+
+# #authentication plugin
+# apiVersion: configuration.konghq.com/v1
+# kind: KongPlugin
+# metadata:
+#   name: authn
+#   namespace: spryt-dev
+# plugin: authn 

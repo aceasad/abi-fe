@@ -1,0 +1,41 @@
+## abi-fe K8S INGRESSES
+# abi-fe k8s Ingress
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    configuration.konghq.com: abi-fe-ingress-conf    
+    #plugins.konghq.com: jwt,authz # refer to KongPlugin created in same namespace
+  name: abi-fe-ingress
+  namespace: spryt-dev
+  labels:
+    app: abi-fe
+spec:
+  rules:
+  - http:
+      paths:  
+      - path: /abi-fe
+        backend:
+          serviceName: abi-fe-service
+          servicePort: 80
+---
+          
+## abi-fe K8S SERVICES
+# abi-fe k8s service
+apiVersion: v1
+kind: Service
+metadata:
+  # annotations:
+  #   configuration.konghq.com: abi-fe-kong-ingress-conf # refer to Created Kong Ingress by name   
+  name: abi-fe-service
+  namespace: spryt-dev
+  labels:
+    app: abi-fe
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+    name: http
+  selector:
+    app: abi-fe

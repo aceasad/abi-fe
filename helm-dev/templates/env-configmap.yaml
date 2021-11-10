@@ -1,0 +1,16 @@
+apiVersion: v1 
+kind: ConfigMap 
+metadata:
+  name: abi-fe-configmap
+  namespace: spryt-dev 
+data:
+  OAUTH_AUTHORIZATION_URI: https://cb58d7fa-edisoncore-eiskon-97ed-630543779.eu-west-2.elb.amazonaws.com/:443/oauth2/authorize
+  OAUTH_REDIRECT_URI: https://cb58d7fa-edisoncore-eiskon-97ed-630543779.eu-west-2.elb.amazonaws.com/abi-fe/auth/oauth-validation
+  REACT_APP_API_URL: https://cb58d7fa-edisoncore-eiskon-97ed-630543779.eu-west-2.elb.amazonaws.com/abi-be/api/v1
+  REACT_APP_SOCKETS_DOMAIN: wss://cb58d7fa-edisoncore-eiskon-97ed-630543779.eu-west-2.elb.amazonaws.com/abi-be/ws/chat
+  REACT_APP_API_CDN: ""
+  REACT_APP_FACEBOOK_APP_ID: ""
+  REACT_APP_GOOGLE_CLIENT_ID: ""
+  REACT_APP_SENTRY_KEY: ""
+  REACT_APP_SENTRY_PROJECT: ""
+  REACT_APP_DEEPSTREAM_URL: ""

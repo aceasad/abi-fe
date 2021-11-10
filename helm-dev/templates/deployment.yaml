@@ -1,0 +1,57 @@
+#mdh axone k8s deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: abi-fe-deployment
+  namespace: spryt-dev
+  labels:
+    app: abi-fe
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: abi-fe
+  template:
+    metadata:
+      labels:
+        app: abi-fe
+    spec:
+      containers:
+      - name: abi-fe
+        image: 474054470595.dkr.ecr.eu-west-2.amazonaws.com/spryt:abi-fe-v1.0.0
+        ports:
+        - containerPort: 80
+        imagePullPolicy: Always
+        env:
+        - name: OAUTH_CLIENT_ID
+          valueFrom:
+            configMapKeyRef:
+              name: abi-fe-applicationregistration
+              key: clientId
+        - name: OAUTH_AUTHORIZATION_URI
+          valueFrom:
+            configMapKeyRef:
+              name: abi-fe-configmap
+              key: OAUTH_AUTHORIZATION_URI
+        - name: OAUTH_REDIRECT_URI
+          valueFrom:
+            configMapKeyRef:
+              name: abi-fe-configmap
+              key: OAUTH_REDIRECT_URI
+        - name: REACT_APP_API_URL
+          valueFrom:
+            configMapKeyRef:
+              name: abi-fe-configmap
+              key: REACT_APP_API_URL
+        - name: REACT_APP_SOCKETS_DOMAIN
+          valueFrom:
+            configMapKeyRef:
+              name: abi-fe-configmap
+              key: REACT_APP_SOCKETS_DOMAIN
+        resources:
+          requests:
+            memory: "1024Mi"
+            cpu: "330m"
+          limits:
+            memory: "1024Mi"
+            cpu: "330m"

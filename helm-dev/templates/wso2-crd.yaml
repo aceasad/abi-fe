@@ -1,0 +1,16 @@
+apiVersion: ees.ge.com/v1
+kind: ApplicationRegistration
+metadata:
+  name: abi-fe
+  namespace: spryt-dev
+spec:
+  appName: abi-fe
+  grantTypes:
+  - password
+  - refresh_token
+  - implicit
+  callbackUrls:
+  - https://907f592092f37ef71c4f1239c5a585e0.gr7.eu-west-2.eks.amazonaws.com/abi-fe
+  refreshTokenDuration: 86400
+  accessTokenDuration: 3600
+  #byPassClientCredentials: true
