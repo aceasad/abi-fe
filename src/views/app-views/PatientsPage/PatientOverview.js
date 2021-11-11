@@ -156,7 +156,7 @@ const PatientOverview = ({ patientId, showList, updatePatient }) => {
               <div className="main-content">
                 <Conversation
                   showTitle={false}
-                  conversationId={1}
+                  conversationId={patientId}
                   isMenuVisible={false}
                   BackAction={() => (
                     <div
