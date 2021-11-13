@@ -6,12 +6,12 @@ import {
   WhatsAppOutlined,
   SettingOutlined,
 } from '@ant-design/icons';
-import { APP_PREFIX_PATH } from 'configs/AppConfig';
+import { APP_PAGES_PREFIX_PATH } from 'configs/AppConfig';
 
 const pagesNavTree = [
   {
     key: 'overview',
-    path: `${APP_PREFIX_PATH}/overview`,
+    path: `${APP_PAGES_PREFIX_PATH}/overview`,
     title: 'sidenav.pages.overview',
     icon: PieChartOutlined,
     breadcrumb: false,
@@ -19,7 +19,7 @@ const pagesNavTree = [
   },
   {
     key: 'appointments',
-    path: `${APP_PREFIX_PATH}/appointments`,
+    path: `${APP_PAGES_PREFIX_PATH}/appointments`,
     title: 'sidenav.pages.appointments',
     icon: CalendarOutlined,
     breadcrumb: false,
@@ -27,7 +27,7 @@ const pagesNavTree = [
   },
   {
     key: 'patients',
-    path: `${APP_PREFIX_PATH}/patients`,
+    path: `${APP_PAGES_PREFIX_PATH}/patients`,
     title: 'sidenav.pages.patients',
     icon: TeamOutlined,
     breadcrumb: false,
@@ -35,7 +35,7 @@ const pagesNavTree = [
   },
   {
     key: 'staff',
-    path: `${APP_PREFIX_PATH}/staff`,
+    path: `${APP_PAGES_PREFIX_PATH}/staff`,
     title: 'sidenav.pages.staff',
     icon: UserOutlined,
     breadcrumb: false,
@@ -43,7 +43,7 @@ const pagesNavTree = [
   },
   {
     key: 'conversation',
-    path: `${APP_PREFIX_PATH}/conversation`,
+    path: `${APP_PAGES_PREFIX_PATH}/conversation`,
     title: 'sidenav.pages.conversation',
     icon: WhatsAppOutlined,
     breadcrumb: false,
@@ -51,7 +51,7 @@ const pagesNavTree = [
   },
   {
     key: 'settings',
-    path: `${APP_PREFIX_PATH}/settings`,
+    path: `${APP_PAGES_PREFIX_PATH}/settings`,
     title: 'sidenav.pages.setting',
     icon: SettingOutlined,
     breadcrumb: false,

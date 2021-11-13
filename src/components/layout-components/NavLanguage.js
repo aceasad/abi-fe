@@ -4,6 +4,7 @@ import { Menu, Dropdown } from 'antd';
 import lang from 'assets/data/language.data.json';
 import { connect } from 'react-redux';
 import { onLocaleChange } from 'redux/actions/Theme';
+import { URL_PREFIX_PATH } from 'configs/AppConfig';
 
 function getLanguageDetail(locale) {
   const data = lang.filter((elm) => elm.langId === locale);
@@ -17,7 +18,7 @@ const SelectedLanguage = ({ locale }) => {
     <div className="d-flex align-items-center">
       <img
         style={{ maxWidth: '20px' }}
-        src={`/img/flags/${icon}.png`}
+        src={`${URL_PREFIX_PATH}/img/flags/${icon}.png`}
         alt={langName}
       />
       <span className="font-weight-semibold ml-2">
@@ -43,7 +44,7 @@ export const NavLanguage = ({ locale, configDisplay, onLocaleChange }) => {
               <div>
                 <img
                   style={{ maxWidth: '20px' }}
-                  src={`/img/flags/${elm.icon}.png`}
+                  src={`${URL_PREFIX_PATH}/img/flags/${elm.icon}.png`}
                   alt={elm.langName}
                 />
                 <span className="font-weight-normal ml-2">{elm.langName}</span>
