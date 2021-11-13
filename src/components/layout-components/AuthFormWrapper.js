@@ -1,8 +1,9 @@
-import React from "react";
-import { Card, Row, Col, Typography } from "antd";
-import { useSelector } from "react-redux";
-import { makeSelectCurrentTheme } from "redux/selectors/Theme";
-import { THEME_LIGHT } from "constants/ThemeConstant";
+import React from 'react';
+import { Card, Row, Col, Typography } from 'antd';
+import { useSelector } from 'react-redux';
+import { makeSelectCurrentTheme } from 'redux/selectors/Theme';
+import { THEME_LIGHT } from 'constants/ThemeConstant';
+import { URL_PREFIX_PATH } from 'configs/AppConfig';
 
 const AuthFormWrapper = ({ title = false, paragraph = false, children }) => {
   const { Title, Text } = Typography;
@@ -19,7 +20,7 @@ const AuthFormWrapper = ({ title = false, paragraph = false, children }) => {
                   <div className="authentication">
                     <img
                       className="authentication-image"
-                      src={`/img/${
+                      src={`${URL_PREFIX_PATH}/img/${
                         theme === THEME_LIGHT ? 'logo.png' : 'logo-white.png'
                       }`}
                       alt="logo"

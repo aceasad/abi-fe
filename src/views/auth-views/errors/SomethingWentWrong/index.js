@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from 'antd';
-import { APP_NAME } from 'configs/AppConfig';
+import { APP_NAME, URL_PREFIX_PATH } from 'configs/AppConfig';
 import { Link } from 'react-router-dom';
 import Flex from 'components/shared-components/Flex';
 import { useSelector } from 'react-redux';
@@ -13,13 +13,19 @@ const ErrorTwo = () => {
         <div>
           <img
             className="img-fluid"
-            src={`/img/${theme === 'light' ? 'logo.png' : 'logo-white.png'}`}
+            src={`${URL_PREFIX_PATH}/img/${
+              theme === 'light' ? 'logo.png' : 'logo-white.png'
+            }`}
             alt=""
           />
         </div>
         <div className="container">
           <div className="text-center mb-5">
-            <img className="img-fluid" src="/img/others/img-21.png" alt="" />
+            <img
+              className="img-fluid"
+              src={`${URL_PREFIX_PATH}/img/others/img-21.png`}
+              alt=""
+            />
             <h1 className="font-weight-bold mb-4">
               Sorry, something goes wrong
             </h1>

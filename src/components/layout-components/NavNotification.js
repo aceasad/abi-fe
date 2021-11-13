@@ -8,6 +8,7 @@ import {
 } from '@ant-design/icons';
 import notificationData from 'assets/data/notification.data.json';
 import Flex from 'components/shared-components/Flex';
+import { URL_PREFIX_PATH } from 'configs/AppConfig';
 
 const getIcon = (icon) => {
   switch (icon) {
@@ -33,7 +34,7 @@ const getNotificationBody = (list) => {
           <Flex alignItems="center">
             <div className="pr-3">
               {item.img ? (
-                <Avatar src={`/img/avatars/${item.img}`} />
+                <Avatar src={`${URL_PREFIX_PATH}/img/avatars/${item.img}`} />
               ) : (
                 <Avatar
                   className={`ant-avatar-${item.type}`}

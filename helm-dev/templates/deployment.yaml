@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: abi-fe-deployment
+  name: abi-fe
   namespace: spryt-dev
   labels:
     app: abi-fe
@@ -22,32 +22,11 @@ spec:
         ports:
         - containerPort: 80
         imagePullPolicy: Always
-        env:
-        - name: OAUTH_CLIENT_ID
-          valueFrom:
-            configMapKeyRef:
-              name: abi-fe-applicationregistration
-              key: clientId
-        - name: OAUTH_AUTHORIZATION_URI
-          valueFrom:
-            configMapKeyRef:
-              name: abi-fe-configmap
-              key: OAUTH_AUTHORIZATION_URI
-        - name: OAUTH_REDIRECT_URI
-          valueFrom:
-            configMapKeyRef:
-              name: abi-fe-configmap
-              key: OAUTH_REDIRECT_URI
-        - name: REACT_APP_API_URL
-          valueFrom:
-            configMapKeyRef:
-              name: abi-fe-configmap
-              key: REACT_APP_API_URL
-        - name: REACT_APP_SOCKETS_DOMAIN
-          valueFrom:
-            configMapKeyRef:
-              name: abi-fe-configmap
-              key: REACT_APP_SOCKETS_DOMAIN
+        envFrom:
+        - configMapRef:
+            name: abi-fe-applicationregistration
+        - configMapRef:
+            name: abi-fe-env-configmap
         resources:
           requests:
             memory: "1024Mi"

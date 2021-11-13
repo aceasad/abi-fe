@@ -8,6 +8,7 @@ import { APP_NAME } from 'configs/AppConfig';
 import { connect } from 'react-redux';
 import utils from 'utils';
 import { Grid } from 'antd';
+import { URL_PREFIX_PATH } from 'configs/AppConfig';
 
 const { useBreakpoint } = Grid;
 
@@ -31,15 +32,15 @@ const getLogo = (props) => {
   const { navCollapsed, logoType } = props;
   if (logoType === 'light') {
     if (navCollapsed) {
-      return '/img/logo-sm-white.png';
+      return `${URL_PREFIX_PATH}/img/logo-sm-white.png`;
     }
-    return '/img/logo-white.png';
+    return `${URL_PREFIX_PATH}/img/logo-white.png`;
   }
 
   if (navCollapsed) {
-    return '/img/logo-sm.png';
+    return `${URL_PREFIX_PATH}/img/logo-sm.png`;
   }
-  return '/img/logo.png';
+  return `${URL_PREFIX_PATH}/img/logo.png`;
 };
 
 const getLogoDisplay = (isMobile, mobileLogo) => {
