@@ -19,6 +19,7 @@ import {
 import { getLocalStorageItem } from 'utils/localStorage';
 import produce from 'immer';
 import { PASSWORD_STATUSES } from 'constants/UserConstants';
+import { URL_PREFIX_PATH } from 'configs/AppConfig';
 
 const initState = {
   loading: false,
@@ -37,7 +38,7 @@ const auth = (state = initState, action) =>
     switch (action.type) {
       case AUTHENTICATED:
         draft.loading = false;
-        draft.redirect = '/';
+        draft.redirect = `${URL_PREFIX_PATH}/`;
         draft.token = action.token;
         break;
       case SHOW_AUTH_MESSAGE:
@@ -51,7 +52,7 @@ const auth = (state = initState, action) =>
         break;
       case SIGNOUT_SUCCESS:
         draft.token = null;
-        draft.redirect = '/';
+        draft.redirect = `${URL_PREFIX_PATH}/`;
         draft.loading = false;
         break;
       case SIGNUP_SUCCESS:
