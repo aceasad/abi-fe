@@ -55,18 +55,39 @@ const CalendarPage = () => {
   }, [yearAndMonth]);
 
   const dateCellRender = (value) => {
-    const appointmentCount = dateAppointments.find(
-      (item) => item.date === value.format(DATE_FORMAT_YYYY_MM_DD)
-    );
-    return (
+    try {
+      const appointmentCount = dateAppointments.all.find(
+        (item) => item.date === value.format(DATE_FORMAT_YYYY_MM_DD)
+      ) || { total: 0 };
+      const appointmentCountLikelyToBeMissed = dateAppointments.likely_to_be_missed.find(
+        (item) => item.date === value.format(DATE_FORMAT_YYYY_MM_DD)
+      ) || { total: 0 };
+
+      return (
+        <Flex
+          justifyContent="end"
+          alignItems="end"
+          className="height-100 pb-3 pr-1"
+        >
+          <Badge
+            className={
+              appointmentCountLikelyToBeMissed?.total > 0
+                ? 'badge-color-warning'
+                : 'badge-color'
+            }
+            count={appointmentCount?.total}
+          />
+        </Flex>
+      );
+    } catch (err) {
       <Flex
         justifyContent="end"
         alignItems="end"
         className="height-100 pb-3 pr-1"
       >
-        <Badge className="badge-color" count={appointmentCount?.total} />
-      </Flex>
-    );
+        <Badge className="badge-color" count={0} />
+      </Flex>;
+    }
   };
 
   return (

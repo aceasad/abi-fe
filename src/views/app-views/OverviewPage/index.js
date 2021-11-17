@@ -11,12 +11,17 @@ import AbiData from './Groups/AbiData';
 import Uptake from './Groups/Uptake';
 import { useDispatch } from 'react-redux';
 import { getOverviewData } from 'redux/actions/Overview';
+import { getAppointmentsRemindersPage } from 'redux/actions/Appointment';
+import AppointmentsRemindersList from './AppointmentsRemindersList';
+import { makeSelectAppointmentsReminders } from 'redux/selectors/Appointment';
+import { useSelector } from 'react-redux';
 
 const { Option } = Select;
 
 const OverviewPage = () => {
   const { formatMessage } = useIntl();
   const dispatch = useDispatch();
+
   const filters = [
     { value: 'today', label: formatMessage(messages.selectToday) },
     { value: 'week', label: formatMessage(messages.selectWeek) },
@@ -27,7 +32,35 @@ const OverviewPage = () => {
 
   useEffect(() => {
     dispatch(getOverviewData({ interval: filterValue }));
-  }, [filterValue]);
+  }, [dispatch, filterValue]);
+
+  const filtersUpcomingAppointmentReminders = [
+    {
+      value: 'Scheduled',
+      label: formatMessage(messages.appointmentsRemindersSelectScheduled),
+    },
+    {
+      value: 'Cancelled',
+      label: formatMessage(messages.appointmentsRemindersSelectCancelled),
+    },
+  ];
+
+  const [
+    filterUpcomingAppointmentReminderValue,
+    setFilterUpcomingAppointmentReminderValue,
+  ] = useState(filtersUpcomingAppointmentReminders[0].value);
+
+  useEffect(() => {
+    dispatch(
+      getAppointmentsRemindersPage({
+        status: filterUpcomingAppointmentReminderValue,
+      })
+    );
+  }, [dispatch, filterUpcomingAppointmentReminderValue]);
+
+  const { count, appointmentsReminders, loading, page } = useSelector(
+    makeSelectAppointmentsReminders()
+  );
 
   return (
     <>
@@ -67,7 +100,35 @@ const OverviewPage = () => {
           />
           <OverviewList
             startOpen
-            title={formatMessage(messages.listScreening)}
+            title={formatMessage(messages.listScreeningInvitesSent)}
+          />
+          <AppointmentsRemindersList
+            count={count}
+            appointmentsReminders={appointmentsReminders}
+            loading={loading}
+            page={page}
+            startOpen
+            title={
+              <span>
+                <span>
+                  {formatMessage(messages.listScreeningRemindersPending)}
+                </span>
+                <span className="pending-appointments-reminders-title">
+                  <Select
+                    key="0"
+                    style={{ width: 120 }}
+                    onChange={setFilterUpcomingAppointmentReminderValue}
+                    value={filterUpcomingAppointmentReminderValue}
+                  >
+                    {filtersUpcomingAppointmentReminders.map((item, index) => (
+                      <Option key={index} value={item.value}>
+                        {item.label}
+                      </Option>
+                    ))}
+                  </Select>
+                </span>
+              </span>
+            }
           />
         </Col>
         <Col span={11} className="mt-4">

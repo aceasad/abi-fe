@@ -19,7 +19,10 @@ import {
   GET_MORE_SEARCH_RESULTS,
   DELETE_APPOINTMENT_FROM_PATIENTS,
   DELETE_APPOINTMENT_FROM_STAFF,
-  DELETE_APPOINTEMNT,
+  DELETE_APPOINTMENT,
+  GET_APPOINTMENTS_REMINDERS_PAGE,
+  CANCEL_APPOINTMENT_REMINDER,
+  REVERSE_APPOINTMENT_REMINDER_CANCELLATION,
 } from 'redux/constants/Appointment';
 import {
   appendToAllDoctors,
@@ -39,6 +42,8 @@ import {
   setSignleAppointmnetLoading,
   setPatientsLoadingAutocomplete,
   addMorePatientsAutocomplete,
+  setAppointmentsRemindersPage,
+  setAppointmentsRemindersPageLoading,
 } from 'redux/actions/Appointment';
 import { HISTORY, SCHEDULED } from 'redux/reducers/Staff';
 import {
@@ -63,7 +68,10 @@ import {
   setAppointmentHistoryPage,
   setScheduledPage,
 } from 'redux/actions/Patient';
-import { makeSelectClinicPatients } from 'redux/selectors/Appointment';
+import {
+  makeSelectClinicPatients,
+  makeSelectAppointmentsRemindersLastOnThePage,
+} from 'redux/selectors/Appointment';
 import { setAppointmentsPage } from 'redux/actions/Staff';
 
 export function* getDoctorAppointments({ payload }) {
@@ -120,7 +128,7 @@ export function* deleteAppointmentFromCalendarView({ payload }) {
   }
 }
 
-export function* deleteAppointemntFromPatients({ payload }) {
+export function* deleteAppointmentFromPatients({ payload }) {
   try {
     yield put(setSignleAppointmnetLoading(true));
     yield call(appointmentService.deleteAppointment, payload.data.id);
@@ -235,10 +243,10 @@ export function* getMissingReasons() {
   } catch {}
 }
 
-export function* endAppointemnt({ payload }) {
+export function* endAppointment({ payload }) {
   try {
     yield put(setSignleAppointmnetLoading(true));
-    const { data } = yield call(appointmentService.endAppointemnt, payload);
+    const { data } = yield call(appointmentService.endAppointment, payload);
     yield payload.afterEnd();
     yield put(setSignleAppointmnet(data));
   } catch {
@@ -256,12 +264,12 @@ export function* doctorAppointments() {
   yield takeEvery(GET_SINGLE_APPOINTMENT, getSingleAppointment);
   yield takeEvery(
     DELETE_APPOINTMENT_FROM_PATIENTS,
-    deleteAppointemntFromPatients
+    deleteAppointmentFromPatients
   );
   yield takeEvery(DELETE_APPOINTMENT_FROM_STAFF, deleteAppointmentFromStaff);
-  yield takeEvery(DELETE_APPOINTEMNT, deleteAppointmentFromCalendarView);
+  yield takeEvery(DELETE_APPOINTMENT, deleteAppointmentFromCalendarView);
   yield takeEvery(GET_MISSING_REASONS, getMissingReasons);
-  yield takeEvery(END_APPOINTMENT, endAppointemnt);
+  yield takeEvery(END_APPOINTMENT, endAppointment);
 }
 
 export function* createAppointmentSaga() {
@@ -372,6 +380,64 @@ export function* getMoreSearchResults() {
   });
 }
 
+export function* getAppointmentsReminders({ payload }) {
+  try {
+    yield put(setAppointmentsRemindersPageLoading(true));
+    const { data } = yield call(
+      appointmentService.getAppointmentsReminders,
+      payload.status
+    );
+    yield put(setAppointmentsRemindersPage(data));
+  } catch (err) {
+  } finally {
+    yield put(setAppointmentsRemindersPageLoading(false));
+  }
+}
+
+function* cancelAppointmentReminder({ payload }) {
+  try {
+    const { isLast, page } = yield select(
+      makeSelectAppointmentsRemindersLastOnThePage()
+    );
+    yield put(setAppointmentsRemindersPageLoading(true));
+    yield call(appointmentService.cancelAppointmentReminder, payload.data);
+    yield payload.afterCancellation();
+    if (isLast) yield put(setAppointmentsRemindersPage(page - 1));
+    else yield getAppointmentsReminders();
+  } catch (err) {
+  } finally {
+    yield put(setAppointmentsRemindersPageLoading(false));
+  }
+}
+
+function* reverseAppointmentReminderCancellation({ payload }) {
+  try {
+    const { isLast, page } = yield select(
+      makeSelectAppointmentsRemindersLastOnThePage()
+    );
+    yield put(setAppointmentsRemindersPageLoading(true));
+    yield call(
+      appointmentService.reverseAppointmentReminderCancellation,
+      payload.data
+    );
+    yield payload.afterReverseCancellation();
+    if (isLast) yield put(setAppointmentsRemindersPage(page - 1));
+    else yield getAppointmentsReminders();
+  } catch (err) {
+  } finally {
+    yield put(setAppointmentsRemindersPageLoading(false));
+  }
+}
+
+export function* appointmentsRemindersSaga() {
+  yield takeEvery(GET_APPOINTMENTS_REMINDERS_PAGE, getAppointmentsReminders);
+  yield takeEvery(CANCEL_APPOINTMENT_REMINDER, cancelAppointmentReminder);
+  yield takeEvery(
+    REVERSE_APPOINTMENT_REMINDER_CANCELLATION,
+    reverseAppointmentReminderCancellation
+  );
+}
+
 export default function* rootSaga() {
   yield all([
     fork(doctorAppointments),
@@ -383,5 +449,6 @@ export default function* rootSaga() {
     fork(getClinicDoctors),
     fork(searchPatients),
     fork(getMoreSearchResults),
+    fork(appointmentsRemindersSaga),
   ]);
 }

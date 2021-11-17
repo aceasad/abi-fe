@@ -1,3 +1,4 @@
+import { DEFAULT_PAGINATION_LIMIT } from 'constants/ApiConstant';
 import { createSelector } from 'reselect';
 import reducers from '../reducers';
 
@@ -61,6 +62,23 @@ const makeSelectMissingReasons = () =>
     (substate) => substate.missingReasons
   );
 
+const makeSelectAppointmentsReminders = () =>
+  createSelector(selectAppointmentDomain, (substate) => ({
+    appointmentsReminders: substate.appointmentsReminders.items,
+    count: substate.appointmentsReminders.count,
+    loading: substate.appointmentsReminders.loading,
+    page: substate.appointmentsReminders.page,
+  }));
+
+const makeSelectAppointmentsRemindersLastOnThePage = () =>
+  createSelector(selectAppointmentDomain, ({ appointmentsReminders }) => ({
+    isLast:
+      appointmentsReminders.page !== 1 &&
+      appointmentsReminders.count - 1 <=
+        (appointmentsReminders.page - 1) * DEFAULT_PAGINATION_LIMIT,
+    page: appointmentsReminders.page,
+  }));
+
 export {
   makeSelectMissingReasons,
   makeSelectSingleAppointmentLoading,
@@ -72,4 +90,6 @@ export {
   makeSelectClinicDoctors,
   makeSelectClinicPatients,
   makeSelectLoading,
+  makeSelectAppointmentsReminders,
+  makeSelectAppointmentsRemindersLastOnThePage,
 };

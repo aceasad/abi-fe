@@ -12,6 +12,10 @@ const ENDPOINTS = {
   GET_APPOINTMENT_TYPES: '/appointment-types/',
   GET_APPOINTMENT_STATUS: '/appointment-status/',
   GET_MISSING_REASONS: '/missing-reasons/',
+  GET_APPOINTMENTS_REMINDERS_PAGE: '/appointments/reminders/',
+  CANCEL_APPOINTMENT_REMINDER: '/appointments/reminders/:id/cancel/',
+  REVERSE_APPOINTMENT_REMINDER_CANCELLATION:
+    '/appointments/reminders/:id/reverse-cancellation/',
 };
 
 class AppointmentService extends ApiService {
@@ -65,8 +69,28 @@ class AppointmentService extends ApiService {
 
   getMissingReasons = () => this.apiClient.get(ENDPOINTS.GET_MISSING_REASONS);
 
-  endAppointemnt = ({ id, data }) =>
+  endAppointment = ({ id, data }) =>
     this.apiClient.post(`${ENDPOINTS.GET_APPOINTMENTS}${id}/end/`, data);
+
+  getAppointmentsReminders = (status) =>
+    this.apiClient.get(ENDPOINTS.GET_APPOINTMENTS_REMINDERS_PAGE, {
+      params: { status },
+    });
+
+  cancelAppointmentReminder = (payload) =>
+    this.apiClient.post(
+      ENDPOINTS.CANCEL_APPOINTMENT_REMINDER.replace(':id', payload.id),
+      payload.data
+    );
+
+  reverseAppointmentReminderCancellation = (payload) =>
+    this.apiClient.post(
+      ENDPOINTS.REVERSE_APPOINTMENT_REMINDER_CANCELLATION.replace(
+        ':id',
+        payload.id
+      ),
+      payload.data
+    );
 }
 
 const appointmentService = new AppointmentService();

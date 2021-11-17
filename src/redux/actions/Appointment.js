@@ -19,7 +19,7 @@ import {
   SET_APPOINTMENT_TYPES_LOADING,
   SET_APPOINTMENT_STATUS_LOADING,
   SEARCH_PATIENTS,
-  DELETE_APPOINTEMNT,
+  DELETE_APPOINTMENT,
   FILTER_DELETED_APPOINTMENT,
   END_APPOINTMENT,
   GET_MISSING_REASONS,
@@ -31,6 +31,12 @@ import {
   APPEND_MORE_PATIENTS_AUTOCOMPLETE,
   DELETE_APPOINTMENT_FROM_PATIENTS,
   DELETE_APPOINTMENT_FROM_STAFF,
+  SET_APPOINTMENTS_REMINDERS_PAGE_LOADING,
+  GET_APPOINTMENTS_REMINDERS_PAGE,
+  SET_APPOINTMENTS_REMINDERS_PAGE,
+  SET_APPOINTMENTS_REMINDERS_SORT_ORDER,
+  CANCEL_APPOINTMENT_REMINDER,
+  REVERSE_APPOINTMENT_REMINDER_CANCELLATION,
 } from 'redux/constants/Appointment';
 import {
   FROM_STAFF_APPOINTMENTS,
@@ -141,7 +147,7 @@ export const searchPatients = (payload) => ({
   payload,
 });
 
-export const deleteAppointemnt = (payload) => {
+export const deleteAppointment = (payload) => {
   switch (payload.actionFrom) {
     case FROM_STAFF_APPOINTMENTS:
       return {
@@ -155,7 +161,7 @@ export const deleteAppointemnt = (payload) => {
       };
     default:
       return {
-        type: DELETE_APPOINTEMNT,
+        type: DELETE_APPOINTMENT,
         payload,
       };
   }
@@ -166,7 +172,7 @@ export const filterDeletedAppointment = (payload) => ({
   payload,
 });
 
-export const endAppointemnt = (payload) => ({
+export const endAppointment = (payload) => ({
   type: END_APPOINTMENT,
   payload,
 });
@@ -195,5 +201,35 @@ export const getMoreSearchResults = () => ({
 
 export const addMorePatientsAutocomplete = (payload) => ({
   type: APPEND_MORE_PATIENTS_AUTOCOMPLETE,
+  payload,
+});
+
+export const setAppointmentsRemindersPageLoading = (payload) => ({
+  type: SET_APPOINTMENTS_REMINDERS_PAGE_LOADING,
+  payload,
+});
+
+export const getAppointmentsRemindersPage = (payload) => ({
+  type: GET_APPOINTMENTS_REMINDERS_PAGE,
+  payload,
+});
+
+export const setAppointmentsRemindersPage = (payload) => ({
+  type: SET_APPOINTMENTS_REMINDERS_PAGE,
+  payload,
+});
+
+export const setAppointmentsRemindersOrder = (payload) => ({
+  type: SET_APPOINTMENTS_REMINDERS_SORT_ORDER,
+  payload,
+});
+
+export const cancelAppointmentReminder = (payload) => ({
+  type: CANCEL_APPOINTMENT_REMINDER,
+  payload,
+});
+
+export const reverseAppointmentReminderCancellation = (payload) => ({
+  type: REVERSE_APPOINTMENT_REMINDER_CANCELLATION,
   payload,
 });

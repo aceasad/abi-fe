@@ -37,7 +37,7 @@ export default defineMessages({
     defaultMessage: 'Edit',
   },
   noAppointments: {
-    id: `${scope}.text.no_appointemnts_for_date`,
+    id: `${scope}.text.no_appointments_for_date`,
     defaultMessage: 'No appointments for selected date',
   },
   appointmentDetails: {
@@ -45,8 +45,8 @@ export default defineMessages({
     defaultMessage: 'Appointment Details',
   },
   endAppointment: {
-    id: `${scope}.text.end_appointemnt`,
-    defaultMessage: 'End Appointemnt',
+    id: `${scope}.text.end_appointment`,
+    defaultMessage: 'End Appointment',
   },
   patient: {
     id: `${scope}.text.patient`,
@@ -89,7 +89,7 @@ export default defineMessages({
     defaultMessage: 'Appointment Status',
   },
   deleteAppointment: {
-    id: `${scope}.text.delete_appointemnt`,
+    id: `${scope}.text.delete_appointment`,
     defaultMessage: 'Delete Appointment?',
   },
   cancel: {
@@ -104,9 +104,9 @@ export default defineMessages({
     id: `${scope}.text.delete_message`,
     defaultMessage: 'Are you sure you want to delete this appointment?',
   },
-  appointemntDeleted: {
-    id: `${scope}.text.appointemnt_deleted`,
-    defaultMessage: 'Appointemnt deleted',
+  appointmentDeleted: {
+    id: `${scope}.text.appointment_deleted`,
+    defaultMessage: 'Appointment deleted',
   },
   yes: {
     id: `${globalScope}.text.yes`,

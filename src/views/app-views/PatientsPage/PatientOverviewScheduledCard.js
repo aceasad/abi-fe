@@ -13,8 +13,9 @@ import {
 import { SCHEDULED_APPOINTMENT } from 'constants/ClinicConstants';
 import AppointmentFormWrapper from '../AppointmentsPage/AppointmentFormWrapper';
 import CreateAppointment from '../AppointmentsPage/CreateAppointment';
+import { RenderPredictionText } from 'utils/helpers';
 
-const { Title, Text } = Typography;
+const { Title } = Typography;
 
 const prepareField = (order, field) => {
   const base = order === ORDERING.DESC ? '-' : '';
@@ -31,17 +32,10 @@ const prepareField = (order, field) => {
 };
 
 const PatientOverviewScheduledCard = ({ patient, showAppointment }) => {
-  const predictionOption = 'Likely to be missed';
   const dispatch = useDispatch();
 
   const { items, loading, count, page } = useSelector(
     makeSelectScheduledAppointments()
-  );
-
-  const renderPredictionText = (prediction) => (
-    <Text type={prediction === predictionOption ? 'danger' : 'success'}>
-      {prediction}
-    </Text>
   );
 
   const handlePaginationChange = (page) => {
@@ -90,9 +84,9 @@ const PatientOverviewScheduledCard = ({ patient, showAppointment }) => {
     },
     {
       title: formatMessage(messages.columnTitlePrediction),
-      dataIndex: 'prediction',
+      dataIndex: 'no_show_score',
       sorter: true,
-      render: renderPredictionText,
+      render: RenderPredictionText,
     },
   ];
 

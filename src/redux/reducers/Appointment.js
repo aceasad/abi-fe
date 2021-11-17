@@ -1,3 +1,4 @@
+import { baseState } from 'constants/ClinicConstants';
 import {
   SET_DOCTOR_APPOINTMENTS,
   SET_DATE_APPOINTMENTS,
@@ -16,6 +17,8 @@ import {
   SET_PATIENTS_LOADING_AUTOCOMPLETE,
   RESET_PATIENTS_AUTOCOMPLETE,
   APPEND_MORE_PATIENTS_AUTOCOMPLETE,
+  SET_APPOINTMENTS_REMINDERS_PAGE,
+  SET_APPOINTMENTS_REMINDERS_PAGE_LOADING,
 } from '../constants/Appointment';
 import produce from 'immer';
 
@@ -40,6 +43,7 @@ const initialState = {
   appointmentStatus: [],
   appointmentStatusLoading: false,
   missingReasons: [],
+  appointmentsReminders: { ...baseState },
 };
 
 const appointment = (state = initialState, action) =>
@@ -135,6 +139,19 @@ const appointment = (state = initialState, action) =>
           all: [],
           next: null,
         };
+        break;
+
+      case SET_APPOINTMENTS_REMINDERS_PAGE:
+        draft.appointmentsReminders = {
+          ...state.appointmentsReminders,
+          items: action.payload.results,
+          count: action.payload.count,
+          page: action.payload,
+        };
+        break;
+
+      case SET_APPOINTMENTS_REMINDERS_PAGE_LOADING:
+        draft.appointmentsReminders.loading = action.payload;
         break;
     }
   });

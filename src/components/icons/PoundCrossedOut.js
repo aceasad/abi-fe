@@ -4,7 +4,7 @@ const PoundCrossedOut = ({ size, color }) => {
   return (
     <svg
       id="Capa_1"
-      dataName="Capa 1"
+      dataname="Capa 1"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 500 500"
       width={size}

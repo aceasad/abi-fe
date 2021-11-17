@@ -9,7 +9,7 @@ import Form from 'antd/lib/form/Form';
 import FormTextArea from 'components/custom-components/Form/FormTextArea';
 import { endAppointmentSchema } from 'utils/validations';
 import { useDispatch, useSelector } from 'react-redux';
-import { endAppointemnt, getMissingReasons } from 'redux/actions/Appointment';
+import { endAppointment, getMissingReasons } from 'redux/actions/Appointment';
 import {
   makeSelectMissingReasons,
   makeSelectSingleAppointmentLoading,
@@ -82,7 +82,7 @@ const EndAppointment = ({
 
   const handleSubmit = (values) => {
     dispatch(
-      endAppointemnt({
+      endAppointment({
         id,
         data: prepareData(values),
         missing_reason: missingReasons.find(
