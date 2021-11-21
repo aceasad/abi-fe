@@ -24,6 +24,7 @@ export const AvatarStatus = (props) => {
     gap,
     text,
     onNameClick,
+    blink,
   } = props;
   return (
     <div className="avatar-status d-flex align-items-center">
@@ -33,12 +34,12 @@ export const AvatarStatus = (props) => {
           {onNameClick ? (
             <div
               onClick={() => onNameClick({ name, subTitle, src, id })}
-              className="avatar-status-name clickable"
+              className={`avatar-status-name clickable${blink}`}
             >
               {name}
             </div>
           ) : (
-            <div className="avatar-status-name">{name}</div>
+            <div className={`avatar-status-name${blink}`}>{name}</div>
           )}
           <span>{suffix}</span>
         </div>

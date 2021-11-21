@@ -25,6 +25,7 @@ import {
   TOGGLE_PATIENT_WHITELIST,
   GET_SCHEDULED_APPOINTMENTS,
   GET_APPOINTMENT_HISTORY,
+  MARK_CONVERSATION_HUMAN_NOT_REQUIRED,
 } from '../constants/Patient';
 
 export const getPatients = () => ({
@@ -151,5 +152,10 @@ export const getScheduledAppointments = (payload) => ({
 
 export const getAppointmentHistory = (payload) => ({
   type: GET_APPOINTMENT_HISTORY,
+  payload,
+});
+
+export const markConversationHumanNotRequired = (payload) => ({
+  type: MARK_CONVERSATION_HUMAN_NOT_REQUIRED,
   payload,
 });

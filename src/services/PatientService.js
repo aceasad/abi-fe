@@ -12,6 +12,8 @@ const ENDPOINTS = {
   GET_APPOINTMENT_HISTORY: '/appointments/passed-appointments/',
   SEARCH_PATIENTS: '/patients-search/',
   GET_MASS_INVITE_PATIENTS_COUNT: '/patients/mass-invite-patients-count/',
+  MARK_CONVERSATION_HUMAN_NOT_REQUIRED:
+    '/patients/:id/mark-conversation-human-not-required/',
 };
 
 class PatientService extends ApiService {
@@ -77,6 +79,11 @@ class PatientService extends ApiService {
         gender,
       },
     });
+
+  markConversationHumanNotRequired = (id) =>
+    this.apiClient.post(
+      ENDPOINTS.MARK_CONVERSATION_HUMAN_NOT_REQUIRED.replace(':id', id)
+    );
 }
 
 const patientService = new PatientService();

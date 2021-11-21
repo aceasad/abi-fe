@@ -15,6 +15,8 @@ import {
   SET_SINGLE_CHAT,
   SET_SINGLE_CHAT_LOADING,
   TOGGLE_RASA_ACTIVITY,
+  TRIGGER_SEARCH_CONVERSATIONS,
+  CLEAR_TRIGGER_SEARCH_CONVERSATIONS,
 } from 'redux/constants/Chats';
 
 export const getSingleChat = (payload) => ({
@@ -93,4 +95,12 @@ export const sendMassInvite = (payload) => ({
 
 export const resetChats = () => ({
   type: RESET_CHAT_REDUCER,
+});
+
+export const triggerSearchConversations = () => ({
+  type: TRIGGER_SEARCH_CONVERSATIONS,
+});
+
+export const clearTriggerSearchConversations = () => ({
+  type: CLEAR_TRIGGER_SEARCH_CONVERSATIONS,
 });

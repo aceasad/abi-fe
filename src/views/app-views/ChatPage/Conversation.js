@@ -1,5 +1,4 @@
-import Loading from 'components/shared-components/Loading';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
@@ -14,6 +13,8 @@ import ChatContentFooter from './ChatContentFooter';
 import ChatContentHeader from './ChatContentHeader';
 import WebSocketClient from 'services/WebSocketClient';
 import { useLazyLoad } from 'utils/hooks';
+import { markConversationHumanNotRequired } from 'redux/actions/Patient';
+import { triggerSearchConversations } from 'redux/actions/Chats';
 
 const Conversation = ({
   conversationId,
@@ -90,6 +91,12 @@ const Conversation = ({
     false
   );
 
+  const handleOnClickMarkResolved = async (patient_id) => {
+    await dispatch(markConversationHumanNotRequired(patient_id));
+    dispatch(triggerSearchConversations());
+    getConversation(patient_id);
+  };
+
   return (
     <div className="chat-content">
       <ChatContentHeader
@@ -97,6 +104,7 @@ const Conversation = ({
         chatLoading={loading}
         isMenuVisible={isMenuVisible}
         BackAction={BackAction}
+        onClickMarkResolved={handleOnClickMarkResolved}
       />
       <div className="chat-content-body">
         <Scrollbars

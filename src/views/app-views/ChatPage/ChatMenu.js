@@ -12,6 +12,7 @@ import {
   getMoreChatsInfo,
   setConversationToRead,
   searchConversations,
+  clearTriggerSearchConversations,
 } from 'redux/actions/Chats';
 import { useDispatch, useSelector } from 'react-redux';
 import { makeSelectAllChatsInfo } from 'redux/selectors/Chats';
@@ -20,7 +21,7 @@ import Scrollbars from 'react-custom-scrollbars';
 import { CHAT_FILTERS, MESSAGE_STATUS } from 'constants/ChatConstants';
 import { Option } from 'antd/lib/mentions';
 
-const ChatMenu = () => {
+const ChatMenu = (props) => {
   const history = useHistory();
   const location = useLocation();
   const match = useRouteMatch();
@@ -57,11 +58,19 @@ const ChatMenu = () => {
   const [filter, setFilter] = useState(CONVERSATION_FILTERS[0].value);
 
   useEffect(() => {
-    // this will trigger iniitial data load
+    // this will trigger initial data load
     if (query === debouncedSearch) {
       dispatch(searchConversations({ query, filter }));
     }
-  }, [debouncedSearch]);
+  }, [dispatch, query, filter, debouncedSearch]);
+
+  useEffect(() => {
+    // this will trigger triggered data load
+    if (props.triggerSearchConversations) {
+      dispatch(searchConversations({ query, filter }));
+      dispatch(clearTriggerSearchConversations());
+    }
+  }, [dispatch, query, filter, props.triggerSearchConversations]);
 
   useEffect(() => {
     nextRef.current = next;
@@ -134,37 +143,36 @@ const ChatMenu = () => {
       </div>
       <div className="chat-menu-list">
         <Scrollbars id="chat-menu-scroll" ref={menuRef} autoHide={false}>
-          {items.map((item, index) => {
-            return (
-              <div
-                key={`chat-item-${item.patient.id}${index}`}
-                onClick={() => openChat(item.patient.id)}
-                className={chatListItemStyle(
-                  items.length,
-                  item.patient.id,
-                  index,
-                  currentChatID
-                )}
-              >
-                <AvatarStatus
-                  src={item.patient.picture}
-                  name={item.patient.full_name}
-                  subTitle={item.last_message.text}
-                />
-                <div className="text-right">
-                  <div className="chat-menu-list-item-time">
-                    {formatMessageTimestamp(item.last_message.created_at)}
-                  </div>
-                  {item?.last_message.status === MESSAGE_STATUS.SENT &&
-                  !item?.last_message.is_answer ? (
-                    <Badge count={1} style={{ backgroundColor: COLOR_1 }} />
-                  ) : (
-                    <span></span>
-                  )}
+          {items.map((item, index) => (
+            <div
+              key={`chat-item-${item.patient.id}${index}`}
+              onClick={() => openChat(item.patient.id)}
+              className={chatListItemStyle(
+                items.length,
+                item.patient.id,
+                index,
+                currentChatID
+              )}
+            >
+              <AvatarStatus
+                src={item.patient.picture}
+                name={item.patient.full_name}
+                subTitle={item.last_message.text}
+                blink={item.patient.is_human_required ? ' blink' : ''}
+              />
+              <div className="text-right">
+                <div className="chat-menu-list-item-time">
+                  {formatMessageTimestamp(item.last_message.created_at)}
                 </div>
+                {item?.last_message.status === MESSAGE_STATUS.SENT &&
+                !item?.last_message.is_answer ? (
+                  <Badge count={1} style={{ backgroundColor: COLOR_1 }} />
+                ) : (
+                  <span></span>
+                )}
               </div>
-            );
-          })}
+            </div>
+          ))}
         </Scrollbars>
       </div>
     </div>

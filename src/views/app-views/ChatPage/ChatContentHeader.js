@@ -6,7 +6,7 @@ import {
 import { Checkbox, Menu } from 'antd';
 import EllipsisDropdown from 'components/shared-components/EllipsisDropdown';
 import { useToggleRasaActivity } from 'queries/shared';
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleRasaActivity } from 'redux/actions/Chats';
@@ -18,6 +18,7 @@ const ChatContentHeader = ({
   chatLoading,
   isMenuVisible,
   BackAction,
+  onClickMarkResolved,
 }) => {
   const { formatMessage } = useIntl();
   const dispatch = useDispatch();
@@ -39,6 +40,13 @@ const ChatContentHeader = ({
     },
   ];
 
+  const [resolveClicked, setResolveClicked] = useState(false);
+
+  const onClickMarkResolvedWrapper = (patient_id) => {
+    setResolveClicked(true);
+    onClickMarkResolved(patient_id);
+  };
+
   const renderMenu = () => {
     return (
       <Menu>
@@ -58,7 +66,25 @@ const ChatContentHeader = ({
   return (
     chatInfo && (
       <div className="chat-content-header">
-        {showTitle && <h4 className="mb-0">{chatInfo.patient.full_name}</h4>}
+        {showTitle && (
+          <h4
+            className={`mb-0${
+              chatInfo.patient.is_human_required ? ' blink' : ''
+            }`}
+          >
+            {chatInfo.patient.full_name}
+          </h4>
+        )}
+        {!chatLoading && chatInfo.patient.is_human_required && (
+          <Checkbox
+            key={`checkbox-human-resolve`}
+            defaultChecked={false}
+            disabled={isLoading || resolveClicked}
+            onChange={() => onClickMarkResolvedWrapper(chatInfo.patient.id)}
+          >
+            {formatMessage(messages.markResolved)}
+          </Checkbox>
+        )}
         {!chatLoading && (
           <Checkbox
             key={`checkbox-rasa-x`}

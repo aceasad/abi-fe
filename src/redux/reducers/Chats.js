@@ -11,6 +11,8 @@ import {
   SET_SINGLE_CHAT,
   SET_SINGLE_CHAT_LOADING,
   TOGGLE_RASA_ACTIVITY,
+  TRIGGER_SEARCH_CONVERSATIONS,
+  CLEAR_TRIGGER_SEARCH_CONVERSATIONS,
 } from 'redux/constants/Chats';
 import {
   ALL_CHATS_PAGINATION_LIMIT,
@@ -145,8 +147,19 @@ const chats = (state = initialState, action) =>
         }
         break;
       }
+      case TRIGGER_SEARCH_CONVERSATIONS: {
+        draft.triggerSearchConversations = true;
+        break;
+      }
+      case CLEAR_TRIGGER_SEARCH_CONVERSATIONS: {
+        draft.triggerSearchConversations = null;
+        break;
+      }
       case RESET_CHAT_REDUCER: {
         return initialState;
+      }
+      default: {
+        return state;
       }
     }
   });

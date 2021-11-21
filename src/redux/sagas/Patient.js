@@ -17,6 +17,7 @@ import {
   CHANGE_PATIENT,
   GET_APPOINTMENT_HISTORY,
   GET_SCHEDULED_APPOINTMENTS,
+  MARK_CONVERSATION_HUMAN_NOT_REQUIRED,
 } from 'redux/constants/Patient';
 import {
   setPatientDetails,
@@ -166,6 +167,12 @@ function* changePatient({ payload }) {
   } catch (err) {}
 }
 
+function* markConversationHumanNotRequired({ payload }) {
+  try {
+    yield call(patientService.markConversationHumanNotRequired, payload);
+  } catch (err) {}
+}
+
 export function* patientSaga() {
   yield takeEvery(GET_PATIENTS, getPatients);
   yield takeEvery(SET_PATIENT_PAGE, getPatients);
@@ -189,6 +196,10 @@ export function* patientSaga() {
   yield takeEvery(CHANGE_PATIENT, changePatient);
   yield takeEvery(GET_APPOINTMENT_HISTORY, getAppointmentHistory);
   yield takeEvery(GET_SCHEDULED_APPOINTMENTS, getScheduledAppointments);
+  yield takeEvery(
+    MARK_CONVERSATION_HUMAN_NOT_REQUIRED,
+    markConversationHumanNotRequired
+  );
 }
 
 export default function* rootSaga() {
