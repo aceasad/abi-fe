@@ -21,7 +21,7 @@
 }
 .blink {
   animation: blink 3s infinite;
-  color: #cc0000;
+  color: #cc0000 !important;
 }
 @keyframes blink {
   0% {
