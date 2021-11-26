@@ -2,6 +2,7 @@ import Modal from 'antd/lib/modal/Modal';
 import React from 'react';
 import { useIntl } from 'react-intl';
 import messages from './messages';
+import appointmentsPageMessages from '../AppointmentsPage/messages';
 import { CloseOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import Loading from 'components/shared-components/Loading';
 import { useSelector } from 'react-redux';
@@ -10,6 +11,7 @@ import { Button, Space, Typography } from 'antd';
 import { NESTED_MODAL } from 'views/app-views/CalendarPage/AppointmentPreview';
 import Flex from 'components/shared-components/Flex';
 import RowWithMultipleColumns from 'components/util-components/Grid/RowWithMultipleColumns';
+import { RenderPredictionText } from 'utils/helpers';
 
 function PreviewModal({ handleClose, showDelete, showEnd, setNewData }) {
   const { formatMessage } = useIntl();
@@ -72,6 +74,10 @@ function PreviewModal({ handleClose, showDelete, showEnd, setNewData }) {
     {
       label: formatMessage(messages.appointmentPrice),
       value: `£${appointment?.price}`,
+    },
+    {
+      label: formatMessage(appointmentsPageMessages.appointmentPrediction),
+      value: RenderPredictionText(appointment),
     },
   ];
 

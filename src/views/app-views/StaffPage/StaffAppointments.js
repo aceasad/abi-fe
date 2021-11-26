@@ -9,6 +9,7 @@ import { HISTORY, SCHEDULED } from 'redux/reducers/Staff';
 import { getSignleAppointmnet } from 'redux/actions/Appointment';
 import AppointmentPreview from '../CalendarPage/AppointmentPreview';
 import { FROM_STAFF_APPOINTMENTS } from 'constants/ClinicConstants';
+import { RenderPredictionText } from 'utils/helpers';
 
 const STATUS_OPTIONS = {
   SCHEDULED: 'Scheduled',
@@ -92,7 +93,13 @@ const StaffAppointments = ({ staffId, showList }) => {
               title: formatMessage(messages.columnTitlePrediction),
               dataIndex: 'prediction',
               sorter: true,
-              render: '',
+              render: RenderPredictionText,
+            },
+            {
+              title: formatMessage(messages.columnTitleStatus),
+              dataIndex: ['status', 'name'],
+              sorter: true,
+              render: statusColor,
             },
           ]}
           onRow={(record) => {
@@ -131,6 +138,12 @@ const StaffAppointments = ({ staffId, showList }) => {
               title: formatMessage(messages.columnTitleType),
               dataIndex: ['appointment_type', 'name'],
               sorter: true,
+            },
+            {
+              title: formatMessage(messages.columnTitlePrediction),
+              dataIndex: 'prediction',
+              sorter: true,
+              render: RenderPredictionText,
             },
             {
               title: formatMessage(messages.columnTitleStatus),

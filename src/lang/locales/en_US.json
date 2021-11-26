@@ -457,7 +457,10 @@
   "appointments_page.text.attend_question": "Did patient attend the appointment?",
   "appointments_page.text.reason": "Reason",
   "appointments_page.text.end_success": "Appointment Ended",
-
+  "appointments_page.text.appointment_prediction": "Prediction",
+  "appointments_page.message.appointment_prediction_missed": "Likely to be missed",
+  "appointments_page.message.appointment_prediction_attended": "Likely to be attended",
+  
   "overview_page.title": "Overview",
   "overview_page.select.today": "Today",
   "overview_page.select.week": "Last 7 days",

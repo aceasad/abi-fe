@@ -1,7 +1,11 @@
+import { useIntl } from 'react-intl';
 import { WS_CHAT_URL } from 'constants/ApiConstant';
 import { MESSAGE_TYPE, MESSAGE_STATUS } from 'constants/ChatConstants';
 import { MONTH_FORMAT_MM, YEAR_FORMAT_YYYY } from 'constants/DateConstant';
 import moment from 'moment';
+import { NO_SHOW_SCORE_THRESHOLD } from './constants';
+import { Typography } from 'antd';
+import appointmentsPageMessages from 'views/app-views/AppointmentsPage/messages';
 
 export const prepareFormData = (obj) =>
   Object.keys(obj).reduce((accumulator, currentValue) => {
@@ -202,4 +206,35 @@ export const updateConversation = (conversation, newMessagePayload) => {
     offset: conversation.offset + 1,
     scrollDown: true,
   };
+};
+
+export const getNoShowScore = (data) => Number(data?.no_show_score || '0');
+
+export const RenderPredictionText = (data) => {
+  const { formatMessage } = useIntl();
+
+  const likelyToBeMissed = formatMessage(
+    appointmentsPageMessages.appointmentPredictionMissed
+  );
+  const likelyToBeAttended = formatMessage(
+    appointmentsPageMessages.appointmentPredictionAttended
+  );
+
+  const noShowScore = getNoShowScore(
+    data && data.hasOwnProperty('no_show_score')
+      ? data
+      : { no_show_score: data }
+  );
+
+  const predictionText =
+    noShowScore >= NO_SHOW_SCORE_THRESHOLD
+      ? likelyToBeMissed
+      : likelyToBeAttended;
+  return (
+    <Typography.Text
+      type={predictionText === likelyToBeMissed ? 'danger' : 'success'}
+    >
+      {predictionText}
+    </Typography.Text>
+  );
 };

@@ -71,4 +71,16 @@ export default defineMessages({
     id: `${scope}.form.placeholder.search`,
     defaultMessage: 'Search...',
   },
+  appointmentPrediction: {
+    id: `${scope}.text.appointment_prediction`,
+    defaultMessage: 'Prediction',
+  },
+  appointmentPredictionMissed: {
+    id: `${scope}.message.appointment_prediction_missed`,
+    defaultMessage: 'Likely to be missed',
+  },
+  appointmentPredictionAttended: {
+    id: `${scope}.message.appointment_prediction_attended`,
+    defaultMessage: 'Likely to be attended',
+  },
 });

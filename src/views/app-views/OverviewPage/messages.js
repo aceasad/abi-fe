@@ -131,9 +131,13 @@ export default defineMessages({
     id: `${scope}.list.attention`,
     defaultMessage: 'Messages requiring immediate attention',
   },
-  listScreening: {
-    id: `${scope}.list.screening`,
+  listScreeningInvitesSent: {
+    id: `${scope}.list.screeningInvitesSent`,
     defaultMessage: 'Screening invite messages sent',
+  },
+  listScreeningRemindersPending: {
+    id: `${scope}.list.screeningRemindersPending`,
+    defaultMessage: 'Screening reminder messages pending',
   },
   listSeeAll: {
     id: `${scope}.list.see_all`,
@@ -222,5 +226,65 @@ export default defineMessages({
   bookingInvitationTooltip: {
     id: `${scope}.booking.tooltip.invitation_rate`,
     defaultMessage: 'Invitation rate',
+  },
+  appointmentsRemindersSelectScheduled: {
+    id: `${scope}.appointments.reminders.select.scheduled`,
+    defaultMessage: 'Scheduled',
+  },
+  appointmentsRemindersSelectCancelled: {
+    id: `${scope}.appointments.reminders.select.cancelled`,
+    defaultMessage: 'Cancelled',
+  },
+  appointmentsRemindersCancel: {
+    id: `${scope}.appointments.reminders.cancel`,
+    defaultMessage: 'Cancel appointment reminder',
+  },
+  appointmentsRemindersReverseCancellation: {
+    id: `${scope}.appointments.reminders.reverse_cancellation`,
+    defaultMessage: 'Reverse appointment reminder cancellation',
+  },
+  appointmentsRemindersColumnPatientFullname: {
+    id: `${scope}.appointments.reminders.column.patient_fulltime`,
+    defaultMessage: 'Patient',
+  },
+  appointmentsRemindersColumnReminderDatetime: {
+    id: `${scope}.appointments.reminders.column.reminder_datetime`,
+    defaultMessage: 'Reminder',
+  },
+  appointmentsRemindersColumnAppointmentDatetime: {
+    id: `${scope}.appointments.reminders.column.appointment_datetime`,
+    defaultMessage: 'Appointment',
+  },
+  appointmentsRemindersCancelled: {
+    id: `${scope}.appointments.reminders.cancelled`,
+    defaultMessage: 'Appointment reminder cancelled',
+  },
+  appointmentsRemindersCancellationReversed: {
+    id: `${scope}.appointments.reminders.cancellation_reversed`,
+    defaultMessage: 'Appointment reminder cancellation reversed',
+  },
+  appointmentsRemindersListTitle: {
+    id: `${scope}.appointments.reminders.list_title`,
+    defaultMessage: 'Upcoming screening appointment reminders',
+  },
+  appointmentsRemindersCancelTitle: {
+    id: `${scope}.appointments.reminders.cancel_title`,
+    defaultMessage: 'Cancel',
+  },
+  appointmentsRemindersCancelDescription: {
+    id: `${scope}.appointments.reminders.cancel_description`,
+    defaultMessage: 'Are you sure that you want to cancel {label}?',
+  },
+  appointmentsRemindersReverseCancellationTitle: {
+    id: `${scope}.appointments.reminders.reverse_cancellation_title`,
+    defaultMessage: 'Reverse cancellation',
+  },
+  appointmentsRemindersReverseCancellationDescription: {
+    id: `${scope}.appointments.reminders.reverse_cancellation_description`,
+    defaultMessage: 'Are you sure that you want to reverse {label}?',
+  },
+  appointmentsRemindersClose: {
+    id: `${scope}.appointments.reminders.close`,
+    defaultMessage: 'Close',
   },
 });
