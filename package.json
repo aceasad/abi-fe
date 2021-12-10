@@ -108,5 +108,5 @@
       "pre-commit": "pretty-quick --staged"
     }
   },
-  "homepage": "abi-fe"
+  "homepage": "/abi-fe"
 }

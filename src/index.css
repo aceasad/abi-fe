@@ -19,6 +19,19 @@
 .loading .ant-spin {
   color: #5d4ebf;
 }
+.blink {
+  animation: blink 3s infinite;
+  color: #cc0000 !important;
+}
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
 .badge-color-warning {
   color: rgb(255, 197, 66);
 }

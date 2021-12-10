@@ -1,24 +1,25 @@
 import { Button, PageHeader, Typography } from 'antd';
 import InnerAppLayout from 'layouts/inner-app-layout';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import ChatContent from './ChatContent';
 import ChatMenu from './ChatMenu';
 import messages from './messages';
-import { useSocket } from 'utils/hooks';
 import { useDispatch, useSelector } from 'react-redux';
 import { makeSelectLoginDetails } from 'redux/selectors/Auth';
 import { createWebsocketUrl, parseReceivedEvent } from 'utils/helpers';
 import { addOneMessage, resetChats } from 'redux/actions/Chats';
 import MassInviteModal from './MassInviteModal';
 import WebSocketClient from 'services/WebSocketClient';
-import { MESSAGE_STATUS } from 'constants/ChatConstants';
 import { useMarkConversationAsRead } from 'queries/shared';
+import { MESSAGE_STATUS } from 'constants/ChatConstants';
 
 const Chat = () => {
   const { formatMessage } = useIntl();
 
   const { token } = useSelector(makeSelectLoginDetails());
+
+  const { triggerSearchConversations } = useSelector((state) => state.chats);
 
   const dispatch = useDispatch();
 
@@ -76,7 +77,9 @@ const Chat = () => {
 
       <div className="chat">
         <InnerAppLayout
-          sideContent={<ChatMenu />}
+          sideContent={
+            <ChatMenu triggerSearchConversations={triggerSearchConversations} />
+          }
           mainContent={<ChatContent />}
           sideContentWidth={450}
           sideContentGutter={false}

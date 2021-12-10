@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: abi-fe
-        image: 474054470595.dkr.ecr.eu-west-2.amazonaws.com/spryt:abi-fe-v1.0.0
+        image: 474054470595.dkr.ecr.eu-west-2.amazonaws.com/spryt-dev:abi-fe-v1.0.0
         ports:
         - containerPort: 80
         imagePullPolicy: Always
