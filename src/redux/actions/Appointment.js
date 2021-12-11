@@ -19,7 +19,7 @@ import {
   SET_APPOINTMENT_TYPES_LOADING,
   SET_APPOINTMENT_STATUS_LOADING,
   SEARCH_PATIENTS,
-  DELETE_APPOINTEMNT,
+  DELETE_APPOINTMENT,
   FILTER_DELETED_APPOINTMENT,
   END_APPOINTMENT,
   GET_MISSING_REASONS,
@@ -62,7 +62,7 @@ export const setAppointmentsLoading = (payload) => ({
   payload,
 });
 
-export const getSignleAppointmnet = (payload) => ({
+export const getSingleAppointment = (payload) => ({
   type: GET_SINGLE_APPOINTMENT,
   payload,
 });
@@ -141,7 +141,7 @@ export const searchPatients = (payload) => ({
   payload,
 });
 
-export const deleteAppointemnt = (payload) => {
+export const deleteAppointment = (payload) => {
   switch (payload.actionFrom) {
     case FROM_STAFF_APPOINTMENTS:
       return {
@@ -155,7 +155,7 @@ export const deleteAppointemnt = (payload) => {
       };
     default:
       return {
-        type: DELETE_APPOINTEMNT,
+        type: DELETE_APPOINTMENT,
         payload,
       };
   }
@@ -166,7 +166,7 @@ export const filterDeletedAppointment = (payload) => ({
   payload,
 });
 
-export const endAppointemnt = (payload) => ({
+export const endAppointment = (payload) => ({
   type: END_APPOINTMENT,
   payload,
 });

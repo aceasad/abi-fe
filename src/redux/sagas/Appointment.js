@@ -19,13 +19,13 @@ import {
   GET_MORE_SEARCH_RESULTS,
   DELETE_APPOINTMENT_FROM_PATIENTS,
   DELETE_APPOINTMENT_FROM_STAFF,
-  DELETE_APPOINTEMNT,
+  DELETE_APPOINTMENT,
 } from 'redux/constants/Appointment';
 import {
   appendToAllDoctors,
   appendToAppointmentStatus,
   appendToAppointmentTypes,
-  getSignleAppointmnet,
+  getSingleAppointment,
   filterDeletedAppointment,
   setAppointmentsLoading,
   setAppointmentStatusLoading,
@@ -89,7 +89,7 @@ export function* getDateAppointments({ payload }) {
   } catch {}
 }
 
-export function* getSingleAppointment({ payload }) {
+export function* getSingleAppointmentWrapper({ payload }) {
   try {
     yield put(setSignleAppointmnetLoading(true));
     const { data } = yield call(
@@ -120,7 +120,7 @@ export function* deleteAppointmentFromCalendarView({ payload }) {
   }
 }
 
-export function* deleteAppointemntFromPatients({ payload }) {
+export function* deleteAppointmentFromPatients({ payload }) {
   try {
     yield put(setSignleAppointmnetLoading(true));
     yield call(appointmentService.deleteAppointment, payload.data.id);
@@ -235,10 +235,10 @@ export function* getMissingReasons() {
   } catch {}
 }
 
-export function* endAppointemnt({ payload }) {
+export function* endAppointment({ payload }) {
   try {
     yield put(setSignleAppointmnetLoading(true));
-    const { data } = yield call(appointmentService.endAppointemnt, payload);
+    const { data } = yield call(appointmentService.endAppointment, payload);
     yield payload.afterEnd();
     yield put(setSignleAppointmnet(data));
   } catch {
@@ -253,15 +253,15 @@ export function* dateAppointments() {
 
 export function* doctorAppointments() {
   yield takeEvery(GET_DOCTOR_APPOINTMENTS, getDoctorAppointments);
-  yield takeEvery(GET_SINGLE_APPOINTMENT, getSingleAppointment);
+  yield takeEvery(GET_SINGLE_APPOINTMENT, getSingleAppointmentWrapper);
   yield takeEvery(
     DELETE_APPOINTMENT_FROM_PATIENTS,
-    deleteAppointemntFromPatients
+    deleteAppointmentFromPatients
   );
   yield takeEvery(DELETE_APPOINTMENT_FROM_STAFF, deleteAppointmentFromStaff);
-  yield takeEvery(DELETE_APPOINTEMNT, deleteAppointmentFromCalendarView);
+  yield takeEvery(DELETE_APPOINTMENT, deleteAppointmentFromCalendarView);
   yield takeEvery(GET_MISSING_REASONS, getMissingReasons);
-  yield takeEvery(END_APPOINTMENT, endAppointemnt);
+  yield takeEvery(END_APPOINTMENT, endAppointment);
 }
 
 export function* createAppointmentSaga() {
@@ -288,7 +288,7 @@ export function* updateAppointmentSaga() {
       yield put(setSignleAppointmnetLoading(true));
       yield call(appointmentService.updateAppointment, payload);
       yield payload.afterUpdate();
-      yield put(getSignleAppointmnet(payload.id));
+      yield put(getSingleAppointment(payload.id));
     } catch (error) {
       yield payload.afterError(error?.response?.data[0]);
     } finally {

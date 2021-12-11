@@ -65,7 +65,7 @@ class AppointmentService extends ApiService {
 
   getMissingReasons = () => this.apiClient.get(ENDPOINTS.GET_MISSING_REASONS);
 
-  endAppointemnt = ({ id, data }) =>
+  endAppointment = ({ id, data }) =>
     this.apiClient.post(`${ENDPOINTS.GET_APPOINTMENTS}${id}/end/`, data);
 }
 

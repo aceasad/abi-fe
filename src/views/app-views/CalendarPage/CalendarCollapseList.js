@@ -7,7 +7,7 @@ import StaffPanelItem from './StaffPanelItem';
 import { useDispatch, useSelector } from 'react-redux';
 import messages from './messages';
 import Loading from 'components/shared-components/Loading';
-import { getSignleAppointmnet } from 'redux/actions/Appointment';
+import { getSingleAppointment } from 'redux/actions/Appointment';
 import AppointmentPreview from './AppointmentPreview';
 
 const { Panel } = Collapse;
@@ -21,7 +21,7 @@ const CalendarCollapseList = () => {
 
   const { formatMessage } = useIntl();
 
-  const [activeAppointemnt, setActiveAppointment] = useState(null);
+  const [activeAppointment, setActiveAppointment] = useState(null);
 
   const collapseHeader = (data) => (
     <div className="d-flex justify-content-between">
@@ -45,8 +45,8 @@ const CalendarCollapseList = () => {
   }, []);
 
   useEffect(() => {
-    if (activeAppointemnt) dispatch(getSignleAppointmnet(activeAppointemnt));
-  }, [activeAppointemnt]);
+    if (activeAppointment) dispatch(getSingleAppointment(activeAppointment));
+  }, [activeAppointment]);
 
   if (loading) return <Loading defaultSpinner />;
   return (
@@ -79,7 +79,7 @@ const CalendarCollapseList = () => {
       ) : (
         <div>{formatMessage(messages.noAppointments)}</div>
       )}
-      {activeAppointemnt && <AppointmentPreview handleClose={handleClose} />}
+      {activeAppointment && <AppointmentPreview handleClose={handleClose} />}
     </div>
   );
 };

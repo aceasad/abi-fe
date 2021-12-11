@@ -14,6 +14,7 @@ import { baseState } from 'constants/ClinicConstants';
 
 export const SCHEDULED = 'scheduled';
 export const HISTORY = 'history';
+export const LIKELY_TO_BE_MISSED = 'likely_to_be_missed';
 
 const initialState = {
   staff: [],
@@ -26,6 +27,7 @@ const initialState = {
   staffSingle: null,
   [SCHEDULED]: baseState,
   [HISTORY]: baseState,
+  [LIKELY_TO_BE_MISSED]: baseState,
 };
 
 /* eslint-disable default-case */

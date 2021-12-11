@@ -6,7 +6,7 @@ import { makeSelectStaff } from 'redux/selectors/Staff';
 import Appointments from './Appointments';
 import messages from '../PatientsPage/messages';
 import { HISTORY, SCHEDULED } from 'redux/reducers/Staff';
-import { getSignleAppointmnet } from 'redux/actions/Appointment';
+import { getSingleAppointment } from 'redux/actions/Appointment';
 import AppointmentPreview from '../CalendarPage/AppointmentPreview';
 import { FROM_STAFF_APPOINTMENTS } from 'constants/ClinicConstants';
 import { RenderPredictionText } from 'utils/helpers';
@@ -53,7 +53,7 @@ const StaffAppointments = ({ staffId, showList }) => {
   const [activeAppointment, setActiveAppointment] = useState(null);
 
   useEffect(() => {
-    activeAppointment && dispatch(getSignleAppointmnet(activeAppointment.id));
+    activeAppointment && dispatch(getSingleAppointment(activeAppointment.id));
   }, [activeAppointment]);
 
   return (
@@ -91,7 +91,7 @@ const StaffAppointments = ({ staffId, showList }) => {
             },
             {
               title: formatMessage(messages.columnTitlePrediction),
-              dataIndex: 'prediction',
+              dataIndex: 'no_show_score',
               sorter: true,
               render: RenderPredictionText,
             },
@@ -141,7 +141,7 @@ const StaffAppointments = ({ staffId, showList }) => {
             },
             {
               title: formatMessage(messages.columnTitlePrediction),
-              dataIndex: 'prediction',
+              dataIndex: 'no_show_score',
               sorter: true,
               render: RenderPredictionText,
             },

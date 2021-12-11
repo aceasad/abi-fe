@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import DeleteAppointmentModal from './DeleteAppointmentModal';
 import PreviewModal from './PreviewModal';
 import messages from './messages';
-import { deleteAppointemnt } from 'redux/actions/Appointment';
+import { deleteAppointment } from 'redux/actions/Appointment';
 import EndAppointment from './EndAppointment';
 import AppointmentFormWrapper from '../AppointmentsPage/AppointmentFormWrapper';
 import UpdateAppointment from '../AppointmentsPage/UpdateAppointment';
@@ -41,17 +41,17 @@ const AppointmentPreview = ({
   const showPreview = () =>
     setShowChildModal({ modal: NESTED_MODAL.NONE, data: null });
 
-  const showEndAppointemnt = (data) =>
+  const showEndAppointment = (data) =>
     setShowChildModal({ modal: NESTED_MODAL.END_APPOINTMENT, data });
 
   const afterDelete = () => {
-    message.success(formatMessage(messages.appointemntDeleted));
+    message.success(formatMessage(messages.appointmentDeleted));
     handleClose();
   };
 
   const handleDelete = () =>
     dispatch(
-      deleteAppointemnt({
+      deleteAppointment({
         data: showChildModal.data,
         afterDelete,
         ...aditionalSubmitData,
@@ -64,7 +64,7 @@ const AppointmentPreview = ({
         <PreviewModal
           handleClose={handleClose}
           showDelete={showDelete}
-          showEnd={showEndAppointemnt}
+          showEnd={showEndAppointment}
           setNewData={setNewData}
         />
       );
@@ -114,7 +114,7 @@ const AppointmentPreview = ({
         <PreviewModal
           handleClose={handleClose}
           showDelete={showDelete}
-          showEnd={showEndAppointemnt}
+          showEnd={showEndAppointment}
           setNewData={setNewData}
         />
       );

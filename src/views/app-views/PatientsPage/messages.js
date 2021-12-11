@@ -203,6 +203,14 @@ export default defineMessages({
     id: `${patientOverviewScope}.table.column_title.prediction`,
     defaultMessage: 'Prediction',
   },
+  columnTitleNoShowScore: {
+    id: `${patientOverviewScope}.table.column_title.no_show_score`,
+    defaultMessage: 'No Show Score',
+  },
+  columnTitleAppointment: {
+    id: `${patientOverviewScope}.table.column_title.appointment`,
+    defaultMessage: 'Appointment',
+  },
   columnTitleStatus: {
     id: `${patientOverviewScope}.table.column_title.status`,
     defaultMessage: 'Status',
