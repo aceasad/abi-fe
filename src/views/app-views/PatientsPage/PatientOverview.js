@@ -183,7 +183,7 @@ const PatientOverview = ({ patientId, showList, updatePatient }) => {
               <Title level={2} className="mb-0">
                 {formatMessage(messages.overviewTittle)}
               </Title>
-              <Badge count={7}>
+              <Badge>
                 <Button type="primary" onClick={() => setShowMessages(true)}>
                   <WhatsAppOutlined />{' '}
                   <span>{formatMessage(messages.overviewButtonMessages)}</span>
