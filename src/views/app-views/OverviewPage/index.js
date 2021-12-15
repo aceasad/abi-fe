@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import messages from './messages';
 import OverviewList from './OverviewList';
-// import OverviewTable from './OverviewTable';
 import GroupCollapse from './Groups/GroupCollapse';
 import Booking from './Groups/Booking';
 import Appointments from './Groups/Appointments';
@@ -15,6 +14,7 @@ import { getAppointmentsRemindersPage } from 'redux/actions/Appointment';
 import AppointmentsRemindersList from './AppointmentsRemindersList';
 import { makeSelectAppointmentsReminders } from 'redux/selectors/Appointment';
 import { useSelector } from 'react-redux';
+import AppointmentsLikelyToBeMissed from './AppointmentsLikelyToBeMissed';
 
 const { Option } = Select;
 
@@ -86,13 +86,16 @@ const OverviewPage = () => {
           </Select>,
         ]}
       />
-      {/* <OverviewTable /> */}
       <Row gutter={48}>
         <Col span={13} className="mt-4">
           <GroupCollapse
             startOpen
             title={formatMessage(messages.bookingTitle)}
             group={<Booking title={formatMessage(messages.bookingTitle)} />}
+          />
+          <AppointmentsLikelyToBeMissed
+            startOpen
+            title={formatMessage(messages.tableTitle)}
           />
           <OverviewList
             startOpen

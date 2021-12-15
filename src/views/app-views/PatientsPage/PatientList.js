@@ -11,8 +11,14 @@ import {
   PageHeader,
   Space,
   Typography,
+  Tooltip,
 } from 'antd';
-import { EditFilled, DeleteOutlined, SearchOutlined } from '@ant-design/icons';
+import {
+  EditFilled,
+  DeleteOutlined,
+  SearchOutlined,
+  FormOutlined,
+} from '@ant-design/icons';
 import EllipsisDropdown from 'components/shared-components/EllipsisDropdown';
 import Flex from 'components/shared-components/Flex';
 import {
@@ -40,32 +46,32 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
     dispatch(getPatients());
   }, [dispatch]);
 
-  const dropdownMenu = (row) => (
-    <Menu>
-      <Menu.Item
-        onClick={({ domEvent }) => {
-          domEvent.stopPropagation();
-          updatePatient(row.id);
-        }}
-      >
-        <Flex alignItems="center">
-          <EditFilled />
-          <span className="ml-2">{formatMessage(messages.editPatient)}</span>
-        </Flex>
-      </Menu.Item>
-      <Menu.Item
-        onClick={({ domEvent }) => {
-          domEvent.stopPropagation();
-          setPatientForDelete(row);
-        }}
-      >
-        <Flex alignItems="center">
-          <DeleteOutlined />
-          <span className="ml-2">{formatMessage(messages.patientDelete)}</span>
-        </Flex>
-      </Menu.Item>
-    </Menu>
-  );
+  // const dropdownMenu = (row) => (
+  //   <Menu>
+  //     <Menu.Item
+  //       onClick={({ domEvent }) => {
+  //         domEvent.stopPropagation();
+  //         updatePatient(row.id);
+  //       }}
+  //     >
+  //       <Flex alignItems="center">
+  //         <EditFilled />
+  //         <span className="ml-2">{formatMessage(messages.editPatient)}</span>
+  //       </Flex>
+  //     </Menu.Item>
+  //     <Menu.Item
+  //       onClick={({ domEvent }) => {
+  //         domEvent.stopPropagation();
+  //         setPatientForDelete(row);
+  //       }}
+  //     >
+  //       <Flex alignItems="center">
+  //         <DeleteOutlined />
+  //         <span className="ml-2">{formatMessage(messages.patientDelete)}</span>
+  //       </Flex>
+  //     </Menu.Item>
+  //   </Menu>
+  // );
 
   const tableColumns = [
     {
@@ -91,12 +97,42 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
       render: (lastAppointment) => <span>{lastAppointment || '-'}</span>,
       sorter: true,
     },
+    // {
+    //   title: '',
+    //   dataIndex: 'actions',
+    //   render: (_, elm) => (
+    //     <div className="text-right">
+    //       <EllipsisDropdown menu={dropdownMenu(elm)} />
+    //     </div>
+    //   ),
+    // },
     {
       title: '',
       dataIndex: 'actions',
-      render: (_, elm) => (
+      render: (_, row) => (
         <div className="text-right">
-          <EllipsisDropdown menu={dropdownMenu(elm)} />
+          <Space>
+            <Tooltip title={formatMessage(messages.editPatient)}>
+              <Button
+                icon={<FormOutlined />}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  updatePatient(row.id);
+                }}
+                size="small"
+              />
+            </Tooltip>
+            <Tooltip title={formatMessage(messages.patientDelete)}>
+              <Button
+                icon={<DeleteOutlined />}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setPatientForDelete(row);
+                }}
+                size="small"
+              />
+            </Tooltip>
+          </Space>
         </div>
       ),
     },

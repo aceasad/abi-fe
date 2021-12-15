@@ -25,7 +25,7 @@ import messages from './messages';
 import Conversation from '../ChatPage/Conversation';
 import PatientOverviewExistingConditions from './PatientOverviewExistingConditions';
 import PatientOverviewPreviousOperations from './PatientOverviewPreviousOperations';
-import { getSignleAppointmnet } from 'redux/actions/Appointment';
+import { getSingleAppointment } from 'redux/actions/Appointment';
 import AppointmentPreview from '../CalendarPage/AppointmentPreview';
 import { FROM_PATIENT_APPOINTMENTS } from 'constants/ClinicConstants';
 
@@ -40,7 +40,7 @@ const PatientOverview = ({ patientId, showList, updatePatient }) => {
   const [activeAppointmnet, setActiveAppointment] = useState(null);
 
   useEffect(() => {
-    if (activeAppointmnet) dispatch(getSignleAppointmnet(activeAppointmnet.id));
+    if (activeAppointmnet) dispatch(getSingleAppointment(activeAppointmnet.id));
   }, [activeAppointmnet]);
 
   const patientDetailsFields = {
@@ -183,7 +183,7 @@ const PatientOverview = ({ patientId, showList, updatePatient }) => {
               <Title level={2} className="mb-0">
                 {formatMessage(messages.overviewTittle)}
               </Title>
-              <Badge count={7}>
+              <Badge>
                 <Button type="primary" onClick={() => setShowMessages(true)}>
                   <WhatsAppOutlined />{' '}
                   <span>{formatMessage(messages.overviewButtonMessages)}</span>

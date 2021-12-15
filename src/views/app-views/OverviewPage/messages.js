@@ -167,6 +167,10 @@ export default defineMessages({
     id: `${scope}.table.column.whitelisted`,
     defaultMessage: 'Whitelisted',
   },
+  tableColumnNoShowScore: {
+    id: `${scope}.table.column.no_show_score`,
+    defaultMessage: 'No Show Score',
+  },
   tableColumnStatus: {
     id: `${scope}.table.column.status`,
     defaultMessage: 'Status',

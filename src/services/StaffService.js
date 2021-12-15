@@ -1,5 +1,5 @@
 import { ORDERING } from 'constants/ApiConstant';
-import { HISTORY, SCHEDULED } from 'redux/reducers/Staff';
+import { HISTORY, SCHEDULED, LIKELY_TO_BE_MISSED } from 'redux/reducers/Staff';
 import ApiService from './ApiService';
 
 const ENDPOINTS = {
@@ -8,6 +8,7 @@ const ENDPOINTS = {
   GET_APPOINTMENTS: {
     [SCHEDULED]: '/appointments/staff-scheduled-appointments/',
     [HISTORY]: '/appointments/staff-passed-appointments/',
+    [LIKELY_TO_BE_MISSED]: '/appointments/likely-to-be-missed-appointments/',
   },
 };
 
@@ -32,16 +33,21 @@ class StaffService extends ApiService {
     this.apiClient.delete(ENDPOINTS.GET_STAFF + payload + '/');
 
   getAppointments = (id, { order, field, page }, state_field) =>
-    this.apiClient.get(`${ENDPOINTS.GET_APPOINTMENTS[state_field]}${id}/`, {
-      params: {
-        ordering: field
-          .split(',')
-          .map((part) => `${order === ORDERING.DESC ? '-' : ''}${part}`)
-          .join(),
-        limit: DEFAULT_LIMIT,
-        offset: (page - 1) * DEFAULT_LIMIT,
-      },
-    });
+    this.apiClient.get(
+      !id
+        ? `${ENDPOINTS.GET_APPOINTMENTS[state_field]}`
+        : `${ENDPOINTS.GET_APPOINTMENTS[state_field]}${id}/`,
+      {
+        params: {
+          ordering: field
+            .split(',')
+            .map((part) => `${order === ORDERING.DESC ? '-' : ''}${part}`)
+            .join(),
+          limit: DEFAULT_LIMIT,
+          offset: (page - 1) * DEFAULT_LIMIT,
+        },
+      }
+    );
 }
 
 const staffService = new StaffService();

@@ -28,7 +28,7 @@ import {
   appendToAllDoctors,
   appendToAppointmentStatus,
   appendToAppointmentTypes,
-  getSignleAppointmnet,
+  getSingleAppointment,
   filterDeletedAppointment,
   setAppointmentsLoading,
   setAppointmentStatusLoading,
@@ -97,7 +97,7 @@ export function* getDateAppointments({ payload }) {
   } catch {}
 }
 
-export function* getSingleAppointment({ payload }) {
+export function* getSingleAppointmentWrapper({ payload }) {
   try {
     yield put(setSignleAppointmnetLoading(true));
     const { data } = yield call(
@@ -261,7 +261,7 @@ export function* dateAppointments() {
 
 export function* doctorAppointments() {
   yield takeEvery(GET_DOCTOR_APPOINTMENTS, getDoctorAppointments);
-  yield takeEvery(GET_SINGLE_APPOINTMENT, getSingleAppointment);
+  yield takeEvery(GET_SINGLE_APPOINTMENT, getSingleAppointmentWrapper);
   yield takeEvery(
     DELETE_APPOINTMENT_FROM_PATIENTS,
     deleteAppointmentFromPatients
@@ -296,7 +296,7 @@ export function* updateAppointmentSaga() {
       yield put(setSignleAppointmnetLoading(true));
       yield call(appointmentService.updateAppointment, payload);
       yield payload.afterUpdate();
-      yield put(getSignleAppointmnet(payload.id));
+      yield put(getSingleAppointment(payload.id));
     } catch (error) {
       yield payload.afterError(error?.response?.data[0]);
     } finally {

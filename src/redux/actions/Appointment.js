@@ -68,7 +68,7 @@ export const setAppointmentsLoading = (payload) => ({
   payload,
 });
 
-export const getSignleAppointmnet = (payload) => ({
+export const getSingleAppointment = (payload) => ({
   type: GET_SINGLE_APPOINTMENT,
   payload,
 });

@@ -7,7 +7,7 @@ import StaffPanelItem from './StaffPanelItem';
 import { useDispatch, useSelector } from 'react-redux';
 import messages from './messages';
 import Loading from 'components/shared-components/Loading';
-import { getSignleAppointmnet } from 'redux/actions/Appointment';
+import { getSingleAppointment } from 'redux/actions/Appointment';
 import AppointmentPreview from './AppointmentPreview';
 
 const { Panel } = Collapse;
@@ -45,7 +45,7 @@ const CalendarCollapseList = () => {
   }, []);
 
   useEffect(() => {
-    if (activeAppointment) dispatch(getSignleAppointmnet(activeAppointment));
+    if (activeAppointment) dispatch(getSingleAppointment(activeAppointment));
   }, [activeAppointment]);
 
   if (loading) return <Loading defaultSpinner />;
