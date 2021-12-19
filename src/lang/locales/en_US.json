@@ -387,7 +387,7 @@
   "chat_page.button.send": "Send",
   "chat_page.button.cancel": "Cancel",
   "chat_page.chat.type_a_message_placeholder": "Type a message...",
-  "chat_page.chat.rasa_paused": "Rasa paused",
+  "chat_page.chat.rasa_paused": "Asa paused",
   "chat_page.chat.mark_resolved": "Mark resolved",
   "chat_page.chat.socket_error_message": "Plase refresh page to reconnect",
   "chat_page.filters.human_invervention_required": "Human intervention required",

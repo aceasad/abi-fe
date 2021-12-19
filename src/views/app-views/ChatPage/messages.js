@@ -34,7 +34,7 @@ export default defineMessages({
   },
   rasaPaused: {
     id: `${scope}.chat.rasa_paused`,
-    defaultMessage: 'Rasa paussed',
+    defaultMessage: 'Asa paused',
   },
   markResolved: {
     id: `${scope}.chat.mark_resolved`,
