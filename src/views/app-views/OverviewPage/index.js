@@ -14,63 +14,6 @@ import AppointmentsLikelyToBeMissed from './AppointmentsLikelyToBeMissed';
 
 const { Option } = Select;
 
-const appointmentsLikelyToBeMissedDummyData = [
-  {
-    key: '1',
-    patient: 'Terry Cooper',
-    appointment: 'Mark Downey (Senior Endocrinologist)',
-    date: 'Tomorrow',
-    time: '9:30am',
-    whitelisted: 'Yes',
-    status: 'Chatbot reachout',
-  },
-  {
-    key: '2',
-    patient: 'Ruby Campbell',
-    appointment: 'Mark Johnson (Senior DO)',
-    date: '15/01/2021',
-    time: '11:00am',
-    whitelisted: 'Yes',
-    status: 'Missed a call',
-  },
-  {
-    key: '3',
-    patient: 'Bruce Martinez',
-    appointment: 'Jazmin Stokes (Senior MD)',
-    date: '16/01/2021',
-    time: '5:00pm',
-    whitelisted: 'No',
-    status: 'Called - booking confirmed',
-  },
-  {
-    key: '4',
-    patient: 'Howard Rodriguez',
-    appointment: 'Summer-Luise Cabrera (Junior PA)',
-    date: '20/01/2021',
-    time: '4:30pm',
-    whitelisted: 'Yes',
-    status: 'Called - rescheduled',
-  },
-  {
-    key: '5',
-    patient: 'Barbara James',
-    appointment: 'Talia Pritchard (Junior MD)',
-    date: '25/01/2021',
-    time: '2:00pm',
-    whitelisted: 'No',
-    status: 'Called - moved appointment to virtual',
-  },
-  {
-    key: '6',
-    patient: 'Jane Thomas',
-    appointment: 'Mark Downey (Senior Endocrinologist)',
-    date: '20/01/2021',
-    time: '11:30am',
-    whitelisted: 'No',
-    status: 'Called - will call again',
-  },
-];
-
 const OverviewPage = () => {
   const { formatMessage } = useIntl();
   const dispatch = useDispatch();
@@ -111,12 +54,7 @@ const OverviewPage = () => {
         ]}
       />
       <Row gutter={48}>
-        <Col span={13} className="mt-4">
-          <GroupCollapse
-            startOpen
-            title={formatMessage(messages.bookingTitle)}
-            group={<Booking title={formatMessage(messages.bookingTitle)} />}
-          />
+        <Col span={16} className="mt-4">
           <AppointmentsLikelyToBeMissed
             startOpen
             title={formatMessage(messages.tableTitle)}
@@ -130,7 +68,12 @@ const OverviewPage = () => {
             title={formatMessage(messages.listScreening)}
           />
         </Col>
-        <Col span={11} className="mt-4">
+        <Col span={8} className="mt-4">
+          <GroupCollapse
+            startOpen
+            title={formatMessage(messages.bookingTitle)}
+            group={<Booking title={formatMessage(messages.bookingTitle)} />}
+          />
           <GroupCollapse
             startOpen
             title={formatMessage(messages.asaDataTitle)}

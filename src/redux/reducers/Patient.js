@@ -17,6 +17,8 @@ import {
   SET_SCHEDULED_ORDER,
   SET_HISTORY_PAGE,
   TOGGLE_PATIENT_WHITELIST,
+  SET_PATIENT_SHOW_MESSAGES,
+  CLEAR_PATIENT_SHOW_MESSAGES,
 } from 'redux/constants/Patient';
 
 const initialState = {
@@ -133,6 +135,20 @@ const patient = (state = initialState, action) =>
           },
         };
         break;
+      case SET_PATIENT_SHOW_MESSAGES: {
+        draft.patients = {
+          ...state.patients,
+          patient_show_messages: action.payload,
+        };
+        break;
+      }
+      case CLEAR_PATIENT_SHOW_MESSAGES: {
+        draft.patients = {
+          ...state.patients,
+          patient_show_messages: null,
+        };
+        break;
+      }
     }
   });
 export default patient;

@@ -165,7 +165,7 @@ export default defineMessages({
   },
   tableColumnNoShowScore: {
     id: `${scope}.table.column.no_show_score`,
-    defaultMessage: 'No Show Score',
+    defaultMessage: 'No Show Probability',
   },
   tableColumnStatus: {
     id: `${scope}.table.column.status`,

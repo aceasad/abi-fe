@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
-
+import { useDispatch, useSelector } from 'react-redux';
 import { getPatientDetails } from 'redux/actions/Patient';
 import CreatePatient from './CreatePatient';
 import PatientList from './PatientList';
 import PatientOverview from './PatientOverview';
 import UpdatePatient from './UpdatePatient';
+import { makeSelectPatients } from 'redux/selectors/Patient';
 
 export const PATIENT_PAGE = {
   LIST: 1,
@@ -13,6 +13,7 @@ export const PATIENT_PAGE = {
   EDIT: 3,
   PREVIEW: 4,
 };
+
 function Patients({ location: { key, search } }) {
   const [patientPage, setPatientPage] = useState(PATIENT_PAGE.LIST);
   const dispatch = useDispatch();
@@ -40,6 +41,16 @@ function Patients({ location: { key, search } }) {
       setPatientPage(PATIENT_PAGE.LIST);
     }
   }, [key]);
+
+  const { patient_show_messages } = useSelector(makeSelectPatients());
+  useEffect(() => {
+    if (patient_show_messages) {
+      setPatientPage({
+        id: PATIENT_PAGE.PREVIEW,
+        data: patient_show_messages.id,
+      });
+    }
+  }, [patient_show_messages]);
 
   switch (patientPage.id) {
     case PATIENT_PAGE.LIST:
@@ -69,6 +80,7 @@ function Patients({ location: { key, search } }) {
           showList={showList}
           patientId={patientPage.data}
           updatePatient={updatePatient}
+          patient_show_messages={patient_show_messages}
         />
       );
     default:
