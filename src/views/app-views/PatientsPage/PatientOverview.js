@@ -16,7 +16,11 @@ import PatientOverviewDetails from './PatientOverviewDetails';
 import PatientOverviewScheduledCard from './PatientOverviewScheduledCard';
 import PatientOverviewHistoryCard from './PatientOverviewHistoryCard';
 import { useDispatch, useSelector } from 'react-redux';
-import { changePatient, getPatientOverview } from 'redux/actions/Patient';
+import {
+  changePatient,
+  clearPatientShowMessages,
+  getPatientOverview,
+} from 'redux/actions/Patient';
 import { makeSelectPatientOverview } from 'redux/selectors/Patient';
 import Loading from 'components/shared-components/Loading';
 import { PATIENT_PAGE } from './index';
@@ -31,7 +35,12 @@ import { FROM_PATIENT_APPOINTMENTS } from 'constants/ClinicConstants';
 
 const { Text, Title } = Typography;
 
-const PatientOverview = ({ patientId, showList, updatePatient }) => {
+const PatientOverview = ({
+  patientId,
+  showList,
+  updatePatient,
+  patient_show_messages,
+}) => {
   const dispatch = useDispatch();
   const { patient, loading } = useSelector(makeSelectPatientOverview());
   const [showMessages, setShowMessages] = useState();
@@ -42,6 +51,13 @@ const PatientOverview = ({ patientId, showList, updatePatient }) => {
   useEffect(() => {
     if (activeAppointmnet) dispatch(getSingleAppointment(activeAppointmnet.id));
   }, [activeAppointmnet]);
+
+  useEffect(() => {
+    if (patient_show_messages) {
+      setShowMessages(true);
+      dispatch(clearPatientShowMessages());
+    }
+  }, [patient_show_messages]);
 
   const patientDetailsFields = {
     date_of_birth: formatMessage(messages.dateOfBirth),
@@ -74,6 +90,10 @@ const PatientOverview = ({ patientId, showList, updatePatient }) => {
       })
     );
   };
+
+  useEffect(() => {
+    dispatch(getPatientOverview({ id: patientId }));
+  }, [dispatch, patientId]);
 
   return (
     <Row gutter={16}>

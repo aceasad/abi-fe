@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Collapse, Typography } from 'antd';
+import { Card, Collapse, Button, Space, Typography, Tooltip } from 'antd';
+import { WhatsAppOutlined } from '@ant-design/icons';
 import { useIntl } from 'react-intl';
 import { useDispatch } from 'react-redux';
 import Appointments from '../StaffPage/Appointments';
@@ -8,8 +9,10 @@ import { LIKELY_TO_BE_MISSED, SCHEDULED } from 'redux/reducers/Staff';
 import { getSingleAppointment } from 'redux/actions/Appointment';
 import AppointmentPreview from '../CalendarPage/AppointmentPreview';
 import { FROM_STAFF_APPOINTMENTS } from 'constants/ClinicConstants';
-import { RenderPredictionText } from 'utils/helpers';
 import { DownOutlined } from '@ant-design/icons';
+import { setPatientShowMessages } from 'redux/actions/Patient';
+import { ROUTES } from 'routes';
+import { useHistory } from 'react-router-dom';
 
 const { Panel } = Collapse;
 
@@ -21,6 +24,7 @@ const columnMap = {
 };
 
 const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
+  const history = useHistory();
   const { formatMessage } = useIntl();
   const dispatch = useDispatch();
 
@@ -31,6 +35,11 @@ const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
   }, [activeAppointment]);
 
   const [isCollapseOpen, setIsCollapseOpen] = useState(startOpen);
+
+  const goToPatientShowMessages = (data) => {
+    dispatch(setPatientShowMessages(data));
+    history.push(ROUTES.PATIENTS);
+  };
 
   const collapseHeader = (
     <>
@@ -44,6 +53,64 @@ const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
       </div>
     </>
   );
+
+  const tableColumns = [
+    {
+      title: formatMessage(messages.columnTitleDate),
+      dataIndex: 'date',
+      sorter: true,
+    },
+    {
+      title: formatMessage(messages.columnTitleTime),
+      dataIndex: 'time',
+      sorter: false,
+    },
+    {
+      title: formatMessage(messages.columnTitlePatient),
+      dataIndex: ['patient', 'full_name'],
+      sorter: true,
+    },
+    {
+      title: formatMessage(messages.columnTitleDoctor),
+      dataIndex: ['doctor', 'full_name'],
+      sorter: true,
+    },
+    {
+      title: formatMessage(messages.columnTitleAppointment),
+      dataIndex: ['appointment_type', 'name'],
+      sorter: true,
+    },
+    {
+      title: formatMessage(messages.columnTitleNoShowScore),
+      dataIndex: 'no_show_score',
+      sorter: true,
+      render: (text) => (
+        <div className="text-center">{Number(text) * 100}%</div>
+      ),
+    },
+    {
+      title: '',
+      dataIndex: 'actions',
+      render: (_, row) => (
+        <div className="text-right">
+          <Space>
+            <Tooltip
+              title={formatMessage(messages.columnTitleReachOutToPatient)}
+            >
+              <Button
+                icon={<WhatsAppOutlined />}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  goToPatientShowMessages({ id: row.patient.id });
+                }}
+                size="small"
+              />
+            </Tooltip>
+          </Space>
+        </div>
+      ),
+    },
+  ];
 
   return (
     <Collapse
@@ -66,41 +133,7 @@ const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
             columnMap={columnMap}
           >
             <Appointments.Table
-              columns={[
-                {
-                  title: formatMessage(messages.columnTitleDate),
-                  dataIndex: 'date',
-                  sorter: true,
-                },
-                {
-                  title: formatMessage(messages.columnTitleTime),
-                  dataIndex: 'time',
-                  sorter: false,
-                },
-                {
-                  title: formatMessage(messages.columnTitlePatient),
-                  dataIndex: ['patient', 'full_name'],
-                  sorter: true,
-                },
-                {
-                  title: formatMessage(messages.columnTitleDoctor),
-                  dataIndex: ['doctor', 'full_name'],
-                  sorter: true,
-                },
-                {
-                  title: formatMessage(messages.columnTitleAppointment),
-                  dataIndex: ['appointment_type', 'name'],
-                  sorter: true,
-                },
-                {
-                  title: formatMessage(messages.columnTitleNoShowScore),
-                  dataIndex: 'no_show_score',
-                  sorter: true,
-                  render: (text) => (
-                    <div className="text-center">{Number(text) * 100}%</div>
-                  ),
-                },
-              ]}
+              columns={tableColumns}
               onRow={(record) => {
                 return {
                   onClick: () => {

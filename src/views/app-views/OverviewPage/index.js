@@ -87,12 +87,7 @@ const OverviewPage = () => {
         ]}
       />
       <Row gutter={48}>
-        <Col span={13} className="mt-4">
-          <GroupCollapse
-            startOpen
-            title={formatMessage(messages.bookingTitle)}
-            group={<Booking title={formatMessage(messages.bookingTitle)} />}
-          />
+        <Col span={16} className="mt-4">
           <AppointmentsLikelyToBeMissed
             startOpen
             title={formatMessage(messages.tableTitle)}
@@ -134,7 +129,12 @@ const OverviewPage = () => {
             }
           />
         </Col>
-        <Col span={11} className="mt-4">
+        <Col span={8} className="mt-4">
+          <GroupCollapse
+            startOpen
+            title={formatMessage(messages.bookingTitle)}
+            group={<Booking title={formatMessage(messages.bookingTitle)} />}
+          />
           <GroupCollapse
             startOpen
             title={formatMessage(messages.asaDataTitle)}

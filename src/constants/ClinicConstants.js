@@ -14,6 +14,7 @@ export const baseState = {
   search: '',
   single: null,
   next: null,
+  patient_show_messages: null,
 };
 export const MAX_GOOGLE_LINK_LENGTH = 500;
 

@@ -205,7 +205,11 @@ export default defineMessages({
   },
   columnTitleNoShowScore: {
     id: `${patientOverviewScope}.table.column_title.no_show_score`,
-    defaultMessage: 'No Show Score',
+    defaultMessage: 'No Show Probability',
+  },
+  columnTitleReachOutToPatient: {
+    id: `${patientOverviewScope}.table.column_title.reach_out_to_patient`,
+    defaultMessage: 'Reach out to patient',
   },
   columnTitleAppointment: {
     id: `${patientOverviewScope}.table.column_title.appointment`,

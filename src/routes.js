@@ -11,4 +11,5 @@ export const ROUTES = {
   DASHBOARD: `${URL_PREFIX_PATH}/`,
   CREATE_PASSWORD: `${AUTH_PREFIX_PATH}/create-password`,
   FIRST_CLINIC_UPDATE: `${APP_PAGES_PREFIX_PATH}/first-clinic-update`,
+  PATIENTS: `${APP_PAGES_PREFIX_PATH}/patients`,
 };

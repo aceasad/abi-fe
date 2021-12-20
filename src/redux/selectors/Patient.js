@@ -13,6 +13,7 @@ const makeSelectPatients = () =>
     count: patients.count,
     loading: patients.loading,
     page: patients.page,
+    patient_show_messages: patients.patient_show_messages,
   }));
 
 const makeSelectPatientRequestData = () =>
