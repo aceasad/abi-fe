@@ -11,6 +11,7 @@ import {
   resetPatientsAutocomplete,
 } from 'redux/actions/Appointment';
 import messages from './messages';
+import calendarMessages from '../CalendarPage/messages';
 import Loading from 'components/shared-components/Loading';
 import FormAutocomplete from 'components/custom-components/Form/FormAutocomplete';
 import { useDebounce } from 'utils/hooks';
@@ -21,13 +22,18 @@ import { Link } from 'react-router-dom';
 import RowColumnField from 'components/custom-components/Form/RowColumnField';
 import { PlusOutlined } from '@ant-design/icons';
 import { PATIENT_PAGE } from 'views/app-views/PatientsPage';
+import FormTextArea from 'components/custom-components/Form/FormTextArea';
+import { getSafe } from 'utils/helpers';
 
 const AppointmentFormModal = ({
   initialState,
+  isEditForm,
   doctors,
   appointmentTypes,
-  isEditForm,
-  appointmentStatus,
+  appointmentStatuses,
+  appointmentCommunicationStatuses,
+  appointmentMissingReasons,
+  appointmentCancellationReasons,
   closeModal,
   title,
   validationSchema,
@@ -56,11 +62,20 @@ const AppointmentFormModal = ({
     if (query) {
       dispatch(searchPatients({ query }));
     }
-  }, [debouncedSearch]);
+  }, [debouncedSearch, dispatch, query]);
 
-  useEffect(() => {
-    return () => dispatch(resetPatientsAutocomplete());
-  }, []);
+  // TODO: leads to maximum calls depth issue, logic needs refinement
+  // useEffect(() => {
+  //   return () => dispatch(resetPatientsAutocomplete());
+  // }, [dispatch]);
+
+  const not_attended_status = getSafe(
+    () => appointmentStatuses.find((elem) => elem.name === 'Not attended').id
+  );
+
+  const cancelled_status = getSafe(
+    () => appointmentStatuses.find((elem) => elem.name === 'Cancelled').id
+  );
 
   return (
     <Formik
@@ -211,10 +226,74 @@ const AppointmentFormModal = ({
                   label={formatMessage(messages.appointmentStatus)}
                   name="status"
                   component={FormSelect}
-                  options={appointmentStatus}
+                  options={appointmentStatuses}
                   optionField="name"
                   defaultOption={values.status}
                   required
+                />
+              )}
+              {isEditForm && (
+                <RowColumnField
+                  span={24}
+                  label={formatMessage(messages.appointmentCommunicationStatus)}
+                  name="communication_status"
+                  component={FormSelect}
+                  options={appointmentCommunicationStatuses}
+                  optionField="name"
+                  defaultOption={values.communication_status}
+                  required
+                />
+              )}
+              {isEditForm && (
+                <Field
+                  component={FormTextArea}
+                  name="communication_status_details"
+                  rows={2}
+                  label={formatMessage(
+                    messages.appointmentCommunicationStatusDetails
+                  )}
+                />
+              )}
+              {isEditForm && values.status === not_attended_status && (
+                <RowColumnField
+                  span={24}
+                  label={formatMessage(messages.appointmentMissingReason)}
+                  name="missing_reason"
+                  component={FormSelect}
+                  options={appointmentMissingReasons}
+                  optionField="name"
+                  defaultOption={values.missing_reason}
+                  required
+                />
+              )}
+              {isEditForm && values.status === not_attended_status && (
+                <Field
+                  component={FormTextArea}
+                  name="missing_reason_details"
+                  rows={2}
+                  label={formatMessage(calendarMessages.missingReasonDetails)}
+                />
+              )}
+              {isEditForm && values.status === cancelled_status && (
+                <RowColumnField
+                  span={24}
+                  label={formatMessage(messages.appointmentCancellationReason)}
+                  name="cancellation_reason"
+                  component={FormSelect}
+                  options={appointmentCancellationReasons}
+                  optionField="name"
+                  defaultOption={values.cancellation_reason}
+                  required
+                />
+              )}
+              {isEditForm && values.status === cancelled_status && (
+                <Field
+                  component={FormTextArea}
+                  name="cancellation_reason_details"
+                  rows={2}
+                  label={formatMessage(
+                    calendarMessages.cancellationReasonDetails
+                  )}
                 />
               )}
             </Form>
@@ -225,7 +304,7 @@ const AppointmentFormModal = ({
   );
 };
 
-AppointmentFormModal.defaultProops = {
+AppointmentFormModal.defaultProps = {
   initialState: {
     patient: '',
     doctor: '',
@@ -233,11 +312,13 @@ AppointmentFormModal.defaultProops = {
     price: 0,
     date: '',
     time: '',
+    status: '',
   },
   doctors: [],
   appointmentTypes: [],
   isEditForm: false,
   appointmentStatus: [],
+  appointmentCommunicationStatus: [],
   loadingData: false,
 };
 

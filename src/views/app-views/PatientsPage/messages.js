@@ -207,6 +207,14 @@ export default defineMessages({
     id: `${patientOverviewScope}.table.column_title.no_show_score`,
     defaultMessage: 'No Show Probability',
   },
+  columnTitleWhitelisted: {
+    id: `${patientOverviewScope}.table.column_title.whitelisted`,
+    defaultMessage: 'Whitelisted',
+  },
+  columnTitleUpdateStatus: {
+    id: `${patientOverviewScope}.table.column_title.update_status`,
+    defaultMessage: 'Update Status',
+  },
   columnTitleReachOutToPatient: {
     id: `${patientOverviewScope}.table.column_title.reach_out_to_patient`,
     defaultMessage: 'Reach out to patient',
@@ -214,6 +222,10 @@ export default defineMessages({
   columnTitleAppointment: {
     id: `${patientOverviewScope}.table.column_title.appointment`,
     defaultMessage: 'Appointment',
+  },
+  columnTitleCommunicationStatus: {
+    id: `${patientOverviewScope}.table.column_title.communication_status`,
+    defaultMessage: 'Communication',
   },
   columnTitleStatus: {
     id: `${patientOverviewScope}.table.column_title.status`,
@@ -245,7 +257,7 @@ export default defineMessages({
   },
   cardTitleExistingConditions: {
     id: `${patientOverviewScope}.card_title.existing_conditions`,
-    defaultMessage: 'Existing medical conditins',
+    defaultMessage: 'Existing medical conditions',
   },
   cardTitlePreviousOperatins: {
     id: `${patientOverviewScope}.card_title.previous_operations`,

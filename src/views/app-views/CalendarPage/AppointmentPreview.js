@@ -2,27 +2,33 @@ import { message } from 'antd';
 import React, { useState } from 'react';
 import { useIntl } from 'react-intl';
 import { useDispatch } from 'react-redux';
-import DeleteAppointmentModal from './DeleteAppointmentModal';
 import PreviewModal from './PreviewModal';
 import messages from './messages';
 import { deleteAppointment } from 'redux/actions/Appointment';
-import EndAppointment from './EndAppointment';
 import AppointmentFormWrapper from '../AppointmentsPage/AppointmentFormWrapper';
+import DeleteAppointmentModal from './DeleteAppointmentModal';
+import UpdateAppointmentCommunicationStatus from './UpdateAppointmentCommunicationStatus';
 import UpdateAppointment from '../AppointmentsPage/UpdateAppointment';
+import CancelAppointment from './CancelAppointment';
+import EndAppointment from './EndAppointment';
+import appointment from 'redux/reducers/Appointment';
 
 export const NESTED_MODAL = {
   NONE: 0,
   DELETE: 1,
-  END_APPOINTMENT: 2,
-  EDIT_APPOINTMENT: 3,
+  UPDATE_APPOINTMENT_COMMUNICATION_STATUS: 2,
+  CANCEL_APPOINTMENT: 3,
+  END_APPOINTMENT: 4,
+  EDIT_APPOINTMENT: 5,
 };
 
 const AppointmentPreview = ({
   handleClose,
-  aditionalSubmitData = {},
+  additionalSubmitData = {},
   patientId,
   appointment_type,
   staffId,
+  appointment,
 }) => {
   const dispatch = useDispatch();
   const { formatMessage } = useIntl();
@@ -41,6 +47,15 @@ const AppointmentPreview = ({
   const showPreview = () =>
     setShowChildModal({ modal: NESTED_MODAL.NONE, data: null });
 
+  const showUpdateAppointmentCommunicationStatus = (data) =>
+    setShowChildModal({
+      modal: NESTED_MODAL.UPDATE_APPOINTMENT_COMMUNICATION_STATUS,
+      data,
+    });
+
+  const showCancelAppointment = (data) =>
+    setShowChildModal({ modal: NESTED_MODAL.CANCEL_APPOINTMENT, data });
+
   const showEndAppointment = (data) =>
     setShowChildModal({ modal: NESTED_MODAL.END_APPOINTMENT, data });
 
@@ -54,7 +69,7 @@ const AppointmentPreview = ({
       deleteAppointment({
         data: showChildModal.data,
         afterDelete,
-        ...aditionalSubmitData,
+        ...additionalSubmitData,
       })
     );
 
@@ -64,6 +79,10 @@ const AppointmentPreview = ({
         <PreviewModal
           handleClose={handleClose}
           showDelete={showDelete}
+          showUpdateCommunicationStatus={
+            showUpdateAppointmentCommunicationStatus
+          }
+          showCancel={showCancelAppointment}
           showEnd={showEndAppointment}
           setNewData={setNewData}
         />
@@ -76,6 +95,33 @@ const AppointmentPreview = ({
           appointment={showChildModal.data}
         />
       );
+    case NESTED_MODAL.UPDATE_APPOINTMENT_COMMUNICATION_STATUS:
+      return (
+        <UpdateAppointmentCommunicationStatus
+          handleClose={showPreview}
+          id={showChildModal.data.id}
+          patientId={patientId}
+          appointment_type={appointment_type}
+          updateCommunicationStatusFrom={
+            additionalSubmitData?.actionFrom && additionalSubmitData.actionFrom
+          }
+          staffId={staffId}
+          appointment={appointment}
+        />
+      );
+    case NESTED_MODAL.CANCEL_APPOINTMENT:
+      return (
+        <CancelAppointment
+          handleClose={showPreview}
+          id={showChildModal.data.id}
+          patientId={patientId}
+          appointment_type={appointment_type}
+          cancelFrom={
+            additionalSubmitData?.actionFrom && additionalSubmitData.actionFrom
+          }
+          staffId={staffId}
+        />
+      );
     case NESTED_MODAL.END_APPOINTMENT:
       return (
         <EndAppointment
@@ -84,7 +130,7 @@ const AppointmentPreview = ({
           patientId={patientId}
           appointment_type={appointment_type}
           endFrom={
-            aditionalSubmitData?.actionFrom && aditionalSubmitData.actionFrom
+            additionalSubmitData?.actionFrom && additionalSubmitData.actionFrom
           }
           staffId={staffId}
         />
@@ -98,8 +144,8 @@ const AppointmentPreview = ({
               appointment_type={appointment_type}
               staffId={staffId}
               updateFrom={
-                aditionalSubmitData?.actionFrom &&
-                aditionalSubmitData.actionFrom
+                additionalSubmitData?.actionFrom &&
+                additionalSubmitData.actionFrom
               }
               {...props}
             />

@@ -12,7 +12,7 @@ import moment from 'moment';
 import { DATE_FORMAT_DD_MMM_YYYY } from 'constants/DateConstant';
 import { TIME_FORMAT_HH_MM } from 'constants/TimeConstant';
 import {
-  APPOINTMNET_HISTORY,
+  APPOINTMENT_HISTORY,
   FROM_PATIENT_APPOINTMENTS,
   FROM_STAFF_APPOINTMENTS,
   SCHEDULED_APPOINTMENT,
@@ -25,9 +25,12 @@ import {
 import { getAppointments } from 'redux/actions/Staff';
 
 const UpdateAppointment = ({
-  appointmentTypes,
   doctors,
-  status,
+  appointmentTypes,
+  appointmentStatuses,
+  appointmentCommunicationStatuses,
+  appointmentMissingReasons,
+  appointmentCancellationReasons,
   closeModal,
   isDataLoading,
   patientId,
@@ -57,7 +60,7 @@ const UpdateAppointment = ({
       }
     } else if (updateFrom === FROM_PATIENT_APPOINTMENTS) {
       switch (appointment_type) {
-        case APPOINTMNET_HISTORY:
+        case APPOINTMENT_HISTORY:
           dispatch(getAppointmentHistory({ id: patientId }));
           break;
         case SCHEDULED_APPOINTMENT:
@@ -96,6 +99,12 @@ const UpdateAppointment = ({
         ),
         time: moment(appointment.time, 'hh:mm a').format(TIME_FORMAT_HH_MM),
         status: appointment.status.id,
+        communication_status: appointment.communication_status?.id,
+        communication_status_details: appointment.communication_status_details,
+        missing_reason: appointment.missing_reason?.id,
+        missing_reason_details: appointment.missing_reason_details,
+        cancellation_reason: appointment.cancellation_reason?.id,
+        cancellation_reason_details: appointment.cancellation_reason_details,
       }
     : {
         patient: '',
@@ -105,6 +114,12 @@ const UpdateAppointment = ({
         date: '',
         time: '',
         status: '',
+        communication_status: '',
+        communication_status_details: '',
+        missing_reason: '',
+        missing_reason_details: '',
+        cancellation_reason: '',
+        cancellation_reason_details: '',
       };
 
   return (
@@ -115,7 +130,10 @@ const UpdateAppointment = ({
       isEditForm
       doctors={doctors}
       appointmentTypes={appointmentTypes}
-      appointmentStatus={status}
+      appointmentStatuses={appointmentStatuses}
+      appointmentCommunicationStatuses={appointmentCommunicationStatuses}
+      appointmentMissingReasons={appointmentMissingReasons}
+      appointmentCancellationReasons={appointmentCancellationReasons}
       closeModal={closeModal}
       handleSubmit={handleSubmit}
       loadingData={isDataLoading}

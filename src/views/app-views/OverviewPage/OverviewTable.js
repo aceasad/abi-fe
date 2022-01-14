@@ -106,7 +106,7 @@ const OverviewTable = () => {
         <div className="text-right">
           <Dropdown overlay={menu} trigger={['click']} placement="bottomRight">
             <Button type="primary" ghost>
-              {formatMessage(messages.tableDropdownTitle)}
+              {formatMessage(messages.tableDropdownTitleContact)}
               <DownOutlined />
             </Button>
           </Dropdown>

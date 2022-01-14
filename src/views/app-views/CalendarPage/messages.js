@@ -48,6 +48,14 @@ export default defineMessages({
     id: `${scope}.text.end_appointment`,
     defaultMessage: 'End Appointment',
   },
+  cancelAppointment: {
+    id: `${scope}.text.cancel_appointment`,
+    defaultMessage: 'Cancel Appointment',
+  },
+  updateCommunicationStatus: {
+    id: `${scope}.text.update_communication_status`,
+    defaultMessage: 'Communication Status',
+  },
   patient: {
     id: `${scope}.text.patient`,
     defaultMessage: 'Patient',
@@ -80,6 +88,27 @@ export default defineMessages({
     id: `${scope}.text.missing_reason`,
     defaultMessage: 'Why did the patient miss the appointment?',
   },
+  missingReasonDetails: {
+    id: `${scope}.text.missing_reason_details`,
+    defaultMessage: 'Missing Details',
+  },
+  cancellationReason: {
+    id: `${scope}.text.cancellation_reason`,
+    defaultMessage: 'Why did the patient cancel the appointment?',
+  },
+  cancellationReasonDetails: {
+    id: `${scope}.text.cancellation_reason_details`,
+    defaultMessage: 'Cancellation Details',
+  },
+  communicationStatus: {
+    id: `${scope}.text.communication_status`,
+    defaultMessage:
+      'Please set the communication status using the dropdown below',
+  },
+  communicationStatusDetails: {
+    id: `${scope}.text.communication_status_details`,
+    defaultMessage: 'Communication Details',
+  },
   details: {
     id: `${scope}.text.details`,
     defaultMessage: 'Details',
@@ -95,6 +124,10 @@ export default defineMessages({
   cancel: {
     id: `${globalScope}.text.cancel`,
     defaultMessage: 'Cancel',
+  },
+  update: {
+    id: `${globalScope}.text.update`,
+    defaultMessage: 'Update',
   },
   confirm: {
     id: `${globalScope}.text.confirm`,
@@ -127,5 +160,13 @@ export default defineMessages({
   endSuccess: {
     id: `${scope}.text.end_success`,
     defaultMessage: 'Appointment Ended',
+  },
+  cancelSuccess: {
+    id: `${scope}.text.cancellation_success`,
+    defaultMessage: 'Appointment Cancelled',
+  },
+  communicationStatusUpdateSuccess: {
+    id: `${scope}.text.communication_status_update_success`,
+    defaultMessage: 'Appointment Communication Status Updated',
   },
 });

@@ -10,12 +10,12 @@ const ENDPOINTS = {
   GET_APPOINTMENTS: '/appointments/',
   GET_CLINIC_DOCTORS: '/staff/',
   GET_APPOINTMENT_TYPES: '/appointment-types/',
-  GET_APPOINTMENT_STATUS: '/appointment-status/',
-  GET_MISSING_REASONS: '/missing-reasons/',
-  GET_APPOINTMENTS_REMINDERS_PAGE: '/appointments/reminders/',
-  CANCEL_APPOINTMENT_REMINDER: '/appointments/reminders/:id/cancel/',
-  REVERSE_APPOINTMENT_REMINDER_CANCELLATION:
-    '/appointments/reminders/:id/reverse-cancellation/',
+  GET_APPOINTMENT_STATUSES: '/appointment-status/',
+  GET_APPOINTMENT_COMMUNICATION_STATUSES: '/appointment-communication-status/',
+  GET_APPOINTMENT_MISSING_REASONS: '/missing-reasons/',
+  GET_APPOINTMENT_CANCELLATION_REASONS: '/cancellation-reasons/',
+  GET_MESSAGE_REQUIRING_IMMEDIATE_ATTENTION_STATUSES:
+    '/messages-requiring-immediate-attention-statuses/',
 };
 
 class AppointmentService extends ApiService {
@@ -28,6 +28,21 @@ class AppointmentService extends ApiService {
       ENDPOINTS.UPDATE_APPOINTMENT.replace(':id', payload.id),
       payload.data
     );
+
+  deleteAppointment = (id) =>
+    this.apiClient.delete(`${ENDPOINTS.GET_APPOINTMENTS}${id}/`);
+
+  updateAppointmentCommunicationStatus = ({ id, data }) =>
+    this.apiClient.post(
+      `${ENDPOINTS.GET_APPOINTMENTS}${id}/update-communication-status/`,
+      data
+    );
+
+  cancelAppointment = ({ id, data }) =>
+    this.apiClient.post(`${ENDPOINTS.GET_APPOINTMENTS}${id}/cancel/`, data);
+
+  endAppointment = ({ id, data }) =>
+    this.apiClient.post(`${ENDPOINTS.GET_APPOINTMENTS}${id}/end/`, data);
 
   getAvailabileTimeslots = (doctor, patient, appointmentType, date) =>
     this.apiClient.get(ENDPOINTS.AVAILABLE_TIMESLOTS, {
@@ -57,39 +72,31 @@ class AppointmentService extends ApiService {
   getSingleAppointment = (id) =>
     this.apiClient.get(`${ENDPOINTS.GET_APPOINTMENTS}${id}/`);
 
+  getSinglePreAppointmentQuestionnaire = (id) =>
+    this.apiClient.get(
+      `${ENDPOINTS.GET_APPOINTMENTS}${id}/pre-appointment-questionnaire/answers/`
+    );
+
   getClinicDoctors = () => this.apiClient.get(ENDPOINTS.GET_CLINIC_DOCTORS);
 
   getAppointmentTypes = () =>
     this.apiClient.get(ENDPOINTS.GET_APPOINTMENT_TYPES);
 
-  getAppointmentStatus = () =>
-    this.apiClient.get(ENDPOINTS.GET_APPOINTMENT_STATUS);
-  deleteAppointment = (id) =>
-    this.apiClient.delete(`${ENDPOINTS.GET_APPOINTMENTS}${id}/`);
+  getAppointmentStatuses = () =>
+    this.apiClient.get(ENDPOINTS.GET_APPOINTMENT_STATUSES);
 
-  getMissingReasons = () => this.apiClient.get(ENDPOINTS.GET_MISSING_REASONS);
+  getAppointmentCommunicationStatuses = () =>
+    this.apiClient.get(ENDPOINTS.GET_APPOINTMENT_COMMUNICATION_STATUSES);
 
-  endAppointment = ({ id, data }) =>
-    this.apiClient.post(`${ENDPOINTS.GET_APPOINTMENTS}${id}/end/`, data);
+  getAppointmentMissingReasons = () =>
+    this.apiClient.get(ENDPOINTS.GET_APPOINTMENT_MISSING_REASONS);
 
-  getAppointmentsReminders = (status) =>
-    this.apiClient.get(ENDPOINTS.GET_APPOINTMENTS_REMINDERS_PAGE, {
-      params: { status },
-    });
+  getAppointmentCancellationReasons = () =>
+    this.apiClient.get(ENDPOINTS.GET_APPOINTMENT_CANCELLATION_REASONS);
 
-  cancelAppointmentReminder = (payload) =>
-    this.apiClient.post(
-      ENDPOINTS.CANCEL_APPOINTMENT_REMINDER.replace(':id', payload.id),
-      payload.data
-    );
-
-  reverseAppointmentReminderCancellation = (payload) =>
-    this.apiClient.post(
-      ENDPOINTS.REVERSE_APPOINTMENT_REMINDER_CANCELLATION.replace(
-        ':id',
-        payload.id
-      ),
-      payload.data
+  getMessageRequiringImmediateAttentionStatuses = () =>
+    this.apiClient.get(
+      ENDPOINTS.GET_MESSAGE_REQUIRING_IMMEDIATE_ATTENTION_STATUSES
     );
 }
 

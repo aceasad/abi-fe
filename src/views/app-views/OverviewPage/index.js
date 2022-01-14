@@ -10,11 +10,17 @@ import AbiData from './Groups/AbiData';
 import Uptake from './Groups/Uptake';
 import { useDispatch } from 'react-redux';
 import { getOverviewData } from 'redux/actions/Overview';
-import { getAppointmentsRemindersPage } from 'redux/actions/Appointment';
-import AppointmentsRemindersList from './AppointmentsRemindersList';
-import { makeSelectAppointmentsReminders } from 'redux/selectors/Appointment';
-import { useSelector } from 'react-redux';
 import AppointmentsLikelyToBeMissed from './AppointmentsLikelyToBeMissed';
+import MessagesRequiringImmediateAttention from './MessagesRequiringImmediateAttention';
+import PassedAppointmentsRequiringImmediateStatusUpdate from './PassedAppointmentsRequiringImmediateStatusUpdate';
+import AppointmentsReminders from './AppointmentsReminders';
+import {
+  SHOW_APPOINTMENTS_LIKELY_TO_BE_MISSED,
+  SHOW_PASSED_APPOINTMENTS_REQUIRING_IMMEDIATE_ATTENTION,
+  SHOW_MESSAGES_REQUIRING_IMMEDIATE_ATTENTION,
+  SHOW_APPOINTMENTS_REMINDERS,
+  SHOW_KPIS,
+} from 'configs/AppConfig';
 
 const { Option } = Select;
 
@@ -31,36 +37,10 @@ const OverviewPage = () => {
   const [filterValue, setFilterValue] = useState(filters[0].value);
 
   useEffect(() => {
-    dispatch(getOverviewData({ interval: filterValue }));
+    if (SHOW_KPIS) {
+      dispatch(getOverviewData({ interval: filterValue }));
+    }
   }, [dispatch, filterValue]);
-
-  const filtersUpcomingAppointmentReminders = [
-    {
-      value: 'Scheduled',
-      label: formatMessage(messages.appointmentsRemindersSelectScheduled),
-    },
-    {
-      value: 'Cancelled',
-      label: formatMessage(messages.appointmentsRemindersSelectCancelled),
-    },
-  ];
-
-  const [
-    filterUpcomingAppointmentReminderValue,
-    setFilterUpcomingAppointmentReminderValue,
-  ] = useState(filtersUpcomingAppointmentReminders[0].value);
-
-  useEffect(() => {
-    dispatch(
-      getAppointmentsRemindersPage({
-        status: filterUpcomingAppointmentReminderValue,
-      })
-    );
-  }, [dispatch, filterUpcomingAppointmentReminderValue]);
-
-  const { count, appointmentsReminders, loading, page } = useSelector(
-    makeSelectAppointmentsReminders()
-  );
 
   return (
     <>
@@ -71,88 +51,88 @@ const OverviewPage = () => {
             {formatMessage(messages.title)}
           </Typography.Title>
         }
-        extra={[
-          <Select
-            key="0"
-            style={{ width: 120 }}
-            onChange={setFilterValue}
-            value={filterValue}
-          >
-            {filters.map((item, index) => (
-              <Option key={index} value={item.value}>
-                {item.label}
-              </Option>
-            ))}
-          </Select>,
-        ]}
+        extra={
+          SHOW_KPIS
+            ? [
+                <Select
+                  key="0"
+                  style={{ width: 120 }}
+                  onChange={setFilterValue}
+                  value={filterValue}
+                >
+                  {filters.map((item, index) => (
+                    <Option key={index} value={item.value}>
+                      {item.label}
+                    </Option>
+                  ))}
+                </Select>,
+              ]
+            : null
+        }
       />
       <Row gutter={48}>
-        <Col span={16} className="mt-4">
-          <AppointmentsLikelyToBeMissed
-            startOpen
-            title={formatMessage(messages.tableTitle)}
-          />
-          <OverviewList
-            startOpen
-            title={formatMessage(messages.listAttention)}
-          />
-          <OverviewList
-            startOpen
-            title={formatMessage(messages.listScreeningInvitesSent)}
-          />
-          <AppointmentsRemindersList
-            count={count}
-            appointmentsReminders={appointmentsReminders}
-            loading={loading}
-            page={page}
-            startOpen
-            title={
-              <span>
-                <span>
-                  {formatMessage(messages.listScreeningRemindersPending)}
-                </span>
-                <span className="pending-appointments-reminders-title">
-                  <Select
-                    key="0"
-                    style={{ width: 120 }}
-                    onChange={setFilterUpcomingAppointmentReminderValue}
-                    value={filterUpcomingAppointmentReminderValue}
-                  >
-                    {filtersUpcomingAppointmentReminders.map((item, index) => (
-                      <Option key={index} value={item.value}>
-                        {item.label}
-                      </Option>
-                    ))}
-                  </Select>
-                </span>
-              </span>
-            }
-          />
-        </Col>
-        <Col span={8} className="mt-4">
-          <GroupCollapse
-            startOpen
-            title={formatMessage(messages.bookingTitle)}
-            group={<Booking title={formatMessage(messages.bookingTitle)} />}
-          />
-          <GroupCollapse
-            startOpen
-            title={formatMessage(messages.asaDataTitle)}
-            group={<AbiData title={formatMessage(messages.asaDataTitle)} />}
-          />
-          <GroupCollapse
-            title={formatMessage(messages.uptakeTitle)}
-            group={<Uptake title={formatMessage(messages.uptakeTitle)} />}
-          />
-          <GroupCollapse
-            startOpen
-            title={formatMessage(messages.appointmentsTitle)}
-            group={
-              <Appointments title={formatMessage(messages.appointmentsTitle)} />
-            }
-          />
+        <Col span={24} className="mt-4">
+          {SHOW_APPOINTMENTS_LIKELY_TO_BE_MISSED && (
+            <AppointmentsLikelyToBeMissed
+              startOpen
+              title={formatMessage(
+                messages.tableAppointmentsLikelyToBeMissedTitle
+              )}
+            />
+          )}
+          {SHOW_PASSED_APPOINTMENTS_REQUIRING_IMMEDIATE_ATTENTION && (
+            <PassedAppointmentsRequiringImmediateStatusUpdate
+              startOpen
+              title={formatMessage(
+                messages.tablePassedAppointmentsRequiringImmediateStatusUpdateTitle
+              )}
+            />
+          )}
+          {SHOW_MESSAGES_REQUIRING_IMMEDIATE_ATTENTION && (
+            <MessagesRequiringImmediateAttention
+              startOpen
+              title={formatMessage(
+                messages.tableMessagesRequiringImmediateAttentionTitle
+              )}
+            />
+          )}
+          {SHOW_APPOINTMENTS_REMINDERS && (
+            <AppointmentsReminders
+              startOpen
+              title={formatMessage(messages.tableAppointmentsRemindersTitle)}
+            />
+          )}
         </Col>
       </Row>
+      {SHOW_KPIS && (
+        <Row gutter={48}>
+          <Col span={24} className="mt-4">
+            <GroupCollapse
+              startOpen
+              title={formatMessage(messages.bookingTitle)}
+              group={<Booking title={formatMessage(messages.bookingTitle)} />}
+            />
+            <GroupCollapse
+              startOpen
+              title={formatMessage(messages.asaDataTitle)}
+              group={<AbiData title={formatMessage(messages.asaDataTitle)} />}
+            />
+            <GroupCollapse
+              title={formatMessage(messages.uptakeTitle)}
+              group={<Uptake title={formatMessage(messages.uptakeTitle)} />}
+            />
+            <GroupCollapse
+              startOpen
+              title={formatMessage(messages.appointmentsTitle)}
+              group={
+                <Appointments
+                  title={formatMessage(messages.appointmentsTitle)}
+                />
+              }
+            />
+          </Col>
+        </Row>
+      )}
     </>
   );
 };

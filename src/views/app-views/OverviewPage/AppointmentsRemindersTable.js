@@ -2,14 +2,14 @@ import { Card, Table, Typography } from 'antd';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  getAppointments,
-  setAppointmentsPage,
-  setOrder,
+  getAppointmentsReminders,
+  setAppointmentsRemindersPage,
+  setAppointmentsRemindersOrder,
 } from 'redux/actions/Staff';
-import { makeSelectStaffAppointmentsRequestData } from 'redux/selectors/Staff';
+import { makeSelectAppointmentsRemindersRequestData } from 'redux/selectors/Staff';
 import { DEFAULT_LIMIT } from 'services/StaffService';
 
-const AppointmentsTable = ({
+const AppointmentsRemindersTable = ({
   columns,
   items,
   onRow,
@@ -42,32 +42,32 @@ const AppointmentsTable = ({
   </Card>
 );
 
-AppointmentsTable.defaultProps = {
+AppointmentsRemindersTable.defaultProps = {
   onRow: () => ({}),
   handleChange: () => {},
 };
 
-const Appointments = ({ id, field, children, columnMap }) => {
+const AppointmentsReminders = ({ id, field, children, columnMap }) => {
   if (!children) throw new Error('Component must have children');
 
   const { items, loading, page, count } = useSelector(
-    makeSelectStaffAppointmentsRequestData(field)
+    makeSelectAppointmentsRemindersRequestData(field)
   );
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getAppointments({ id, field }));
+    dispatch(getAppointmentsReminders({ id, field }));
   }, [dispatch, id, field]);
 
   const handlePaginationChange = (page) => {
-    dispatch(setAppointmentsPage({ page, field, id }));
+    dispatch(setAppointmentsRemindersPage({ page, field, id }));
   };
 
   const handleChange = (_, __, sortField, e) => {
     if (e.action === 'sort')
       dispatch(
-        setOrder({
+        setAppointmentsRemindersOrder({
           ...sortField,
           sort_field: columnMap
             ? columnMap[
@@ -85,7 +85,7 @@ const Appointments = ({ id, field, children, columnMap }) => {
   const elements = React.Children.map(children, (child) => {
     if (
       React.isValidElement(child) &&
-      child.type.name === AppointmentsTable.name
+      child.type.name === AppointmentsRemindersTable.name
     ) {
       return React.cloneElement(child, {
         items,
@@ -102,6 +102,6 @@ const Appointments = ({ id, field, children, columnMap }) => {
   return <div>{elements}</div>;
 };
 
-Appointments.Table = AppointmentsTable;
+AppointmentsReminders.Table = AppointmentsRemindersTable;
 
-export default Appointments;
+export default AppointmentsReminders;

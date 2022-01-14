@@ -6,6 +6,7 @@ import moment from 'moment';
 import { NO_SHOW_SCORE_THRESHOLD } from './constants';
 import { Typography } from 'antd';
 import appointmentsPageMessages from 'views/app-views/AppointmentsPage/messages';
+import { getStaffDetails } from 'redux/actions/Staff';
 
 export const prepareFormData = (obj) =>
   Object.keys(obj).reduce((accumulator, currentValue) => {
@@ -68,6 +69,26 @@ export const filterNumberInput = (e) =>
   e.preventDefault();
 
 export const prepareAppointmentData = (values) => {
+  if (
+    values.hasOwnProperty('missing_reason') &&
+    values.missing_reason === undefined
+  ) {
+    delete values['missing_reason'];
+  }
+  if (!values.hasOwnProperty('missing_reason')) {
+    delete values['missing_reason_details'];
+  }
+
+  if (
+    values.hasOwnProperty('cancellation_reason') &&
+    values.cancellation_reason === undefined
+  ) {
+    delete values['cancellation_reason'];
+  }
+  if (!values.hasOwnProperty('cancellation_reason')) {
+    delete values['cancellation_reason_details'];
+  }
+
   let { date, time, patient, price, ...otherValues } = values;
   const startDatetime = moment(`${date} ${time}`, 'DD-MMM-YYYY HH:mm').format(
     'YYYY-MM-DDTHH:mm'
@@ -237,4 +258,12 @@ export const RenderPredictionText = (data) => {
       {predictionText}
     </Typography.Text>
   );
+};
+
+export const getSafe = (fn, defaultValue) => {
+  try {
+    return fn();
+  } catch (err) {
+    return defaultValue;
+  }
 };

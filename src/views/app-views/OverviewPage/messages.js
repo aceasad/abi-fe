@@ -143,9 +143,21 @@ export default defineMessages({
     id: `${scope}.list.see_all`,
     defaultMessage: 'See all',
   },
-  tableTitle: {
-    id: `${scope}.table.title`,
+  tableAppointmentsLikelyToBeMissedTitle: {
+    id: `${scope}.table.appointments_likely_to_be_missed.title`,
     defaultMessage: 'Appointments likely to be missed',
+  },
+  tableMessagesRequiringImmediateAttentionTitle: {
+    id: `${scope}.table.messages_requiring_immediate_attention.title`,
+    defaultMessage: 'Messages Requiring Immediate Attention',
+  },
+  tablePassedAppointmentsRequiringImmediateStatusUpdateTitle: {
+    id: `${scope}.table.past_appointments_requiring_immediate_status_update.title`,
+    defaultMessage: 'Passed Appointments Requiring Immediate Status Update',
+  },
+  tableAppointmentsRemindersTitle: {
+    id: `${scope}.table.appointments_reminders.title`,
+    defaultMessage: 'Appointments Reminders',
   },
   tableColumnPatient: {
     id: `${scope}.table.column.patient`,
@@ -154,6 +166,10 @@ export default defineMessages({
   tableColumnAppointment: {
     id: `${scope}.table.column.appointment`,
     defaultMessage: 'Appointment',
+  },
+  tableColumnAppointmentDatetime: {
+    id: `${scope}.table.column.appointment_datetime`,
+    defaultMessage: 'Appointment Datetime',
   },
   tableColumnDate: {
     id: `${scope}.table.column.date`,
@@ -167,6 +183,18 @@ export default defineMessages({
     id: `${scope}.table.column.whitelisted`,
     defaultMessage: 'Whitelisted',
   },
+  tableColumnReminderTemplate: {
+    id: `${scope}.table.column.reminder_template`,
+    defaultMessage: 'Reminder',
+  },
+  tableColumnReminderDatetime: {
+    id: `${scope}.table.column.reminder_datetime`,
+    defaultMessage: 'Reminder Datetime',
+  },
+  tableColumnReminderStatus: {
+    id: `${scope}.table.column.reminder_status`,
+    defaultMessage: 'Reminder Status',
+  },
   tableColumnNoShowScore: {
     id: `${scope}.table.column.no_show_score`,
     defaultMessage: 'No Show Probability',
@@ -175,9 +203,13 @@ export default defineMessages({
     id: `${scope}.table.column.status`,
     defaultMessage: 'Status',
   },
-  tableDropdownTitle: {
-    id: `${scope}.table.dropdown.title`,
+  tableDropdownTitleContact: {
+    id: `${scope}.table.dropdown.title.contact`,
     defaultMessage: 'Contact',
+  },
+  tableDropdownTitleActions: {
+    id: `${scope}.table.dropdown.title.actions`,
+    defaultMessage: 'Actions',
   },
   tableDropdownSeeAppointment: {
     id: `${scope}.table.dropdown.see_appointment`,
@@ -186,6 +218,34 @@ export default defineMessages({
   tableDropdownAiReachout: {
     id: `${scope}.table.dropdown.reachout`,
     defaultMessage: 'AI Reachout',
+  },
+  tableDropdownPatientInfo: {
+    id: `${scope}.table.dropdown.patient_info`,
+    defaultMessage: 'Patient Info',
+  },
+  tableDropdownAppointmentInfo: {
+    id: `${scope}.table.dropdown.appointment_info`,
+    defaultMessage: 'Appointment Info',
+  },
+  tableDropdownPreAppointmentQuestionnaireInfo: {
+    id: `${scope}.table.dropdown.pre_appointment_questionnaire_info`,
+    defaultMessage: 'Pre Appointment Questionnaire Info',
+  },
+  tableDropdownUpdateMessageRequiringImmediateAttentionStatus: {
+    id: `${scope}.table.dropdown.update_message_requiring_immediate_attention_status`,
+    defaultMessage: 'Update Status',
+  },
+  tableDropdownCancelAppointmentReminder: {
+    id: `${scope}.table.dropdown.cancel_appointment_reminder`,
+    defaultMessage: 'Cancel Reminder',
+  },
+  tableDropdownReverseAppointmentReminderCancellation: {
+    id: `${scope}.table.dropdown.reverse_appointment_reminder_cancellation`,
+    defaultMessage: 'Reverse Reminder Cancellation',
+  },
+  tableDropdownRescheduleAppointmentReminder: {
+    id: `${scope}.table.dropdown.reschedule_reminder`,
+    defaultMessage: 'Reschedule reminder',
   },
   asaEfficiencyTooltip: {
     id: `${scope}.asa_data.tooltip.asa_efficiency`,
@@ -290,5 +350,45 @@ export default defineMessages({
   appointmentsRemindersClose: {
     id: `${scope}.appointments.reminders.close`,
     defaultMessage: 'Close',
+  },
+  columnTitleTimestamp: {
+    id: `${scope}.messages_requiring_immediate_attention.column.title.timestamp`,
+    defaultMessage: 'Timestamp',
+  },
+  columnTitlePatient: {
+    id: `${scope}.messages_requiring_immediate_attention.column.title.patient`,
+    defaultMessage: 'Patient',
+  },
+  columnTitleEvent: {
+    id: `${scope}.messages_requiring_immediate_attention.column.title.event`,
+    defaultMessage: 'Event',
+  },
+  columnTitleStatus: {
+    id: `${scope}.messages_requiring_immediate_attention.column.title.status`,
+    defaultMessage: 'Status',
+  },
+  messageRequiringImmediateAttentionFormLabelStatus: {
+    id: `${scope}.form.label.message_requiring_immediate_attention_status`,
+    defaultMessage: 'Please set the status using the dropdown below',
+  },
+  messageRequiringImmediateAttentionFormLabelStatusDetails: {
+    id: `${scope}.form.label.message_requiring_immediate_attention_status_details`,
+    defaultMessage: 'Status Details',
+  },
+  modalTitleUpdateMessageRequiringImmediateAttentionStatus: {
+    id: `${scope}.modal.update_message_requiring_immediate_attention_status.title`,
+    defaultMessage: 'Update Status',
+  },
+  modalOkTextUpdateMessageRequiringImmediateAttentionStatus: {
+    id: `${scope}.modal.update_message_requiring_immediate_attention_status.ok_text`,
+    defaultMessage: 'Update',
+  },
+  modalCancelTextUpdateMessageRequiringImmediateAttentionStatus: {
+    id: `${scope}.modal.update_message_requiring_immediate_attention_status.cancel_text`,
+    defaultMessage: 'Cancel',
+  },
+  modalTitlePreAppointmentQuestionnaire: {
+    id: `${scope}.modal.pre_appointment_questionnaire.title`,
+    defaultMessage: 'Pre-Appointment Questionnaire Patient Answers',
   },
 });

@@ -18,7 +18,7 @@ export default defineMessages({
   },
   userInfo: {
     id: `${scope}.menu.user_info_label`,
-    defaultMessage: 'User Info',
+    defaultMessage: 'Patient Info',
   },
   muteChat: {
     id: `${scope}.menu.mute_chat`,

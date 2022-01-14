@@ -25,16 +25,11 @@ const makeSelectSingleAppointment = () =>
     singleLoading: substate.singleLoading,
   }));
 
-const makeSelectAppointmentTypes = () =>
+const makeSelectSinglePreAppointmentQuestionnaire = () =>
   createSelector(selectAppointmentDomain, (substate) => ({
-    appointmentTypesLoading: substate.appointmentTypesLoading,
-    appointmentTypes: substate.appointmentTypes,
-  }));
-
-const makeSelectAppointmentStatus = () =>
-  createSelector(selectAppointmentDomain, (substate) => ({
-    appointmentStatusLoading: substate.appointmentStatusLoading,
-    appointmentStatus: substate.appointmentStatus,
+    preAppointmentQuestionnaire: substate.preAppointmentQuestionnaire,
+    preAppointmentQuestionnaireLoading:
+      substate.preAppointmentQuestionnaireLoading,
   }));
 
 const makeSelectClinicDoctors = () =>
@@ -42,6 +37,47 @@ const makeSelectClinicDoctors = () =>
     doctors: substate.doctors.all,
     doctorsLoading: substate.doctors.loading,
     next: substate.doctors.next,
+  }));
+
+const makeSelectAppointmentTypes = () =>
+  createSelector(selectAppointmentDomain, (substate) => ({
+    appointmentTypesLoading: substate.appointmentTypesLoading,
+    appointmentTypes: substate.appointmentTypes,
+  }));
+
+const makeSelectAppointmentStatuses = () =>
+  createSelector(selectAppointmentDomain, (substate) => ({
+    appointmentStatusesLoading: substate.appointmentStatusesLoading,
+    appointmentStatuses: substate.appointmentStatuses,
+    saveAppointmentStatusesLoading: substate.saveAppointmentStatusesLoading,
+  }));
+
+const makeSelectAppointmentCommunicationStatuses = () =>
+  createSelector(selectAppointmentDomain, (substate) => ({
+    appointmentCommunicationStatusesLoading:
+      substate.appointmentCommunicationStatusesLoading,
+    appointmentCommunicationStatuses: substate.appointmentCommunicationStatuses,
+  }));
+
+const makeSelectAppointmentMissingReasons = () =>
+  createSelector(selectAppointmentDomain, (substate) => ({
+    appointmentMissingReasonsLoading: substate.appointmentMissingReasonsLoading,
+    appointmentMissingReasons: substate.appointmentMissingReasons,
+  }));
+
+const makeSelectAppointmentCancellationReasons = () =>
+  createSelector(selectAppointmentDomain, (substate) => ({
+    appointmentCancellationReasonsLoading:
+      substate.appointmentCancellationReasonsLoading,
+    appointmentCancellationReasons: substate.appointmentCancellationReasons,
+  }));
+
+const makeSelectMessageRequiringImmediateAttentionStatuses = () =>
+  createSelector(selectAppointmentDomain, (substate) => ({
+    messageRequiringImmediateAttentionStatusesLoading:
+      substate.messageRequiringImmediateAttentionStatusesLoading,
+    messageRequiringImmediateAttentionStatuses:
+      substate.messageRequiringImmediateAttentionStatuses,
   }));
 
 const makeSelectClinicPatients = () =>
@@ -56,40 +92,19 @@ const makeSelectLoading = () =>
 const makeSelectSingleAppointmentLoading = () =>
   createSelector(selectAppointmentDomain, (substate) => substate.singleLoading);
 
-const makeSelectMissingReasons = () =>
-  createSelector(
-    selectAppointmentDomain,
-    (substate) => substate.missingReasons
-  );
-
-const makeSelectAppointmentsReminders = () =>
-  createSelector(selectAppointmentDomain, (substate) => ({
-    appointmentsReminders: substate.appointmentsReminders.items,
-    count: substate.appointmentsReminders.count,
-    loading: substate.appointmentsReminders.loading,
-    page: substate.appointmentsReminders.page,
-  }));
-
-const makeSelectAppointmentsRemindersLastOnThePage = () =>
-  createSelector(selectAppointmentDomain, ({ appointmentsReminders }) => ({
-    isLast:
-      appointmentsReminders.page !== 1 &&
-      appointmentsReminders.count - 1 <=
-        (appointmentsReminders.page - 1) * DEFAULT_PAGINATION_LIMIT,
-    page: appointmentsReminders.page,
-  }));
-
 export {
-  makeSelectMissingReasons,
   makeSelectSingleAppointmentLoading,
   makeSelectDoctorAppointments,
   makeSelectDateAppointments,
   makeSelectSingleAppointment,
-  makeSelectAppointmentTypes,
-  makeSelectAppointmentStatus,
+  makeSelectSinglePreAppointmentQuestionnaire,
   makeSelectClinicDoctors,
+  makeSelectAppointmentTypes,
+  makeSelectAppointmentStatuses,
+  makeSelectAppointmentCommunicationStatuses,
+  makeSelectAppointmentMissingReasons,
+  makeSelectAppointmentCancellationReasons,
+  makeSelectMessageRequiringImmediateAttentionStatuses,
   makeSelectClinicPatients,
   makeSelectLoading,
-  makeSelectAppointmentsReminders,
-  makeSelectAppointmentsRemindersLastOnThePage,
 };

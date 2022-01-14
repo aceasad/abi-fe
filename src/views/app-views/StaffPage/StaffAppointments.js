@@ -20,8 +20,10 @@ const STATUS_OPTIONS = {
 
 const columnMap = {
   date: 'start_datetime',
+  time: 'start_datetime',
   patient_full_name: 'patient__last_name,patient__first_name',
   appointment_type_name: 'appointment_type__name',
+  no_show_score: 'no_show_score',
   status_name: 'status__name',
 };
 
@@ -54,7 +56,7 @@ const StaffAppointments = ({ staffId, showList }) => {
 
   useEffect(() => {
     activeAppointment && dispatch(getSingleAppointment(activeAppointment.id));
-  }, [activeAppointment]);
+  }, [activeAppointment, dispatch]);
 
   return (
     <>
@@ -168,7 +170,7 @@ const StaffAppointments = ({ staffId, showList }) => {
       {activeAppointment && (
         <AppointmentPreview
           handleClose={() => setActiveAppointment(null)}
-          aditionalSubmitData={{
+          additionalSubmitData={{
             temporalType: activeAppointment.type,
             actionFrom: FROM_STAFF_APPOINTMENTS,
           }}

@@ -47,6 +47,30 @@ export default defineMessages({
     id: `${scope}.form.label.status`,
     defaultMessage: 'Appointment Status',
   },
+  appointmentCommunicationStatus: {
+    id: `${scope}.form.label.communication_status`,
+    defaultMessage: 'Appointment Communication Status',
+  },
+  appointmentCommunicationStatusDetails: {
+    id: `${scope}.form.label.communication_status_details`,
+    defaultMessage: 'Appointment Communication Status Details',
+  },
+  appointmentMissingReason: {
+    id: `${scope}.form.label.missing_reason`,
+    defaultMessage: 'Appointment Missing Reason',
+  },
+  appointmentMissingReasonDetails: {
+    id: `${scope}.form.label.missing_reason_details`,
+    defaultMessage: 'Appointment Missing Reason Details',
+  },
+  appointmentCancellationReason: {
+    id: `${scope}.form.label.cancellation_reason`,
+    defaultMessage: 'Appointment Cancellation Reason',
+  },
+  appointmentCancellationReasonDetails: {
+    id: `${scope}.form.label.cancellation_reason_details`,
+    defaultMessage: 'Appointment Cancellation Reason Details',
+  },
   saveButton: {
     id: `${scope}.form.button.save`,
     defaultMessage: 'Save',

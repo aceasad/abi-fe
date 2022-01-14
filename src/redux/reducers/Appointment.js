@@ -5,14 +5,24 @@ import {
   SET_IS_LOADING,
   SET_SINGLE_APPOINTMENT,
   SET_SINGLE_APPOINTMENT_LOADING,
+  SET_SINGLE_PRE_APPOINTMENT_QUESTIONNAIRE,
+  SET_SINGLE_PRE_APPOINTMENT_QUESTIONNAIRE_LOADING,
   SET_LOADING_DOCTORS,
   APPEND_TO_ALL_DOCTORS,
   SET_APPOINTMENT_TYPES_LOADING,
-  APPEND_TO_APPOINTMENT_TYPES,
-  SET_APPOINTMENT_STATUS_LOADING,
-  APPEND_TO_APPOINTMENT_STATUS,
+  SET_APPOINTMENT_TYPES,
+  SET_APPOINTMENT_STATUSES_LOADING,
+  SET_APPOINTMENT_STATUSES,
+  SET_APPOINTMENT_COMMUNICATION_STATUSES_LOADING,
+  SET_APPOINTMENT_COMMUNICATION_STATUSES,
+  SET_APPOINTMENT_MISSING_REASONS_LOADING,
+  SET_APPOINTMENT_MISSING_REASONS,
+  SET_APPOINTMENT_CANCELLATION_REASONS_LOADING,
+  SET_APPOINTMENT_CANCELLATION_REASONS,
+  SET_MESSAGE_REQUIRING_IMMEDIATE_ATTENTION_STATUSES_LOADING,
+  SET_MESSAGE_REQUIRING_IMMEDIATE_ATTENTION_STATUSES,
+  SAVE_APPOINTMENT_STATUS_LOADING,
   FILTER_DELETED_APPOINTMENT,
-  SET_MISSING_REASONS,
   SET_PATIENTS_AUTOCOMPLETE,
   SET_PATIENTS_LOADING_AUTOCOMPLETE,
   RESET_PATIENTS_AUTOCOMPLETE,
@@ -28,6 +38,8 @@ const initialState = {
   loading: false,
   appointment: null,
   singleLoading: false,
+  preAppointmentQuestionnaire: null,
+  preAppointmentQuestionnaireLoading: false,
   doctors: {
     all: [],
     loading: false,
@@ -40,9 +52,17 @@ const initialState = {
   },
   appointmentTypes: [],
   appointmentTypesLoading: false,
-  appointmentStatus: [],
-  appointmentStatusLoading: false,
-  missingReasons: [],
+  appointmentStatuses: [],
+  appointmentStatusesLoading: false,
+  appointmentCommunicationStatuses: [],
+  appointmentCommunicationStatusesLoading: false,
+  appointmentMissingReasons: [],
+  appointmentMissingReasonsLoading: false,
+  appointmentCancellationReasons: [],
+  appointmentCancellationReasonsLoading: false,
+  messageRequiringImmediateAttentionStatuses: [],
+  messageRequiringImmediateAttentionStatusesLoading: false,
+  saveAppointmentStatusLoading: false,
   appointmentsReminders: { ...baseState },
 };
 
@@ -65,6 +85,13 @@ const appointment = (state = initialState, action) =>
       case SET_SINGLE_APPOINTMENT_LOADING:
         draft.singleLoading = action.payload;
         break;
+      case SET_SINGLE_PRE_APPOINTMENT_QUESTIONNAIRE:
+        draft.preAppointmentQuestionnaire = action.payload;
+        break;
+      case SET_SINGLE_PRE_APPOINTMENT_QUESTIONNAIRE_LOADING:
+        draft.preAppointmentQuestionnaireLoading = action.payload;
+        break;
+      // doctors
       case SET_LOADING_DOCTORS:
         draft.doctors.loading = action.payload;
         break;
@@ -75,24 +102,62 @@ const appointment = (state = initialState, action) =>
           next: action.payload.next,
         };
         break;
+
+      // appointment types
       case SET_APPOINTMENT_TYPES_LOADING:
         draft.appointmentTypesLoading = action.payload;
         break;
-      case APPEND_TO_APPOINTMENT_TYPES:
-        draft.appointmentTypes = [
-          ...draft.appointmentTypes,
-          ...action.payload.results,
-        ];
+      case SET_APPOINTMENT_TYPES:
+        draft.appointmentTypes = action.payload.results;
         break;
-      case SET_APPOINTMENT_STATUS_LOADING:
-        draft.appointmentStatusLoading = action.payload;
+
+      // appointment statuses
+      case SET_APPOINTMENT_STATUSES_LOADING:
+        draft.appointmentStatusesLoading = action.payload;
         break;
-      case APPEND_TO_APPOINTMENT_STATUS:
-        draft.appointmentStatus = [
-          ...draft.appointmentStatus,
-          ...action.payload.results,
-        ];
+      case SET_APPOINTMENT_STATUSES:
+        draft.appointmentStatuses = action.payload.results;
         break;
+
+      // appointment communication statuses
+      case SET_APPOINTMENT_COMMUNICATION_STATUSES_LOADING:
+        draft.appointmentCommunicationStatusesLoading = action.payload;
+        break;
+      case SET_APPOINTMENT_COMMUNICATION_STATUSES:
+        draft.appointmentCommunicationStatuses = action.payload;
+        break;
+
+      // appointment missing reasons
+      case SET_APPOINTMENT_MISSING_REASONS_LOADING:
+        draft.appointmentMissingReasonsLoading = action.payload;
+        break;
+      case SET_APPOINTMENT_MISSING_REASONS:
+        draft.appointmentMissingReasons = action.payload;
+        break;
+
+      // appointment cancellation reasons
+      case SET_APPOINTMENT_CANCELLATION_REASONS_LOADING:
+        draft.appointmentCancellationReasonsLoading = action.payload;
+        break;
+      case SET_APPOINTMENT_CANCELLATION_REASONS:
+        draft.appointmentCancellationReasons = action.payload.results;
+        break;
+
+      // appointment cancellation reasons
+      case SET_MESSAGE_REQUIRING_IMMEDIATE_ATTENTION_STATUSES_LOADING:
+        draft.messageRequiringImmediateAttentionStatusesLoading =
+          action.payload;
+        break;
+      case SET_MESSAGE_REQUIRING_IMMEDIATE_ATTENTION_STATUSES:
+        draft.messageRequiringImmediateAttentionStatuses =
+          action.payload.results;
+        break;
+
+      // save appointment status
+      case SAVE_APPOINTMENT_STATUS_LOADING:
+        draft.saveAppointmentStatusesLoading = action.payload;
+        break;
+
       case SET_PATIENTS_AUTOCOMPLETE:
         draft.patients = {
           ...draft.patients,
@@ -126,10 +191,6 @@ const appointment = (state = initialState, action) =>
           )
           .filter((a) => a.total > 0);
         break;
-      case SET_MISSING_REASONS:
-        draft.missingReasons = action.payload;
-        break;
-
       case SET_PATIENTS_LOADING_AUTOCOMPLETE:
         draft.patients.loading = action.payload;
         break;

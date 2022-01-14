@@ -228,7 +228,7 @@ const PatientOverview = ({
           handleClose={() => setActiveAppointment(null)}
           patientId={patientId}
           appointment_type={activeAppointmnet.type}
-          aditionalSubmitData={{
+          additionalSubmitData={{
             patientAppointment: activeAppointmnet.type,
             actionFrom: FROM_PATIENT_APPOINTMENTS,
           }}

@@ -2,14 +2,14 @@ import { Card, Table, Typography } from 'antd';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  getAppointments,
-  setAppointmentsPage,
-  setOrder,
+  getMessagesRequiringImmediateAttention,
+  setMessagesRequiringImmediateAttentionPage,
+  setMessagesRequiringImmediateAttentionOrder,
 } from 'redux/actions/Staff';
-import { makeSelectStaffAppointmentsRequestData } from 'redux/selectors/Staff';
+import { makeSelectMessagesRequiringImmediateAttentionRequestData } from 'redux/selectors/Staff';
 import { DEFAULT_LIMIT } from 'services/StaffService';
 
-const AppointmentsTable = ({
+const MessagesRequiringImmediateAttentionTable = ({
   columns,
   items,
   onRow,
@@ -42,32 +42,37 @@ const AppointmentsTable = ({
   </Card>
 );
 
-AppointmentsTable.defaultProps = {
+MessagesRequiringImmediateAttentionTable.defaultProps = {
   onRow: () => ({}),
   handleChange: () => {},
 };
 
-const Appointments = ({ id, field, children, columnMap }) => {
+const MessagesRequiringImmediateAttention = ({
+  id,
+  field,
+  children,
+  columnMap,
+}) => {
   if (!children) throw new Error('Component must have children');
 
   const { items, loading, page, count } = useSelector(
-    makeSelectStaffAppointmentsRequestData(field)
+    makeSelectMessagesRequiringImmediateAttentionRequestData(field)
   );
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getAppointments({ id, field }));
+    dispatch(getMessagesRequiringImmediateAttention({ id, field }));
   }, [dispatch, id, field]);
 
   const handlePaginationChange = (page) => {
-    dispatch(setAppointmentsPage({ page, field, id }));
+    dispatch(setMessagesRequiringImmediateAttentionPage({ page, field, id }));
   };
 
   const handleChange = (_, __, sortField, e) => {
     if (e.action === 'sort')
       dispatch(
-        setOrder({
+        setMessagesRequiringImmediateAttentionOrder({
           ...sortField,
           sort_field: columnMap
             ? columnMap[
@@ -85,7 +90,7 @@ const Appointments = ({ id, field, children, columnMap }) => {
   const elements = React.Children.map(children, (child) => {
     if (
       React.isValidElement(child) &&
-      child.type.name === AppointmentsTable.name
+      child.type.name === MessagesRequiringImmediateAttentionTable.name
     ) {
       return React.cloneElement(child, {
         items,
@@ -102,6 +107,6 @@ const Appointments = ({ id, field, children, columnMap }) => {
   return <div>{elements}</div>;
 };
 
-Appointments.Table = AppointmentsTable;
+MessagesRequiringImmediateAttention.Table = MessagesRequiringImmediateAttentionTable;
 
-export default Appointments;
+export default MessagesRequiringImmediateAttention;

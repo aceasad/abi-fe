@@ -34,6 +34,12 @@ const makeSelectLoading = () =>
 const makeSelectStaffAppointmentsRequestData = (field) =>
   createSelector(selectStaffDomain, ({ [field]: data }) => data);
 
+const makeSelectAppointmentsRemindersRequestData = (field) =>
+  createSelector(selectStaffDomain, ({ [field]: data }) => data);
+
+const makeSelectMessagesRequiringImmediateAttentionRequestData = (field) =>
+  createSelector(selectStaffDomain, ({ [field]: data }) => data);
+
 const makeSelectLastScheduledAppointmentOnTheStaffPage = () =>
   createSelector(selectStaffDomain, ({ [SCHEDULED]: data }) => ({
     isLast:
@@ -52,6 +58,8 @@ const makeSelectLastPastAppointmentOnTheStaffPage = () =>
 
 export {
   makeSelectStaffAppointmentsRequestData,
+  makeSelectAppointmentsRemindersRequestData,
+  makeSelectMessagesRequiringImmediateAttentionRequestData,
   makeSelectStaff,
   makeSelectPagination,
   makeSelectStaffDetails,

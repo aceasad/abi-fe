@@ -13,27 +13,50 @@ import Flex from 'components/shared-components/Flex';
 import RowWithMultipleColumns from 'components/util-components/Grid/RowWithMultipleColumns';
 import { RenderPredictionText } from 'utils/helpers';
 
-function PreviewModal({ handleClose, showDelete, showEnd, setNewData }) {
+function PreviewModal({
+  handleClose,
+  showDelete,
+  showCancel,
+  showEnd,
+  setNewData,
+}) {
   const { formatMessage } = useIntl();
   const { appointment, singleLoading } = useSelector(
     makeSelectSingleAppointment()
   );
   const isLoading = singleLoading || !appointment;
 
-  const footer =
-    !isLoading && appointment.attended === null
-      ? [
-          <Button
-            key="submit"
-            type="primary"
-            onClick={() => {
-              showEnd(appointment);
-            }}
-          >
-            {formatMessage(messages.endAppointment)}
-          </Button>,
-        ]
-      : null;
+  const footer = [];
+  if (!isLoading && new Date(appointment.datetime_iso) > new Date()) {
+    footer.push(
+      <Button
+        key="submit"
+        type="primary"
+        onClick={() => {
+          showCancel(appointment);
+        }}
+      >
+        {formatMessage(messages.cancelAppointment)}
+      </Button>
+    );
+  }
+  if (
+    !isLoading &&
+    appointment.attended === null &&
+    new Date(appointment.datetime_iso) <= new Date()
+  ) {
+    footer.push(
+      <Button
+        key="submit"
+        type="primary"
+        onClick={() => {
+          showEnd(appointment);
+        }}
+      >
+        {formatMessage(messages.endAppointment)}
+      </Button>
+    );
+  }
 
   const detailsListData = [
     {

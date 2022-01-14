@@ -38,3 +38,9 @@
 .pending-appointments-reminders-title {
   padding-left: 10px;
 }
+.ant-card-body {
+  overflow-x: auto;
+}
+.cursor-pointer {
+  cursor: pointer;
+}

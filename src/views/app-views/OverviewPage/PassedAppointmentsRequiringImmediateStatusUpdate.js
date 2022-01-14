@@ -11,40 +11,53 @@ import {
 } from 'antd';
 import { CaretDownOutlined } from '@ant-design/icons';
 import { useIntl } from 'react-intl';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Appointments from '../StaffPage/Appointments';
-import overviewPageMessages from '../OverviewPage/messages';
+import overviewPageMessages from './messages';
 import patientPageMessages from '../PatientsPage/messages';
-import { LIKELY_TO_BE_MISSED, SCHEDULED } from 'redux/reducers/Staff';
+import {
+  HISTORY_REQUIRING_IMMEDIATE_STATUS_UPDATE,
+  SCHEDULED,
+} from 'redux/reducers/Staff';
 import { getSingleAppointment } from 'redux/actions/Appointment';
 import AppointmentPreview from '../CalendarPage/AppointmentPreview';
-import { FROM_OVERVIEW_APPOINTMENTS } from 'constants/ClinicConstants';
+import {
+  FROM_OVERVIEW_APPOINTMENTS,
+  FROM_STAFF_APPOINTMENTS,
+} from 'constants/ClinicConstants';
 import { DownOutlined } from '@ant-design/icons';
 import { setPatientShowMessages } from 'redux/actions/Patient';
 import { ROUTES } from 'routes';
 import { useHistory } from 'react-router-dom';
-import UpdateAppointmentCommunicationStatus from '../CalendarPage/UpdateAppointmentCommunicationStatus';
+import FormSelect from 'components/custom-components/Form/FormSelect';
+import { Field } from 'formik';
+import {
+  getAppointmentStatuses,
+  saveAppointmentStatus,
+} from 'redux/actions/Appointment';
+import { makeSelectAppointmentStatuses } from 'redux/selectors/Appointment';
+import RowWithMultipleColumns from 'components/util-components/Grid/RowWithMultipleColumns';
+import { getAppointments } from 'redux/actions/Staff';
+import EndAppointment from '../CalendarPage/EndAppointment';
 
 const { Panel } = Collapse;
 
 const columnMap = {
-  id: 'id',
-  patient_full_name: 'patient__last_name,patient__first_name',
-  appointment:
-    'doctor__last_name,doctor__first_name,doctor__specialization,doctor__seniority',
   date: 'start_datetime',
-  time: 'start_datetime',
-  communication_status_name: 'communication_status___name',
-  status_name: 'status__name',
-  patient__whitelisted: 'patient__whitelisted',
+  patient_full_name: 'patient__last_name,patient__first_name',
+  doctor_full_name: 'doctor__last_name,doctor__first_name',
+  appointment_type_name: 'appointment_type__name',
 };
 
 export const NESTED_MODAL = {
   NONE: 0,
-  UPDATE_APPOINTMENT_COMMUNICATION_STATUS: 1,
+  UPDATE_APPOINTMENT_STATUS: 1,
 };
 
-const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
+const PassedAppointmentsRequiringImmediateStatusUpdate = ({
+  title,
+  startOpen,
+}) => {
   const history = useHistory();
   const { formatMessage } = useIntl();
   const dispatch = useDispatch();
@@ -72,29 +85,31 @@ const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
   const showPreview = () =>
     setShowChildModal({ modal: NESTED_MODAL.NONE, data: null });
 
-  const showUpdateAppointmentCommunicationStatus = (data) => {
+  const showUpdateAppointmentStatus = (data) => {
     setShowChildModal({
-      modal: NESTED_MODAL.UPDATE_APPOINTMENT_COMMUNICATION_STATUS,
+      modal: NESTED_MODAL.UPDATE_APPOINTMENT_STATUS,
       data,
     });
   };
 
-  const showUpdateAppointmentCommunicationStatusWrapper = (e, row) => {
+  const showUpdateAppointmentStatusWrapper = (e, row) => {
     e.stopPropagation();
-    showUpdateAppointmentCommunicationStatus({
+    showUpdateAppointmentStatus({
       appointment: row,
     });
   };
 
   const collapseHeader = (
-    <div className="d-flex justify-content-between align-items-center">
-      <Typography.Title level={3} className="text-primary mb-0">
-        {title}
-      </Typography.Title>
-      <DownOutlined
-        className={`collapse-arrow-custom ${isCollapseOpen ? 'open' : ''}`}
-      />
-    </div>
+    <>
+      <div className="d-flex justify-content-between align-items-center">
+        <Typography.Title level={3} className="text-primary mb-0">
+          {title}
+        </Typography.Title>
+        <DownOutlined
+          className={`collapse-arrow-custom ${isCollapseOpen ? 'open' : ''}`}
+        />
+      </div>
+    </>
   );
 
   const menu = (row) => {
@@ -106,9 +121,8 @@ const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
             domEvent.stopPropagation();
             setActiveAppointment({
               id: row.id,
-              type: SCHEDULED,
+              type: HISTORY_REQUIRING_IMMEDIATE_STATUS_UPDATE,
               patientId: row.patient.id,
-              appointment: row,
             });
           }}
         >
@@ -126,6 +140,31 @@ const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
       </Menu>
     );
   };
+
+  // const appointment_statuses_loaded =
+  //   !appointmentStatusesLoading && appointmentStatuses.length > 0;
+
+  // const menu_status = (row) => {
+  //   const items = appointment_statuses_loaded ? (
+  //     appointmentStatus.map((elem, index) => (
+  //       <Menu.Item
+  //         key={`appointment-status-${index}`}
+  //         onClick={({ domEvent }) => {
+  //           domEvent.stopPropagation();
+  //           saveAppointmentStatus({
+  //             id: row.id,
+  //             status: elem.name,
+  //           });
+  //         }}
+  //       >
+  //         {elem.name}
+  //       </Menu.Item>
+  //     ))
+  //   ) : (
+  //     <Menu.Item key="0">{row.status?.name}</Menu.Item>
+  //   );
+  //   return <Menu>{items}</Menu>;
+  // };
 
   const tableColumns = [
     {
@@ -157,34 +196,47 @@ const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
       dataIndex: 'time',
       sorter: true,
     },
+    // {
+    //   title: formatMessage(patientPageMessages.columnTitleStatus),
+    //   key: 'action',
+    //   render: (_, row) => {
+    //     return (
+    //       <div className="text-right">
+    //         <Dropdown
+    //           overlay={() => menu_status(row)}
+    //           trigger={['click']}
+    //           placement="bottomRight"
+    //         >
+    //           <Button type="primary" ghost>
+    //             {row.status?.name}
+    //             <DownOutlined />
+    //           </Button>
+    //         </Dropdown>
+    //       </div>
+    //     );
+    //   },
+    // },
     {
       title: formatMessage(patientPageMessages.columnTitleCommunicationStatus),
       dataIndex: ['communication_status', 'name'],
       sorter: true,
-      render: (_, row) => (
-        <div
-          className={`text-left${
-            row.communication_status?.name === 'Not Contacted' ||
-            row.communication_status?.name === 'Contact Again'
-              ? ' blink'
-              : ''
-          }`}
-          onClick={(e) =>
-            showUpdateAppointmentCommunicationStatusWrapper(e, row)
-          }
-        >
-          {row.communication_status.name} <CaretDownOutlined />
-        </div>
-      ),
     },
     {
       title: formatMessage(patientPageMessages.columnTitleStatus),
       dataIndex: ['status', 'name'],
       sorter: true,
+      className: 'status-width',
+      render: (_, row) => (
+        <div
+          className="text-left blink"
+          onClick={(e) => showUpdateAppointmentStatusWrapper(e, row)}
+        >
+          {row.status?.name} <CaretDownOutlined />
+        </div>
+      ),
     },
     {
       title: formatMessage(patientPageMessages.columnTitleWhitelisted),
-      dataIndex: ['patient', 'whitelisted'],
       sorter: true,
       render: (_, row) => (
         <div className="text-left">
@@ -209,30 +261,6 @@ const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
         </div>
       ),
     },
-    // {
-    //   title: '',
-    //   dataIndex: 'actions',
-    //   render: (_, row) => (
-    //     <div className="text-right">
-    //       <Space>
-    //         <Tooltip
-    //           title={formatMessage(
-    //             patientPageMessages.columnTitleReachOutToPatient
-    //           )}
-    //         >
-    //           <Button
-    //             icon={<WhatsAppOutlined />}
-    //             onClick={(e) => {
-    //               e.stopPropagation();
-    //               goToPatientShowMessages({ id: row.patient.id });
-    //             }}
-    //             size="small"
-    //           />
-    //         </Tooltip>
-    //       </Space>
-    //     </div>
-    //   ),
-    // },
   ];
 
   return (
@@ -251,7 +279,7 @@ const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
       >
         <Card className="mt-4 shadow-basic">
           <Appointments
-            field={LIKELY_TO_BE_MISSED}
+            field={HISTORY_REQUIRING_IMMEDIATE_STATUS_UPDATE}
             id={''}
             columnMap={columnMap}
           >
@@ -262,7 +290,7 @@ const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
               //     onClick: () => {
               //       setActiveAppointment({
               //         id: record.id,
-              //         type: LIKELY_TO_BE_MISSED,
+              //         type: HISTORY_REQUIRING_IMMEDIATE_STATUS_UPDATE,
               //         patientId: record.patient.id,
               //       });
               //     },
@@ -274,25 +302,22 @@ const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
             <AppointmentPreview
               handleClose={() => setActiveAppointment(null)}
               additionalSubmitData={{
-                temporalType: LIKELY_TO_BE_MISSED,
+                temporalType: HISTORY_REQUIRING_IMMEDIATE_STATUS_UPDATE,
                 actionFrom: FROM_OVERVIEW_APPOINTMENTS,
               }}
               patientId={activeAppointment.patientId}
               staffId={1}
-              appointment_type={LIKELY_TO_BE_MISSED}
-              appointment={activeAppointment.appointment}
+              appointment_type={HISTORY_REQUIRING_IMMEDIATE_STATUS_UPDATE}
             />
           )}
-          {showChildModal.modal ===
-            NESTED_MODAL.UPDATE_APPOINTMENT_COMMUNICATION_STATUS && (
-            <UpdateAppointmentCommunicationStatus
+          {showChildModal.modal === NESTED_MODAL.UPDATE_APPOINTMENT_STATUS && (
+            <EndAppointment
               handleClose={showPreview}
               id={showChildModal.data.appointment.id}
               patientId={showChildModal.data.appointment.patient.id}
-              appointment_type={LIKELY_TO_BE_MISSED}
-              updateCommunicationStatusFrom={FROM_OVERVIEW_APPOINTMENTS}
+              appointment_type={HISTORY_REQUIRING_IMMEDIATE_STATUS_UPDATE}
+              endFrom={FROM_OVERVIEW_APPOINTMENTS}
               staffId={''}
-              appointment={showChildModal.data.appointment}
             />
           )}
         </Card>
@@ -301,4 +326,4 @@ const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
   );
 };
 
-export default AppointmentsLikelyToBeMissed;
+export default PassedAppointmentsRequiringImmediateStatusUpdate;

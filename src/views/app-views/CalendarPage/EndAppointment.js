@@ -9,14 +9,18 @@ import Form from 'antd/lib/form/Form';
 import FormTextArea from 'components/custom-components/Form/FormTextArea';
 import { endAppointmentSchema } from 'utils/validations';
 import { useDispatch, useSelector } from 'react-redux';
-import { endAppointment, getMissingReasons } from 'redux/actions/Appointment';
 import {
-  makeSelectMissingReasons,
+  endAppointment,
+  getAppointmentMissingReasons,
+} from 'redux/actions/Appointment';
+import {
+  makeSelectAppointmentMissingReasons,
   makeSelectSingleAppointmentLoading,
 } from 'redux/selectors/Appointment';
 import { message } from 'antd';
 import {
-  APPOINTMNET_HISTORY,
+  APPOINTMENT_HISTORY,
+  FROM_OVERVIEW_APPOINTMENTS,
   FROM_PATIENT_APPOINTMENTS,
   FROM_STAFF_APPOINTMENTS,
   SCHEDULED_APPOINTMENT,
@@ -50,7 +54,9 @@ const EndAppointment = ({
   const { formatMessage } = useIntl();
   const dispatch = useDispatch();
 
-  const missingReasons = useSelector(makeSelectMissingReasons());
+  const { appointmentMissingReasons } = useSelector(
+    makeSelectAppointmentMissingReasons()
+  );
 
   const loading = useSelector(makeSelectSingleAppointmentLoading());
 
@@ -68,13 +74,17 @@ const EndAppointment = ({
       }
     } else if (endFrom === FROM_PATIENT_APPOINTMENTS) {
       switch (appointment_type) {
-        case APPOINTMNET_HISTORY:
+        case APPOINTMENT_HISTORY:
           dispatch(getAppointmentHistory({ id: patientId }));
           break;
         case SCHEDULED_APPOINTMENT:
           dispatch(getScheduledAppointments({ id: patientId }));
           break;
+        default:
+          break;
       }
+    } else if (endFrom === FROM_OVERVIEW_APPOINTMENTS) {
+      dispatch(getAppointments({ id: '', field: appointment_type }));
     }
 
     handleClose();
@@ -85,7 +95,7 @@ const EndAppointment = ({
       endAppointment({
         id,
         data: prepareData(values),
-        missing_reason: missingReasons.find(
+        missing_reason: appointmentMissingReasons.find(
           (missingReason) => missingReason.id === values.missing_reason
         ),
         afterEnd,
@@ -94,8 +104,10 @@ const EndAppointment = ({
   };
 
   useEffect(() => {
-    dispatch(getMissingReasons());
-  }, []);
+    if (!appointmentMissingReasons?.length) {
+      dispatch(getAppointmentMissingReasons());
+    }
+  }, [dispatch, appointmentMissingReasons?.length]);
 
   const options = [
     { id: true, name: formatMessage(messages.yes) },
@@ -135,7 +147,7 @@ const EndAppointment = ({
                 <Field
                   component={FormSelect}
                   name="missing_reason"
-                  options={missingReasons}
+                  options={appointmentMissingReasons}
                   defaultOption={values.missing_reason}
                   optionField="name"
                   label={formatMessage(messages.missingReason)}
@@ -146,7 +158,7 @@ const EndAppointment = ({
                   component={FormTextArea}
                   name="missing_reason_details"
                   rows={4}
-                  label={formatMessage(messages.details)}
+                  label={formatMessage(messages.missingReasonDetails)}
                 />
               </div>
             )}

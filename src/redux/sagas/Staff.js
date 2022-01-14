@@ -6,10 +6,19 @@ import {
   CREATE_STAFF,
   UPDATE_STAFF,
   GET_STAFF_SINGLE,
-  DELTETE_STAFF,
+  DELETE_STAFF,
   GET_STAFF_APPOINTMENTS,
-  SET_STAFF_APPOINTMENTS_PAGE,
-  SET_STAFF_APPOINTMENTS_ORDER,
+  SET_APPOINTMENTS_PAGE,
+  SET_APPOINTMENTS_ORDER,
+  GET_APPOINTMENTS_REMINDERS,
+  SET_APPOINTMENTS_REMINDERS_PAGE,
+  SET_APPOINTMENTS_REMINDERS_ORDER,
+  CANCEL_APPOINTMENT_REMINDER,
+  REVERSE_APPOINTMENT_REMINDER_CANCELLATION,
+  RESCHEDULE_APPOINTMENT_REMINDER,
+  GET_MESSAGES_REQUIRING_IMMEDIATE_ATTENTION,
+  SET_MESSAGES_REQUIRING_IMMEDIATE_ATTENTION_PAGE,
+  SET_MESSAGES_REQUIRING_IMMEDIATE_ATTENTION_ORDER,
 } from '../constants/Staff';
 import {
   setStaff,
@@ -18,14 +27,21 @@ import {
   setSingleStaff,
   setAppointmentsLoading,
   setAppointments,
+  setAppointmentsRemindersLoading,
+  setAppointmentsReminders,
+  setMessagesRequiringImmediateAttentionLoading,
+  setMessagesRequiringImmediateAttention,
 } from '../actions/Staff';
 
 import StaffService from 'services/StaffService';
 import {
   makeSelectPagination,
   makeSelectStaffAppointmentsRequestData,
+  makeSelectAppointmentsRemindersRequestData,
+  makeSelectMessagesRequiringImmediateAttentionRequestData,
 } from 'redux/selectors/Staff';
 import staffService from 'services/StaffService';
+import { UPDATE_MESSAGE_REQUIRING_IMMEDIATE_ATTENTION_STATUS } from 'redux/constants/Appointment';
 
 function* getPaginatedStaff() {
   try {
@@ -107,6 +123,98 @@ export function* getStaffAppointments({ payload }) {
   }
 }
 
+export function* getAppointmentsReminders({ payload }) {
+  try {
+    const requestData = yield select(
+      makeSelectAppointmentsRemindersRequestData(payload.field)
+    );
+    yield put(
+      setAppointmentsRemindersLoading({ loading: true, field: payload.field })
+    );
+    const { data } = yield call(
+      staffService.getAppointmentsReminders,
+      payload.id,
+      requestData,
+      payload.field
+    );
+    yield put(setAppointmentsReminders({ ...data, field: payload.field }));
+  } catch (err) {
+  } finally {
+    yield put(
+      setAppointmentsRemindersLoading({ loading: false, field: payload.field })
+    );
+  }
+}
+
+export function* cancelAppointmentReminder({ payload }) {
+  try {
+    yield call(
+      staffService.cancelAppointmentReminder,
+      payload.cancelReminderId
+    );
+    yield call(getAppointmentsReminders, { payload });
+  } catch (err) {}
+}
+
+export function* reverseAppointmentReminderCancellation({ payload }) {
+  try {
+    yield call(
+      staffService.reverseAppointmentReminderCancellation,
+      payload.reverseReminderCancellationId
+    );
+    yield call(getAppointmentsReminders, { payload });
+  } catch (err) {}
+}
+
+export function* rescheduleAppointmentReminder({ payload }) {
+  try {
+    console.error(payload);
+    yield call(
+      staffService.rescheduleAppointmentReminder,
+      payload.rescheduleReminderData
+    );
+    yield call(getAppointmentsReminders, { payload });
+  } catch (err) {}
+}
+
+export function* getMessagesRequiringImmediateAttention({ payload }) {
+  try {
+    const requestData = yield select(
+      makeSelectMessagesRequiringImmediateAttentionRequestData(payload.field)
+    );
+    yield put(
+      setMessagesRequiringImmediateAttentionLoading({
+        loading: true,
+        field: payload.field,
+      })
+    );
+    const { data } = yield call(
+      staffService.getMessagesRequiringImmediateAttention,
+      payload.id,
+      requestData,
+      payload.field
+    );
+    yield put(
+      setMessagesRequiringImmediateAttention({ ...data, field: payload.field })
+    );
+  } catch (err) {
+  } finally {
+    yield put(
+      setMessagesRequiringImmediateAttentionLoading({
+        loading: false,
+        field: payload.field,
+      })
+    );
+  }
+}
+
+export function* updateMessageRequiringImmediateAttentionStatus({ payload }) {
+  try {
+    yield call(staffService.updateMessageRequiringImmediateAttention, payload);
+    yield call(getMessagesRequiringImmediateAttention, { payload });
+  } catch (err) {}
+}
+
 export function* getStaff() {
   yield takeEvery(GET_STAFF, getPaginatedStaff);
   yield takeEvery(SET_STAFF_PAGE, getPaginatedStaff);
@@ -114,10 +222,38 @@ export function* getStaff() {
   yield takeEvery(CREATE_STAFF, createStaff);
   yield takeEvery(UPDATE_STAFF, updateStaff);
   yield takeEvery(GET_STAFF_SINGLE, getSingleStaff);
-  yield takeEvery(DELTETE_STAFF, deleteStaff);
+  yield takeEvery(DELETE_STAFF, deleteStaff);
   yield takeEvery(GET_STAFF_APPOINTMENTS, getStaffAppointments);
-  yield takeEvery(SET_STAFF_APPOINTMENTS_PAGE, getStaffAppointments);
-  yield takeEvery(SET_STAFF_APPOINTMENTS_ORDER, getStaffAppointments);
+  yield takeEvery(SET_APPOINTMENTS_PAGE, getStaffAppointments);
+  yield takeEvery(SET_APPOINTMENTS_ORDER, getStaffAppointments);
+  yield takeEvery(GET_APPOINTMENTS_REMINDERS, getAppointmentsReminders);
+  yield takeEvery(SET_APPOINTMENTS_REMINDERS_PAGE, getAppointmentsReminders);
+  yield takeEvery(SET_APPOINTMENTS_REMINDERS_ORDER, getAppointmentsReminders);
+  yield takeEvery(CANCEL_APPOINTMENT_REMINDER, cancelAppointmentReminder);
+  yield takeEvery(
+    REVERSE_APPOINTMENT_REMINDER_CANCELLATION,
+    reverseAppointmentReminderCancellation
+  );
+  yield takeEvery(
+    RESCHEDULE_APPOINTMENT_REMINDER,
+    rescheduleAppointmentReminder
+  );
+  yield takeEvery(
+    GET_MESSAGES_REQUIRING_IMMEDIATE_ATTENTION,
+    getMessagesRequiringImmediateAttention
+  );
+  yield takeEvery(
+    SET_MESSAGES_REQUIRING_IMMEDIATE_ATTENTION_PAGE,
+    getMessagesRequiringImmediateAttention
+  );
+  yield takeEvery(
+    SET_MESSAGES_REQUIRING_IMMEDIATE_ATTENTION_ORDER,
+    getMessagesRequiringImmediateAttention
+  );
+  yield takeEvery(
+    UPDATE_MESSAGE_REQUIRING_IMMEDIATE_ATTENTION_STATUS,
+    updateMessageRequiringImmediateAttentionStatus
+  );
 }
 
 export default function* rootSaga() {

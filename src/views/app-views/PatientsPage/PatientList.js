@@ -90,6 +90,7 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
       title: formatMessage(messages.phoneNumber),
       dataIndex: 'phone_number',
       render: (phoneNumber) => <span>{phoneNumber}</span>,
+      sorter: true,
     },
     {
       title: formatMessage(messages.lastAppointment),

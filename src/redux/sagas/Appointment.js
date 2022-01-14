@@ -6,44 +6,56 @@ import moment from 'moment';
 
 import {
   END_APPOINTMENT,
+  CANCEL_APPOINTMENT,
+  UPDATE_APPOINTMENT_COMMUNICATION_STATUS,
   GET_DATE_APPOINTMENTS,
   GET_DOCTOR_APPOINTMENTS,
-  GET_MISSING_REASONS,
   GET_SINGLE_APPOINTMENT,
   CREATE_APPOINTMENT,
   UPDATE_APPOINTMENT,
-  GET_APPOINTMENT_TYPES,
-  GET_APPOINTMENT_STATUS,
   GET_DOCTORS,
+  GET_APPOINTMENT_TYPES,
+  GET_APPOINTMENT_STATUSES,
+  GET_APPOINTMENT_COMMUNICATION_STATUSES,
+  GET_APPOINTMENT_MISSING_REASONS,
+  GET_APPOINTMENT_CANCELLATION_REASONS,
+  GET_MESSAGE_REQUIRING_IMMEDIATE_ATTENTION_STATUSES,
+  SAVE_APPOINTMENT_STATUS,
   SEARCH_PATIENTS,
   GET_MORE_SEARCH_RESULTS,
   DELETE_APPOINTMENT_FROM_PATIENTS,
   DELETE_APPOINTMENT_FROM_STAFF,
   DELETE_APPOINTMENT,
-  GET_APPOINTMENTS_REMINDERS_PAGE,
-  CANCEL_APPOINTMENT_REMINDER,
-  REVERSE_APPOINTMENT_REMINDER_CANCELLATION,
+  GET_SINGLE_PRE_APPOINTMENT_QUESTIONNAIRE,
 } from 'redux/constants/Appointment';
 import {
   appendToAllDoctors,
-  appendToAppointmentStatus,
-  appendToAppointmentTypes,
+  setAppointmentTypesLoading,
+  setAppointmentTypes,
+  setAppointmentStatuses,
+  setAppointmentStatusesLoading,
+  setAppointmentCommunicationStatusesLoading,
+  setAppointmentCommunicationStatuses,
+  setAppointmentMissingReasonsLoading,
+  setAppointmentMissingReasons,
+  setAppointmentCancellationReasonsLoading,
+  setAppointmentCancellationReasons,
+  setMessageRequiringImmediateAttentionStatusesLoading,
+  setMessageRequiringImmediateAttentionStatuses,
   getSingleAppointment,
   filterDeletedAppointment,
   setAppointmentsLoading,
-  setAppointmentStatusLoading,
-  setAppointmentTypesLoading,
+  saveAppointmentStatusLoading,
   setDateAppointments,
   setDoctorAppointments,
   setDoctorsLoading,
   setPatientsAutocomplete,
-  setMissingReasons,
-  setSignleAppointmnet,
-  setSignleAppointmnetLoading,
+  setSingleAppointment,
+  setSingleAppointmentLoading,
   setPatientsLoadingAutocomplete,
   addMorePatientsAutocomplete,
-  setAppointmentsRemindersPage,
-  setAppointmentsRemindersPageLoading,
+  setSinglePreAppointmentQuestionnaire,
+  setSinglePreAppointmentQuestionnaireLoading,
 } from 'redux/actions/Appointment';
 import { HISTORY, SCHEDULED } from 'redux/reducers/Staff';
 import {
@@ -53,7 +65,7 @@ import {
 import { makeSelectCurrentUser } from 'redux/selectors/Auth';
 import { getStaffAppointments } from 'redux/sagas/Staff';
 import {
-  APPOINTMNET_HISTORY,
+  APPOINTMENT_HISTORY,
   SCHEDULED_APPOINTMENT,
 } from 'constants/ClinicConstants';
 import {
@@ -68,10 +80,7 @@ import {
   setAppointmentHistoryPage,
   setScheduledPage,
 } from 'redux/actions/Patient';
-import {
-  makeSelectClinicPatients,
-  makeSelectAppointmentsRemindersLastOnThePage,
-} from 'redux/selectors/Appointment';
+import { makeSelectClinicPatients } from 'redux/selectors/Appointment';
 import { setAppointmentsPage } from 'redux/actions/Staff';
 
 export function* getDoctorAppointments({ payload }) {
@@ -99,21 +108,35 @@ export function* getDateAppointments({ payload }) {
 
 export function* getSingleAppointmentWrapper({ payload }) {
   try {
-    yield put(setSignleAppointmnetLoading(true));
+    yield put(setSingleAppointmentLoading(true));
     const { data } = yield call(
       appointmentService.getSingleAppointment,
       payload
     );
-    yield put(setSignleAppointmnet(data));
+    yield put(setSingleAppointment(data));
   } catch {
   } finally {
-    yield put(setSignleAppointmnetLoading(false));
+    yield put(setSingleAppointmentLoading(false));
+  }
+}
+
+export function* getSinglePreAppointmentQuestionnaireWrapper({ payload }) {
+  try {
+    yield put(setSinglePreAppointmentQuestionnaireLoading(true));
+    const { data } = yield call(
+      appointmentService.getSinglePreAppointmentQuestionnaire,
+      payload
+    );
+    yield put(setSinglePreAppointmentQuestionnaire(data));
+  } catch {
+  } finally {
+    yield put(setSinglePreAppointmentQuestionnaireLoading(false));
   }
 }
 
 export function* deleteAppointmentFromCalendarView({ payload }) {
   try {
-    yield put(setSignleAppointmnetLoading(true));
+    yield put(setSingleAppointmentLoading(true));
     yield call(appointmentService.deleteAppointment, payload.data.id);
     yield payload.afterDelete();
     yield put(
@@ -124,13 +147,13 @@ export function* deleteAppointmentFromCalendarView({ payload }) {
     );
   } catch {
   } finally {
-    yield put(setSignleAppointmnetLoading(false));
+    yield put(setSingleAppointmentLoading(false));
   }
 }
 
 export function* deleteAppointmentFromPatients({ payload }) {
   try {
-    yield put(setSignleAppointmnetLoading(true));
+    yield put(setSingleAppointmentLoading(true));
     yield call(appointmentService.deleteAppointment, payload.data.id);
     yield payload.afterDelete();
     if (payload.patientAppointment)
@@ -153,7 +176,7 @@ export function* deleteAppointmentFromPatients({ payload }) {
             });
           break;
         }
-        case APPOINTMNET_HISTORY: {
+        case APPOINTMENT_HISTORY: {
           const { isLast, page } = yield select(
             makeSelectLastAppointmentHistoryOnThePage()
           );
@@ -173,13 +196,13 @@ export function* deleteAppointmentFromPatients({ payload }) {
       }
   } catch {
   } finally {
-    yield put(setSignleAppointmnetLoading(false));
+    yield put(setSingleAppointmentLoading(false));
   }
 }
 
 export function* deleteAppointmentFromStaff({ payload }) {
   try {
-    yield put(setSignleAppointmnetLoading(true));
+    yield put(setSingleAppointmentLoading(true));
     yield call(appointmentService.deleteAppointment, payload.data.id);
     yield payload.afterDelete();
     if (payload.temporalType) {
@@ -232,103 +255,47 @@ export function* deleteAppointmentFromStaff({ payload }) {
     }
   } catch {
   } finally {
-    yield put(setSignleAppointmnetLoading(false));
+    yield put(setSingleAppointmentLoading(false));
   }
-}
-
-export function* getMissingReasons() {
-  try {
-    const { data } = yield call(appointmentService.getMissingReasons);
-    yield put(setMissingReasons(data));
-  } catch {}
 }
 
 export function* endAppointment({ payload }) {
   try {
-    yield put(setSignleAppointmnetLoading(true));
+    yield put(setSingleAppointmentLoading(true));
     const { data } = yield call(appointmentService.endAppointment, payload);
     yield payload.afterEnd();
-    yield put(setSignleAppointmnet(data));
+    yield put(setSingleAppointment(data));
   } catch {
   } finally {
-    yield put(setSignleAppointmnetLoading(false));
+    yield put(setSingleAppointmentLoading(false));
   }
 }
 
-export function* dateAppointments() {
-  yield takeEvery(GET_DATE_APPOINTMENTS, getDateAppointments);
+export function* cancelAppointment({ payload }) {
+  try {
+    yield put(setSingleAppointmentLoading(true));
+    const { data } = yield call(appointmentService.cancelAppointment, payload);
+    yield payload.afterCancel();
+    yield put(setSingleAppointment(data));
+  } catch {
+  } finally {
+    yield put(setSingleAppointmentLoading(false));
+  }
 }
 
-export function* doctorAppointments() {
-  yield takeEvery(GET_DOCTOR_APPOINTMENTS, getDoctorAppointments);
-  yield takeEvery(GET_SINGLE_APPOINTMENT, getSingleAppointmentWrapper);
-  yield takeEvery(
-    DELETE_APPOINTMENT_FROM_PATIENTS,
-    deleteAppointmentFromPatients
-  );
-  yield takeEvery(DELETE_APPOINTMENT_FROM_STAFF, deleteAppointmentFromStaff);
-  yield takeEvery(DELETE_APPOINTMENT, deleteAppointmentFromCalendarView);
-  yield takeEvery(GET_MISSING_REASONS, getMissingReasons);
-  yield takeEvery(END_APPOINTMENT, endAppointment);
-}
-
-export function* createAppointmentSaga() {
-  yield takeEvery(CREATE_APPOINTMENT, function* ({ payload }) {
-    try {
-      yield put(setSignleAppointmnetLoading(true));
-      const { data } = yield call(
-        appointmentService.createAppointment,
-        payload
-      );
-      yield payload.afterCreate(data.start_datetime);
-    } catch (error) {
-      yield payload.afterError(error?.response?.data[0]);
-      yield payload.setFieldValue('time', '');
-    } finally {
-      yield put(setSignleAppointmnetLoading(false));
-    }
-  });
-}
-
-export function* updateAppointmentSaga() {
-  yield takeEvery(UPDATE_APPOINTMENT, function* ({ payload }) {
-    try {
-      yield put(setSignleAppointmnetLoading(true));
-      yield call(appointmentService.updateAppointment, payload);
-      yield payload.afterUpdate();
-      yield put(getSingleAppointment(payload.id));
-    } catch (error) {
-      yield payload.afterError(error?.response?.data[0]);
-    } finally {
-      yield put(setSignleAppointmnetLoading(false));
-    }
-  });
-}
-
-export function* getAppointmentTypesSaga() {
-  yield takeEvery(GET_APPOINTMENT_TYPES, function* () {
-    try {
-      yield put(setAppointmentTypesLoading(true));
-      const { data } = yield call(appointmentService.getAppointmentTypes);
-      yield put(appendToAppointmentTypes(data));
-    } catch {
-    } finally {
-      yield put(setAppointmentTypesLoading(false));
-    }
-  });
-}
-
-export function* getAppointmentStatusSaga() {
-  yield takeEvery(GET_APPOINTMENT_STATUS, function* () {
-    try {
-      yield put(setAppointmentStatusLoading(true));
-      const { data } = yield call(appointmentService.getAppointmentStatus);
-      yield put(appendToAppointmentStatus(data));
-    } catch {
-    } finally {
-      yield put(setAppointmentStatusLoading(false));
-    }
-  });
+export function* updateAppointmentCommunicationStatus({ payload }) {
+  try {
+    yield put(setSingleAppointmentLoading(true));
+    const { data } = yield call(
+      appointmentService.updateAppointmentCommunicationStatus,
+      payload
+    );
+    yield payload.afterCommunicationStatusUpdate();
+    yield put(setSingleAppointment(data));
+  } catch {
+  } finally {
+    yield put(setSingleAppointmentLoading(false));
+  }
 }
 
 export function* getClinicDoctors() {
@@ -340,6 +307,177 @@ export function* getClinicDoctors() {
     } catch {
     } finally {
       yield put(setDoctorsLoading(false));
+    }
+  });
+}
+
+export function* getAppointmentTypesSaga() {
+  yield takeEvery(GET_APPOINTMENT_TYPES, function* () {
+    try {
+      yield put(setAppointmentTypesLoading(true));
+      const { data } = yield call(appointmentService.getAppointmentTypes);
+      yield put(setAppointmentTypes(data));
+    } catch {
+    } finally {
+      yield put(setAppointmentTypesLoading(false));
+    }
+  });
+}
+
+export function* getAppointmentStatusesSaga() {
+  yield takeEvery(GET_APPOINTMENT_STATUSES, function* () {
+    try {
+      yield put(setAppointmentStatusesLoading(true));
+      const { data } = yield call(appointmentService.getAppointmentStatuses);
+      yield put(setAppointmentStatuses(data));
+    } catch {
+    } finally {
+      yield put(setAppointmentStatusesLoading(false));
+    }
+  });
+}
+
+export function* getAppointmentCommunicationStatusesSaga() {
+  yield takeEvery(GET_APPOINTMENT_COMMUNICATION_STATUSES, function* () {
+    try {
+      yield put(setAppointmentCommunicationStatusesLoading(true));
+      const { data } = yield call(
+        appointmentService.getAppointmentCommunicationStatuses
+      );
+      yield put(setAppointmentCommunicationStatuses(data));
+    } catch {
+    } finally {
+      yield put(setAppointmentCommunicationStatusesLoading(false));
+    }
+  });
+}
+
+export function* getAppointmentMissingReasonsSaga() {
+  yield takeEvery(GET_APPOINTMENT_MISSING_REASONS, function* () {
+    try {
+      yield put(setAppointmentMissingReasonsLoading(true));
+      const { data } = yield call(
+        appointmentService.getAppointmentMissingReasons
+      );
+      yield put(setAppointmentMissingReasons(data));
+    } catch {
+    } finally {
+      yield put(setAppointmentMissingReasonsLoading(false));
+    }
+  });
+}
+
+export function* getAppointmentCancellationReasonsSaga() {
+  yield takeEvery(GET_APPOINTMENT_CANCELLATION_REASONS, function* () {
+    try {
+      yield put(setAppointmentCancellationReasonsLoading(true));
+      const { data } = yield call(
+        appointmentService.getAppointmentCancellationReasons
+      );
+      yield put(setAppointmentCancellationReasons(data));
+    } catch {
+    } finally {
+      yield put(setAppointmentCancellationReasonsLoading(false));
+    }
+  });
+}
+
+export function* getMessageRequiringImmediateAttentionStatusesSaga() {
+  yield takeEvery(
+    GET_MESSAGE_REQUIRING_IMMEDIATE_ATTENTION_STATUSES,
+    function* () {
+      try {
+        yield put(setMessageRequiringImmediateAttentionStatusesLoading(true));
+        const { data } = yield call(
+          appointmentService.getMessageRequiringImmediateAttentionStatuses
+        );
+        yield put(setMessageRequiringImmediateAttentionStatuses(data));
+      } catch {
+      } finally {
+        yield put(setMessageRequiringImmediateAttentionStatusesLoading(false));
+      }
+    }
+  );
+}
+
+export function* dateAppointments() {
+  yield takeEvery(GET_DATE_APPOINTMENTS, getDateAppointments);
+}
+
+export function* doctorAppointments() {
+  yield takeEvery(GET_DOCTOR_APPOINTMENTS, getDoctorAppointments);
+  yield takeEvery(GET_SINGLE_APPOINTMENT, getSingleAppointmentWrapper);
+  yield takeEvery(
+    GET_SINGLE_PRE_APPOINTMENT_QUESTIONNAIRE,
+    getSinglePreAppointmentQuestionnaireWrapper
+  );
+  yield takeEvery(
+    DELETE_APPOINTMENT_FROM_PATIENTS,
+    deleteAppointmentFromPatients
+  );
+  yield takeEvery(DELETE_APPOINTMENT_FROM_STAFF, deleteAppointmentFromStaff);
+  yield takeEvery(DELETE_APPOINTMENT, deleteAppointmentFromCalendarView);
+  yield takeEvery(
+    GET_APPOINTMENT_MISSING_REASONS,
+    getAppointmentMissingReasonsSaga
+  );
+  yield takeEvery(
+    GET_APPOINTMENT_CANCELLATION_REASONS,
+    getAppointmentCancellationReasonsSaga
+  );
+  yield takeEvery(
+    GET_MESSAGE_REQUIRING_IMMEDIATE_ATTENTION_STATUSES,
+    getMessageRequiringImmediateAttentionStatusesSaga
+  );
+  yield takeEvery(CANCEL_APPOINTMENT, cancelAppointment);
+  yield takeEvery(
+    UPDATE_APPOINTMENT_COMMUNICATION_STATUS,
+    updateAppointmentCommunicationStatus
+  );
+  yield takeEvery(END_APPOINTMENT, endAppointment);
+}
+
+export function* createAppointmentSaga() {
+  yield takeEvery(CREATE_APPOINTMENT, function* ({ payload }) {
+    try {
+      yield put(setSingleAppointmentLoading(true));
+      const { data } = yield call(
+        appointmentService.createAppointment,
+        payload
+      );
+      yield payload.afterCreate(data.start_datetime);
+    } catch (error) {
+      yield payload.afterError(error?.response?.data[0]);
+      yield payload.setFieldValue('time', '');
+    } finally {
+      yield put(setSingleAppointmentLoading(false));
+    }
+  });
+}
+
+export function* updateAppointmentSaga() {
+  yield takeEvery(UPDATE_APPOINTMENT, function* ({ payload }) {
+    try {
+      yield put(setSingleAppointmentLoading(true));
+      yield call(appointmentService.updateAppointment, payload);
+      yield payload.afterUpdate();
+      yield put(getSingleAppointment(payload.id));
+    } catch (error) {
+      yield payload.afterError(error?.response?.data[0]);
+    } finally {
+      yield put(setSingleAppointmentLoading(false));
+    }
+  });
+}
+
+export function* saveAppointmentStatusSaga(payload) {
+  yield takeEvery(SAVE_APPOINTMENT_STATUS, function* () {
+    try {
+      yield put(saveAppointmentStatusLoading(true));
+      yield call(appointmentService.saveAppointmentStatus, payload);
+    } catch {
+    } finally {
+      yield put(saveAppointmentStatusLoading(true));
     }
   });
 }
@@ -379,76 +517,20 @@ export function* getMoreSearchResults() {
     }
   });
 }
-
-export function* getAppointmentsReminders({ payload }) {
-  try {
-    yield put(setAppointmentsRemindersPageLoading(true));
-    const { data } = yield call(
-      appointmentService.getAppointmentsReminders,
-      payload.status
-    );
-    yield put(setAppointmentsRemindersPage(data));
-  } catch (err) {
-  } finally {
-    yield put(setAppointmentsRemindersPageLoading(false));
-  }
-}
-
-function* cancelAppointmentReminder({ payload }) {
-  try {
-    const { isLast, page } = yield select(
-      makeSelectAppointmentsRemindersLastOnThePage()
-    );
-    yield put(setAppointmentsRemindersPageLoading(true));
-    yield call(appointmentService.cancelAppointmentReminder, payload.data);
-    yield payload.afterCancellation();
-    if (isLast) yield put(setAppointmentsRemindersPage(page - 1));
-    else yield getAppointmentsReminders();
-  } catch (err) {
-  } finally {
-    yield put(setAppointmentsRemindersPageLoading(false));
-  }
-}
-
-function* reverseAppointmentReminderCancellation({ payload }) {
-  try {
-    const { isLast, page } = yield select(
-      makeSelectAppointmentsRemindersLastOnThePage()
-    );
-    yield put(setAppointmentsRemindersPageLoading(true));
-    yield call(
-      appointmentService.reverseAppointmentReminderCancellation,
-      payload.data
-    );
-    yield payload.afterReverseCancellation();
-    if (isLast) yield put(setAppointmentsRemindersPage(page - 1));
-    else yield getAppointmentsReminders();
-  } catch (err) {
-  } finally {
-    yield put(setAppointmentsRemindersPageLoading(false));
-  }
-}
-
-export function* appointmentsRemindersSaga() {
-  yield takeEvery(GET_APPOINTMENTS_REMINDERS_PAGE, getAppointmentsReminders);
-  yield takeEvery(CANCEL_APPOINTMENT_REMINDER, cancelAppointmentReminder);
-  yield takeEvery(
-    REVERSE_APPOINTMENT_REMINDER_CANCELLATION,
-    reverseAppointmentReminderCancellation
-  );
-}
-
 export default function* rootSaga() {
   yield all([
     fork(doctorAppointments),
     fork(dateAppointments),
     fork(createAppointmentSaga),
     fork(updateAppointmentSaga),
-    fork(getAppointmentStatusSaga),
-    fork(getAppointmentTypesSaga),
     fork(getClinicDoctors),
+    fork(getAppointmentTypesSaga),
+    fork(getAppointmentStatusesSaga),
+    fork(getAppointmentCommunicationStatusesSaga),
+    fork(getAppointmentMissingReasonsSaga),
+    fork(getAppointmentCancellationReasonsSaga),
+    fork(saveAppointmentStatusSaga),
     fork(searchPatients),
     fork(getMoreSearchResults),
-    fork(appointmentsRemindersSaga),
   ]);
 }
