@@ -9,6 +9,7 @@ import Flex from 'components/shared-components/Flex';
 import { formatMessage } from '@formatjs/intl';
 import messages from './messages';
 import { useIntl } from 'react-intl';
+import { getSafe } from 'utils/helpers';
 
 function PreAppointmentQuestionnairePreviewModal({ handleClose, title }) {
   const { formatMessage } = useIntl();
@@ -20,19 +21,32 @@ function PreAppointmentQuestionnairePreviewModal({ handleClose, title }) {
   const isLoading =
     preAppointmentQuestionnaireLoading || !preAppointmentQuestionnaire;
 
-  const qa = !preAppointmentQuestionnaire
-    ? []
-    : preAppointmentQuestionnaire.map((elem) => (
-        <tr>
-          <td>{elem.question}</td>
-          <td>{elem?.answer ? 'Yes' : 'No'}</td>
-        </tr>
-      ));
+  const qa =
+    !preAppointmentQuestionnaire || !preAppointmentQuestionnaire.length
+      ? []
+      : preAppointmentQuestionnaire.map((elem, index) => (
+          <tr key={`pq-answer-${index}`}>
+            <td>
+              {getSafe(() =>
+                Number(
+                  elem?.question?.order_no.toString().split('.')[1].charAt(0)
+                ) === 0
+                  ? parseInt(elem?.question?.order_no)
+                  : elem?.question?.order_no.toString().replaceAll('0', '')
+              )}
+            </td>
+            <td>{elem?.question?.question.replace('Yes/No', '')}</td>
+            <td className={elem?.answer ? 'blink' : null}>
+              {elem?.answer ? 'Yes' : 'No'}
+            </td>
+          </tr>
+        ));
 
   return (
     <Modal
       visible
-      closable={true}
+      closable={false}
+      footer={null}
       title={
         <Flex justifyContent="between">
           {formatMessage(messages.modalTitlePreAppointmentQuestionnaire)}
@@ -47,12 +61,13 @@ function PreAppointmentQuestionnairePreviewModal({ handleClose, title }) {
       ) : (
         <div className="mb-4">
           <table
-            style={{ borderCollapse: 'collapse' }}
+            style={{ borderCollapse: 'collapse', borderColor: '#EEEEEE' }}
             border="1"
-            cellpadding="1"
-            cellspacing="1"
+            cellPadding="5"
+            cellSpacing="5"
           >
             <tr>
+              <th>Order</th>
               <th>Question</th>
               <th>Answer</th>
             </tr>

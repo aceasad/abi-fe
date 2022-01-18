@@ -546,7 +546,7 @@
   "overview_page.table.dropdown.title.contact": "Contact",
   "overview_page.table.dropdown.title.actions": "Actions",
   "overview_page.table.dropdown.see_appointment": "See Appointment",
-  "overview_page.table.dropdown.reachout": "AI Reachout",
+  "overview_page.table.dropdown.reachout": "Message",
   "overview_page.table.dropdown.patient_info": "Patient Info",
   "overview_page.table.dropdown.appointment_info": "Appointment Info",
   "overview_page.table.dropdown.pre_appointment_questionnaire_info": "Pre Appointment Questionnaire Info",
@@ -578,5 +578,6 @@
   "overview_page.modal.update_message_requiring_immediate_attention_status.title": "Update Status",
   "overview_page.modal.update_message_requiring_immediate_attention_status.ok_text": "Update",
   "overview_page.modal.update_message_requiring_immediate_attention_status.cancel": "Cancel",
-  "overview_page.modal.pre_appointment_questionnaire.title": "Pre-Appointment Questionnaire Patient Answers"
+  "overview_page.modal.pre_appointment_questionnaire.title": "Pre-Appointment Questionnaire Patient Answers",
+  "overview_page.modal.pre_appointment_questionnaire.ok_text": "Close"
 }

@@ -134,7 +134,7 @@ function PreviewModal({
                     })
                   }
                 />
-                <DeleteOutlined onClick={() => showDelete(appointment)} />
+                {/*<DeleteOutlined onClick={() => showDelete(appointment)} />*/}
               </>
             )}
             <CloseOutlined onClick={handleClose} />

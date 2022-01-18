@@ -13,6 +13,7 @@ import MassInviteModal from './MassInviteModal';
 import WebSocketClient from 'services/WebSocketClient';
 import { useMarkConversationAsRead } from 'queries/shared';
 import { MESSAGE_STATUS } from 'constants/ChatConstants';
+import { API_BASE_URL } from 'configs/AppConfig';
 
 const Chat = () => {
   const { formatMessage } = useIntl();
@@ -55,13 +56,25 @@ const Chat = () => {
     }
   }, [token]);
 
+  const [rasaHealthy, setRasaHealthy] = useState('');
+
+  useEffect(() => {
+    fetch(`${API_BASE_URL}/errors/rasa-health/`)
+      .then((res) => setRasaHealthy(res.ok))
+      .catch(() => setRasaHealthy(false));
+  }, []);
+
   return (
     <>
       <PageHeader
         className="p-0 mb-4"
         title={
           <Typography.Title level={2} className="mb-0">
-            {formatMessage(messages.conversationsTitle)}
+            {`${formatMessage(messages.conversationsTitle)}${
+              !rasaHealthy
+                ? ': Communication with Asa AI is down for maintenance'
+                : ''
+            }`}
           </Typography.Title>
         }
         extra={[

@@ -217,7 +217,7 @@ export default defineMessages({
   },
   tableDropdownAiReachout: {
     id: `${scope}.table.dropdown.reachout`,
-    defaultMessage: 'AI Reachout',
+    defaultMessage: 'Message',
   },
   tableDropdownPatientInfo: {
     id: `${scope}.table.dropdown.patient_info`,
@@ -390,5 +390,9 @@ export default defineMessages({
   modalTitlePreAppointmentQuestionnaire: {
     id: `${scope}.modal.pre_appointment_questionnaire.title`,
     defaultMessage: 'Pre-Appointment Questionnaire Patient Answers',
+  },
+  modalOkTextPreAppointmentQuestionnaire: {
+    id: `${scope}.modal.pre_appointment_questionnaire.ok_text`,
+    defaultMessage: 'Close',
   },
 });

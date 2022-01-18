@@ -111,6 +111,9 @@ const PatientOverview = ({
               onClick={() => updatePatient(patientId, PATIENT_PAGE.PREVIEW)}
             >
               <EditOutlined />
+              <Text underline className="text-primary ml-2">
+                {formatMessage(messages.editPatient)}
+              </Text>
             </div>
           </Flex>
           {!patient || loading ? (

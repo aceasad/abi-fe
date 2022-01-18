@@ -137,34 +137,20 @@ const PassedAppointmentsRequiringImmediateStatusUpdate = ({
         >
           {formatMessage(overviewPageMessages.tableDropdownAiReachout)}
         </Menu.Item>
+        <Menu.Item
+          key="1"
+          onClick={({ domEvent }) => {
+            domEvent.stopPropagation();
+            showUpdateAppointmentStatusWrapper(domEvent, row);
+          }}
+        >
+          {formatMessage(
+            overviewPageMessages.tableDropdownUpdateMessageRequiringImmediateAttentionStatus
+          )}
+        </Menu.Item>
       </Menu>
     );
   };
-
-  // const appointment_statuses_loaded =
-  //   !appointmentStatusesLoading && appointmentStatuses.length > 0;
-
-  // const menu_status = (row) => {
-  //   const items = appointment_statuses_loaded ? (
-  //     appointmentStatus.map((elem, index) => (
-  //       <Menu.Item
-  //         key={`appointment-status-${index}`}
-  //         onClick={({ domEvent }) => {
-  //           domEvent.stopPropagation();
-  //           saveAppointmentStatus({
-  //             id: row.id,
-  //             status: elem.name,
-  //           });
-  //         }}
-  //       >
-  //         {elem.name}
-  //       </Menu.Item>
-  //     ))
-  //   ) : (
-  //     <Menu.Item key="0">{row.status?.name}</Menu.Item>
-  //   );
-  //   return <Menu>{items}</Menu>;
-  // };
 
   const tableColumns = [
     {
@@ -196,54 +182,6 @@ const PassedAppointmentsRequiringImmediateStatusUpdate = ({
       dataIndex: 'time',
       sorter: true,
     },
-    // {
-    //   title: formatMessage(patientPageMessages.columnTitleStatus),
-    //   key: 'action',
-    //   render: (_, row) => {
-    //     return (
-    //       <div className="text-right">
-    //         <Dropdown
-    //           overlay={() => menu_status(row)}
-    //           trigger={['click']}
-    //           placement="bottomRight"
-    //         >
-    //           <Button type="primary" ghost>
-    //             {row.status?.name}
-    //             <DownOutlined />
-    //           </Button>
-    //         </Dropdown>
-    //       </div>
-    //     );
-    //   },
-    // },
-    {
-      title: formatMessage(patientPageMessages.columnTitleCommunicationStatus),
-      dataIndex: ['communication_status', 'name'],
-      sorter: true,
-    },
-    {
-      title: formatMessage(patientPageMessages.columnTitleStatus),
-      dataIndex: ['status', 'name'],
-      sorter: true,
-      className: 'status-width',
-      render: (_, row) => (
-        <div
-          className="text-left blink"
-          onClick={(e) => showUpdateAppointmentStatusWrapper(e, row)}
-        >
-          {row.status?.name} <CaretDownOutlined />
-        </div>
-      ),
-    },
-    {
-      title: formatMessage(patientPageMessages.columnTitleWhitelisted),
-      sorter: true,
-      render: (_, row) => (
-        <div className="text-left">
-          {row.patient.whitelisted ? 'Yes' : 'No'}
-        </div>
-      ),
-    },
     {
       key: 'action',
       render: (_, row) => (
@@ -254,7 +192,7 @@ const PassedAppointmentsRequiringImmediateStatusUpdate = ({
             placement="bottomRight"
           >
             <Button type="primary" ghost>
-              {formatMessage(overviewPageMessages.tableDropdownTitleContact)}
+              {formatMessage(overviewPageMessages.tableDropdownTitleActions)}
               <DownOutlined />
             </Button>
           </Dropdown>
