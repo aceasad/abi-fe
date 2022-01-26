@@ -44,3 +44,24 @@
 .cursor-pointer {
   cursor: pointer;
 }
+.mria-priority-low {
+  background-color: yellow;
+  color: black;
+}
+.mria-priority-medium {
+  background-color: orange;
+  color: black;
+}
+.mria-priority-high {
+  background-color: red;
+  color: white;
+}
+.mria-priority-low,
+.mria-priority-medium,
+.mria-priority-high {
+  padding: 5px;
+  border-radius: 10px;
+  text-align: center;
+  border-color: grey;
+  border-width: 2px;
+}
