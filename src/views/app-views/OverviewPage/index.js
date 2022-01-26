@@ -72,6 +72,14 @@ const OverviewPage = () => {
       />
       <Row gutter={48}>
         <Col span={24} className="mt-4">
+          {SHOW_MESSAGES_REQUIRING_IMMEDIATE_ATTENTION && (
+            <MessagesRequiringImmediateAttention
+              startOpen
+              title={formatMessage(
+                messages.tableMessagesRequiringImmediateAttentionTitle
+              )}
+            />
+          )}
           {SHOW_APPOINTMENTS_LIKELY_TO_BE_MISSED && (
             <AppointmentsLikelyToBeMissed
               startOpen
@@ -85,14 +93,6 @@ const OverviewPage = () => {
               startOpen
               title={formatMessage(
                 messages.tablePassedAppointmentsRequiringImmediateStatusUpdateTitle
-              )}
-            />
-          )}
-          {SHOW_MESSAGES_REQUIRING_IMMEDIATE_ATTENTION && (
-            <MessagesRequiringImmediateAttention
-              startOpen
-              title={formatMessage(
-                messages.tableMessagesRequiringImmediateAttentionTitle
               )}
             />
           )}

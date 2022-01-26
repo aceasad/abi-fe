@@ -203,6 +203,20 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
       sorter: true,
     },
     {
+      title: formatMessage(overviewPageMessages.columnTitlePriority),
+      dataIndex: ['priority', 'name'],
+      sorter: true,
+      render: (_, row) => (
+        <div
+          className={`mria-priority-${getSafe(() =>
+            row.priority?.name.toLowerCase()
+          )}`}
+        >
+          {row.priority?.name}
+        </div>
+      ),
+    },
+    {
       title: formatMessage(overviewPageMessages.columnTitleStatus),
       dataIndex: ['status', 'name'],
       sorter: true,

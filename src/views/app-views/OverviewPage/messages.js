@@ -153,11 +153,11 @@ export default defineMessages({
   },
   tablePassedAppointmentsRequiringImmediateStatusUpdateTitle: {
     id: `${scope}.table.past_appointments_requiring_immediate_status_update.title`,
-    defaultMessage: 'Passed Appointments Requiring Immediate Status Update',
+    defaultMessage: 'Passed Appointments Requiring Status Update',
   },
   tableAppointmentsRemindersTitle: {
     id: `${scope}.table.appointments_reminders.title`,
-    defaultMessage: 'Appointments Reminders',
+    defaultMessage: 'Appointment Reminders',
   },
   tableColumnPatient: {
     id: `${scope}.table.column.patient`,
@@ -169,7 +169,7 @@ export default defineMessages({
   },
   tableColumnAppointmentDatetime: {
     id: `${scope}.table.column.appointment_datetime`,
-    defaultMessage: 'Appointment Datetime',
+    defaultMessage: 'Appointment Date/Time',
   },
   tableColumnDate: {
     id: `${scope}.table.column.date`,
@@ -189,7 +189,7 @@ export default defineMessages({
   },
   tableColumnReminderDatetime: {
     id: `${scope}.table.column.reminder_datetime`,
-    defaultMessage: 'Reminder Datetime',
+    defaultMessage: 'Reminder Date/Time',
   },
   tableColumnReminderStatus: {
     id: `${scope}.table.column.reminder_status`,
@@ -366,6 +366,10 @@ export default defineMessages({
   columnTitleStatus: {
     id: `${scope}.messages_requiring_immediate_attention.column.title.status`,
     defaultMessage: 'Status',
+  },
+  columnTitlePriority: {
+    id: `${scope}.messages_requiring_immediate_attention.column.title.priority`,
+    defaultMessage: 'Priority',
   },
   messageRequiringImmediateAttentionFormLabelStatus: {
     id: `${scope}.form.label.message_requiring_immediate_attention_status`,
