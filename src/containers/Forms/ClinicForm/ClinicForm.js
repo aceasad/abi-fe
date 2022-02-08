@@ -80,7 +80,12 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
           photo: clinicData?.photo?.thumbnail || null,
           name: clinicData?.name || '',
           phone_number: clinicData?.phone_number || '',
-          address: clinicData?.address || '',
+          street_number: clinicData?.street_number || '',
+          street_name: clinicData?.street_name || '',
+          area_of_living: clinicData?.area_of_living || '',
+          city: clinicData?.city || '',
+          post_code: clinicData?.post_code || '',
+          country: clinicData?.country || '',
           google_maps_link: clinicData?.google_maps_link || '',
           parking_availability: clinicData?.parking_availability || NO,
           parking_size: clinicData?.parking_size || 0,
@@ -124,7 +129,7 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
                 </Col>
               )}
               <Col span={checkIsInSettingsPage() ? 24 : 18} xl={18}>
-                <Row>
+                <Row gutter={24}>
                   <ColumnField
                     span={24}
                     component={FormField}
@@ -138,7 +143,7 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
                 </Row>
                 <Row gutter={16}>
                   <ColumnField
-                    span={8}
+                    span={16}
                     component={FormField}
                     label={formatMessage(messages.phoneNumber)}
                     name={'phone_number'}
@@ -149,14 +154,75 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
                       maxValue: MAX_PHONE_LENGTH,
                     }}
                   />
+                </Row>
+                <Row gutter={24}>
                   <ColumnField
-                    span={16}
+                    span={12}
                     component={FormField}
-                    label={formatMessage(messages.address)}
-                    name={'address'}
+                    label={formatMessage(messages.streetNumber)}
+                    name={'street_number'}
                     errorTexts={{
-                      label: formatMessage(messages.errorInputLabelAddress),
-                      maxValue: formatMessage(messages.max),
+                      label: formatMessage(
+                        messages.errorInputLabelStreetNumber
+                      ),
+                      maxValue: 8,
+                    }}
+                  />
+                  <ColumnField
+                    span={12}
+                    component={FormField}
+                    label={formatMessage(messages.streetName)}
+                    name={'street_name'}
+                    errorTexts={{
+                      label: formatMessage(messages.errorInputLabelStreetName),
+                      maxValue: 128,
+                    }}
+                    required
+                  />
+                </Row>
+                <Row gutter={24}>
+                  <ColumnField
+                    span={12}
+                    component={FormField}
+                    label={formatMessage(messages.area)}
+                    name={'area_of_living'}
+                    errorTexts={{
+                      label: formatMessage(messages.errorInputLabelArea),
+                      maxValue: 128,
+                    }}
+                  />
+                  <ColumnField
+                    span={12}
+                    component={FormField}
+                    label={formatMessage(messages.city)}
+                    name={'city'}
+                    errorTexts={{
+                      label: formatMessage(messages.errorInputLabelCity),
+                      maxValue: 64,
+                    }}
+                    required
+                  />
+                </Row>
+                <Row gutter={24}>
+                  <ColumnField
+                    span={12}
+                    component={FormField}
+                    label={formatMessage(messages.postCode)}
+                    name={'post_code'}
+                    errorTexts={{
+                      label: formatMessage(messages.errorInputLabelPostCode),
+                      maxValue: 16,
+                    }}
+                    required
+                  />
+                  <ColumnField
+                    span={12}
+                    component={FormField}
+                    label={formatMessage(messages.country)}
+                    name={'country'}
+                    errorTexts={{
+                      label: formatMessage(messages.errorInputLabelCountry),
+                      maxValue: 64,
                     }}
                   />
                 </Row>

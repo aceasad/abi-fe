@@ -32,9 +32,9 @@ function Patients({ location: { key, search } }) {
   const showPreview = (data) =>
     setPatientPage({ id: PATIENT_PAGE.PREVIEW, data });
 
-  useEffect(() => {
-    dispatch(getPatientDetails());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(getPatientDetails());
+  // }, [dispatch]);
 
   useEffect(() => {
     if (!search) {

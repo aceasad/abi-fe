@@ -26,6 +26,7 @@ import {
   GET_SCHEDULED_APPOINTMENTS,
   GET_APPOINTMENT_HISTORY,
   MARK_CONVERSATION_HUMAN_NOT_REQUIRED,
+  MARK_CONVERSATION_NOT_IN_EMERGENCY_SITUATION,
   SET_PATIENT_SHOW_MESSAGES,
   CLEAR_PATIENT_SHOW_MESSAGES,
 } from '../constants/Patient';
@@ -64,7 +65,7 @@ export const deletePatient = (payload) => ({
   payload,
 });
 
-export const getPatientDetails = () => ({
+export const getPatientDetails = (payload) => ({
   type: GET_PATIENTS_DETAILS,
 });
 
@@ -159,6 +160,11 @@ export const getAppointmentHistory = (payload) => ({
 
 export const markConversationHumanNotRequired = (payload) => ({
   type: MARK_CONVERSATION_HUMAN_NOT_REQUIRED,
+  payload,
+});
+
+export const markConversationNotInEmergencySituation = (payload) => ({
+  type: MARK_CONVERSATION_NOT_IN_EMERGENCY_SITUATION,
   payload,
 });
 

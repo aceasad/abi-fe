@@ -11,8 +11,24 @@ export default defineMessages({
     id: `${scope}.input_label.phone_number`,
     defaultMessage: 'Phone number',
   },
-  address: {
-    id: `${scope}.input_label.address`,
+  streetNumber: {
+    id: `${scope}.input_label.street_number`,
+    defaultMessage: 'Street number',
+  },
+  streetName: {
+    id: `${scope}.input_label.street_name`,
+    defaultMessage: 'Street name',
+  },
+  area: {
+    id: `${scope}.input_label.area`,
+    defaultMessage: 'area',
+  },
+  city: {
+    id: `${scope}.input_label.city`,
+    defaultMessage: 'City',
+  },
+  country: {
+    id: `${scope}.input_label.country`,
     defaultMessage: 'Address',
   },
   google_maps_link: {
@@ -51,9 +67,29 @@ export default defineMessages({
     id: `${scope}.error.phone_number`,
     defaultMessage: 'Phone number',
   },
-  error_input_label_address: {
-    id: `${scope}.error.address`,
-    defaultMessage: 'Address',
+  error_input_label_street_number: {
+    id: `${scope}.error.street_number`,
+    defaultMessage: 'Street number',
+  },
+  error_input_label_street_name: {
+    id: `${scope}.error.street_name`,
+    defaultMessage: 'Street name',
+  },
+  error_input_label_area: {
+    id: `${scope}.error.area`,
+    defaultMessage: 'Area',
+  },
+  error_input_label_city: {
+    id: `${scope}.error.city`,
+    defaultMessage: 'City',
+  },
+  error_input_label_post_code: {
+    id: `${scope}.error.post_code`,
+    defaultMessage: 'Post Code',
+  },
+  error_input_label_country: {
+    id: `${scope}.error.country`,
+    defaultMessage: 'Country',
   },
   error_input_label_google_maps_link: {
     id: `${scope}.error.google_maps_link`,

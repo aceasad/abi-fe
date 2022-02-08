@@ -21,7 +21,8 @@ const ChatContentHeader = ({
   chatLoading,
   isMenuVisible,
   BackAction,
-  onClickMarkResolved,
+  onClickMarkHumanRequiredResolved,
+  onClickMarkInEmergencySituationResolved,
 }) => {
   const { formatMessage } = useIntl();
   const dispatch = useDispatch();
@@ -61,9 +62,14 @@ const ChatContentHeader = ({
 
   const [resolveClicked, setResolveClicked] = useState(false);
 
-  const onClickMarkResolvedWrapper = (patient_id) => {
+  const onClickMarkHumanRequiredResolvedWrapper = (patient_id) => {
     setResolveClicked(true);
-    onClickMarkResolved(patient_id);
+    onClickMarkHumanRequiredResolved(patient_id);
+  };
+
+  const onClickMarkInEmergencySituationResolvedWrapper = (patient_id) => {
+    setResolveClicked(true);
+    onClickMarkInEmergencySituationResolved(patient_id);
   };
 
   const renderMenu = (patient_id) => {
@@ -89,6 +95,25 @@ const ChatContentHeader = ({
     );
   };
 
+  const is_human_required_or_in_emergency_situation =
+    chatInfo?.patient?.is_human_required ||
+    chatInfo?.patient?.is_in_emergency_situation;
+
+  let blinkClass = '';
+  let nameWithSuffix = chatInfo?.patient?.full_name;
+  let nameWrapper = <span>{nameWithSuffix}</span>;
+  if (chatInfo?.patient?.is_human_required) {
+    // nameWithSuffix = `${chatInfo.patient.full_name} - Requested to speak to human`;
+    blinkClass = ' blink-human-required';
+    nameWrapper = <span>{nameWithSuffix}</span>;
+  }
+  // override human is required as more important
+  if (chatInfo?.patient?.is_in_emergency_situation) {
+    // nameWithSuffix = `${chatInfo.patient.full_name} - In emergency situation`;
+    blinkClass = ' blink-in-emergency-situation';
+    nameWrapper = <span>{nameWithSuffix}&nbsp;&#9888;</span>;
+  }
+
   return (
     chatInfo && (
       <div className="chat-content-header">
@@ -99,10 +124,10 @@ const ChatContentHeader = ({
               goToPatientShowMessages({ id: chatInfo.patient.id });
             }}
             className={`mb-0 cursor-pointer${
-              chatInfo.patient.is_human_required ? ' blink' : ''
+              is_human_required_or_in_emergency_situation ? blinkClass : ''
             }`}
           >
-            {chatInfo.patient.full_name}
+            {nameWrapper}
           </h4>
         )}
         {!chatLoading && chatInfo.patient.is_human_required && (
@@ -110,15 +135,31 @@ const ChatContentHeader = ({
             key="checkbox-human-resolve"
             defaultChecked={false}
             disabled={isLoading || resolveClicked}
-            onChange={() => onClickMarkResolvedWrapper(chatInfo.patient.id)}
+            onChange={() =>
+              onClickMarkHumanRequiredResolvedWrapper(chatInfo.patient.id)
+            }
           >
-            {formatMessage(messages.markResolved)}
+            {formatMessage(messages.contactedPatient)}
+          </Checkbox>
+        )}
+        {!chatLoading && chatInfo.patient.is_in_emergency_situation && (
+          <Checkbox
+            key="checkbox-emergency-resolve"
+            defaultChecked={false}
+            disabled={isLoading || resolveClicked}
+            onChange={() =>
+              onClickMarkInEmergencySituationResolvedWrapper(
+                chatInfo.patient.id
+              )
+            }
+          >
+            {formatMessage(messages.emergencyResolved)}
           </Checkbox>
         )}
         {!chatLoading && (
           <Checkbox
             key="checkbox-rasa-x"
-            defaultChecked={chatInfo.patient.is_rasa_paused}
+            defaultChecked={chatInfo?.patient?.is_rasa_paused}
             disabled={isLoading}
             onChange={() =>
               mutate(chatInfo.patient.id, {
@@ -127,12 +168,16 @@ const ChatContentHeader = ({
               })
             }
           >
-            {formatMessage(messages.rasaPaused)}
+            {formatMessage(
+              chatInfo?.patient?.is_rasa_paused
+                ? messages.unpauseAsa
+                : messages.pauseAsa
+            )}
           </Checkbox>
         )}
         {isMenuVisible && (
           <div>
-            <EllipsisDropdown menu={renderMenu(chatInfo.patient.id)} />
+            <EllipsisDropdown menu={renderMenu(chatInfo?.patient?.id)} />
           </div>
         )}
         {BackAction && <BackAction />}

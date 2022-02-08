@@ -7,13 +7,14 @@ import ApiService from './ApiService';
 
 const ENDPOINTS = {
   GET_PATIENTS: '/patients/',
-  GET_PATIENT_DETAILS: '/patients/patient-details/',
   GET_SCHEDULED_APPOINTMENTS: '/appointments/scheduled-appointments/',
   GET_APPOINTMENT_HISTORY: '/appointments/passed-appointments/',
   SEARCH_PATIENTS: '/patients-search/',
   GET_MASS_INVITE_PATIENTS_COUNT: '/patients/mass-invite-patients-count/',
   MARK_CONVERSATION_HUMAN_NOT_REQUIRED:
     '/patients/:id/mark-conversation-human-not-required/',
+  MARK_CONVERSATION_NOT_IN_EMERGENCY_SITUATION:
+    '/patients/:id/mark-conversation-not-in-emergency-situation/',
 };
 
 class PatientService extends ApiService {
@@ -30,7 +31,8 @@ class PatientService extends ApiService {
   deletePatient = (id) =>
     this.apiClient.delete(ENDPOINTS.GET_PATIENTS + id + '/');
 
-  getPatientDetails = () => this.apiClient.get(ENDPOINTS.GET_PATIENT_DETAILS);
+  getPatientDetails = (id) =>
+    this.apiClient.get(ENDPOINTS.GET_PATIENTS + id + '/patient-details/');
 
   createPatient = (data) => this.apiClient.post(ENDPOINTS.GET_PATIENTS, data);
   getPatientSingle = (id) =>
@@ -83,6 +85,11 @@ class PatientService extends ApiService {
   markConversationHumanNotRequired = (id) =>
     this.apiClient.post(
       ENDPOINTS.MARK_CONVERSATION_HUMAN_NOT_REQUIRED.replace(':id', id)
+    );
+
+  markConversationNotInEmergencySituation = (id) =>
+    this.apiClient.post(
+      ENDPOINTS.MARK_CONVERSATION_NOT_IN_EMERGENCY_SITUATION.replace(':id', id)
     );
 }
 

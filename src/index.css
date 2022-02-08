@@ -32,6 +32,32 @@
     transform: scale(1);
   }
 }
+.blink-human-required {
+  animation: blink 3s infinite;
+  color: #cc0000 !important;
+}
+@keyframes human-required {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
+.blink-in-emergency-situation {
+  animation: blink 3s infinite;
+  color: #cc0000 !important;
+}
+@keyframes blink-in-emergency-situation {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
 .badge-color-warning {
   color: rgb(255, 197, 66);
 }

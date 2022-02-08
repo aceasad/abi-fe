@@ -23,9 +23,26 @@ export const AvatarStatus = (props) => {
     shape,
     gap,
     text,
+    is_human_required,
+    is_in_emergency_situation,
     onNameClick,
-    blink,
   } = props;
+
+  let blinkClass = '';
+  let nameWithSuffix = name;
+  let nameWrapper = <span>{nameWithSuffix}</span>;
+  if (is_human_required) {
+    // nameWithSuffix = `${chatInfo.patient.full_name} - Requested to speak to human`;
+    blinkClass = ' blink-human-required';
+    nameWrapper = <span>{nameWithSuffix}</span>;
+  }
+  // override human is required as more important
+  if (is_in_emergency_situation) {
+    // nameWithSuffix = `${chatInfo.patient.full_name} - In emergency situation`;
+    blinkClass = ' blink-in-emergency-situation';
+    nameWrapper = <span>{nameWithSuffix}&nbsp;&#9888;</span>;
+  }
+
   return (
     <div className="avatar-status d-flex align-items-center">
       {renderAvatar({ icon, src, type, size, shape, gap, text })}
@@ -34,12 +51,14 @@ export const AvatarStatus = (props) => {
           {onNameClick ? (
             <div
               onClick={() => onNameClick({ name, subTitle, src, id })}
-              className={`avatar-status-name clickable${blink}`}
+              className={`avatar-status-name clickable${blinkClass}`}
             >
-              {name}
+              {nameWrapper}
             </div>
           ) : (
-            <div className={`avatar-status-name${blink}`}>{name}</div>
+            <div className={`avatar-status-name${blinkClass}`}>
+              {nameWrapper}
+            </div>
           )}
           <span>{suffix}</span>
         </div>

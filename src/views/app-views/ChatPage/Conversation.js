@@ -14,6 +14,7 @@ import ChatContentHeader from './ChatContentHeader';
 import WebSocketClient from 'services/WebSocketClient';
 import { useLazyLoad } from 'utils/hooks';
 import { markConversationHumanNotRequired } from 'redux/actions/Patient';
+import { markConversationNotInEmergencySituation } from 'redux/actions/Patient';
 import { triggerSearchConversations } from 'redux/actions/Chats';
 
 const Conversation = ({
@@ -91,8 +92,14 @@ const Conversation = ({
     false
   );
 
-  const handleOnClickMarkResolved = async (patient_id) => {
+  const handleOnClickMarkHumanRequiredResolved = async (patient_id) => {
     await dispatch(markConversationHumanNotRequired(patient_id));
+    dispatch(triggerSearchConversations());
+    getConversation(patient_id);
+  };
+
+  const handleOnClickMarkInEmergencySituationResolved = async (patient_id) => {
+    await dispatch(markConversationNotInEmergencySituation(patient_id));
     dispatch(triggerSearchConversations());
     getConversation(patient_id);
   };
@@ -104,7 +111,12 @@ const Conversation = ({
         chatLoading={loading}
         isMenuVisible={isMenuVisible}
         BackAction={BackAction}
-        onClickMarkResolved={handleOnClickMarkResolved}
+        onClickMarkHumanRequiredResolved={
+          handleOnClickMarkHumanRequiredResolved
+        }
+        onClickMarkInEmergencySituationResolved={
+          handleOnClickMarkInEmergencySituationResolved
+        }
       />
       <div className="chat-content-body">
         <Scrollbars

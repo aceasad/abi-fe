@@ -31,12 +31,13 @@ import {
 const { Panel } = Collapse;
 
 const columnMap = {
-  appointment__id: 'appointment__id',
-  patient__fullname: 'patient__fullname',
-  doctor__fullname:
-    'doctor__last_name,doctor__first_name,doctor__specialization,doctor__seniority',
-  status: 'status__name',
-  reminder__message_template_name: 'reminder__message_template__name',
+  appointment_id: 'appointment__id',
+  patient_full_name: 'appointment__patient__last_name',
+  doctor_full_name: 'appointment__doctor__last_name',
+  appointment_date: 'appointment__start_datetime',
+  reminder_message_template: 'message_template__name',
+  reminder_date: 'reminder_datetime',
+  reminder_status: 'status__name',
 };
 
 const isIsoDate = (str) => {
@@ -224,15 +225,6 @@ const AppointmentsReminders = ({ title, startOpen }) => {
             )}
           </Menu.Item>
         )}
-        {/* <Menu.Item
-          key="3"
-          onClick={({ domEvent }) => {
-            domEvent.stopPropagation();
-            rescheduleReminder(row);
-          }}
-        >
-          <span style={{ color: '#CC0000' }}>Reschedule Reminder</span>
-        </Menu.Item> */}
         <Menu.Item
           key="3"
           onClick={({ domEvent }) => {
@@ -269,6 +261,7 @@ const AppointmentsReminders = ({ title, startOpen }) => {
     },
     {
       title: formatMessage(overviewPageMessages.tableColumnAppointmentDatetime),
+      dataIndex: ['appointment', 'date'],
       sorter: true,
       render: (_, row) => (
         <div className="text-left">{`${row.appointment.date} ${row.appointment.time}`}</div>
@@ -281,6 +274,7 @@ const AppointmentsReminders = ({ title, startOpen }) => {
     },
     {
       title: formatMessage(overviewPageMessages.tableColumnReminderDatetime),
+      dataIndex: ['reminder', 'date'],
       sorter: true,
       render: (_, row) => (
         <div className="text-left">{`${row.reminder.date} ${row.reminder.time}`}</div>
@@ -288,6 +282,7 @@ const AppointmentsReminders = ({ title, startOpen }) => {
     },
     {
       title: formatMessage(overviewPageMessages.tableColumnReminderStatus),
+      dataIndex: ['reminder', 'status'],
       sorter: true,
       render: (_, row) => (
         <div className="text-left">{row.reminder.status}</div>

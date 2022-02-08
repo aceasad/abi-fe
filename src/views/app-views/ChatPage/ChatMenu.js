@@ -50,6 +50,10 @@ const ChatMenu = (props) => {
       value: CHAT_FILTERS.HUMAN_INTERVENTION_REQUIRED,
     },
     {
+      label: formatMessage(messages.inEmergencySituationFilter),
+      value: CHAT_FILTERS.IN_EMERGENCY_SITUATION,
+    },
+    {
       label: formatMessage(messages.likelyToMissNextAppointmentFilter),
       value: CHAT_FILTERS.LIKELY_TO_MISS_NEXT_APPOINTMENT,
     },
@@ -158,7 +162,10 @@ const ChatMenu = (props) => {
                 src={item.patient.picture}
                 name={item.patient.full_name}
                 subTitle={item.last_message.text}
-                blink={item.patient.is_human_required ? ' blink' : ''}
+                is_human_required={item.patient.is_human_required}
+                is_in_emergency_situation={
+                  item.patient.is_in_emergency_situation
+                }
               />
               <div className="text-right">
                 <div className="chat-menu-list-item-time">

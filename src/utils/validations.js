@@ -49,7 +49,12 @@ export const clinicSchema = Yup.object().shape({
     .matches(phoneFormat)
     .max(MAX_PHONE_LENGTH)
     .min(MIN_PHONE_LENGTH),
-  address: Yup.string().trim().required().max(MAX),
+  street_number: Yup.string().trim().max(8),
+  street_name: Yup.string().trim().max(128).required(),
+  area_of_living: Yup.string().trim().max(128),
+  city: Yup.string().trim().required().max(64).required(),
+  post_code: Yup.string().trim().max(16).required(),
+  country: Yup.string().trim().max(64),
   parking_availability: Yup.string().required(),
   start_of_work: Yup.string().required(),
   end_of_work: Yup.string().required(),
@@ -106,7 +111,12 @@ export const patientSchema = Yup.object().shape({
   email: usernameSchema,
   number_of_dependants: Yup.number(),
   insurance: Yup.string().max(MAX),
-  area_of_living: Yup.string().max(MAX),
+  street_number: Yup.string().max(8),
+  street_name: Yup.string().max(128).required(),
+  area_of_living: Yup.string().max(128),
+  city: Yup.string().max(64).required(),
+  post_code: Yup.string().max(16).required(),
+  country: Yup.string().max(64),
 });
 
 export const userSchema = Yup.object().shape({

@@ -95,7 +95,7 @@ const Chat = () => {
           }
           mainContent={<ChatContent />}
           sideContentWidth={450}
-          sideContentGutter={false}
+          sideContentGutter={true}
           border
         />
       </div>

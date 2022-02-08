@@ -43,10 +43,11 @@ import EndAppointment from '../CalendarPage/EndAppointment';
 const { Panel } = Collapse;
 
 const columnMap = {
+  id: 'id',
+  patient_full_name: 'patient__last_name',
+  doctor_full_name: 'doctor__last_name',
   date: 'start_datetime',
-  patient_full_name: 'patient__last_name,patient__first_name',
-  doctor_full_name: 'doctor__last_name,doctor__first_name',
-  appointment_type_name: 'appointment_type__name',
+  time: 'start_datetime',
 };
 
 export const NESTED_MODAL = {
@@ -165,6 +166,7 @@ const PassedAppointmentsRequiringImmediateStatusUpdate = ({
     },
     {
       title: formatMessage(patientPageMessages.columnTitleAppointment),
+      dataIndex: ['doctor', 'full_name'],
       sorter: true,
       render: (_, row) => (
         <div className="text-left">

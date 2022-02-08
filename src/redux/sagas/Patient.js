@@ -18,6 +18,7 @@ import {
   GET_APPOINTMENT_HISTORY,
   GET_SCHEDULED_APPOINTMENTS,
   MARK_CONVERSATION_HUMAN_NOT_REQUIRED,
+  MARK_CONVERSATION_NOT_IN_EMERGENCY_SITUATION,
 } from 'redux/constants/Patient';
 import {
   setPatientDetails,
@@ -68,7 +69,7 @@ function* deletePatient({ payload }) {
   }
 }
 
-function* getPatientDetails() {
+function* getPatientDetails({ payload }) {
   try {
     const { data } = yield call(patientService.getPatientDetails);
     yield put(setPatientDetails(data));
@@ -173,6 +174,12 @@ function* markConversationHumanNotRequired({ payload }) {
   } catch (err) {}
 }
 
+function* markConversationNotInEmergencySituation({ payload }) {
+  try {
+    yield call(patientService.markConversationNotInEmergencySituation, payload);
+  } catch (err) {}
+}
+
 export function* patientSaga() {
   yield takeEvery(GET_PATIENTS, getPatients);
   yield takeEvery(SET_PATIENT_PAGE, getPatients);
@@ -199,6 +206,10 @@ export function* patientSaga() {
   yield takeEvery(
     MARK_CONVERSATION_HUMAN_NOT_REQUIRED,
     markConversationHumanNotRequired
+  );
+  yield takeEvery(
+    MARK_CONVERSATION_NOT_IN_EMERGENCY_SITUATION,
+    markConversationNotInEmergencySituation
   );
 }
 

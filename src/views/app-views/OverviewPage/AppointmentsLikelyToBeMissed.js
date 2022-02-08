@@ -27,16 +27,17 @@ import UpdateAppointmentCommunicationStatus from '../CalendarPage/UpdateAppointm
 
 const { Panel } = Collapse;
 
+// for sorting to be feasible: the name of the attribute should be the name in dataIndex (if object concat with underscore '_') and
+// the value should be the name of actual field in the database as field or table__field = django wise
 const columnMap = {
   id: 'id',
-  patient_full_name: 'patient__last_name,patient__first_name',
-  appointment:
-    'doctor__last_name,doctor__first_name,doctor__specialization,doctor__seniority',
+  patient_full_name: 'patient__last_name',
+  doctor_full_name: 'doctor__last_name',
   date: 'start_datetime',
   time: 'start_datetime',
-  communication_status_name: 'communication_status___name',
+  communication_status_name: 'communication_status__name',
   status_name: 'status__name',
-  patient__whitelisted: 'patient__whitelisted',
+  patient_whitelisted: 'patient__whitelisted',
 };
 
 export const NESTED_MODAL = {
@@ -141,6 +142,7 @@ const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
     {
       title: formatMessage(patientPageMessages.columnTitleAppointment),
       sorter: true,
+      dataIndex: ['doctor', 'full_name'],
       render: (_, row) => (
         <div className="text-left">
           {`${row.doctor.full_name} (${row.doctor.seniority} ${row.doctor.specialization})`}

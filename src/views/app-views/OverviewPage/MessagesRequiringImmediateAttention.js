@@ -40,10 +40,11 @@ const { Panel } = Collapse;
 
 const columnMap = {
   created_datetime: 'created_datetime',
-  patient_full_name: 'patient__last_name,patient__first_name',
+  patient_full_name: 'patient__last_name',
   message_requiring_immediate_attention_type_name:
-    'message_requiring_immediate_attention_type_name__name',
-  resolved: 'resolved',
+    'message_requiring_immediate_attention_type__name',
+  priority_name: 'priority__name',
+  status_name: 'status__name',
 };
 
 export const NESTED_MODAL = {

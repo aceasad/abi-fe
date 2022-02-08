@@ -32,13 +32,21 @@ export default defineMessages({
     id: `${scope}.chat.type_a_message_placeholder`,
     defaultMessage: 'Type a message...',
   },
-  rasaPaused: {
-    id: `${scope}.chat.rasa_paused`,
-    defaultMessage: 'Asa paused',
+  pauseAsa: {
+    id: `${scope}.chat.pause_asa`,
+    defaultMessage: 'Pause Asa',
   },
-  markResolved: {
-    id: `${scope}.chat.mark_resolved`,
-    defaultMessage: 'Mark resolved',
+  unpauseAsa: {
+    id: `${scope}.chat.unpause_asa`,
+    defaultMessage: 'Unpause Asa',
+  },
+  contactedPatient: {
+    id: `${scope}.chat.resolve_human_required`,
+    defaultMessage: 'Contacted patient',
+  },
+  emergencyResolved: {
+    id: `${scope}.chat.resolve_emergency_situation`,
+    defaultMessage: 'Emergency resolved',
   },
   male: {
     id: `${staffScope}.text.male`,
@@ -104,6 +112,10 @@ export default defineMessages({
     id: `${scope}.filters.human_invervention_required`,
     defaultMessage: 'Human intervention required',
   },
+  inEmergencySituationFilter: {
+    id: `${scope}.filters.in_emergency_situation`,
+    defaultMessage: 'In emergency Situation',
+  },
   likelyToMissNextAppointmentFilter: {
     id: `${scope}.filters.likely_to_miss_next_appointment`,
     defaultMessage: 'Likely to miss their next appointment',
@@ -114,7 +126,7 @@ export default defineMessages({
   },
   pauseRasaPlaceholder: {
     id: `${scope}.placeholder.pause_rasa`,
-    defaultMessage: 'Please pause chatbot to send a message',
+    defaultMessage: 'Please pause Asa to send a message',
   },
   chatDisabledPlaceholder: {
     id: `${scope}.placeholder.chat_disabled`,

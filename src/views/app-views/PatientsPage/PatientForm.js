@@ -156,7 +156,7 @@ const PatientForm = ({
               <Row gutter={16}>
                 <Col span={6}>
                   <Title type="secondary" level={2} className="mt-4">
-                    {formatMessage(messages.personalTitle)}
+                    {formatMessage(messages.personalDetails)}
                   </Title>
                 </Col>
 
@@ -241,7 +241,7 @@ const PatientForm = ({
               <Row gutter={16}>
                 <Col span={6}>
                   <Title type="secondary" level={2} className="mt-4">
-                    {formatMessage(messages.contact)}
+                    {formatMessage(messages.contactDetails)}
                   </Title>
                 </Col>
 
@@ -259,16 +259,6 @@ const PatientForm = ({
                       }}
                       required
                     />
-                    <ColumnField
-                      span={12}
-                      component={FormField}
-                      label={formatMessage(messages.areaOfLiving)}
-                      name="area_of_living"
-                      errorTexts={{
-                        label: formatMessage(messages.areaOfLiving),
-                        maxValue: MAX,
-                      }}
-                    />
                   </Row>
                   <Row gutter={16}>
                     <ColumnField
@@ -285,7 +275,87 @@ const PatientForm = ({
               <Row gutter={16}>
                 <Col span={6}>
                   <Title type="secondary" level={2} className="mt-4">
-                    {formatMessage(messages.otherInfo)}
+                    {formatMessage(messages.addressDetails)}
+                  </Title>
+                </Col>
+
+                <Col span={18}>
+                  <Row gutter={16}>
+                    <ColumnField
+                      span={12}
+                      component={FormField}
+                      label={formatMessage(messages.streetNumber)}
+                      name="street_number"
+                      errorTexts={{
+                        label: formatMessage(messages.streetNumber),
+                        maxValue: 8,
+                      }}
+                    />
+                    <ColumnField
+                      span={12}
+                      component={FormField}
+                      label={formatMessage(messages.streetName)}
+                      name="street_name"
+                      errorTexts={{
+                        label: formatMessage(messages.streetName),
+                        maxValue: 128,
+                      }}
+                      required
+                    />
+                  </Row>
+                  <Row gutter={16}>
+                    <ColumnField
+                      span={12}
+                      component={FormField}
+                      label={formatMessage(messages.areaOfLiving)}
+                      name="area_of_living"
+                      errorTexts={{
+                        label: formatMessage(messages.areaOfLiving),
+                        maxValue: 128,
+                      }}
+                    />
+                    <ColumnField
+                      span={12}
+                      component={FormField}
+                      label={formatMessage(messages.city)}
+                      name="city"
+                      errorTexts={{
+                        label: formatMessage(messages.city),
+                        maxValue: 64,
+                      }}
+                      required
+                    />
+                  </Row>
+                  <Row gutter={16}>
+                    <ColumnField
+                      span={12}
+                      component={FormField}
+                      label={formatMessage(messages.postCode)}
+                      name="post_code"
+                      errorTexts={{
+                        label: formatMessage(messages.postCode),
+                        maxValue: 16,
+                      }}
+                      required
+                    />
+                    <ColumnField
+                      span={12}
+                      component={FormField}
+                      label={formatMessage(messages.country)}
+                      name="country"
+                      errorTexts={{
+                        label: formatMessage(messages.country),
+                        maxValue: 64,
+                      }}
+                    />
+                  </Row>
+                </Col>
+              </Row>
+
+              <Row gutter={16}>
+                <Col span={6}>
+                  <Title type="secondary" level={2} className="mt-4">
+                    {formatMessage(messages.otherDetails)}
                   </Title>
                 </Col>
 

@@ -12,9 +12,29 @@ export default defineMessages({
     id: `${scope}.input_label.phone_number`,
     defaultMessage: 'Phone number',
   },
-  address: {
+  streetNumber: {
+    id: `${scope}.input_label.street_number`,
+    defaultMessage: 'Street number',
+  },
+  streetName: {
+    id: `${scope}.input_label.street_name`,
+    defaultMessage: 'Street name',
+  },
+  area: {
+    id: `${scope}.input_label.area`,
+    defaultMessage: 'Area',
+  },
+  city: {
+    id: `${scope}.input_label.city`,
+    defaultMessage: 'City',
+  },
+  postCode: {
     id: `${scope}.input_label.address`,
-    defaultMessage: 'Address',
+    defaultMessage: 'Post code',
+  },
+  country: {
+    id: `${scope}.input_label.country`,
+    defaultMessage: 'Country',
   },
   googleMapsLink: {
     id: `${scope}.input_label.google_maps_link`,
@@ -52,9 +72,29 @@ export default defineMessages({
     id: `${scope}.error.phone_number`,
     defaultMessage: 'Phone number',
   },
-  errorInputLabelAddress: {
-    id: `${scope}.error.address`,
-    defaultMessage: 'Address',
+  errorInputLabelStreetNumber: {
+    id: `${scope}.error.street_number`,
+    defaultMessage: 'Street number',
+  },
+  errorInputLabelStreetName: {
+    id: `${scope}.error.street_name`,
+    defaultMessage: 'Street name',
+  },
+  errorInputLabelArea: {
+    id: `${scope}.error.area`,
+    defaultMessage: 'Area',
+  },
+  errorInputLabelCity: {
+    id: `${scope}.error.city`,
+    defaultMessage: 'City',
+  },
+  errorInputLabelPostCode: {
+    id: `${scope}.error.post_code`,
+    defaultMessage: 'Post code',
+  },
+  errorInputLabelCountry: {
+    id: `${scope}.error.country`,
+    defaultMessage: 'Country',
   },
   errorInputLabelGoogleMapsLink: {
     id: `${scope}.error.google_maps_link`,

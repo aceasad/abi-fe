@@ -103,17 +103,45 @@ export default defineMessages({
     id: `${detailScope}.side.form.ethnicity`,
     defaultMessage: 'Ethnicity',
   },
-  contact: {
-    id: `${detailScope}.side.title.contact`,
-    defaultMessage: 'Contact',
+  personalDetails: {
+    id: `${detailScope}.side.title.personal_details`,
+    defaultMessage: 'Personal Details',
+  },
+  contactDetails: {
+    id: `${detailScope}.side.title.contact_details`,
+    defaultMessage: 'Contact Details',
+  },
+  addressDetails: {
+    id: `${detailScope}.side.title.address_details`,
+    defaultMessage: 'Address Details',
+  },
+  otherDetails: {
+    id: `${detailScope}.side.title.other_details`,
+    defaultMessage: 'Other Details',
+  },
+  streetNumber: {
+    id: `${detailScope}.side.form.street_number`,
+    defaultMessage: 'Street number',
+  },
+  streetName: {
+    id: `${detailScope}.side.form.street_name`,
+    defaultMessage: 'Street name',
   },
   areaOfLiving: {
     id: `${detailScope}.side.form.area_of_living`,
     defaultMessage: 'Area of living',
   },
-  otherInfo: {
-    id: `${detailScope}.side.title.other`,
-    defaultMessage: 'Other Details',
+  city: {
+    id: `${detailScope}.side.form.city`,
+    defaultMessage: 'City',
+  },
+  postCode: {
+    id: `${detailScope}.side.form.post_code`,
+    defaultMessage: 'Post code',
+  },
+  country: {
+    id: `${detailScope}.side.form.country`,
+    defaultMessage: 'Country',
   },
   materialStatus: {
     id: `${detailScope}.side.form.marital_status`,
