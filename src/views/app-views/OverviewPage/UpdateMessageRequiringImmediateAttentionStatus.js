@@ -130,7 +130,11 @@ const UpdateMessageRequiringImmediateAttentionStatus = ({
                 label={formatMessage(
                   messages.messageRequiringImmediateAttentionFormLabelStatus
                 )}
-                errorTexts={{ label: formatMessage(messages.error) }}
+                errorTexts={{
+                  label: formatMessage(
+                    messages.modalErrorUpdateMessageRequiringImmediateAttentionStatus
+                  ),
+                }}
                 required
               />
               <Field

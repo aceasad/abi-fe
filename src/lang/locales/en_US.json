@@ -592,9 +592,11 @@
   "overview_page.messages_requiring_immediate_attention.column.title.status": "Status",
   "overview_page.messages_requiring_immediate_attention.column.title.priority": "Priority",
   "overview_page.form.label.message_requiring_immediate_attention_status": "Status",
+  "overview_page.form.label.message_requiring_immediate_attention_status_details": "Status Details",
   "overview_page.modal.update_message_requiring_immediate_attention_status.title": "Update Status",
   "overview_page.modal.update_message_requiring_immediate_attention_status.ok_text": "Update",
   "overview_page.modal.update_message_requiring_immediate_attention_status.cancel": "Cancel",
+  "overview_page.modal.update_message_requiring_immediate_attention_status.error": "Error",
   "overview_page.modal.pre_appointment_questionnaire.title": "Pre-Appointment Questionnaire Patient Answers",
   "overview_page.modal.pre_appointment_questionnaire.ok_text": "Close"
 }

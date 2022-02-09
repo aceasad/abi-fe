@@ -391,6 +391,10 @@ export default defineMessages({
     id: `${scope}.modal.update_message_requiring_immediate_attention_status.cancel_text`,
     defaultMessage: 'Cancel',
   },
+  modalErrorUpdateMessageRequiringImmediateAttentionStatus: {
+    id: `${scope}.modal.update_message_requiring_immediate_attention_status.error`,
+    defaultMessage: 'Error',
+  },
   modalTitlePreAppointmentQuestionnaire: {
     id: `${scope}.modal.pre_appointment_questionnaire.title`,
     defaultMessage: 'Pre-Appointment Questionnaire Patient Answers',
