@@ -15,6 +15,7 @@ const ENDPOINTS = {
     '/patients/:id/mark-conversation-human-not-required/',
   MARK_CONVERSATION_NOT_IN_EMERGENCY_SITUATION:
     '/patients/:id/mark-conversation-not-in-emergency-situation/',
+  GET_PATIENTS_DETAILS_NEW_PATIENT_FORM: '/patients/patient-details/',
 };
 
 class PatientService extends ApiService {
@@ -33,6 +34,9 @@ class PatientService extends ApiService {
 
   getPatientDetails = (id) =>
     this.apiClient.get(ENDPOINTS.GET_PATIENTS + id + '/patient-details/');
+
+  getPatientDetailsNewPatientForm = () =>
+    this.apiClient.get(ENDPOINTS.GET_PATIENTS_DETAILS_NEW_PATIENT_FORM);
 
   createPatient = (data) => this.apiClient.post(ENDPOINTS.GET_PATIENTS, data);
   getPatientSingle = (id) =>
