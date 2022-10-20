@@ -7,6 +7,7 @@ import {
   SET_PATIENT_SEARCH,
   DELETE_PATIENT,
   GET_PATIENTS_DETAILS,
+  GET_PATIENT_DETAILS_NEW_PATIENT_FORM,
   CREATE_PATIENT,
   GET_PATIENT_SINGLE,
   UPDATE_PATIENT,
@@ -22,6 +23,7 @@ import {
 } from 'redux/constants/Patient';
 import {
   setPatientDetails,
+  setPatientDetailsNewPatientForm,
   setPatientLoading,
   setPatientPage,
   setPatients,
@@ -74,6 +76,13 @@ function* getPatientDetails({ payload }) {
     const { data } = yield call(patientService.getPatientDetails);
     yield put(setPatientDetails(data));
   } catch (err) {}
+}
+
+function* getPatientDetailsNewPatientFormData() {
+  try {
+    const { data } = yield call(patientService.getPatientDetailsNewPatientForm);
+    yield put(setPatientDetailsNewPatientForm(data));
+  } catch (error) {}
 }
 
 function* createPatient({ payload }) {
@@ -187,6 +196,10 @@ export function* patientSaga() {
   yield takeEvery(SET_PATIENT_SEARCH, getPatients);
   yield takeEvery(DELETE_PATIENT, deletePatient);
   yield takeEvery(GET_PATIENTS_DETAILS, getPatientDetails);
+  yield takeEvery(
+    GET_PATIENT_DETAILS_NEW_PATIENT_FORM,
+    getPatientDetailsNewPatientFormData
+  );
   yield takeEvery(CREATE_PATIENT, createPatient);
   yield takeEvery(GET_PATIENT_SINGLE, function* ({ payload }) {
     yield all([

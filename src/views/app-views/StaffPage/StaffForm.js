@@ -54,7 +54,7 @@ const StaffForm = ({
           />
           <Card>
             <Form layout="vertical" name="login-form" className="ml-sm-3">
-              <Row justify="end" className="mb-5 mt-5" justify="center">
+              <Row justify="start" className="mb-5 mt-5">
                 <Col xs={6}>
                   <Field component={FormImageUpload} name="profile_picture" />
                 </Col>
