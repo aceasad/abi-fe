@@ -25,6 +25,8 @@ class DocumentsService extends ApiService {
 
   deleteDocumentById = (id) =>
     this.apiClient.delete(`${ENDPOINTS.DOCUMENTS}${id}/`);
+
+  getAppointments = () => this.apiClient.get(`/appointment-types/`);
 }
 
 const documentsService = new DocumentsService();

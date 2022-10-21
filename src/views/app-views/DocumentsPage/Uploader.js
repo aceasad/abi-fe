@@ -3,8 +3,12 @@ import { Button } from 'antd';
 import documentsService from 'services/DocumentsService';
 import Modal from 'antd/lib/modal/Modal';
 import Dropzone from './Dropzone';
+import FormField from 'components/custom-components/Form/FormField';
+import FormSelect from 'components/custom-components/Form/FormSelect';
+import Form from 'antd/lib/form/Form';
+import { Field, Formik } from 'formik';
 
-const Uploader = ({ handleUpdateDataSource }) => {
+const Uploader = ({ handleUpdateDataSource, appointmentTypes }) => {
   const [open, setOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [fileListToUpload, setFileListToUpload] = useState([]);
@@ -20,13 +24,17 @@ const Uploader = ({ handleUpdateDataSource }) => {
     handleUpdateDataSource(response.data);
   };
 
-  const handleOk = () => {
+  const handleOk = (values) => {
     setConfirmLoading(true);
+
+    const appointment_type_name = appointmentTypes.find(
+      (type) => type.id === values.appointmentType
+    )['name'];
 
     createDocument({
       file: fileListToUpload[0],
-      document_name: 'test',
-      appointment_type_name: 'screening',
+      document_name: values.document_name,
+      appointment_type_name,
     }).then(() => {
       setOpen(false);
       setConfirmLoading(false);
@@ -49,18 +57,66 @@ const Uploader = ({ handleUpdateDataSource }) => {
           Upload Document
         </Button>
       </div>
-      <Modal
-        title="Upload Your Document"
-        visible={open}
-        onOk={handleOk}
-        confirmLoading={confirmLoading}
-        onCancel={handleCancel}
+      <Formik
+        initialValues={{
+          appointmentType: '',
+        }}
+        onSubmit={handleOk}
+        enableReinitialize
+        validateOnMount
       >
-        <Dropzone
-          onChange={setFileListToUpload}
-          fileListToUpload={fileListToUpload}
-        />
-      </Modal>
+        {({ values, handleSubmit }) => (
+          <Modal
+            title="Upload Your Document"
+            visible={open}
+            destroyOnClose
+            confirmLoading={confirmLoading}
+            footer={[
+              <Button
+                key="back"
+                onClick={handleCancel}
+                onMouseDown={(event) => {
+                  event.preventDefault();
+                }}
+              >
+                Cancel
+              </Button>,
+              <Button
+                key="submit"
+                type="primary"
+                onClick={handleSubmit}
+                htmlType="submit"
+                disabled={confirmLoading}
+                loading={confirmLoading}
+              >
+                Upload
+              </Button>,
+            ]}
+          >
+            <Dropzone
+              onChange={setFileListToUpload}
+              fileListToUpload={fileListToUpload}
+            />
+            <div style={{ marginTop: '30px' }}>
+              <Form layout="vertical" name="document-form">
+                <Field
+                  label="Document Name"
+                  component={FormField}
+                  name="document_name"
+                />
+                <Field
+                  label="Appointment Type"
+                  component={FormSelect}
+                  name="appointmentType"
+                  options={appointmentTypes}
+                  optionField="name"
+                  defaultOption={values.appointmentType}
+                />
+              </Form>
+            </div>
+          </Modal>
+        )}
+      </Formik>
     </>
   );
 };

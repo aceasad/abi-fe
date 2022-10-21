@@ -8,12 +8,13 @@ const { Title } = Typography;
 
 const DocumentsPage = () => {
   const [listOfDocuments, setListOfDocuments] = useState([]);
+  const [appointmentTypes, setAppointmentTypes] = useState([]);
 
   useEffect(() => {
     async function fetchData() {
       const response = await documentsService.getDocuments();
 
-      const data = response.data.results.map((item, index) => {
+      const data = response.data.results.map((item) => {
         return {
           ...item,
           key: item.id,
@@ -21,6 +22,15 @@ const DocumentsPage = () => {
       });
 
       setListOfDocuments(data);
+    }
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    async function fetchData() {
+      const response = await documentsService.getAppointments();
+
+      setAppointmentTypes(response.data.results);
     }
     fetchData();
   }, []);
@@ -115,7 +125,10 @@ const DocumentsPage = () => {
       <Title level={2} type="primary" className="text-wrap">
         Documents
       </Title>
-      <Uploader handleUpdateDataSource={handleUpdateDataSource} />
+      <Uploader
+        handleUpdateDataSource={handleUpdateDataSource}
+        appointmentTypes={appointmentTypes}
+      />
       <Table columns={columns} dataSource={listOfDocuments} />
     </Layout>
   );
