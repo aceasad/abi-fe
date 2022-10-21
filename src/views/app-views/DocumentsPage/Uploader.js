@@ -71,6 +71,7 @@ const Uploader = ({ handleUpdateDataSource, appointmentTypes }) => {
             visible={open}
             destroyOnClose
             confirmLoading={confirmLoading}
+            onCancel={handleCancel}
             footer={[
               <Button
                 key="back"

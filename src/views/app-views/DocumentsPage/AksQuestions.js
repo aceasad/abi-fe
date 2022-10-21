@@ -6,7 +6,7 @@ import { Field, Formik } from 'formik';
 import documentsService from 'services/DocumentsService';
 import Modal from 'antd/lib/modal/Modal';
 
-const EditModal = ({ initialValues, handleUpdateDataSource }) => {
+const AksQuestions = ({ initialValues }) => {
   const [open, setOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
 
@@ -14,11 +14,8 @@ const EditModal = ({ initialValues, handleUpdateDataSource }) => {
     setOpen(true);
   };
 
-  const updateDocumentValues = async (payload) => {
-    const response = await documentsService.updateDocument(payload);
-
-    handleUpdateDataSource(response.data);
-  };
+  const handleQuestionAnswering = async (payload) =>
+    await documentsService.questionAnswering(payload);
 
   const handleCancel = () => {
     setOpen(false);
@@ -28,30 +25,32 @@ const EditModal = ({ initialValues, handleUpdateDataSource }) => {
     setConfirmLoading(true);
 
     const payload = {
-      id: initialValues.id,
-      document_name: values.document_name,
-      appointment_type_name: values.appointment_type,
+      document_id: values.id,
+      message: values.message,
     };
 
-    updateDocumentValues(payload).then(() => {
-      setOpen(false);
-      setConfirmLoading(false);
-    });
+    handleQuestionAnswering(payload)
+      .then(() => {
+        setConfirmLoading(false);
+      })
+      .catch(() => {
+        setConfirmLoading(false);
+      });
   };
 
   return (
     <>
-      <Button type="link" onClick={showModal}>
-        Edit
+      <Button type="primary" onClick={showModal}>
+        Aks Questions
       </Button>
       <Formik
         initialValues={initialValues}
         onSubmit={handleSubmit}
         enableReinitialize
       >
-        {({ handleSubmit, dirty, isValid }) => (
+        {({ handleSubmit }) => (
           <Modal
-            title="Edit Your Document"
+            title="Question Answering"
             visible={open}
             confirmLoading={confirmLoading}
             onCancel={handleCancel}
@@ -63,30 +62,24 @@ const EditModal = ({ initialValues, handleUpdateDataSource }) => {
                   event.preventDefault();
                 }}
               >
-                Cancel
-              </Button>,
-              <Button
-                key="submit"
-                type="primary"
-                onClick={handleSubmit}
-                htmlType="submit"
-                disabled={!dirty || !isValid || confirmLoading}
-              >
-                Save
+                Done
               </Button>,
             ]}
           >
             <Form layout="vertical" name="login-form">
               <Field
-                label="Document Name"
+                label="Your Question"
                 component={FormField}
-                name="document_name"
+                name="message"
               />
-              <Field
-                label="Appointment Type"
-                component={FormField}
-                name="appointment_type"
-              />
+              <Button
+                type="primary"
+                onClick={handleSubmit}
+                loading={confirmLoading}
+                style={{ width: '100%' }}
+              >
+                Answer
+              </Button>
             </Form>
           </Modal>
         )}
@@ -95,4 +88,4 @@ const EditModal = ({ initialValues, handleUpdateDataSource }) => {
   );
 };
 
-export default EditModal;
+export default AksQuestions;

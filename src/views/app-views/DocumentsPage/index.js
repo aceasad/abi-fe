@@ -4,6 +4,7 @@ import documentsService from 'services/DocumentsService';
 import EditModal from './EditModal';
 import Uploader from './Uploader';
 import DeleteModal from './DeleteModal';
+import AksQuestions from './AksQuestions';
 const { Title } = Typography;
 
 const DocumentsPage = () => {
@@ -107,6 +108,10 @@ const DocumentsPage = () => {
       key: 'action',
       render: (_, record) => (
         <Space size="middle">
+          <AksQuestions
+            initialValues={record}
+            handleUpdateDataSource={handleUpdateDataSource}
+          />
           <EditModal
             initialValues={record}
             handleUpdateDataSource={handleUpdateDataSource}
