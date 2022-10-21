@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
-import { Button } from 'antd';
+import { Button, Card, Typography } from 'antd';
 import Form from 'antd/lib/form/Form';
 import FormField from 'components/custom-components/Form/FormField';
 import { Field, Formik } from 'formik';
 import documentsService from 'services/DocumentsService';
 import Modal from 'antd/lib/modal/Modal';
+import HighLightText from './HighlightText';
+const { Text } = Typography;
 
 const AksQuestions = ({ initialValues }) => {
   const [open, setOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const [answer, setAnswer] = useState(null);
 
   const showModal = () => {
     setOpen(true);
@@ -30,8 +33,9 @@ const AksQuestions = ({ initialValues }) => {
     };
 
     handleQuestionAnswering(payload)
-      .then(() => {
+      .then((res) => {
         setConfirmLoading(false);
+        setAnswer(res.data);
       })
       .catch(() => {
         setConfirmLoading(false);
@@ -78,9 +82,57 @@ const AksQuestions = ({ initialValues }) => {
                 loading={confirmLoading}
                 style={{ width: '100%' }}
               >
-                Answer
+                {confirmLoading ? 'Answering' : 'Answer'}
               </Button>
             </Form>
+            {answer && (
+              <div style={{ marginTop: '30px' }}>
+                <Card>
+                  <Text strong className="text-primary">
+                    Answer
+                  </Text>
+                  <div
+                    style={{
+                      marginBottom: '20px',
+                    }}
+                  >
+                    {answer?.answer}
+                  </div>
+                  {answer?.context && (
+                    <>
+                      <Text strong className="text-primary">
+                        Context
+                      </Text>
+                      <div
+                        id="output-wrapper-1-1"
+                        style={{
+                          maxHeight: '180px',
+                          overflow: 'auto',
+                        }}
+                      >
+                        {answer?.highlights?.length > 0 ? (
+                          <HighLightText
+                            id="1"
+                            sessionId="1"
+                            content={answer?.context}
+                            offsetsInDocument={[
+                              {
+                                start: answer?.highlights[0]?.span[0],
+                                end: answer?.highlights[0]?.span[1],
+                              },
+                            ]}
+                            score={100}
+                            withScrolling
+                          />
+                        ) : (
+                          <>{answer?.context}</>
+                        )}
+                      </div>
+                    </>
+                  )}
+                </Card>
+              </div>
+            )}
           </Modal>
         )}
       </Formik>
