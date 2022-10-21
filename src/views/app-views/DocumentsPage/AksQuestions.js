@@ -45,7 +45,7 @@ const AksQuestions = ({ initialValues }) => {
   return (
     <>
       <Button type="primary" onClick={showModal}>
-        Aks Questions
+        Aks Question
       </Button>
       <Formik
         initialValues={initialValues}
