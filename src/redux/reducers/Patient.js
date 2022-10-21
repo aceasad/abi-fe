@@ -7,6 +7,7 @@ import {
   SET_PATIENT_PAGE,
   SET_PATIENT_SEARCH,
   SET_PATIENT_DETAILS,
+  SET_PATIENT_DETAILS_NEW_PATIENT_FORM,
   SET_PATIENT_SINGLE,
   MODIFY_PATIENT,
   SET_APPOINTMENT_HISTORY_LOADING,
@@ -62,7 +63,14 @@ const patient = (state = initialState, action) =>
           search: action.payload,
         };
         break;
+      // Check if this is needed
       case SET_PATIENT_DETAILS:
+        draft.education = action.payload.education;
+        draft.employment = action.payload.employment;
+        draft.material_status = action.payload.material_status;
+        draft.ethnicities = action.payload.ethnicities;
+        break;
+      case SET_PATIENT_DETAILS_NEW_PATIENT_FORM:
         draft.education = action.payload.education;
         draft.employment = action.payload.employment;
         draft.material_status = action.payload.material_status;
