@@ -8,6 +8,8 @@ import {
   DELETE_PATIENT,
   GET_PATIENTS_DETAILS,
   SET_PATIENT_DETAILS,
+  GET_PATIENT_DETAILS_NEW_PATIENT_FORM,
+  SET_PATIENT_DETAILS_NEW_PATIENT_FORM,
   CREATE_PATIENT,
   GET_PATIENT_SINGLE,
   SET_PATIENT_SINGLE,
@@ -71,6 +73,15 @@ export const getPatientDetails = (payload) => ({
 
 export const setPatientDetails = (payload) => ({
   type: SET_PATIENT_DETAILS,
+  payload,
+});
+
+export const getPatientDetailsNewPatientForm = () => ({
+  type: GET_PATIENT_DETAILS_NEW_PATIENT_FORM,
+});
+
+export const setPatientDetailsNewPatientForm = (payload) => ({
+  type: SET_PATIENT_DETAILS_NEW_PATIENT_FORM,
   payload,
 });
 

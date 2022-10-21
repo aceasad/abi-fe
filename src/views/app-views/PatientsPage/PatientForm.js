@@ -23,6 +23,7 @@ import {
   resetPreviousOperations,
 } from 'redux/actions/Anamnesis';
 import { BeforeRouteContext } from 'utils/context';
+import { getPatientDetailsNewPatientForm } from 'redux/actions/Patient';
 
 const { Title } = Typography;
 
@@ -121,6 +122,10 @@ const PatientForm = ({
   }, []);
 
   const enableRedirect = () => setContext({ ...rest, proceed: true });
+
+  useEffect(() => {
+    dispatch(getPatientDetailsNewPatientForm());
+  }, []);
 
   return (
     <Formik
