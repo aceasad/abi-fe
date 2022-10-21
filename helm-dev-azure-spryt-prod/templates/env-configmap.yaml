@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap 
 metadata:
   name: abi-fe-env-configmap
-  namespace: spryt-dev 
+  namespace: spryt-prod
 data:
   REACT_APP_API_URL: http://20.76.203.118/abi-be/api/v1
   REACT_APP_SOCKETS_DOMAIN: wss://20.76.203.118/abi-be/ws/chat

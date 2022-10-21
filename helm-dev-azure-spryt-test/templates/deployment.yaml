@@ -3,7 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: abi-fe
-  namespace: spryt-dev
+  namespace: spryt-test
   labels:
     app: abi-fe
 spec:
