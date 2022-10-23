@@ -8,7 +8,6 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: abi-fe-nginx-ingress
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
-    nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
   - http:
