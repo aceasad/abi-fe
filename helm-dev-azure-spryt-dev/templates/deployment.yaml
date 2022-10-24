@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: abi-fe
-        image: sprytacrdev.azurecr.io/abi-fe
+        image: sprytacrdev.azurecr.io/abi-fe:latest
         ports:
         - containerPort: 80
         imagePullPolicy: Always
