@@ -1,8 +1,8 @@
-name: custom
+name: abi-fe-test
 description: A Helm Chart created manually
 version: 0.0.1
-apiVersion: v1
+apiVersion: v2
 keywords:
-  - custom
+  - abi-fe-test
 sources:
 home:
