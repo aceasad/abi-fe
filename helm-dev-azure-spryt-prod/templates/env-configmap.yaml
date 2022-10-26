@@ -5,7 +5,7 @@ metadata:
   namespace: spryt-prod
 data:
   REACT_APP_API_URL: http://20.76.203.118/abi-be/api/v1
-  REACT_APP_SOCKETS_DOMAIN: wss://20.76.203.118/abi-be/ws/chat
+  REACT_APP_SOCKETS_DOMAIN: ws://20.76.203.118/abi-be/ws/chat
   REACT_APP_URL_PREFIX_PATH: abi-fe
   REACT_APP_API_CDN: ""
   REACT_APP_FACEBOOK_APP_ID: ""
