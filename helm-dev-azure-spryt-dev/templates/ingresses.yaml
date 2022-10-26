@@ -6,13 +6,14 @@ metadata:
   name: abi-fe-ingress
   namespace: spryt-dev
   annotations:
-    kubernetes.io/ingress.class: abi-fe-nginx-ingress
+    kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
 spec:
   rules:
   - http:
       paths:
-      - path: /
+      - path: /abi-fe(/|$)(.*)
         pathType: Prefix
         backend:
           service:
