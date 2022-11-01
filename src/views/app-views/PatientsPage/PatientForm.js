@@ -289,16 +289,6 @@ const PatientForm = ({
                     <ColumnField
                       span={12}
                       component={FormField}
-                      label={formatMessage(messages.streetNumber)}
-                      name="street_number"
-                      errorTexts={{
-                        label: formatMessage(messages.streetNumber),
-                        maxValue: 8,
-                      }}
-                    />
-                    <ColumnField
-                      span={12}
-                      component={FormField}
                       label={formatMessage(messages.streetName)}
                       name="street_name"
                       errorTexts={{
@@ -306,6 +296,18 @@ const PatientForm = ({
                         maxValue: 128,
                       }}
                       required
+                      autoComplete="new-address"
+                    />
+                    <ColumnField
+                      span={12}
+                      component={FormField}
+                      label={formatMessage(messages.streetNumber)}
+                      name="street_number"
+                      errorTexts={{
+                        label: formatMessage(messages.streetNumber),
+                        maxValue: 8,
+                      }}
+                      autoComplete="new-address"
                     />
                   </Row>
                   <Row gutter={16}>
