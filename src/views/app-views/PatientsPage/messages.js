@@ -31,6 +31,10 @@ export default defineMessages({
     id: `${scope}.text.phone_number`,
     defaultMessage: 'Phone Number',
   },
+  countryCode: {
+    id: `${scope}.text.country_code`,
+    defaultMessage: 'Country Code',
+  },
   lastAppointment: {
     id: `${scope}.text.last_appointment`,
     defaultMessage: 'Last Appointment',
@@ -166,6 +170,10 @@ export default defineMessages({
   numberOfDependants: {
     id: `${detailScope}.side.form.number_of_dependants`,
     defaultMessage: 'Number of Dependants',
+  },
+  countryCodeFormat: {
+    id: `${detailScope}.error.country_code_format`,
+    defaultMessage: 'Country Code must be in valid format',
   },
   phoneNumberFormat: {
     id: `${detailScope}.error.phone_format`,

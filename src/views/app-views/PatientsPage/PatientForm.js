@@ -52,8 +52,14 @@ const PatientForm = ({
     message.success(formatMessage(messages.operationTypeDeleted));
   };
 
-  const handleSubmitWrapper = (values, { setErrors }) =>
-    handleSubmit(values, setErrors, enableRedirect);
+  const handleSubmitWrapper = (values, { setErrors }) => {
+    const parsedValues = {
+      ...values,
+      phone_number: '+' + values.country_code + values.phone_number,
+    };
+
+    handleSubmit(parsedValues, setErrors, enableRedirect);
+  };
 
   const deleteOperationType = ({ item, action }) => {
     Modal.confirm({
@@ -252,6 +258,19 @@ const PatientForm = ({
 
                 <Col span={18}>
                   <Row gutter={16}>
+                    <ColumnField
+                      span={8}
+                      component={FormField}
+                      label={formatMessage(messages.countryCode)}
+                      name="country_code"
+                      errorTexts={{
+                        label: formatMessage(messages.countryCode),
+                        matchesLabel: formatMessage(messages.countryCodeFormat),
+                        maxValue: MAX,
+                      }}
+                      required
+                      prefix="+"
+                    />
                     <ColumnField
                       span={12}
                       component={FormField}
