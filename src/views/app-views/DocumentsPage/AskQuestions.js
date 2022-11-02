@@ -8,7 +8,7 @@ import Modal from 'antd/lib/modal/Modal';
 import HighLightText from './HighlightText';
 const { Text } = Typography;
 
-const AksQuestions = ({ initialValues }) => {
+const AskQuestions = ({ initialValues }) => {
   const [open, setOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [answer, setAnswer] = useState(null);
@@ -45,7 +45,7 @@ const AksQuestions = ({ initialValues }) => {
   return (
     <>
       <Button type="primary" onClick={showModal}>
-        Aks Question
+        Ask Question
       </Button>
       <Formik
         initialValues={initialValues}
@@ -140,4 +140,4 @@ const AksQuestions = ({ initialValues }) => {
   );
 };
 
-export default AksQuestions;
+export default AskQuestions;

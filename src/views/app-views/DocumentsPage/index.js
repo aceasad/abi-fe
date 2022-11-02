@@ -4,7 +4,7 @@ import documentsService from 'services/DocumentsService';
 import EditModal from './EditModal';
 import Uploader from './Uploader';
 import DeleteModal from './DeleteModal';
-import AksQuestions from './AksQuestions';
+import AskQuestions from './AskQuestions';
 const { Title } = Typography;
 
 const DocumentsPage = () => {
@@ -78,11 +78,11 @@ const DocumentsPage = () => {
       dataIndex: 'document_name',
       key: 'document_name',
     },
-    {
-      title: 'File Name',
-      dataIndex: 'name',
-      key: 'name',
-    },
+    //    {
+    //      title: 'File Name',
+    //      dataIndex: 'name',
+    //      key: 'name',
+    //    },
     {
       title: 'Appointment Type',
       dataIndex: 'appointment_type',
@@ -108,7 +108,7 @@ const DocumentsPage = () => {
       key: 'action',
       render: (_, record) => (
         <Space size="middle">
-          <AksQuestions
+          <AskQuestions
             initialValues={record}
             handleUpdateDataSource={handleUpdateDataSource}
           />
