@@ -2,18 +2,14 @@ import React from 'react';
 import { useIntl } from 'react-intl';
 import { DatePicker, Form } from 'antd';
 import moment from 'moment';
-import { DATE_FORMAT_DD_MMM_YYYY } from 'constants/DateConstant';
+import { DATE_FORMAT_DD_MM_YYYY } from 'constants/DateConstant';
 
 const FormDatePicker = ({
   label,
   field,
   form: { setFieldValue, setFieldTouched, touched, errors },
-  defaultDate,
-  maxDate,
   required,
   errorTexts,
-  disablePastDates,
-  showDefaultDate,
 }) => {
   const { formatMessage } = useIntl();
 
@@ -30,9 +26,10 @@ const FormDatePicker = ({
       ? formatMessage(errors[field.name], errorTexts)
       : defaultErrorMessage());
 
-  const disabledDates = (date) =>
-    (maxDate && date.isAfter(maxDate)) ||
-    (disablePastDates && date < moment().startOf('day'));
+  const disabledDate = (current) => {
+    // Can not select days before today and today
+    return current && current > moment().endOf('day');
+  };
 
   return (
     <Form.Item
@@ -46,20 +43,16 @@ const FormDatePicker = ({
           setFieldTouched(field.name, true);
           setFieldValue(field.name, str);
         }}
-        disabledDate={disabledDates}
-        defaultValue={
-          showDefaultDate
-            ? moment(field.value || defaultDate, DATE_FORMAT_DD_MMM_YYYY)
-            : ''
-        }
-        format={DATE_FORMAT_DD_MMM_YYYY}
+        disabledDate={disabledDate}
+        format={DATE_FORMAT_DD_MM_YYYY}
+        mask={DATE_FORMAT_DD_MM_YYYY}
       />
     </Form.Item>
   );
 };
 
 FormDatePicker.defaultProps = {
-  defaultDate: new Date(),
+  defaultDate: '',
   maxDate: false,
   disablePastDates: false,
   showDefaultDate: true,

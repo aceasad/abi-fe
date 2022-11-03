@@ -111,7 +111,10 @@ const SideNavContent = ({
             )}
           </Menu.ItemGroup>
         ) : (
-          <Menu.Item key={menu.key}>
+          <Menu.Item
+            key={menu.key}
+            style={{ height: '60px', lineHeight: '60px' }}
+          >
             {menu.icon ? <Icon type={menu?.icon} /> : null}
             <span>{setLocale(localization, menu?.title)}</span>
             {menu.path ? (

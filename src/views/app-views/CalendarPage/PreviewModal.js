@@ -11,7 +11,7 @@ import { Button, Space, Typography } from 'antd';
 import { NESTED_MODAL } from 'views/app-views/CalendarPage/AppointmentPreview';
 import Flex from 'components/shared-components/Flex';
 import RowWithMultipleColumns from 'components/util-components/Grid/RowWithMultipleColumns';
-import { RenderPredictionText } from 'utils/helpers';
+import { RenderPredictionText, removeLeadingZeroFromTime } from 'utils/helpers';
 
 function PreviewModal({
   handleClose,
@@ -92,7 +92,7 @@ function PreviewModal({
     },
     {
       label: formatMessage(messages.time),
-      value: appointment?.time,
+      value: removeLeadingZeroFromTime(appointment?.time),
     },
     {
       label: formatMessage(messages.appointmentPrice),

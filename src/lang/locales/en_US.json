@@ -330,6 +330,8 @@
   "patient_details.text.patient_created": "Patient Created",
   "patient_details.text.patient_updated": "Patient Updated",
   "patient_details.error.email_already_exists": "Email is already taken",
+  "patient_details.text.country_code": "Country Code",
+  "patient_details.error.country_code_format": "Country code must be in valid format",
 
   "patients_page.option.details": "Patient Details",
   "patients_page.option.delete": "Delete Patient",
@@ -338,6 +340,7 @@
   "patients_page.text.first_name": "First Name",
   "patients_page.text.last_name": "Last Name",
   "patients_page.text.phone_number": "Phone Number",
+  "patients_page.text.country_code": "Country Code",
   "patients_page.text.last_appointment": "Last Appointment",
   "patients_page.text.delete_patient": "Delete Patient",
   "patients_page.text.delete_description": "Are you sure you want to delete {label}?",
@@ -345,6 +348,7 @@
   "patients_page.text.edit_patient": "Edit Patient",
   "patients_page.text.success.new_condition_created": "Condition Created",
   "patients_page.text.error.condition_already_exists": "Condition with this name already exists",
+  "patients_page.text.error.country_code_format": "Country code must be in valid format",
 
   "patient_overview.title": "Overview",
   "patient_overview.back_to_patients": "Back to patients",

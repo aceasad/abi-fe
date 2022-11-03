@@ -56,7 +56,10 @@ export const AppLayout = ({ navCollapsed, navType, location }) => {
           className="app-layout"
           style={{ paddingLeft: getLayoutGutter() }}
         >
-          <div className={`app-content ${isNavTop ? 'layout-top-nav' : ''}`}>
+          <div
+            className={`app-content ${isNavTop ? 'layout-top-nav' : ''}`}
+            style={{ background: '#faf9f7' }}
+          >
             <PageHeader
               display={currentRouteInfo?.breadcrumb}
               title={currentRouteInfo?.title}
