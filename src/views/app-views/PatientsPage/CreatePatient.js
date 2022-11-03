@@ -8,7 +8,6 @@ import { filterEmptyObjectFeilds } from 'utils/helpers';
 import messages from './messages';
 import PatientForm from './PatientForm';
 import moment from 'moment';
-import { DATE_FORMAT_DD_MMM_YYYY } from 'constants/DateConstant';
 import { makeSelectPatientLoading } from 'redux/selectors/Patient';
 
 const CreatePatient = ({ showList }) => {
@@ -47,7 +46,7 @@ const CreatePatient = ({ showList }) => {
       initialState={{
         first_name: '',
         last_name: '',
-        date_of_birth: moment(new Date()).format(DATE_FORMAT_DD_MMM_YYYY),
+        date_of_birth: '',
         gender: '',
         height: '',
         weight: '',
