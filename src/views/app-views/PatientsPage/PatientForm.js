@@ -224,6 +224,7 @@ const PatientForm = ({
                       type={'number'}
                       onKeyDown={filterNumberInput}
                       min={0}
+                      suffix="CMs"
                     />
                     <ColumnField
                       span={8}
@@ -233,6 +234,7 @@ const PatientForm = ({
                       type={'number'}
                       onKeyDown={filterNumberInput}
                       min={0}
+                      suffix="KGs"
                     />
                   </Row>
                   <Row gutter={16}>
