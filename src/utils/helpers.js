@@ -267,3 +267,10 @@ export const getSafe = (fn, defaultValue) => {
     return defaultValue;
   }
 };
+
+export const removeLeadingZeroFromTime = (time) => {
+  if (time && time[0] === '0') {
+    return time.slice(1);
+  }
+  return time;
+};
