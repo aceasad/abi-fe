@@ -254,73 +254,58 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
   ];
 
   return (
-    <Collapse
-      expandIconPosition="right"
-      ghost
-      className="mb-4"
-      onChange={() => setIsCollapseOpen(!isCollapseOpen)}
-      defaultActiveKey={startOpen ? ['1'] : null}
-    >
-      <Panel
-        key="1"
-        className="overview-collapse"
-        header={collapseHeader}
-        showArrow={false}
+    <>
+      <MessagesRequiringImmediateAttentionTable
+        field={MESSAGES_REQUIRING_IMMEDIATE_ATTENTION}
+        id={''}
+        columnMap={columnMap}
       >
-        <Card className="mt-4 shadow-basic">
-          <MessagesRequiringImmediateAttentionTable
-            field={MESSAGES_REQUIRING_IMMEDIATE_ATTENTION}
-            id={''}
-            columnMap={columnMap}
-          >
-            <MessagesRequiringImmediateAttentionTable.Table
-              columns={tableColumns}
-              // onRow={(record) => {
-              //   return {
-              //     onClick: () => {
-              //       setActiveAppointment({
-              //         id: record.id,
-              //         type: SCHEDULED,
-              //         patientId: record.patient.id,
-              //       });
-              //     },
-              //   };
-              // }}
-            />
-          </MessagesRequiringImmediateAttentionTable>
-          {activeAppointment && (
-            <AppointmentPreview
-              handleClose={() => setActiveAppointment(null)}
-              additionalSubmitData={{
-                temporalType: activeAppointment.type,
-                actionFrom: FROM_STAFF_APPOINTMENTS,
-              }}
-              patientId={activeAppointment.patientId}
-              staffId={1}
-              appointment_type={activeAppointment.type}
-            />
-          )}
-          {activePreAppointmentQuestionnaire && (
-            <PreAppointmentQuestionnairePreviewModal
-              handleClose={() => setActivePreAppointmentQuestionnaire(null)}
-            />
-          )}
-          {showChildModal.modal ===
-            NESTED_MODAL.UPDATE_MESSAGE_REQUIRING_IMMEDIATE_ATTENTION_STATUS && (
-            <UpdateMessageRequiringImmediateAttentionStatus
-              handleClose={showPreview}
-              id={showChildModal.data.id}
-              patientId={showChildModal.data?.patient?.id}
-              updateMessageRequiringImmediateAttentionStatusFrom={
-                FROM_OVERVIEW_APPOINTMENTS
-              }
-              staffId={''}
-              messageRequiringImmediateAttention={showChildModal.data}
-            />
-          )}
-        </Card>
-      </Panel>
-    </Collapse>
+        <MessagesRequiringImmediateAttentionTable.Table
+          columns={tableColumns}
+          // onRow={(record) => {
+          //   return {
+          //     onClick: () => {
+          //       setActiveAppointment({
+          //         id: record.id,
+          //         type: SCHEDULED,
+          //         patientId: record.patient.id,
+          //       });
+          //     },
+          //   };
+          // }}
+        />
+      </MessagesRequiringImmediateAttentionTable>
+      {activeAppointment && (
+        <AppointmentPreview
+          handleClose={() => setActiveAppointment(null)}
+          additionalSubmitData={{
+            temporalType: activeAppointment.type,
+            actionFrom: FROM_STAFF_APPOINTMENTS,
+          }}
+          patientId={activeAppointment.patientId}
+          staffId={1}
+          appointment_type={activeAppointment.type}
+        />
+      )}
+      {activePreAppointmentQuestionnaire && (
+        <PreAppointmentQuestionnairePreviewModal
+          handleClose={() => setActivePreAppointmentQuestionnaire(null)}
+        />
+      )}
+      {showChildModal.modal ===
+        NESTED_MODAL.UPDATE_MESSAGE_REQUIRING_IMMEDIATE_ATTENTION_STATUS && (
+        <UpdateMessageRequiringImmediateAttentionStatus
+          handleClose={showPreview}
+          id={showChildModal.data.id}
+          patientId={showChildModal.data?.patient?.id}
+          updateMessageRequiringImmediateAttentionStatusFrom={
+            FROM_OVERVIEW_APPOINTMENTS
+          }
+          staffId={''}
+          messageRequiringImmediateAttention={showChildModal.data}
+        />
+      )}
+    </>
   );
 };
 
