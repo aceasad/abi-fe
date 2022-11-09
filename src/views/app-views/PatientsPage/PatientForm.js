@@ -26,6 +26,7 @@ import { BeforeRouteContext } from 'utils/context';
 import { getPatientDetailsNewPatientForm } from 'redux/actions/Patient';
 import { DATE_FORMAT_DD_MMM_YYYY } from 'constants/DateConstant';
 import moment from 'moment';
+import { COUNTRY_CODES } from 'constants/CountryCodesConstants';
 
 const { Title } = Typography;
 
@@ -60,7 +61,7 @@ const PatientForm = ({
       date_of_birth: moment(
         moment(values.date_of_birth).format('DD-MM-YYYY')
       ).format(DATE_FORMAT_DD_MMM_YYYY),
-      phone_number: '+' + values.country_code + values.phone_number,
+      phone_number: values.country_code + values.phone_number,
     };
 
     handleSubmit(parsedValues, setErrors, enableRedirect);
@@ -267,16 +268,18 @@ const PatientForm = ({
                   <Row gutter={16}>
                     <ColumnField
                       span={8}
-                      component={FormField}
-                      label={formatMessage(messages.countryCode)}
+                      component={FormSelect}
                       name="country_code"
+                      options={COUNTRY_CODES}
+                      optionField="name"
+                      defaultOption={values.country_code}
+                      label={formatMessage(messages.countryCode)}
                       errorTexts={{
                         label: formatMessage(messages.countryCode),
                         matchesLabel: formatMessage(messages.countryCodeFormat),
                         maxValue: MAX,
                       }}
                       required
-                      prefix="+"
                     />
                     <ColumnField
                       span={12}
