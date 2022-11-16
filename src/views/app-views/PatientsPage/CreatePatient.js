@@ -7,7 +7,6 @@ import { createPatient } from 'redux/actions/Patient';
 import { filterEmptyObjectFeilds } from 'utils/helpers';
 import messages from './messages';
 import PatientForm from './PatientForm';
-import moment from 'moment';
 import { makeSelectPatientLoading } from 'redux/selectors/Patient';
 
 const CreatePatient = ({ showList }) => {
