@@ -204,65 +204,50 @@ const PassedAppointmentsRequiringImmediateStatusUpdate = ({
   ];
 
   return (
-    <Collapse
-      expandIconPosition="right"
-      ghost
-      className="mb-4"
-      onChange={() => setIsCollapseOpen(!isCollapseOpen)}
-      defaultActiveKey={startOpen ? ['1'] : null}
-    >
-      <Panel
-        key="1"
-        className="overview-collapse"
-        header={collapseHeader}
-        showArrow={false}
+    <>
+      <Appointments
+        field={HISTORY_REQUIRING_IMMEDIATE_STATUS_UPDATE}
+        id={''}
+        columnMap={columnMap}
       >
-        <Card className="mt-4 shadow-basic">
-          <Appointments
-            field={HISTORY_REQUIRING_IMMEDIATE_STATUS_UPDATE}
-            id={''}
-            columnMap={columnMap}
-          >
-            <Appointments.Table
-              columns={tableColumns}
-              // onRow={(record) => {
-              //   return {
-              //     onClick: () => {
-              //       setActiveAppointment({
-              //         id: record.id,
-              //         type: HISTORY_REQUIRING_IMMEDIATE_STATUS_UPDATE,
-              //         patientId: record.patient.id,
-              //       });
-              //     },
-              //   };
-              // }}
-            />
-          </Appointments>
-          {activeAppointment && (
-            <AppointmentPreview
-              handleClose={() => setActiveAppointment(null)}
-              additionalSubmitData={{
-                temporalType: HISTORY_REQUIRING_IMMEDIATE_STATUS_UPDATE,
-                actionFrom: FROM_OVERVIEW_APPOINTMENTS,
-              }}
-              patientId={activeAppointment.patientId}
-              staffId={1}
-              appointment_type={HISTORY_REQUIRING_IMMEDIATE_STATUS_UPDATE}
-            />
-          )}
-          {showChildModal.modal === NESTED_MODAL.UPDATE_APPOINTMENT_STATUS && (
-            <EndAppointment
-              handleClose={showPreview}
-              id={showChildModal.data.appointment.id}
-              patientId={showChildModal.data.appointment.patient.id}
-              appointment_type={HISTORY_REQUIRING_IMMEDIATE_STATUS_UPDATE}
-              endFrom={FROM_OVERVIEW_APPOINTMENTS}
-              staffId={''}
-            />
-          )}
-        </Card>
-      </Panel>
-    </Collapse>
+        <Appointments.Table
+          columns={tableColumns}
+          // onRow={(record) => {
+          //   return {
+          //     onClick: () => {
+          //       setActiveAppointment({
+          //         id: record.id,
+          //         type: HISTORY_REQUIRING_IMMEDIATE_STATUS_UPDATE,
+          //         patientId: record.patient.id,
+          //       });
+          //     },
+          //   };
+          // }}
+        />
+      </Appointments>
+      {activeAppointment && (
+        <AppointmentPreview
+          handleClose={() => setActiveAppointment(null)}
+          additionalSubmitData={{
+            temporalType: HISTORY_REQUIRING_IMMEDIATE_STATUS_UPDATE,
+            actionFrom: FROM_OVERVIEW_APPOINTMENTS,
+          }}
+          patientId={activeAppointment.patientId}
+          staffId={1}
+          appointment_type={HISTORY_REQUIRING_IMMEDIATE_STATUS_UPDATE}
+        />
+      )}
+      {showChildModal.modal === NESTED_MODAL.UPDATE_APPOINTMENT_STATUS && (
+        <EndAppointment
+          handleClose={showPreview}
+          id={showChildModal.data.appointment.id}
+          patientId={showChildModal.data.appointment.patient.id}
+          appointment_type={HISTORY_REQUIRING_IMMEDIATE_STATUS_UPDATE}
+          endFrom={FROM_OVERVIEW_APPOINTMENTS}
+          staffId={''}
+        />
+      )}
+    </>
   );
 };
 

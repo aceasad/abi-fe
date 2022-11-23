@@ -24,6 +24,9 @@ import {
 } from 'redux/actions/Anamnesis';
 import { BeforeRouteContext } from 'utils/context';
 import { getPatientDetailsNewPatientForm } from 'redux/actions/Patient';
+import { DATE_FORMAT_DD_MMM_YYYY } from 'constants/DateConstant';
+import moment from 'moment';
+import { COUNTRY_CODES } from 'constants/CountryCodesConstants';
 
 const { Title } = Typography;
 
@@ -52,8 +55,17 @@ const PatientForm = ({
     message.success(formatMessage(messages.operationTypeDeleted));
   };
 
-  const handleSubmitWrapper = (values, { setErrors }) =>
-    handleSubmit(values, setErrors, enableRedirect);
+  const handleSubmitWrapper = (values, { setErrors }) => {
+    const parsedValues = {
+      ...values,
+      date_of_birth: moment(
+        moment(values.date_of_birth).format('DD-MM-YYYY')
+      ).format(DATE_FORMAT_DD_MMM_YYYY),
+      phone_number: values.country_code + values.phone_number,
+    };
+
+    handleSubmit(parsedValues, setErrors, enableRedirect);
+  };
 
   const deleteOperationType = ({ item, action }) => {
     Modal.confirm({
@@ -218,6 +230,7 @@ const PatientForm = ({
                       type={'number'}
                       onKeyDown={filterNumberInput}
                       min={0}
+                      suffix="CMs"
                     />
                     <ColumnField
                       span={8}
@@ -227,6 +240,7 @@ const PatientForm = ({
                       type={'number'}
                       onKeyDown={filterNumberInput}
                       min={0}
+                      suffix="KGs"
                     />
                   </Row>
                   <Row gutter={16}>
@@ -252,6 +266,21 @@ const PatientForm = ({
 
                 <Col span={18}>
                   <Row gutter={16}>
+                    <ColumnField
+                      span={8}
+                      component={FormSelect}
+                      name="country_code"
+                      options={COUNTRY_CODES}
+                      optionField="name"
+                      defaultOption={values.country_code}
+                      label={formatMessage(messages.countryCode)}
+                      errorTexts={{
+                        label: formatMessage(messages.countryCode),
+                        matchesLabel: formatMessage(messages.countryCodeFormat),
+                        maxValue: MAX,
+                      }}
+                      required
+                    />
                     <ColumnField
                       span={12}
                       component={FormField}
@@ -289,16 +318,6 @@ const PatientForm = ({
                     <ColumnField
                       span={12}
                       component={FormField}
-                      label={formatMessage(messages.streetNumber)}
-                      name="street_number"
-                      errorTexts={{
-                        label: formatMessage(messages.streetNumber),
-                        maxValue: 8,
-                      }}
-                    />
-                    <ColumnField
-                      span={12}
-                      component={FormField}
                       label={formatMessage(messages.streetName)}
                       name="street_name"
                       errorTexts={{
@@ -306,6 +325,18 @@ const PatientForm = ({
                         maxValue: 128,
                       }}
                       required
+                      autoComplete="new-address"
+                    />
+                    <ColumnField
+                      span={12}
+                      component={FormField}
+                      label={formatMessage(messages.streetNumber)}
+                      name="street_number"
+                      errorTexts={{
+                        label: formatMessage(messages.streetNumber),
+                        maxValue: 8,
+                      }}
+                      autoComplete="new-address"
                     />
                   </Row>
                   <Row gutter={16}>

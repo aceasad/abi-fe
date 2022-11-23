@@ -153,7 +153,7 @@ export default defineMessages({
   },
   tablePassedAppointmentsRequiringImmediateStatusUpdateTitle: {
     id: `${scope}.table.past_appointments_requiring_immediate_status_update.title`,
-    defaultMessage: 'Passed Appointments Requiring Status Update',
+    defaultMessage: 'Past Appointments Requiring Status Update',
   },
   tableAppointmentsRemindersTitle: {
     id: `${scope}.table.appointments_reminders.title`,

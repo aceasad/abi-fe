@@ -238,68 +238,49 @@ const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
   ];
 
   return (
-    <Collapse
-      expandIconPosition="right"
-      ghost
-      className="mb-4"
-      onChange={() => setIsCollapseOpen(!isCollapseOpen)}
-      defaultActiveKey={startOpen ? ['1'] : null}
-    >
-      <Panel
-        key="1"
-        className="overview-collapse"
-        header={collapseHeader}
-        showArrow={false}
-      >
-        <Card className="mt-4 shadow-basic">
-          <Appointments
-            field={LIKELY_TO_BE_MISSED}
-            id={''}
-            columnMap={columnMap}
-          >
-            <Appointments.Table
-              columns={tableColumns}
-              // onRow={(record) => {
-              //   return {
-              //     onClick: () => {
-              //       setActiveAppointment({
-              //         id: record.id,
-              //         type: LIKELY_TO_BE_MISSED,
-              //         patientId: record.patient.id,
-              //       });
-              //     },
-              //   };
-              // }}
-            />
-          </Appointments>
-          {activeAppointment && (
-            <AppointmentPreview
-              handleClose={() => setActiveAppointment(null)}
-              additionalSubmitData={{
-                temporalType: LIKELY_TO_BE_MISSED,
-                actionFrom: FROM_OVERVIEW_APPOINTMENTS,
-              }}
-              patientId={activeAppointment.patientId}
-              staffId={1}
-              appointment_type={LIKELY_TO_BE_MISSED}
-              appointment={activeAppointment.appointment}
-            />
-          )}
-          {showChildModal.modal ===
-            NESTED_MODAL.UPDATE_APPOINTMENT_COMMUNICATION_STATUS && (
-            <UpdateAppointmentCommunicationStatus
-              handleClose={showPreview}
-              id={showChildModal.data.appointment.id}
-              patientId={showChildModal.data.appointment.patient.id}
-              appointment_type={LIKELY_TO_BE_MISSED}
-              updateCommunicationStatusFrom={FROM_OVERVIEW_APPOINTMENTS}
-              staffId={''}
-              appointment={showChildModal.data.appointment}
-            />
-          )}
-        </Card>
-      </Panel>
-    </Collapse>
+    <>
+      <Appointments field={LIKELY_TO_BE_MISSED} id={''} columnMap={columnMap}>
+        <Appointments.Table
+          columns={tableColumns}
+          // onRow={(record) => {
+          //   return {
+          //     onClick: () => {
+          //       setActiveAppointment({
+          //         id: record.id,
+          //         type: LIKELY_TO_BE_MISSED,
+          //         patientId: record.patient.id,
+          //       });
+          //     },
+          //   };
+          // }}
+        />
+      </Appointments>
+      {activeAppointment && (
+        <AppointmentPreview
+          handleClose={() => setActiveAppointment(null)}
+          additionalSubmitData={{
+            temporalType: LIKELY_TO_BE_MISSED,
+            actionFrom: FROM_OVERVIEW_APPOINTMENTS,
+          }}
+          patientId={activeAppointment.patientId}
+          staffId={1}
+          appointment_type={LIKELY_TO_BE_MISSED}
+          appointment={activeAppointment.appointment}
+        />
+      )}
+      {showChildModal.modal ===
+        NESTED_MODAL.UPDATE_APPOINTMENT_COMMUNICATION_STATUS && (
+        <UpdateAppointmentCommunicationStatus
+          handleClose={showPreview}
+          id={showChildModal.data.appointment.id}
+          patientId={showChildModal.data.appointment.patient.id}
+          appointment_type={LIKELY_TO_BE_MISSED}
+          updateCommunicationStatusFrom={FROM_OVERVIEW_APPOINTMENTS}
+          staffId={''}
+          appointment={showChildModal.data.appointment}
+        />
+      )}
+    </>
   );
 };
 

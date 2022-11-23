@@ -107,6 +107,7 @@ export const patientSchema = Yup.object().shape({
   date_of_birth: Yup.string().required(),
   height: Yup.number(),
   weight: Yup.number(),
+  country_code: Yup.string().matches(phoneFormat).max(MAX).required(),
   phone_number: Yup.string().matches(phoneFormat).max(MAX).required(),
   email: usernameSchema,
   number_of_dependants: Yup.number(),

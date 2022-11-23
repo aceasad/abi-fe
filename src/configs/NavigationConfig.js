@@ -5,6 +5,7 @@ import {
   UserOutlined,
   WhatsAppOutlined,
   SettingOutlined,
+  PaperClipOutlined,
 } from '@ant-design/icons';
 import { APP_PAGES_PREFIX_PATH } from 'configs/AppConfig';
 
@@ -46,6 +47,14 @@ const pagesNavTree = [
     path: `${APP_PAGES_PREFIX_PATH}/conversation`,
     title: 'sidenav.pages.conversation',
     icon: WhatsAppOutlined,
+    breadcrumb: false,
+    submenu: [],
+  },
+  {
+    key: 'documents',
+    path: `${APP_PAGES_PREFIX_PATH}/documents`,
+    title: 'Documents',
+    icon: PaperClipOutlined,
     breadcrumb: false,
     submenu: [],
   },

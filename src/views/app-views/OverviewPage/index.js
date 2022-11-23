@@ -1,8 +1,16 @@
-import { Col, PageHeader, Row, Select, Typography } from 'antd';
+import {
+  Col,
+  PageHeader,
+  Row,
+  Select,
+  Typography,
+  Tabs,
+  Card,
+  Layout,
+} from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import messages from './messages';
-import OverviewList from './OverviewList';
 import GroupCollapse from './Groups/GroupCollapse';
 import Booking from './Groups/Booking';
 import Appointments from './Groups/Appointments';
@@ -70,40 +78,71 @@ const OverviewPage = () => {
             : null
         }
       />
-      <Row gutter={48}>
-        <Col span={24} className="mt-4">
-          {SHOW_MESSAGES_REQUIRING_IMMEDIATE_ATTENTION && (
-            <MessagesRequiringImmediateAttention
-              startOpen
-              title={formatMessage(
-                messages.tableMessagesRequiringImmediateAttentionTitle
-              )}
-            />
-          )}
-          {SHOW_APPOINTMENTS_LIKELY_TO_BE_MISSED && (
-            <AppointmentsLikelyToBeMissed
-              startOpen
-              title={formatMessage(
-                messages.tableAppointmentsLikelyToBeMissedTitle
-              )}
-            />
-          )}
-          {SHOW_PASSED_APPOINTMENTS_REQUIRING_IMMEDIATE_ATTENTION && (
-            <PassedAppointmentsRequiringImmediateStatusUpdate
-              startOpen
-              title={formatMessage(
-                messages.tablePassedAppointmentsRequiringImmediateStatusUpdateTitle
-              )}
-            />
-          )}
-          {SHOW_APPOINTMENTS_REMINDERS && (
-            <AppointmentsReminders
-              startOpen
-              title={formatMessage(messages.tableAppointmentsRemindersTitle)}
-            />
-          )}
-        </Col>
-      </Row>
+      <Layout>
+        <Card>
+          <Tabs defaultActiveKey="1">
+            {SHOW_MESSAGES_REQUIRING_IMMEDIATE_ATTENTION && (
+              <Tabs.TabPane
+                tab={formatMessage(
+                  messages.tableMessagesRequiringImmediateAttentionTitle
+                )}
+                key="1"
+              >
+                <MessagesRequiringImmediateAttention
+                  startOpen
+                  title={formatMessage(
+                    messages.tableMessagesRequiringImmediateAttentionTitle
+                  )}
+                />
+              </Tabs.TabPane>
+            )}
+
+            {SHOW_APPOINTMENTS_LIKELY_TO_BE_MISSED && (
+              <Tabs.TabPane
+                tab={formatMessage(
+                  messages.tableAppointmentsLikelyToBeMissedTitle
+                )}
+                key="2"
+              >
+                <AppointmentsLikelyToBeMissed
+                  startOpen
+                  title={formatMessage(
+                    messages.tableAppointmentsLikelyToBeMissedTitle
+                  )}
+                />
+              </Tabs.TabPane>
+            )}
+            {SHOW_PASSED_APPOINTMENTS_REQUIRING_IMMEDIATE_ATTENTION && (
+              <Tabs.TabPane
+                tab={formatMessage(
+                  messages.tablePassedAppointmentsRequiringImmediateStatusUpdateTitle
+                )}
+                key="3"
+              >
+                <PassedAppointmentsRequiringImmediateStatusUpdate
+                  startOpen
+                  title={formatMessage(
+                    messages.tablePassedAppointmentsRequiringImmediateStatusUpdateTitle
+                  )}
+                />
+              </Tabs.TabPane>
+            )}
+            {SHOW_APPOINTMENTS_REMINDERS && (
+              <Tabs.TabPane
+                tab={formatMessage(messages.tableAppointmentsRemindersTitle)}
+                key="4"
+              >
+                <AppointmentsReminders
+                  startOpen
+                  title={formatMessage(
+                    messages.tableAppointmentsRemindersTitle
+                  )}
+                />
+              </Tabs.TabPane>
+            )}
+          </Tabs>
+        </Card>
+      </Layout>
       {SHOW_KPIS && (
         <Row gutter={48}>
           <Col span={24} className="mt-4">

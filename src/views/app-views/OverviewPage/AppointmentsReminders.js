@@ -308,55 +308,40 @@ const AppointmentsReminders = ({ title, startOpen }) => {
   ];
 
   return (
-    <Collapse
-      expandIconPosition="right"
-      ghost
-      className="mb-4"
-      onChange={() => setIsCollapseOpen(!isCollapseOpen)}
-      defaultActiveKey={startOpen ? ['1'] : null}
-    >
-      <Panel
-        key="1"
-        className="overview-collapse"
-        header={collapseHeader}
-        showArrow={false}
+    <>
+      <AppointmentsRemindersTable
+        field={UPCOMING_REMINDERS}
+        id={''}
+        columnMap={columnMap}
       >
-        <Card className="mt-4 shadow-basic">
-          <AppointmentsRemindersTable
-            field={UPCOMING_REMINDERS}
-            id={''}
-            columnMap={columnMap}
-          >
-            <AppointmentsRemindersTable.Table
-              columns={tableColumns}
-              // onRow={(record) => {
-              //   return {
-              //     onClick: () => {
-              //       setActiveAppointment({
-              //         id: record.id,
-              //         type: SCHEDULED,
-              //         patientId: record.patient.id,
-              //       });
-              //     },
-              //   };
-              // }}
-            />
-          </AppointmentsRemindersTable>
-          {activeAppointment && (
-            <AppointmentPreview
-              handleClose={() => setActiveAppointment(null)}
-              additionalSubmitData={{
-                temporalType: activeAppointment.type,
-                actionFrom: FROM_STAFF_APPOINTMENTS,
-              }}
-              patientId={activeAppointment.patientId}
-              staffId={1}
-              appointment_type={activeAppointment.type}
-            />
-          )}
-        </Card>
-      </Panel>
-    </Collapse>
+        <AppointmentsRemindersTable.Table
+          columns={tableColumns}
+          // onRow={(record) => {
+          //   return {
+          //     onClick: () => {
+          //       setActiveAppointment({
+          //         id: record.id,
+          //         type: SCHEDULED,
+          //         patientId: record.patient.id,
+          //       });
+          //     },
+          //   };
+          // }}
+        />
+      </AppointmentsRemindersTable>
+      {activeAppointment && (
+        <AppointmentPreview
+          handleClose={() => setActiveAppointment(null)}
+          additionalSubmitData={{
+            temporalType: activeAppointment.type,
+            actionFrom: FROM_STAFF_APPOINTMENTS,
+          }}
+          patientId={activeAppointment.patientId}
+          staffId={1}
+          appointment_type={activeAppointment.type}
+        />
+      )}
+    </>
   );
 };
 
