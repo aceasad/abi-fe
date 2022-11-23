@@ -8,6 +8,7 @@ import {
   Tooltip,
   Menu,
   Dropdown,
+  Tag,
 } from 'antd';
 import { CaretDownOutlined } from '@ant-design/icons';
 import { useIntl } from 'react-intl';
@@ -31,7 +32,7 @@ import { DownOutlined } from '@ant-design/icons';
 import { setPatientShowMessages } from 'redux/actions/Patient';
 import { ROUTES } from 'routes';
 import { useHistory } from 'react-router-dom';
-import { getSafe } from 'utils/helpers';
+import { getSafe, convertDateTimeStringToUtcString } from 'utils/helpers';
 import UpdateMessageRequiringImmediateAttentionStatus from './UpdateMessageRequiringImmediateAttentionStatus';
 import PreAppointmentQuestionnairePreviewModal from './PreAppointmentQuestionnairePreviewModal';
 import patient from 'redux/reducers/Patient';
@@ -189,9 +190,17 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
 
   const tableColumns = [
     {
-      title: formatMessage(overviewPageMessages.columnTitleTimestamp),
+      title: "Date / Time",
       dataIndex: 'created_datetime',
       sorter: true,
+      render: (_, row) => {
+        console.log(row)
+        return (
+          <div>
+            { convertDateTimeStringToUtcString(row.created_datetime, "DD/MM/YYYY HH:mm:ss a", "DD/MM/YYYY, HH:mm" ) }
+          </div>
+        )
+      }
     },
     {
       title: formatMessage(overviewPageMessages.columnTitlePatient),
@@ -226,11 +235,11 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
           onClick={(e) =>
             showUpdateMessageRequiringImmediateAttentionStatusWrapper(e, row)
           }
-          className={`text-left${
-            row.status?.name === 'Pending' ? ' blink' : ''
+          className={`ant-tag text-left${
+            row.status?.name === 'Pending' ? ' ant-tag-red' : ''
           }`}
         >
-          {row.status?.name} <CaretDownOutlined />
+          {row.status?.name} {/*  <CaretDownOutlined /> */}
         </div>
       ),
     },
