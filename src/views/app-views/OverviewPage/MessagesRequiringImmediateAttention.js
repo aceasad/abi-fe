@@ -190,11 +190,10 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
 
   const tableColumns = [
     {
-      title: "Date / Time",
+      title: "Date/Time",
       dataIndex: 'created_datetime',
       sorter: true,
       render: (_, row) => {
-        console.log(row)
         return (
           <div>
             { convertDateTimeStringToUtcString(row.created_datetime, "DD/MM/YYYY HH:mm:ss a", "DD/MM/YYYY, HH:mm" ) }
