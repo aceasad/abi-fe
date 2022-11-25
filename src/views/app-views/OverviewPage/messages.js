@@ -381,7 +381,7 @@ export default defineMessages({
   },
   modalTitleUpdateMessageRequiringImmediateAttentionStatus: {
     id: `${scope}.modal.update_message_requiring_immediate_attention_status.title`,
-    defaultMessage: 'Update Status',
+    defaultMessage: 'Change status',
   },
   modalOkTextUpdateMessageRequiringImmediateAttentionStatus: {
     id: `${scope}.modal.update_message_requiring_immediate_attention_status.ok_text`,

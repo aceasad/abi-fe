@@ -232,7 +232,7 @@ const AppointmentsReminders = ({ title, startOpen }) => {
             sendReminderNow(row);
           }}
         >
-          <span style={{ color: '#CC0000' }}>Send Reminder Now</span>
+          <span style={{ color: '#CC0000' }}>Send reminder now</span>
         </Menu.Item>
       </Menu>
     );

@@ -30,7 +30,7 @@ const { Panel } = Collapse;
 // for sorting to be feasible: the name of the attribute should be the name in dataIndex (if object concat with underscore '_') and
 // the value should be the name of actual field in the database as field or table__field = django wise
 const columnMap = {
-  id: 'id',
+  // id: 'id',
   patient_full_name: 'patient__last_name',
   doctor_full_name: 'doctor__last_name',
   date: 'start_datetime',
@@ -129,11 +129,11 @@ const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
   };
 
   const tableColumns = [
-    {
-      title: 'ID',
-      dataIndex: 'id',
-      sorter: true,
-    },
+    // {
+    //   title: 'ID',
+    //   dataIndex: 'id',
+    //   sorter: true,
+    // },
     {
       title: formatMessage(patientPageMessages.columnTitlePatient),
       dataIndex: ['patient', 'full_name'],
