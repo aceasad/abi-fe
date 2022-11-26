@@ -405,7 +405,7 @@
   "user_settings.messages.success_updated": "User Updated",
   "user_settings.messages.success_deleted": "User Deleted",
 
-  "chat_page.button.mass_invites": "Mass Invites",
+  "chat_page.button.mass_invites": "Mass invites",
   "chat_page.button.send": "Send",
   "chat_page.button.cancel": "Cancel",
   "chat_page.chat.type_a_message_placeholder": "Type a message...",

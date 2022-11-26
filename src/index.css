@@ -1,4 +1,5 @@
 :root {
+  --color-brand-navy: #0F468C;
   --color-red: #fd4332;
   --color-red-5: #ff4d4f;
   --color-yellow-5: #ffec3d;
@@ -113,4 +114,8 @@
   color: var(--color-red);
   background-color: var(--bg-color-red-light);
   font-weight: 400;
+}
+
+.chat .chat-content .chat-content-body .msg.msg-sent .bubble .bubble-wrapper {
+  background-color: var(--color-brand-navy);
 }

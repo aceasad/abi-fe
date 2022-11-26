@@ -10,7 +10,7 @@ export default defineMessages({
   },
   conversationsMassInvites: {
     id: `${scope}.button.mass_invites`,
-    defaultMessage: 'Mass Invites',
+    defaultMessage: 'Mass invites',
   },
   searchPlaceholder: {
     id: `${globalScope}.text.search`,
@@ -94,7 +94,7 @@ export default defineMessages({
   },
   massInvitesLabel: {
     id: `${scope}.label.mass_invites`,
-    defaultMessage: 'Mass Invites',
+    defaultMessage: 'Mass invites',
   },
   inviteSent: {
     id: `${scope}.text.invite_sent`,

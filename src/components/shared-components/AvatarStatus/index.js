@@ -51,14 +51,12 @@ export const AvatarStatus = (props) => {
           {onNameClick ? (
             <div
               onClick={() => onNameClick({ name, subTitle, src, id })}
-              className={`avatar-status-name clickable${blinkClass}`}
+              className="avatar-status-name clickable"
             >
               {nameWrapper}
             </div>
           ) : (
-            <div className={`avatar-status-name${blinkClass}`}>
-              {nameWrapper}
-            </div>
+            <div className="avatar-status-name">{nameWrapper}</div>
           )}
           <span>{suffix}</span>
         </div>
