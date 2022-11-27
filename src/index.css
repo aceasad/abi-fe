@@ -30,7 +30,7 @@
 }
 .blink {
   animation: blink 3s infinite;
-  color: #cc0000 !important;
+  color: var(--color-red) !important;
 }
 @keyframes blink {
   0% {
@@ -42,8 +42,7 @@
   }
 }
 .blink-human-required {
-  animation: blink 3s infinite;
-  color: #cc0000 !important;
+  color: var(--color-red) !important;
 }
 @keyframes human-required {
   0% {
@@ -55,8 +54,7 @@
   }
 }
 .blink-in-emergency-situation {
-  animation: blink 3s infinite;
-  color: #cc0000 !important;
+  color: var(--color-red) !important;
 }
 @keyframes blink-in-emergency-situation {
   0% {

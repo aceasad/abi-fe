@@ -31,7 +31,7 @@ import {
 const { Panel } = Collapse;
 
 const columnMap = {
-  appointment_id: 'appointment__id',
+  // appointment_id: 'appointment__id',
   patient_full_name: 'appointment__patient__last_name',
   doctor_full_name: 'appointment__doctor__last_name',
   appointment_date: 'appointment__start_datetime',
@@ -239,11 +239,11 @@ const AppointmentsReminders = ({ title, startOpen }) => {
   };
 
   const tableColumns = [
-    {
-      title: 'ID',
-      dataIndex: ['appointment', 'id'],
-      sorter: true,
-    },
+    // {
+    //   title: 'ID',
+    //   dataIndex: ['appointment', 'id'],
+    //   sorter: true,
+    // },
     {
       title: formatMessage(overviewPageMessages.tableColumnPatient),
       dataIndex: ['patient', 'full_name'],

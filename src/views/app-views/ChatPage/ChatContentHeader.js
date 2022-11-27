@@ -99,18 +99,18 @@ const ChatContentHeader = ({
     chatInfo?.patient?.is_human_required ||
     chatInfo?.patient?.is_in_emergency_situation;
 
-  // let blinkClass = '';
+  let blinkClass = '';
   let nameWithSuffix = chatInfo?.patient?.full_name;
   let nameWrapper = <span>{nameWithSuffix}</span>;
   if (chatInfo?.patient?.is_human_required) {
     // nameWithSuffix = `${chatInfo.patient.full_name} - Requested to speak to human`;
-    // blinkClass = ' blink-human-required';
+    blinkClass = ' blink-human-required';
     nameWrapper = <span>{nameWithSuffix}</span>;
   }
   // override human is required as more important
   if (chatInfo?.patient?.is_in_emergency_situation) {
     // nameWithSuffix = `${chatInfo.patient.full_name} - In emergency situation`;
-    // blinkClass = ' blink-in-emergency-situation';
+    blinkClass = ' blink-in-emergency-situation';
     nameWrapper = <span>{nameWithSuffix}&nbsp;&#9888;</span>;
   }
 
