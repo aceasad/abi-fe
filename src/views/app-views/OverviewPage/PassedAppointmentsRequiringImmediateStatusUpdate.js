@@ -39,11 +39,11 @@ import { makeSelectAppointmentStatuses } from 'redux/selectors/Appointment';
 import RowWithMultipleColumns from 'components/util-components/Grid/RowWithMultipleColumns';
 import { getAppointments } from 'redux/actions/Staff';
 import EndAppointment from '../CalendarPage/EndAppointment';
-
+import moment from 'moment';
 const { Panel } = Collapse;
 
 const columnMap = {
-  id: 'id',
+  // id: 'id',
   patient_full_name: 'patient__last_name',
   doctor_full_name: 'doctor__last_name',
   date: 'start_datetime',
@@ -154,11 +154,11 @@ const PassedAppointmentsRequiringImmediateStatusUpdate = ({
   };
 
   const tableColumns = [
-    {
-      title: 'ID',
-      dataIndex: 'id',
-      sorter: true,
-    },
+    // {
+    //   title: 'ID',
+    //   dataIndex: 'id',
+    //   sorter: true,
+    // },
     {
       title: formatMessage(patientPageMessages.columnTitlePatient),
       dataIndex: ['patient', 'full_name'],
@@ -183,6 +183,11 @@ const PassedAppointmentsRequiringImmediateStatusUpdate = ({
       title: formatMessage(patientPageMessages.columnTitleTime),
       dataIndex: 'time',
       sorter: true,
+      render: (_, row) => (
+        <div>
+          {moment(row.time, ["h:mm A"]).format("HH:mm")}
+        </div>
+      )
     },
     {
       key: 'action',

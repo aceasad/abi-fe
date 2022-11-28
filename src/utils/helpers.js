@@ -128,7 +128,7 @@ export const generateKey = () => Math.random().toString(36).substring(7);
 export const formatMessageTimestamp = (timestamp) => {
   const momentDate = moment(timestamp).local();
   const isSame = moment().local().isSame(momentDate, 'd');
-  return momentDate.format(isSame ? 'h:mm a' : 'DD/MM/YYYY');
+  return momentDate.format(isSame ? 'h:mm' : 'DD/MM/YYYY');
 };
 
 export const formatMessagesTimestampMinutes = (timestamp) =>

@@ -454,7 +454,7 @@ const PatientForm = ({
             </Form>
           </Card>
 
-          <PatientFormExistingConditions
+          {/* <PatientFormExistingConditions
             setFieldValue={setFieldValue}
             id={id}
           />
@@ -465,7 +465,7 @@ const PatientForm = ({
               setFieldValue('operations', callback(values.operations))
             }
             deleteOperationType={deleteOperationType}
-          />
+          /> */}
 
           <Button
             onClick={() => {
