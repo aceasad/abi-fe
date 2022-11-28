@@ -123,9 +123,7 @@ const ChatContentHeader = ({
               e.stopPropagation();
               goToPatientShowMessages({ id: chatInfo.patient.id });
             }}
-            className={`mb-0 cursor-pointer${
-              is_human_required_or_in_emergency_situation ? blinkClass : ''
-            }`}
+            className="mb-0 cursor-pointer"
           >
             {nameWrapper}
           </h4>

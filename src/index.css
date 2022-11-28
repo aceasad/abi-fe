@@ -1,3 +1,12 @@
+:root {
+  --color-brand-navy: #0F468C;
+  --color-red: #fd4332;
+  --color-red-5: #ff4d4f;
+  --color-yellow-5: #ffec3d;
+  --bg-color-red-light: rgba(253, 67, 50, 0.1);
+  --bg-color-orange-5: #ffa940;
+}
+
 .loading.cover-content {
   position: absolute;
   left: 50%;
@@ -21,7 +30,7 @@
 }
 .blink {
   animation: blink 3s infinite;
-  color: #cc0000 !important;
+  color: var(--color-red) !important;
 }
 @keyframes blink {
   0% {
@@ -33,8 +42,7 @@
   }
 }
 .blink-human-required {
-  animation: blink 3s infinite;
-  color: #cc0000 !important;
+  color: var(--color-red) !important;
 }
 @keyframes human-required {
   0% {
@@ -46,8 +54,7 @@
   }
 }
 .blink-in-emergency-situation {
-  animation: blink 3s infinite;
-  color: #cc0000 !important;
+  color: var(--color-red) !important;
 }
 @keyframes blink-in-emergency-situation {
   0% {
@@ -71,23 +78,42 @@
   cursor: pointer;
 }
 .mria-priority-low {
-  background-color: yellow;
+  background-color: var(--color-yellow-5);
   color: black;
 }
 .mria-priority-medium {
-  background-color: orange;
+  background-color: var(--bg-color-orange-5);
   color: black;
 }
 .mria-priority-high {
-  background-color: red;
+  background-color: var(--color-red-5);
   color: white;
 }
 .mria-priority-low,
 .mria-priority-medium,
 .mria-priority-high {
-  padding: 5px;
+  display: inline-block;
+  min-width: 85px;
+  padding: 0 10px;
+  line-height: 28px;
   border-radius: 10px;
   text-align: center;
   border-color: grey;
   border-width: 2px;
+}
+
+.ant-tag {
+  border-radius: 10px;
+  font-size: 14px;
+  line-height: 28px;
+}
+
+.ant-tag-red {
+  color: var(--color-red);
+  background-color: var(--bg-color-red-light);
+  font-weight: 400;
+}
+
+.chat .chat-content .chat-content-body .msg.msg-sent .bubble .bubble-wrapper {
+  background-color: var(--color-brand-navy);
 }

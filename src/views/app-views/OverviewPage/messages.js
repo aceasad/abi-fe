@@ -229,11 +229,11 @@ export default defineMessages({
   },
   tableDropdownPreAppointmentQuestionnaireInfo: {
     id: `${scope}.table.dropdown.pre_appointment_questionnaire_info`,
-    defaultMessage: 'Pre Appointment Questionnaire Info',
+    defaultMessage: 'Pre Appointment Question Info',
   },
   tableDropdownUpdateMessageRequiringImmediateAttentionStatus: {
     id: `${scope}.table.dropdown.update_message_requiring_immediate_attention_status`,
-    defaultMessage: 'Update Status',
+    defaultMessage: 'Change Status',
   },
   tableDropdownCancelAppointmentReminder: {
     id: `${scope}.table.dropdown.cancel_appointment_reminder`,
@@ -381,7 +381,7 @@ export default defineMessages({
   },
   modalTitleUpdateMessageRequiringImmediateAttentionStatus: {
     id: `${scope}.modal.update_message_requiring_immediate_attention_status.title`,
-    defaultMessage: 'Update Status',
+    defaultMessage: 'Change status',
   },
   modalOkTextUpdateMessageRequiringImmediateAttentionStatus: {
     id: `${scope}.modal.update_message_requiring_immediate_attention_status.ok_text`,
