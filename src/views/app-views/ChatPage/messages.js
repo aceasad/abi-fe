@@ -18,15 +18,15 @@ export default defineMessages({
   },
   userInfo: {
     id: `${scope}.menu.user_info_label`,
-    defaultMessage: 'Patient Info',
+    defaultMessage: 'Patient info',
   },
   muteChat: {
     id: `${scope}.menu.mute_chat`,
-    defaultMessage: 'Mute Chat',
+    defaultMessage: 'Mute chat',
   },
   deleteChat: {
     id: `${scope}.menu.delete_chat`,
-    defaultMessage: 'Delete Chat',
+    defaultMessage: 'Delete chat',
   },
   typeAMessagePlaceholder: {
     id: `${scope}.chat.type_a_message_placeholder`,
@@ -74,7 +74,7 @@ export default defineMessages({
   },
   appointmentTypeLabel: {
     id: `${scope}.label.appointment_type`,
-    defaultMessage: 'Appointment Type',
+    defaultMessage: 'Appointment type',
   },
   templateLabel: {
     id: `${scope}.label.template`,
@@ -98,7 +98,7 @@ export default defineMessages({
   },
   inviteSent: {
     id: `${scope}.text.invite_sent`,
-    defaultMessage: 'Mass Invite sent!',
+    defaultMessage: 'Mass invite sent!',
   },
   socketErrorMessage: {
     id: `${scope}.chat.socket_error_message`,
@@ -114,7 +114,7 @@ export default defineMessages({
   },
   inEmergencySituationFilter: {
     id: `${scope}.filters.in_emergency_situation`,
-    defaultMessage: 'In emergency Situation',
+    defaultMessage: 'In emergency situation',
   },
   likelyToMissNextAppointmentFilter: {
     id: `${scope}.filters.likely_to_miss_next_appointment`,

@@ -5,7 +5,7 @@ export const scope = 'clinic_page';
 export default defineMessages({
   clinic_name: {
     id: `${scope}.input_label.clinic_name`,
-    defaultMessage: 'Clinic Name',
+    defaultMessage: 'Clinic name',
   },
   phone_number: {
     id: `${scope}.input_label.phone_number`,
