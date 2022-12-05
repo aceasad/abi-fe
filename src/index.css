@@ -101,19 +101,3 @@
   border-color: grey;
   border-width: 2px;
 }
-
-.ant-tag {
-  border-radius: 10px;
-  font-size: 14px;
-  line-height: 28px;
-}
-
-.ant-tag-red {
-  color: var(--color-red);
-  background-color: var(--bg-color-red-light);
-  font-weight: 400;
-}
-
-.chat .chat-content .chat-content-body .msg.msg-sent .bubble .bubble-wrapper {
-  background-color: var(--color-brand-navy);
-}

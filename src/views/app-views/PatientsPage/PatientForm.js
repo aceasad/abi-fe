@@ -144,6 +144,7 @@ const PatientForm = ({
       enableReinitialize
       initialValues={{
         ...initialState,
+        country_code: '+44',
         operations: {
           addedOperations: [],
           deletedOperations: [],
