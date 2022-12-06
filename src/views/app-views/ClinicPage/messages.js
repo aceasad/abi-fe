@@ -57,7 +57,7 @@ export default defineMessages({
   },
   parking_size: {
     id: `${scope}.input_label.parkign_size`,
-    defaultMessage: 'Parking Space',
+    defaultMessage: 'Parking space',
   },
   error_input_label_name: {
     id: `${scope}.error.name`,
