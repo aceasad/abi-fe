@@ -205,7 +205,6 @@ const AppointmentFormModal = ({
                     component={FormDatePicker}
                     label={formatMessage(messages.dateLabel)}
                     name="date"
-                    disablePastDates
                     showDefaultDate={isEditForm}
                     required
                   />

@@ -138,7 +138,7 @@ const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
     {
       title: formatMessage(patientPageMessages.columnTitlePatient),
       dataIndex: ['patient', 'full_name'],
-      sorter: true
+      sorter: true,
     },
     {
       title: formatMessage(patientPageMessages.columnTitleAppointment),
@@ -159,11 +159,7 @@ const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
       title: formatMessage(patientPageMessages.columnTitleTime),
       dataIndex: 'time',
       sorter: true,
-      render: (_, row) => (
-        <div className="text-uppercase">
-          {row.time}
-        </div>
-      )
+      render: (_, row) => <div className="text-uppercase">{row.time}</div>,
     },
     {
       title: formatMessage(patientPageMessages.columnTitleCommunicationStatus),
@@ -171,12 +167,7 @@ const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
       sorter: true,
       render: (_, row) => (
         <div
-          className={`text-left${
-            row.communication_status?.name === 'Not Contacted' ||
-            row.communication_status?.name === 'Contact Again'
-              ? ' blink'
-              : ''
-          }`}
+          className="text-left"
           onClick={(e) =>
             showUpdateAppointmentCommunicationStatusWrapper(e, row)
           }
