@@ -36,7 +36,7 @@ const DeleteModal = ({ initialValues, handleUpdateDataSource }) => {
         Delete
       </Button>
       <Modal
-        title="Delete Document"
+        title="Delete document"
         visible={open}
         onOk={() => {
           handleOk(initialValues);
