@@ -139,7 +139,7 @@
   "clinic_page.input_label.parking_free": "Free",
   "clinic_page.input_label.parking_no": "No parking",
   "clinic_page.input_label.parking_available": "Parking available",
-  "clinic_page.input_label.parkign_size": "Parking size",
+  "clinic_page.input_label.parkign_size": "Parking Space",
   "clinic_page.label.working_hours": "Working hours",
   "clinic_page.error.name": "Name",
   "clinic_page.error.phone_number": "Phone number",

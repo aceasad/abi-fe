@@ -21,6 +21,7 @@ import AppointmentPreview from '../CalendarPage/AppointmentPreview';
 import { FROM_OVERVIEW_APPOINTMENTS } from 'constants/ClinicConstants';
 import { DownOutlined } from '@ant-design/icons';
 import { setPatientShowMessages } from 'redux/actions/Patient';
+import { convertDateTimeStringToUtcString } from 'utils/helpers';
 import { ROUTES } from 'routes';
 import { useHistory } from 'react-router-dom';
 import UpdateAppointmentCommunicationStatus from '../CalendarPage/UpdateAppointmentCommunicationStatus';
@@ -137,7 +138,7 @@ const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
     {
       title: formatMessage(patientPageMessages.columnTitlePatient),
       dataIndex: ['patient', 'full_name'],
-      sorter: true,
+      sorter: true
     },
     {
       title: formatMessage(patientPageMessages.columnTitleAppointment),
@@ -158,6 +159,11 @@ const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
       title: formatMessage(patientPageMessages.columnTitleTime),
       dataIndex: 'time',
       sorter: true,
+      render: (_, row) => (
+        <div className="text-uppercase">
+          {row.time}
+        </div>
+      )
     },
     {
       title: formatMessage(patientPageMessages.columnTitleCommunicationStatus),

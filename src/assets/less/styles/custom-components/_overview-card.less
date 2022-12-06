@@ -62,3 +62,77 @@
 .text--appointments {
   color: @asa-appointments !important;
 }
+
+.blink {
+  animation: blink 3s infinite;
+  color: var(--color-red) !important;
+}
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
+.blink-human-required {
+  color: var(--color-red) !important;
+}
+@keyframes human-required {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
+.blink-in-emergency-situation {
+  color: var(--color-red) !important;
+}
+@keyframes blink-in-emergency-situation {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
+.badge-color-warning {
+  color: rgb(255, 197, 66);
+}
+.pending-appointments-reminders-title {
+  padding-left: 10px;
+}
+.ant-card-body {
+  overflow-x: auto;
+}
+.cursor-pointer {
+  cursor: pointer;
+}
+.mria-priority-low {
+  background-color: var(--color-yellow-5);
+  color: black;
+}
+.mria-priority-medium {
+  background-color: var(--bg-color-orange-5);
+  color: black;
+}
+.mria-priority-high {
+  background-color: var(--color-red-5);
+  color: white;
+}
+.mria-priority-low,
+.mria-priority-medium,
+.mria-priority-high {
+  display: inline-block;
+  min-width: 85px;
+  padding: 0 10px;
+  line-height: 28px;
+  border-radius: 10px;
+  text-align: center;
+  border-color: grey;
+  border-width: 2px;
+}

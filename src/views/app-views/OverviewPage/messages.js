@@ -167,6 +167,10 @@ export default defineMessages({
     id: `${scope}.table.column.appointment`,
     defaultMessage: 'Appointment',
   },
+  tableColumnDoctor: {
+    id: `${scope}.table.column.doctor`,
+    defaultMessage: 'Staff member',
+  },
   tableColumnAppointmentDatetime: {
     id: `${scope}.table.column.appointment_datetime`,
     defaultMessage: 'Appointment date/time',
