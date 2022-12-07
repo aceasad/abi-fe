@@ -184,10 +184,8 @@ const PassedAppointmentsRequiringImmediateStatusUpdate = ({
       dataIndex: 'time',
       sorter: true,
       render: (_, row) => (
-        <div>
-          {moment(row.time, ["h:mm A"]).format("HH:mm")}
-        </div>
-      )
+        <div>{moment(row.time, ['h:mm A']).format('hh:mm A')}</div>
+      ),
     },
     {
       key: 'action',

@@ -190,16 +190,20 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
 
   const tableColumns = [
     {
-      title: "Date/Time",
+      title: 'Date/Time',
       dataIndex: 'created_datetime',
       sorter: true,
       render: (_, row) => {
         return (
           <div>
-            { convertDateTimeStringToUtcString(row.created_datetime, "DD/MM/YYYY HH:mm:ss a", "DD/MM/YYYY, HH:mm" ) }
+            {convertDateTimeStringToUtcString(
+              row.created_datetime,
+              'DD/MM/YYYY HH:mm:ss a',
+              'DD/MM/YYYY, hh:mm A'
+            )}
           </div>
-        )
-      }
+        );
+      },
     },
     {
       title: formatMessage(overviewPageMessages.columnTitlePatient),

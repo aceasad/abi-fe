@@ -5,11 +5,11 @@ export const scope = 'appointments_page';
 export default defineMessages({
   createAppointmentTitle: {
     id: `${scope}.form_create.title`,
-    defaultMessage: 'New Appointment',
+    defaultMessage: 'New appointment',
   },
   updateAppointmentTitle: {
     id: `${scope}.form_update.title`,
-    defaultMessage: 'Edit Appointment',
+    defaultMessage: 'Edit appointment',
   },
   patientLabel: {
     id: `${scope}.form.label.patient`,
@@ -29,7 +29,7 @@ export default defineMessages({
   },
   appointmentTypeLabel: {
     id: `${scope}.form.label.appointment_type`,
-    defaultMessage: 'Appointment Type',
+    defaultMessage: 'Appointment type',
   },
   priceLabel: {
     id: `${scope}.form.label.price`,
@@ -45,31 +45,31 @@ export default defineMessages({
   },
   appointmentStatus: {
     id: `${scope}.form.label.status`,
-    defaultMessage: 'Appointment Status',
+    defaultMessage: 'Appointment status',
   },
   appointmentCommunicationStatus: {
     id: `${scope}.form.label.communication_status`,
-    defaultMessage: 'Appointment Communication Status',
+    defaultMessage: 'Appointment communication status',
   },
   appointmentCommunicationStatusDetails: {
     id: `${scope}.form.label.communication_status_details`,
-    defaultMessage: 'Appointment Communication Status Details',
+    defaultMessage: 'Appointment communication status details',
   },
   appointmentMissingReason: {
     id: `${scope}.form.label.missing_reason`,
-    defaultMessage: 'Appointment Missing Reason',
+    defaultMessage: 'Appointment missing reason',
   },
   appointmentMissingReasonDetails: {
     id: `${scope}.form.label.missing_reason_details`,
-    defaultMessage: 'Appointment Missing Reason Details',
+    defaultMessage: 'Appointment missing reason details',
   },
   appointmentCancellationReason: {
     id: `${scope}.form.label.cancellation_reason`,
-    defaultMessage: 'Appointment Cancellation Reason',
+    defaultMessage: 'Appointment cancellation reason',
   },
   appointmentCancellationReasonDetails: {
     id: `${scope}.form.label.cancellation_reason_details`,
-    defaultMessage: 'Appointment Cancellation Reason Details',
+    defaultMessage: 'Appointment cancellation reason details',
   },
   saveButton: {
     id: `${scope}.form.button.save`,
@@ -81,7 +81,7 @@ export default defineMessages({
   },
   newAppointmentCreated: {
     id: `${scope}.message.created`,
-    defaultMessage: 'New Appointment Created',
+    defaultMessage: 'New appointment created',
   },
   somethingWentWrong: {
     id: `${scope}.message.something_went_wrong`,
@@ -89,7 +89,7 @@ export default defineMessages({
   },
   appointmentUpdated: {
     id: `${scope}.message.updated`,
-    defaultMessage: 'Appointment Updated',
+    defaultMessage: 'Appointment updated',
   },
   searchPlaceholder: {
     id: `${scope}.form.placeholder.search`,

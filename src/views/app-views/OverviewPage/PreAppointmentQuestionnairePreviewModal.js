@@ -36,9 +36,7 @@ function PreAppointmentQuestionnairePreviewModal({ handleClose, title }) {
               )}
             </td>
             <td>{elem?.question?.question.replace('Yes/No', '')}</td>
-            <td className={elem?.answer ? 'blink' : null}>
-              {elem?.answer ? 'Yes' : 'No'}
-            </td>
+            <td>{elem?.answer ? 'Yes' : 'No'}</td>
           </tr>
         ));
 

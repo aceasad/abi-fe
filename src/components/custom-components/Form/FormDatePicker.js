@@ -10,6 +10,7 @@ const FormDatePicker = ({
   form: { setFieldValue, setFieldTouched, touched, errors },
   required,
   errorTexts,
+  ...props
 }) => {
   const { formatMessage } = useIntl();
 
@@ -30,7 +31,7 @@ const FormDatePicker = ({
     // Can not select days before today and today
     return current && current > moment().endOf('day');
   };
-
+  console.log(props.disablePastDates);
   return (
     <Form.Item
       label={label}
@@ -43,7 +44,7 @@ const FormDatePicker = ({
           setFieldTouched(field.name, true);
           setFieldValue(field.name, str);
         }}
-        disabledDate={disabledDate}
+        disabledDate={props.disablePastDates && disabledDate}
         format={DATE_FORMAT_DD_MM_YYYY}
         mask={DATE_FORMAT_DD_MM_YYYY}
       />

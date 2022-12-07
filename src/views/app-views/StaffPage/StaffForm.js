@@ -47,8 +47,6 @@ const StaffForm = ({
           <PageHeaderComponent
             title={label}
             handleSecondaryClick={showList}
-            primaryAction={formatMessage(messages.submit)}
-            secondaryAction={formatMessage(messages.cancel)}
             handlePrimaryClick={handleSubmit}
             disablePrimary={!dirty || !isValid || loading}
           />
@@ -90,6 +88,7 @@ const StaffForm = ({
                   <Field
                     label={formatMessage(messages.dateOfBirth)}
                     maxDate={new Date()}
+                    disablePastDates
                     component={FormDatePicker}
                     name="date_of_birth"
                   />

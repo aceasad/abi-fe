@@ -144,6 +144,7 @@ const PatientForm = ({
       enableReinitialize
       initialValues={{
         ...initialState,
+        country_code: '+44',
         operations: {
           addedOperations: [],
           deletedOperations: [],
@@ -205,6 +206,7 @@ const PatientForm = ({
                       span={8}
                       maxDate={new Date()}
                       component={FormDatePicker}
+                      disablePastDates
                       label={formatMessage(messages.dateOfBirth)}
                       name="date_of_birth"
                       required
