@@ -257,7 +257,7 @@ export default defineMessages({
   },
   columnTitleAppointment: {
     id: `${patientOverviewScope}.table.column_title.appointment`,
-    defaultMessage: 'Appointment',
+    defaultMessage: 'Staff Member',
   },
   columnTitleCommunicationStatus: {
     id: `${patientOverviewScope}.table.column_title.communication_status`,
