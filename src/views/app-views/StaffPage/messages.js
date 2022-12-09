@@ -62,7 +62,7 @@ export default defineMessages({
   },
   specialization: {
     id: `${scope}.text.specialization`,
-    defaultMessage: 'Specialization',
+    defaultMessage: 'Specialisation',
   },
   seniority: {
     id: `${scope}.text.seniority`,
