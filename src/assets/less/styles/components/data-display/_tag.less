@@ -1,8 +1,10 @@
 .ant-tag {
-    border-radius: @border-radius-sm;
+    border-radius: 10px;
     background: @component-background;
     padding: 0 10px;
     margin-right: 10px;
+    font-size: 14px;
+    line-height: 26px;
 }
 
 #color-tag(@parent, @color) {
@@ -16,6 +18,6 @@ each(@colors-palette, #(@value, @color) {
     .ant-tag-@{color} { 
         background: rgba(@value, 0.1);
         border-color: transparent;
-        font-weight: @font-weight-semibold;
+        font-weight: @font-weight-normal;
     }
 })

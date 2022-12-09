@@ -51,7 +51,7 @@ const EditModal = ({ initialValues, handleUpdateDataSource }) => {
       >
         {({ handleSubmit, dirty, isValid }) => (
           <Modal
-            title="Edit Your Document"
+            title="Edit your document"
             visible={open}
             confirmLoading={confirmLoading}
             onCancel={handleCancel}
@@ -78,12 +78,12 @@ const EditModal = ({ initialValues, handleUpdateDataSource }) => {
           >
             <Form layout="vertical" name="login-form">
               <Field
-                label="Document Name"
+                label="Document name"
                 component={FormField}
                 name="document_name"
               />
               <Field
-                label="Appointment Type"
+                label="Appointment type"
                 component={FormField}
                 name="appointment_type"
               />

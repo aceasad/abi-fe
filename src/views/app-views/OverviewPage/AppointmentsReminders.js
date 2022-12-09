@@ -250,7 +250,7 @@ const AppointmentsReminders = ({ title, startOpen }) => {
       sorter: true,
     },
     {
-      title: formatMessage(overviewPageMessages.tableColumnAppointment),
+      title: formatMessage(overviewPageMessages.tableColumnDoctor),
       dataIndex: ['doctor', 'full_name'],
       sorter: true,
       render: (_, row) => (
@@ -264,7 +264,7 @@ const AppointmentsReminders = ({ title, startOpen }) => {
       dataIndex: ['appointment', 'date'],
       sorter: true,
       render: (_, row) => (
-        <div className="text-left">{`${row.appointment.date} ${row.appointment.time}`}</div>
+        <div className="text-left text-uppercase">{`${row.appointment.date} ${row.appointment.time}`}</div>
       ),
     },
     {
@@ -277,7 +277,7 @@ const AppointmentsReminders = ({ title, startOpen }) => {
       dataIndex: ['reminder', 'date'],
       sorter: true,
       render: (_, row) => (
-        <div className="text-left">{`${row.reminder.date} ${row.reminder.time}`}</div>
+        <div className="text-left text-uppercase">{`${row.reminder.date} ${row.reminder.time}`}</div>
       ),
     },
     {

@@ -74,7 +74,7 @@ const DocumentsPage = () => {
 
   const columns = [
     {
-      title: 'Document Name',
+      title: 'Document name',
       dataIndex: 'document_name',
       key: 'document_name',
     },
@@ -84,7 +84,7 @@ const DocumentsPage = () => {
     //      key: 'name',
     //    },
     {
-      title: 'Appointment Type',
+      title: 'Appointment type',
       dataIndex: 'appointment_type',
       key: 'appointment_type',
       render: (appointment_type) => (
@@ -99,7 +99,7 @@ const DocumentsPage = () => {
       key: 'file',
       render: (appointment_type) => (
         <a href={appointment_type} target="_blank" rel="noreferrer">
-          Download File
+          Download file
         </a>
       ),
     },

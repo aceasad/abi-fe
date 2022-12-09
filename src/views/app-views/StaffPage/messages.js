@@ -6,7 +6,7 @@ export const commonScope = 'global';
 export default defineMessages({
   seeAppointments: {
     id: `${scope}.text.see_appointments`,
-    defaultMessage: 'See Appointments',
+    defaultMessage: 'See appointments',
   },
   staff: {
     id: `${scope}.text.staff`,
@@ -14,7 +14,7 @@ export default defineMessages({
   },
   addNewStaff: {
     id: `${scope}.text.add_new_staff`,
-    defaultMessage: 'Add New Staff',
+    defaultMessage: 'Add new staff',
   },
   delete: {
     id: `${scope}.text.delete`,
@@ -26,7 +26,7 @@ export default defineMessages({
   },
   newStaff: {
     id: `${scope}.text.new_staff`,
-    defaultMessage: 'New Staff',
+    defaultMessage: 'New staff',
   },
   submit: {
     id: `${commonScope}.text.save`,
@@ -50,11 +50,11 @@ export default defineMessages({
   },
   personalDetails: {
     id: `${scope}.text.personal_details`,
-    defaultMessage: 'Personal Details',
+    defaultMessage: 'Personal details',
   },
   selectOption: {
     id: `${scope}.text.select_option`,
-    defaultMessage: 'Select Option',
+    defaultMessage: 'Select option',
   },
   ethnicity: {
     id: `${scope}.text.ethnicity`,
@@ -62,7 +62,7 @@ export default defineMessages({
   },
   specialization: {
     id: `${scope}.text.specialization`,
-    defaultMessage: 'Specialization',
+    defaultMessage: 'Specialisation',
   },
   seniority: {
     id: `${scope}.text.seniority`,
@@ -82,19 +82,19 @@ export default defineMessages({
   },
   staffCreated: {
     id: `${scope}.text.staff_created`,
-    defaultMessage: 'Staff Created',
+    defaultMessage: 'Staff created',
   },
   staffUpdated: {
     id: `${scope}.text.staff_updated`,
-    defaultMessage: 'Staff Updated',
+    defaultMessage: 'Staff updated',
   },
   updateStaff: {
     id: `${scope}.text.update_staff`,
-    defaultMessage: 'Update Staff',
+    defaultMessage: 'Update staff',
   },
   deleteTitle: {
     id: `${scope}.text.delete_title`,
-    defaultMessage: 'Delete Staff?',
+    defaultMessage: 'Delete staff?',
   },
   deleteDescription: {
     id: `${scope}.text.delete_description`,
@@ -102,7 +102,7 @@ export default defineMessages({
   },
   deletedSuccess: {
     id: `${scope}.text.deleted_success`,
-    defaultMessage: 'Staff Deleted',
+    defaultMessage: 'Staff deleted',
   },
   seeAppointmentsTitle: {
     id: `${scope}.see_appointments.title`,
