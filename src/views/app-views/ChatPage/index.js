@@ -1,4 +1,4 @@
-import { Button, PageHeader, Typography } from 'antd';
+import { Button, PageHeader, Typography, Grid } from 'antd';
 import InnerAppLayout from 'layouts/inner-app-layout';
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
@@ -14,6 +14,9 @@ import WebSocketClient from 'services/WebSocketClient';
 import { useMarkConversationAsRead } from 'queries/shared';
 import { MESSAGE_STATUS } from 'constants/ChatConstants';
 import { API_BASE_URL } from 'configs/AppConfig';
+import utils from 'utils';
+
+const { useBreakpoint } = Grid;
 
 const Chat = () => {
   const { formatMessage } = useIntl();
@@ -25,6 +28,9 @@ const Chat = () => {
   const dispatch = useDispatch();
 
   const { mutate } = useMarkConversationAsRead();
+
+  const screens = utils.getBreakPoint(useBreakpoint());
+  const isMobile = !screens.includes('lg');
 
   const handleReceiveMessage = (event) => {
     const parsedMessage = parseReceivedEvent(event);
@@ -69,13 +75,17 @@ const Chat = () => {
       <PageHeader
         className="p-0 mb-4"
         title={
-          <Typography.Title level={2} className="mb-0">
-            {`${formatMessage(messages.conversationsTitle)}${
-              !rasaHealthy
-                ? ': Communication with Asa AI is down for maintenance'
-                : ''
-            }`}
-          </Typography.Title>
+          isMobile ? (
+            <Typography.Title level={2} className="mb-0">
+              {`${formatMessage(messages.conversationsTitle)}${
+                !rasaHealthy
+                  ? ': Communication with Asa AI is down for maintenance'
+                  : ''
+              }`}
+            </Typography.Title>
+          ) : (
+            ''
+          )
         }
         extra={[
           <Button
