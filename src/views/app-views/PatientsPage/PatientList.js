@@ -104,7 +104,7 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
       dataIndex: 'last_appointment',
       render: (lastAppointment) => (
         <span>
-          {lastAppointment ? moment(lastAppointment).format('DD/MM/yyyy') : '-'}
+          {lastAppointment ? moment(lastAppointment).format('D/MM/yyyy') : '-'}
         </span>
       ),
       sorter: true,

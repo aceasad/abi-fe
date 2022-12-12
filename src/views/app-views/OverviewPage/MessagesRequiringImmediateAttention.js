@@ -199,7 +199,7 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
             {convertDateTimeStringToUtcString(
               row.created_datetime,
               'DD/MM/YYYY HH:mm:ss a',
-              'DD/MM/YYYY, hh:mm A'
+              'DD/MM/YYYY, h:mm A'
             )}
           </div>
         );

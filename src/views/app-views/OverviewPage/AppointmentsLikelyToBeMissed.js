@@ -21,10 +21,14 @@ import AppointmentPreview from '../CalendarPage/AppointmentPreview';
 import { FROM_OVERVIEW_APPOINTMENTS } from 'constants/ClinicConstants';
 import { DownOutlined } from '@ant-design/icons';
 import { setPatientShowMessages } from 'redux/actions/Patient';
-import { convertDateTimeStringToUtcString } from 'utils/helpers';
+import {
+  convertDateTimeStringToUtcString,
+  removeLeadingZeroFromTime,
+} from 'utils/helpers';
 import { ROUTES } from 'routes';
 import { useHistory } from 'react-router-dom';
 import UpdateAppointmentCommunicationStatus from '../CalendarPage/UpdateAppointmentCommunicationStatus';
+import moment from 'moment';
 
 const { Panel } = Collapse;
 
@@ -159,7 +163,13 @@ const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
       title: formatMessage(patientPageMessages.columnTitleTime),
       dataIndex: 'time',
       sorter: true,
-      render: (_, row) => <div className="text-uppercase">{row.time}</div>,
+      render: (_, row) => (
+        <div className="text-uppercase">
+          {removeLeadingZeroFromTime(
+            moment(row.time, ['h:mm A']).format('hh:mm A')
+          )}
+        </div>
+      ),
     },
     {
       title: formatMessage(patientPageMessages.columnTitleCommunicationStatus),
