@@ -6,7 +6,11 @@ import { SearchOutlined } from '@ant-design/icons';
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
 import { useIntl } from 'react-intl';
 import messages from './messages';
-import { chatListItemStyle, formatMessageTimestamp } from 'utils/helpers';
+import {
+  chatListItemStyle,
+  formatMessageTimestamp,
+  removeLeadingZeroFromTime,
+} from 'utils/helpers';
 import {
   getAllChatsInfo,
   getMoreChatsInfo,
@@ -169,7 +173,9 @@ const ChatMenu = (props) => {
               />
               <div className="text-right">
                 <div className="chat-menu-list-item-time">
-                  {formatMessageTimestamp(item.last_message.created_at)}
+                  {removeLeadingZeroFromTime(
+                    formatMessageTimestamp(item.last_message.created_at)
+                  )}
                 </div>
                 {item?.last_message.status === MESSAGE_STATUS.SENT &&
                 !item?.last_message.is_answer ? (

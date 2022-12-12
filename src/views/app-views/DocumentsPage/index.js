@@ -1,15 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { Layout, Space, Table, Tag, Typography } from 'antd';
+import { Layout, Space, Table, Tag, Typography, Grid } from 'antd';
 import documentsService from 'services/DocumentsService';
 import EditModal from './EditModal';
 import Uploader from './Uploader';
 import DeleteModal from './DeleteModal';
 import AskQuestions from './AskQuestions';
+import utils from 'utils';
 const { Title } = Typography;
+
+const { useBreakpoint } = Grid;
 
 const DocumentsPage = () => {
   const [listOfDocuments, setListOfDocuments] = useState([]);
   const [appointmentTypes, setAppointmentTypes] = useState([]);
+
+  const screens = utils.getBreakPoint(useBreakpoint());
+  const isMobile = !screens.includes('lg');
 
   useEffect(() => {
     async function fetchData() {
@@ -127,9 +133,11 @@ const DocumentsPage = () => {
 
   return (
     <Layout>
-      <Title level={2} type="primary" className="text-wrap">
-        Documents
-      </Title>
+      {isMobile && (
+        <Title level={2} type="primary" className="text-wrap">
+          Documents
+        </Title>
+      )}
       <Uploader
         handleUpdateDataSource={handleUpdateDataSource}
         appointmentTypes={appointmentTypes}
