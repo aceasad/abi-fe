@@ -5,7 +5,7 @@ import {
   BarChartOutlined,
   TeamOutlined,
 } from '@ant-design/icons';
-import { Card, Layout, Menu, Typography } from 'antd';
+import { Card, Layout, Menu, Typography, Grid } from 'antd';
 import { Link, Redirect, Route, Switch } from 'react-router-dom';
 import EditClinic from './EditClinic';
 import ProfileSettings from './ProfileSettings';
@@ -15,7 +15,10 @@ import IndustryAverage from '../IndustryAveragePage';
 import UserSettings from '../UserSettings';
 import { useSelector } from 'react-redux';
 import { makeSelectIsOrganizationOwner } from 'redux/selectors/Auth';
+import utils from 'utils';
+
 const { Title } = Typography;
+const { useBreakpoint } = Grid;
 
 const SettingOption = ({ match, location, isOrganizationOwner }) => {
   const { formatMessage } = useIntl();
@@ -74,14 +77,18 @@ const SettingContent = ({ match, isOrganizationOwner }) => {
 
 const SettingsPage = (props) => {
   const isOrganizationOwner = useSelector(makeSelectIsOrganizationOwner());
+  const screens = utils.getBreakPoint(useBreakpoint());
+  const isMobile = !screens.includes('lg');
 
   return (
     <>
       <Layout>
         <Card>
-          <Title level={2} type="primary" className="text-wrap">
-            Settings
-          </Title>
+          {isMobile && (
+            <Title level={2} type="primary" className="text-wrap">
+              Settings
+            </Title>
+          )}
           <div style={{ marginTop: '20px' }} />
           <SettingOption {...props} isOrganizationOwner={isOrganizationOwner} />
           <div style={{ marginTop: '20px' }} />
