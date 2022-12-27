@@ -48,6 +48,7 @@ const UpdateStaff = ({ showList, staffId }) => {
     ? {
         ...singleStaff,
         profile_picture: singleStaff.profile_picture?.original || '',
+        phone_number: singleStaff.phone_number || '',
         date_of_birth: moment(singleStaff.date_of_birth).format(
           DATE_FORMAT_DD_MMM_YYYY
         ),
@@ -59,6 +60,7 @@ const UpdateStaff = ({ showList, staffId }) => {
         date_of_birth: moment(new Date()).format(DATE_FORMAT_DD_MMM_YYYY),
         ethnicity: '',
         seniority: '',
+        phone_number: '',
         specialization: '',
         gender: GENDER_CHOICES[0].id,
       };
