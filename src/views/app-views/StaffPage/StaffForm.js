@@ -106,7 +106,30 @@ const StaffForm = ({
                     label={formatMessage(messages.ethnicity)}
                   />
                 </Col>
-                <Col xs={24} lg={12}>
+                {/* <ColumnField
+                      span={12}
+                      component={FormField}
+                      label={formatMessage(messages.phoneNumber)}
+                      name="phone_number"
+                      errorTexts={{
+                        label: formatMessage(messages.phoneNumber),
+                        matchesLabel: formatMessage(messages.phoneNumberFormat),
+                        maxValue: MAX,
+                      }}
+                      required
+                    />
+                     */}
+                <Col xs={24} lg={6}>
+                  <Field
+                    component={FormField}
+                    label={formatMessage(messages.phoneNumber)}
+                    name="phone_number"
+                    errorTexts={{
+                      label: formatMessage(messages.phoneNumber),
+                    }}
+                  />
+                </Col>
+                <Col xs={24} lg={6}>
                   <Field
                     name="gender"
                     component={FormRadio}

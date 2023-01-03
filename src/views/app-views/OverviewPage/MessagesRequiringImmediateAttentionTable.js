@@ -23,7 +23,7 @@ const MessagesRequiringImmediateAttentionTable = ({
 }) => (
   <Card>
     <Typography.Title level={4}>{title}</Typography.Title>
-    <div className="table-responsive ant-table-row-pointer">
+    <div className="responsive-table ant-table-row-pointer">
       <Table
         columns={columns}
         dataSource={items}

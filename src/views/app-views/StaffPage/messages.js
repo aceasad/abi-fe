@@ -40,6 +40,10 @@ export default defineMessages({
     id: `${scope}.text.first_name`,
     defaultMessage: 'First name',
   },
+  phoneNumber: {
+    id: `${scope}.text.phone_number`,
+    defaultMessage: 'Phone number',
+  },
   lastName: {
     id: `${scope}.text.last_name`,
     defaultMessage: 'Last name',
