@@ -58,9 +58,9 @@ const PatientForm = ({
   const handleSubmitWrapper = (values, { setErrors }) => {
     const parsedValues = {
       ...values,
-      date_of_birth: moment(
-        moment(values.date_of_birth).format('DD-MM-YYYY')
-      ).format(DATE_FORMAT_DD_MMM_YYYY),
+      date_of_birth: moment(values.date_of_birth, 'DD/MM/YYYY').format(
+        DATE_FORMAT_DD_MMM_YYYY
+      ),
       phone_number: values.country_code + values.phone_number,
     };
 

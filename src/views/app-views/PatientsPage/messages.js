@@ -113,7 +113,7 @@ export default defineMessages({
   },
   contactDetails: {
     id: `${detailScope}.side.title.contact_details`,
-    defaultMessage: 'Contact details',
+    defaultMessage: 'Address',
   },
   addressDetails: {
     id: `${detailScope}.side.title.address_details`,
@@ -125,7 +125,7 @@ export default defineMessages({
   },
   streetNumber: {
     id: `${detailScope}.side.form.street_number`,
-    defaultMessage: 'Street number',
+    defaultMessage: 'Apartment/House',
   },
   streetName: {
     id: `${detailScope}.side.form.street_name`,
@@ -133,7 +133,7 @@ export default defineMessages({
   },
   areaOfLiving: {
     id: `${detailScope}.side.form.area_of_living`,
-    defaultMessage: 'Area of living',
+    defaultMessage: 'Area',
   },
   city: {
     id: `${detailScope}.side.form.city`,
@@ -141,7 +141,7 @@ export default defineMessages({
   },
   postCode: {
     id: `${detailScope}.side.form.post_code`,
-    defaultMessage: 'Post code',
+    defaultMessage: 'Postcode',
   },
   country: {
     id: `${detailScope}.side.form.country`,
