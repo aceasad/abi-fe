@@ -85,6 +85,7 @@ export const staffValidationSchema = Yup.object().shape({
   first_name: Yup.string().trim().required(),
   last_name: Yup.string().trim().required(),
   date_of_birth: Yup.string().required(),
+  phone_number: Yup.string().matches(phoneFormat).max(MAX).required(),
   ethnicity: Yup.string().required(),
   specialization: Yup.string().required(),
   seniority: Yup.string().required(),

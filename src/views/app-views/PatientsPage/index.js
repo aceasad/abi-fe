@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Grid } from 'antd';
 import { getPatientDetails } from 'redux/actions/Patient';
 import CreatePatient from './CreatePatient';
 import PatientList from './PatientList';

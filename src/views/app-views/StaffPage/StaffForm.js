@@ -3,7 +3,7 @@ import { Formik, Field } from 'formik';
 import React, { useEffect } from 'react';
 import { useIntl } from 'react-intl';
 import messages from './messages';
-import { Row, Col, Form, Card, Typography, Button } from 'antd';
+import { Row, Col, Form, Card, Typography, Button, Space } from 'antd';
 import FormField from 'components/custom-components/Form/FormField';
 import FormDatePicker from 'components/custom-components/Form/FormDatePicker';
 import { staffValidationSchema } from 'utils/validations';
@@ -47,8 +47,7 @@ const StaffForm = ({
           <PageHeaderComponent
             title={label}
             handleSecondaryClick={showList}
-            primaryAction={formatMessage(messages.submit)}
-            secondaryAction={formatMessage(messages.cancel)}
+            // secondaryAction={formatMessage(messages.cancel)}
             handlePrimaryClick={handleSubmit}
             disablePrimary={!dirty || !isValid || loading}
           />
@@ -73,7 +72,7 @@ const StaffForm = ({
                     errorTexts={{
                       label: formatMessage(messages.firstName),
                     }}
-                    autoFocus
+                    // autoFocus
                   />
                 </Col>
                 <Col xs={24} lg={6}>
@@ -90,6 +89,7 @@ const StaffForm = ({
                   <Field
                     label={formatMessage(messages.dateOfBirth)}
                     maxDate={new Date()}
+                    disablePastDates
                     component={FormDatePicker}
                     name="date_of_birth"
                   />
@@ -106,7 +106,30 @@ const StaffForm = ({
                     label={formatMessage(messages.ethnicity)}
                   />
                 </Col>
-                <Col xs={24} lg={12}>
+                {/* <ColumnField
+                      span={12}
+                      component={FormField}
+                      label={formatMessage(messages.phoneNumber)}
+                      name="phone_number"
+                      errorTexts={{
+                        label: formatMessage(messages.phoneNumber),
+                        matchesLabel: formatMessage(messages.phoneNumberFormat),
+                        maxValue: MAX,
+                      }}
+                      required
+                    />
+                     */}
+                <Col xs={24} lg={6}>
+                  <Field
+                    component={FormField}
+                    label={formatMessage(messages.phoneNumber)}
+                    name="phone_number"
+                    errorTexts={{
+                      label: formatMessage(messages.phoneNumber),
+                    }}
+                  />
+                </Col>
+                <Col xs={24} lg={6}>
                   <Field
                     name="gender"
                     component={FormRadio}
@@ -138,13 +161,20 @@ const StaffForm = ({
                   />
                 </Col>
                 <Col span={24} className={'text-right'}>
-                  <Button
-                    disabled={!isValid || !dirty || loading}
-                    type="primary"
-                    onClick={handleSubmit}
-                  >
-                    {formatMessage(messages.submit)}
-                  </Button>
+                  <Space wrap>
+                    <Button key="10" onClick={showList}>
+                      {formatMessage(messages.cancel)}
+                    </Button>
+                    <Button
+                      disabled={!isValid || !dirty || loading}
+                      type="primary"
+                      onClick={handleSubmit}
+                    >
+                      {formatMessage(messages.submit)}
+                    </Button>
+                  </Space>
+
+                  {/* secondaryAction={formatMessage(messages.cancel)} */}
                 </Col>
               </Row>
             </Form>

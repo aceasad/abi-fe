@@ -11,7 +11,10 @@ import { makeSelectStaff, makeSelectPagination } from 'redux/selectors/Staff';
 import Loading from 'components/shared-components/Loading';
 import Modal from 'components/shared-components/Modal';
 import { deleteStaff } from 'redux/actions/Staff';
-import { message, List, Button, PageHeader, Typography } from 'antd';
+import { message, List, Button, PageHeader, Typography, Grid } from 'antd';
+import utils from 'utils';
+
+const { useBreakpoint } = Grid;
 
 export const OPTION_KEYS = {
   EDIT: '1',
@@ -25,6 +28,8 @@ const StaffList = ({ showCreate, editUser, seeAppointments }) => {
   const { staff, loading } = useSelector(makeSelectStaff());
 
   const dispatch = useDispatch();
+  const screens = utils.getBreakPoint(useBreakpoint());
+  const isMobile = !screens.includes('lg');
 
   const { formatMessage } = useIntl();
 
@@ -70,9 +75,11 @@ const StaffList = ({ showCreate, editUser, seeAppointments }) => {
       <PageHeader
         className="p-0 mb-4"
         title={
-          <Typography.Title level={2} className="mb-0">
-            {formatMessage(messages.staff)}
-          </Typography.Title>
+          isMobile ? (
+            <Typography.Title level={2} className="mb-0">
+              {formatMessage(messages.staff)}
+            </Typography.Title>
+          ) : null
         }
         extra={[
           <Button type="primary" onClick={showCreate}>

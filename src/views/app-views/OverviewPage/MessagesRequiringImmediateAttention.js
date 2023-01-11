@@ -190,57 +190,88 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
 
   const tableColumns = [
     {
-      title: "Date/Time",
+      title: 'Date/Time',
       dataIndex: 'created_datetime',
       sorter: true,
       render: (_, row) => {
-        return (
-          <div>
-            { convertDateTimeStringToUtcString(row.created_datetime, "DD/MM/YYYY HH:mm:ss a", "DD/MM/YYYY, HH:mm" ) }
-          </div>
-        )
-      }
+        return {
+          children: (
+            <div>
+              {convertDateTimeStringToUtcString(
+                row.created_datetime,
+                'DD/MM/YYYY HH:mm:ss a',
+                'DD/MM/YYYY, h:mm A'
+              )}
+            </div>
+          ),
+          props: {
+            'data-label': 'Date/Time',
+          },
+        };
+      },
     },
     {
       title: formatMessage(overviewPageMessages.columnTitlePatient),
       dataIndex: ['patient', 'full_name'],
       sorter: true,
+      render: (_, row) => ({
+        children: _,
+        props: {
+          'data-label': formatMessage(overviewPageMessages.columnTitlePatient),
+        },
+      }),
     },
     {
       title: formatMessage(overviewPageMessages.columnTitleEvent),
       dataIndex: ['message_requiring_immediate_attention_type', 'name'],
       sorter: true,
+      render: (_, row) => ({
+        children: _,
+        props: {
+          'data-label': formatMessage(overviewPageMessages.columnTitleEvent),
+        },
+      }),
     },
     {
       title: formatMessage(overviewPageMessages.columnTitlePriority),
       dataIndex: ['priority', 'name'],
       sorter: true,
-      render: (_, row) => (
-        <div
-          className={`mria-priority-${getSafe(() =>
-            row.priority?.name.toLowerCase()
-          )}`}
-        >
-          {row.priority?.name}
-        </div>
-      ),
+      render: (_, row) => ({
+        children: (
+          <div
+            className={`mria-priority-${getSafe(() =>
+              row.priority?.name.toLowerCase()
+            )}`}
+          >
+            {row.priority?.name}
+          </div>
+        ),
+        props: {
+          'data-label': formatMessage(overviewPageMessages.columnTitlePriority),
+        },
+      }),
     },
     {
       title: formatMessage(overviewPageMessages.columnTitleStatus),
       dataIndex: ['status', 'name'],
       sorter: true,
-      render: (_, row) => (
-        <div
-          onClick={(e) =>
-            showUpdateMessageRequiringImmediateAttentionStatusWrapper(e, row)
-          }
-          className={`ant-tag text-left${
-            row.status?.name === 'Pending' ? ' ant-tag-red' : ''
-          }`}
-        >
-          {row.status?.name} {/*  <CaretDownOutlined /> */}
-        </div>
-      ),
+      render: (_, row) => ({
+        children: (
+          <div
+            onClick={(e) =>
+              showUpdateMessageRequiringImmediateAttentionStatusWrapper(e, row)
+            }
+            className={`ant-tag text-left${
+              row.status?.name === 'Pending' ? ' ant-tag-red' : ''
+            }`}
+          >
+            {row.status?.name} {/*  <CaretDownOutlined /> */}
+          </div>
+        ),
+        props: {
+          'data-label': formatMessage(overviewPageMessages.columnTitleStatus),
+        },
+      }),
     },
     {
       key: 'action',

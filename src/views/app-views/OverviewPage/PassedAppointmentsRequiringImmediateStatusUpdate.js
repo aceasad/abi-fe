@@ -40,6 +40,8 @@ import RowWithMultipleColumns from 'components/util-components/Grid/RowWithMulti
 import { getAppointments } from 'redux/actions/Staff';
 import EndAppointment from '../CalendarPage/EndAppointment';
 import moment from 'moment';
+import { removeLeadingZeroFromTime } from 'utils/helpers';
+
 const { Panel } = Collapse;
 
 const columnMap = {
@@ -185,9 +187,11 @@ const PassedAppointmentsRequiringImmediateStatusUpdate = ({
       sorter: true,
       render: (_, row) => (
         <div>
-          {moment(row.time, ["h:mm A"]).format("HH:mm")}
+          {removeLeadingZeroFromTime(
+            moment(row.time, ['h:mm A']).format('hh:mm A')
+          )}
         </div>
-      )
+      ),
     },
     {
       key: 'action',

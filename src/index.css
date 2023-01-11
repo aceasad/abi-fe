@@ -6,114 +6,61 @@
   --bg-color-red-light: rgba(253, 67, 50, 0.1);
   --bg-color-orange-5: #ffa940;
 }
-
 .loading.cover-content {
   position: absolute;
   left: 50%;
   top: 50%;
   -webkit-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
 }
 .loading.cover-page {
   position: fixed;
   width: 100%;
   height: 100%;
-  display: -webkit-flex;
   display: flex;
-  -webkit-align-items: center;
   align-items: center;
-  -webkit-justify-content: center;
   justify-content: center;
 }
 .loading .ant-spin {
   color: #5d4ebf;
 }
-.blink {
-  animation: blink 3s infinite;
-  color: var(--color-red) !important;
-}
-@keyframes blink {
-  0% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0;
-    transform: scale(1);
-  }
-}
-.blink-human-required {
-  color: var(--color-red) !important;
-}
-@keyframes human-required {
-  0% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0;
-    transform: scale(1);
-  }
-}
-.blink-in-emergency-situation {
-  color: var(--color-red) !important;
-}
-@keyframes blink-in-emergency-situation {
-  0% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0;
-    transform: scale(1);
-  }
-}
-.badge-color-warning {
-  color: rgb(255, 197, 66);
-}
-.pending-appointments-reminders-title {
-  padding-left: 10px;
-}
-.ant-card-body {
-  overflow-x: auto;
-}
-.cursor-pointer {
-  cursor: pointer;
-}
-.mria-priority-low {
-  background-color: var(--color-yellow-5);
-  color: black;
-}
-.mria-priority-medium {
-  background-color: var(--bg-color-orange-5);
-  color: black;
-}
-.mria-priority-high {
-  background-color: var(--color-red-5);
-  color: white;
-}
-.mria-priority-low,
-.mria-priority-medium,
-.mria-priority-high {
-  display: inline-block;
-  min-width: 85px;
-  padding: 0 10px;
-  line-height: 28px;
-  border-radius: 10px;
-  text-align: center;
-  border-color: grey;
-  border-width: 2px;
-}
 
-.ant-tag {
-  border-radius: 10px;
-  font-size: 14px;
-  line-height: 28px;
+@media (max-width: 767px) {
+  .responsive-table thead {
+    display: none;
+ }
+  .responsive-table tbody tr {
+    display: block;
+    border: 1px solid #c9cfdf;
+    border-radius: 5px;
+    margin-bottom: 1.3333rem;
+    padding: 8px 16px;
+ }
+  .responsive-table tbody td {
+    display: block;
+    height: auto !important;
+    padding: 8px !important;
+ }
+  .responsive-table tbody td:last-of-type {
+    border-bottom: 0 !important;
+ }
+  .responsive-table tbody td::before {
+    content: attr(data-label);
+    float: left;
+    font-weight: 500;
+    display: block;
+    color: #626262;
+    padding-right: 7px;
+    width: 50%;
+    text-align: right;
+ }
 }
-
-.ant-tag-red {
-  color: var(--color-red);
-  background-color: var(--bg-color-red-light);
-  font-weight: 400;
-}
-
-.chat .chat-content .chat-content-body .msg.msg-sent .bubble .bubble-wrapper {
-  background-color: var(--color-brand-navy);
+@media (max-width: 480px) {
+  .responsive-table tbody td {
+    text-align: left;
+ }
+  .responsive-table tbody td::before {
+    float: none;
+    padding-bottom: 5px;
+ }
 }

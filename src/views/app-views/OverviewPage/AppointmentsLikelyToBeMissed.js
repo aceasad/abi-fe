@@ -21,9 +21,14 @@ import AppointmentPreview from '../CalendarPage/AppointmentPreview';
 import { FROM_OVERVIEW_APPOINTMENTS } from 'constants/ClinicConstants';
 import { DownOutlined } from '@ant-design/icons';
 import { setPatientShowMessages } from 'redux/actions/Patient';
+import {
+  convertDateTimeStringToUtcString,
+  removeLeadingZeroFromTime,
+} from 'utils/helpers';
 import { ROUTES } from 'routes';
 import { useHistory } from 'react-router-dom';
 import UpdateAppointmentCommunicationStatus from '../CalendarPage/UpdateAppointmentCommunicationStatus';
+import moment from 'moment';
 
 const { Panel } = Collapse;
 
@@ -158,6 +163,13 @@ const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
       title: formatMessage(patientPageMessages.columnTitleTime),
       dataIndex: 'time',
       sorter: true,
+      render: (_, row) => (
+        <div className="text-uppercase">
+          {removeLeadingZeroFromTime(
+            moment(row.time, ['h:mm A']).format('hh:mm A')
+          )}
+        </div>
+      ),
     },
     {
       title: formatMessage(patientPageMessages.columnTitleCommunicationStatus),
@@ -165,12 +177,7 @@ const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
       sorter: true,
       render: (_, row) => (
         <div
-          className={`text-left${
-            row.communication_status?.name === 'Not Contacted' ||
-            row.communication_status?.name === 'Contact Again'
-              ? ' blink'
-              : ''
-          }`}
+          className="text-left"
           onClick={(e) =>
             showUpdateAppointmentCommunicationStatusWrapper(e, row)
           }

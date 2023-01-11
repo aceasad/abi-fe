@@ -12,6 +12,7 @@ import { NESTED_MODAL } from 'views/app-views/CalendarPage/AppointmentPreview';
 import Flex from 'components/shared-components/Flex';
 import RowWithMultipleColumns from 'components/util-components/Grid/RowWithMultipleColumns';
 import { RenderPredictionText, removeLeadingZeroFromTime } from 'utils/helpers';
+import moment from 'moment';
 
 function PreviewModal({
   handleClose,
@@ -92,7 +93,9 @@ function PreviewModal({
     },
     {
       label: formatMessage(messages.time),
-      value: removeLeadingZeroFromTime(appointment?.time),
+      value: removeLeadingZeroFromTime(
+        moment(appointment?.time, 'HH:mm a').format('hh:mm A')
+      ),
     },
     {
       label: formatMessage(messages.appointmentPrice),
