@@ -54,7 +54,7 @@ const Uploader = ({ handleUpdateDataSource, appointmentTypes }) => {
         }}
       >
         <Button type="primary" onClick={showModal}>
-          Upload Document
+          Upload document
         </Button>
       </div>
       <Formik

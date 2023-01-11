@@ -17,35 +17,35 @@ export default defineMessages({
   },
   newPatient: {
     id: `${scope}.button.new`,
-    defaultMessage: 'New Patient',
+    defaultMessage: 'New patient',
   },
   firstName: {
     id: `${scope}.text.first_name`,
-    defaultMessage: 'First Name',
+    defaultMessage: 'First name',
   },
   lastName: {
     id: `${scope}.text.last_name`,
-    defaultMessage: 'Last Name',
+    defaultMessage: 'Last name',
   },
   phoneNumber: {
     id: `${scope}.text.phone_number`,
-    defaultMessage: 'Phone Number',
+    defaultMessage: 'Phone number',
   },
   countryCode: {
     id: `${scope}.text.country_code`,
-    defaultMessage: 'Country Code',
+    defaultMessage: 'Country code',
   },
   lastAppointment: {
     id: `${scope}.text.last_appointment`,
-    defaultMessage: 'Last Appointment',
+    defaultMessage: 'Last appointment',
   },
   patientDetails: {
     id: `${scope}.option.details`,
-    defaultMessage: 'Patient Details',
+    defaultMessage: 'Patient details',
   },
   patientDelete: {
     id: `${scope}.option.delete`,
-    defaultMessage: 'Delete Patient',
+    defaultMessage: 'Delete patient',
   },
   delete: {
     id: `${commonScope}.text.delete`,
@@ -65,7 +65,7 @@ export default defineMessages({
   },
   deleteTitle: {
     id: `${scope}.text.delete_patient`,
-    defaultMessage: 'Delete Patient',
+    defaultMessage: 'Delete patient',
   },
   deleteDescription: {
     id: `${scope}.text.delete_description`,
@@ -73,7 +73,7 @@ export default defineMessages({
   },
   patientDeleted: {
     id: `${scope}.text.delete_success`,
-    defaultMessage: 'Patient Deleted',
+    defaultMessage: 'Patient deleted',
   },
   editPatient: {
     id: `${scope}.text.edit_patient`,
@@ -109,23 +109,23 @@ export default defineMessages({
   },
   personalDetails: {
     id: `${detailScope}.side.title.personal_details`,
-    defaultMessage: 'Personal Details',
+    defaultMessage: 'Personal details',
   },
   contactDetails: {
     id: `${detailScope}.side.title.contact_details`,
-    defaultMessage: 'Contact Details',
+    defaultMessage: 'Address',
   },
   addressDetails: {
     id: `${detailScope}.side.title.address_details`,
-    defaultMessage: 'Address Details',
+    defaultMessage: 'Address details',
   },
   otherDetails: {
     id: `${detailScope}.side.title.other_details`,
-    defaultMessage: 'Other Details',
+    defaultMessage: 'Other details',
   },
   streetNumber: {
     id: `${detailScope}.side.form.street_number`,
-    defaultMessage: 'Street number',
+    defaultMessage: 'Apartment/House',
   },
   streetName: {
     id: `${detailScope}.side.form.street_name`,
@@ -133,7 +133,7 @@ export default defineMessages({
   },
   areaOfLiving: {
     id: `${detailScope}.side.form.area_of_living`,
-    defaultMessage: 'Area of living',
+    defaultMessage: 'Area',
   },
   city: {
     id: `${detailScope}.side.form.city`,
@@ -141,7 +141,7 @@ export default defineMessages({
   },
   postCode: {
     id: `${detailScope}.side.form.post_code`,
-    defaultMessage: 'Post code',
+    defaultMessage: 'Postcode',
   },
   country: {
     id: `${detailScope}.side.form.country`,
@@ -149,15 +149,15 @@ export default defineMessages({
   },
   materialStatus: {
     id: `${detailScope}.side.form.marital_status`,
-    defaultMessage: 'Maritial Status',
+    defaultMessage: 'Marital status',
   },
   employmentStatus: {
     id: `${detailScope}.side.form.employment_status`,
-    defaultMessage: 'Employment Status',
+    defaultMessage: 'Employment status',
   },
   education: {
     id: `${detailScope}.side.form.educational_background`,
-    defaultMessage: 'Employment Status',
+    defaultMessage: 'Employment status',
   },
   email: {
     id: `${detailScope}.side.form.email`,
@@ -169,11 +169,11 @@ export default defineMessages({
   },
   numberOfDependants: {
     id: `${detailScope}.side.form.number_of_dependants`,
-    defaultMessage: 'Number of Dependants',
+    defaultMessage: 'Number of dependants',
   },
   countryCodeFormat: {
     id: `${detailScope}.error.country_code_format`,
-    defaultMessage: 'Country Code must be in valid format',
+    defaultMessage: 'Country code must be in valid format',
   },
   phoneNumberFormat: {
     id: `${detailScope}.error.phone_format`,
@@ -193,15 +193,15 @@ export default defineMessages({
   },
   staffPastAppointments: {
     id: `${staffScope}.past_appointments.table.title`,
-    defaultMessage: 'Past Appointments',
+    defaultMessage: 'Past appointments',
   },
   patientCreated: {
     id: `${detailScope}.text.patient_created`,
-    defaultMessage: 'Patient Created',
+    defaultMessage: 'Patient created',
   },
   patientUpdated: {
     id: `${detailScope}.text.patient_updated`,
-    defaultMessage: 'Patient Updated',
+    defaultMessage: 'Patient updated',
   },
   backToPatients: {
     id: `${patientOverviewScope}.back_to_patients`,
@@ -241,7 +241,7 @@ export default defineMessages({
   },
   columnTitleNoShowScore: {
     id: `${patientOverviewScope}.table.column_title.no_show_score`,
-    defaultMessage: 'No Show Probability',
+    defaultMessage: 'No show probability',
   },
   columnTitleWhitelisted: {
     id: `${patientOverviewScope}.table.column_title.whitelisted`,
@@ -249,7 +249,7 @@ export default defineMessages({
   },
   columnTitleUpdateStatus: {
     id: `${patientOverviewScope}.table.column_title.update_status`,
-    defaultMessage: 'Update Status',
+    defaultMessage: 'Update status',
   },
   columnTitleReachOutToPatient: {
     id: `${patientOverviewScope}.table.column_title.reach_out_to_patient`,
@@ -257,7 +257,7 @@ export default defineMessages({
   },
   columnTitleAppointment: {
     id: `${patientOverviewScope}.table.column_title.appointment`,
-    defaultMessage: 'Appointment',
+    defaultMessage: 'Staff Member',
   },
   columnTitleCommunicationStatus: {
     id: `${patientOverviewScope}.table.column_title.communication_status`,
@@ -285,11 +285,11 @@ export default defineMessages({
   },
   cardTitleScheduledAppointments: {
     id: `${patientOverviewScope}.card_title.scheduled_appointments`,
-    defaultMessage: 'Scheduled Appointments',
+    defaultMessage: 'Scheduled appointments',
   },
   cardTitleAppointmentHistory: {
     id: `${patientOverviewScope}.card_title.appointment_history`,
-    defaultMessage: 'Appointment History',
+    defaultMessage: 'Appointment history',
   },
   cardTitleExistingConditions: {
     id: `${patientOverviewScope}.card_title.existing_conditions`,
@@ -301,7 +301,7 @@ export default defineMessages({
   },
   buttonNewAppointment: {
     id: `${patientOverviewScope}.button.new_appointment`,
-    defaultMessage: 'New Appointment',
+    defaultMessage: 'New appointment',
   },
   messages: {
     id: `${patientOverviewScope}.messages`,
@@ -313,11 +313,11 @@ export default defineMessages({
   },
   addNew: {
     id: `${commonScope}.text.add_new`,
-    defaultMessage: 'Add New',
+    defaultMessage: 'Add new',
   },
   newConditionCreated: {
     id: `${scope}.text.success.new_condition_created`,
-    defaultMessage: 'Condition Created',
+    defaultMessage: 'Condition created',
   },
   conditionAlreadyExists: {
     id: `${patientOverviewScope}.text.error.condition_already_exists`,
@@ -359,6 +359,6 @@ export default defineMessages({
   },
   discardButton: {
     id: `${patientOverviewScope}.text.discard_button`,
-    defaultMessage: 'Discard Changes',
+    defaultMessage: 'Discard changes',
   },
 });

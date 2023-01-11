@@ -5,7 +5,7 @@ export const scope = 'industry_average_page';
 export default defineMessages({
   title: {
     id: `${scope}.title`,
-    defaultMessage: 'Industry Average',
+    defaultMessage: 'Industry average',
   },
   cost_of_missed_appointments: {
     id: `${scope}.input_label.cost_of_missed_appointments`,
@@ -17,15 +17,15 @@ export default defineMessages({
   },
   did_not_attend: {
     id: `${scope}.input_label.did_not_attend`,
-    defaultMessage: 'Did not attend - National Average %',
+    defaultMessage: 'Did not attend - National average %',
   },
   uptake: {
     id: `${scope}.input_label.uptake`,
-    defaultMessage: 'Uptake - National Average %',
+    defaultMessage: 'Uptake - National average %',
   },
   coverage: {
     id: `${scope}.input_label.coverage`,
-    defaultMessage: 'Coverage - National Average %',
+    defaultMessage: 'Coverage - National average %',
   },
   number_of_women_screened_after_sending_invites: {
     id: `${scope}.input_label.number_of_women_screened_after_sending_invites`,

@@ -27,11 +27,13 @@ import {
   reverseAppointmentReminderCancellation,
   rescheduleAppointmentReminder,
 } from 'redux/actions/Staff';
+import { removeLeadingZeroFromTime } from 'utils/helpers';
+import moment from 'moment';
 
 const { Panel } = Collapse;
 
 const columnMap = {
-  appointment_id: 'appointment__id',
+  // appointment_id: 'appointment__id',
   patient_full_name: 'appointment__patient__last_name',
   doctor_full_name: 'appointment__doctor__last_name',
   appointment_date: 'appointment__start_datetime',
@@ -232,25 +234,25 @@ const AppointmentsReminders = ({ title, startOpen }) => {
             sendReminderNow(row);
           }}
         >
-          <span style={{ color: '#CC0000' }}>Send Reminder Now</span>
+          <span style={{ color: '#CC0000' }}>Send reminder now</span>
         </Menu.Item>
       </Menu>
     );
   };
 
   const tableColumns = [
-    {
-      title: 'ID',
-      dataIndex: ['appointment', 'id'],
-      sorter: true,
-    },
+    // {
+    //   title: 'ID',
+    //   dataIndex: ['appointment', 'id'],
+    //   sorter: true,
+    // },
     {
       title: formatMessage(overviewPageMessages.tableColumnPatient),
       dataIndex: ['patient', 'full_name'],
       sorter: true,
     },
     {
-      title: formatMessage(overviewPageMessages.tableColumnAppointment),
+      title: formatMessage(overviewPageMessages.tableColumnDoctor),
       dataIndex: ['doctor', 'full_name'],
       sorter: true,
       render: (_, row) => (
@@ -264,7 +266,11 @@ const AppointmentsReminders = ({ title, startOpen }) => {
       dataIndex: ['appointment', 'date'],
       sorter: true,
       render: (_, row) => (
-        <div className="text-left">{`${row.appointment.date} ${row.appointment.time}`}</div>
+        <div className="text-left text-uppercase">{`${
+          row.appointment.date
+        } ${removeLeadingZeroFromTime(
+          moment(row.appointment.time, ['h:mm A']).format('hh:mm A')
+        )}`}</div>
       ),
     },
     {
@@ -277,7 +283,11 @@ const AppointmentsReminders = ({ title, startOpen }) => {
       dataIndex: ['reminder', 'date'],
       sorter: true,
       render: (_, row) => (
-        <div className="text-left">{`${row.reminder.date} ${row.reminder.time}`}</div>
+        <div className="text-left text-uppercase">{`${
+          row.reminder.date
+        } ${removeLeadingZeroFromTime(
+          moment(row.reminder.time, ['h:mm A']).format('hh:mm A')
+        )}`}</div>
       ),
     },
     {

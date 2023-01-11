@@ -61,7 +61,7 @@ const pagesNavTree = [
   {
     key: 'settings',
     path: `${APP_PAGES_PREFIX_PATH}/settings`,
-    title: 'sidenav.pages.setting',
+    title: 'Settings',
     icon: SettingOutlined,
     breadcrumb: false,
     submenu: [],

@@ -22,7 +22,7 @@ export default defineMessages({
   },
   appointmentTypeLabel: {
     id: `${scope}.form.label.appointment_type`,
-    defaultMessage: 'Appointment Type',
+    defaultMessage: 'Appointment type',
   },
   priceLabel: {
     id: `${scope}.form.label.price`,
@@ -42,19 +42,19 @@ export default defineMessages({
   },
   appointmentDetails: {
     id: `${scope}.text.appointment_details`,
-    defaultMessage: 'Appointment Details',
+    defaultMessage: 'Appointment details',
   },
   endAppointment: {
     id: `${scope}.text.end_appointment`,
-    defaultMessage: 'End Appointment',
+    defaultMessage: 'End appointment',
   },
   cancelAppointment: {
     id: `${scope}.text.cancel_appointment`,
-    defaultMessage: 'Cancel Appointment',
+    defaultMessage: 'Cancel appointment',
   },
   updateCommunicationStatus: {
     id: `${scope}.text.update_communication_status`,
-    defaultMessage: 'Communication Status',
+    defaultMessage: 'Communication status',
   },
   patient: {
     id: `${scope}.text.patient`,
@@ -82,7 +82,7 @@ export default defineMessages({
   },
   appointmentPrice: {
     id: `${scope}.text.appointment_price`,
-    defaultMessage: 'Appointment Price',
+    defaultMessage: 'Appointment price',
   },
   missingReason: {
     id: `${scope}.text.missing_reason`,
@@ -90,7 +90,7 @@ export default defineMessages({
   },
   missingReasonDetails: {
     id: `${scope}.text.missing_reason_details`,
-    defaultMessage: 'Missing Details',
+    defaultMessage: 'Missing details',
   },
   cancellationReason: {
     id: `${scope}.text.cancellation_reason`,
@@ -98,7 +98,7 @@ export default defineMessages({
   },
   cancellationReasonDetails: {
     id: `${scope}.text.cancellation_reason_details`,
-    defaultMessage: 'Cancellation Details',
+    defaultMessage: 'Cancellation details',
   },
   communicationStatus: {
     id: `${scope}.text.communication_status`,
@@ -107,7 +107,7 @@ export default defineMessages({
   },
   communicationStatusDetails: {
     id: `${scope}.text.communication_status_details`,
-    defaultMessage: 'Communication Details',
+    defaultMessage: 'Communication details',
   },
   details: {
     id: `${scope}.text.details`,
@@ -115,11 +115,11 @@ export default defineMessages({
   },
   appointmentStatus: {
     id: `${scope}.form.label.status`,
-    defaultMessage: 'Appointment Status',
+    defaultMessage: 'Appointment status',
   },
   deleteAppointment: {
     id: `${scope}.text.delete_appointment`,
-    defaultMessage: 'Delete Appointment?',
+    defaultMessage: 'Delete appointment?',
   },
   cancel: {
     id: `${globalScope}.text.cancel`,
@@ -159,14 +159,14 @@ export default defineMessages({
   },
   endSuccess: {
     id: `${scope}.text.end_success`,
-    defaultMessage: 'Appointment Ended',
+    defaultMessage: 'Appointment ended',
   },
   cancelSuccess: {
     id: `${scope}.text.cancellation_success`,
-    defaultMessage: 'Appointment Cancelled',
+    defaultMessage: 'Appointment cancelled',
   },
   communicationStatusUpdateSuccess: {
     id: `${scope}.text.communication_status_update_success`,
-    defaultMessage: 'Appointment Communication Status Updated',
+    defaultMessage: 'Appointment communication status updated',
   },
 });

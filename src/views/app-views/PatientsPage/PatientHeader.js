@@ -1,7 +1,10 @@
-import { Button, PageHeader, Typography } from 'antd';
+import { Button, PageHeader, Typography, Grid } from 'antd';
 import React from 'react';
 import { useIntl } from 'react-intl';
 import messages from './messages';
+import utils from 'utils';
+
+const { useBreakpoint } = Grid;
 
 const PatientHeader = ({
   title,
@@ -10,14 +13,20 @@ const PatientHeader = ({
   primaryDisabled,
 }) => {
   const { formatMessage } = useIntl();
+  const screens = utils.getBreakPoint(useBreakpoint());
+  const isMobile = !screens.includes('lg');
 
   return (
     <PageHeader
       className="p-0 mb-4"
       title={
-        <Typography.Title level={2} className="mb-0">
-          {title}
-        </Typography.Title>
+        isMobile ? (
+          <Typography.Title level={2} className="mb-0">
+            {title}
+          </Typography.Title>
+        ) : (
+          ''
+        )
       }
       extra={[
         <Button key="0" onClick={secondaryAction}>
