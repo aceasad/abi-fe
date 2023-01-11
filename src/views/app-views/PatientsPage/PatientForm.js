@@ -144,7 +144,7 @@ const PatientForm = ({
       enableReinitialize
       initialValues={{
         ...initialState,
-        country_code: '+44',
+        country_code: '44',
         operations: {
           addedOperations: [],
           deletedOperations: [],
@@ -474,9 +474,8 @@ const PatientForm = ({
               handleSubmit();
             }}
             type="primary"
-            className={`floating-button ${
-              !isValid || !dirty || loading || !isSaveVisible ? '' : 'active'
-            }`}
+            className={`floating-button ${!isValid || !dirty || loading || !isSaveVisible ? '' : 'active'
+              }`}
           >
             {formatMessage(messages.save)}
           </Button>
