@@ -12,6 +12,7 @@ import {
   Space,
   Typography,
   Tooltip,
+  Grid,
 } from 'antd';
 import {
   EditFilled,
@@ -32,6 +33,10 @@ import messages from './messages';
 import { DEFAULT_PAGINATION_LIMIT } from 'constants/ApiConstant';
 import { makeSelectPatients } from 'redux/selectors/Patient';
 import Modal from 'components/shared-components/Modal';
+import moment from 'moment';
+import utils from 'utils';
+
+const { useBreakpoint } = Grid;
 
 const PatientList = ({ showCreate, updatePatient, showPreview }) => {
   const [search, setSearch] = useState('');
@@ -39,6 +44,8 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
 
   const dispatch = useDispatch();
   const { formatMessage } = useIntl();
+  const screens = utils.getBreakPoint(useBreakpoint());
+  const isMobile = !screens.includes('lg');
 
   const { count, patients, loading, page } = useSelector(makeSelectPatients());
 
@@ -95,7 +102,11 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
     {
       title: formatMessage(messages.lastAppointment),
       dataIndex: 'last_appointment',
-      render: (lastAppointment) => <span>{lastAppointment || '-'}</span>,
+      render: (lastAppointment) => (
+        <span>
+          {lastAppointment ? moment(lastAppointment).format('D/MM/yyyy') : '-'}
+        </span>
+      ),
       sorter: true,
     },
     // {
@@ -166,9 +177,13 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
       <PageHeader
         className="p-0 mb-4"
         title={
-          <Typography.Title level={2} className="mb-0">
-            {formatMessage(messages.patientsTitle)}
-          </Typography.Title>
+          isMobile ? (
+            <Typography.Title level={2} className="mb-0">
+              {formatMessage(messages.patientsTitle)}
+            </Typography.Title>
+          ) : (
+            ''
+          )
         }
         extra={[
           <Space key="0">

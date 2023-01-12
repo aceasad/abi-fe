@@ -5,6 +5,7 @@ import {
   UserOutlined,
   WhatsAppOutlined,
   SettingOutlined,
+  PaperClipOutlined,
 } from '@ant-design/icons';
 import { APP_PAGES_PREFIX_PATH } from 'configs/AppConfig';
 
@@ -50,9 +51,17 @@ const pagesNavTree = [
     submenu: [],
   },
   {
+    key: 'documents',
+    path: `${APP_PAGES_PREFIX_PATH}/documents`,
+    title: 'Documents',
+    icon: PaperClipOutlined,
+    breadcrumb: false,
+    submenu: [],
+  },
+  {
     key: 'settings',
     path: `${APP_PAGES_PREFIX_PATH}/settings`,
-    title: 'sidenav.pages.setting',
+    title: 'Settings',
     icon: SettingOutlined,
     breadcrumb: false,
     submenu: [],

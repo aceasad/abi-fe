@@ -20,7 +20,14 @@ const CreateStaff = ({ showList }) => {
   };
 
   const handleSubmit = (values) => {
-    const preparedData = prepareFormData(values);
+    const parsedValues = {
+      ...values,
+      date_of_birth: moment(
+        moment(values.date_of_birth).format('DD-MM-YYYY')
+      ).format(DATE_FORMAT_DD_MMM_YYYY),
+    };
+
+    const preparedData = prepareFormData(parsedValues);
     dispatch(createStaff({ data: preparedData, afterCreate }));
   };
 
@@ -41,6 +48,7 @@ const CreateStaff = ({ showList }) => {
         date_of_birth: moment(new Date()).format(DATE_FORMAT_DD_MMM_YYYY),
         ethnicity: '',
         seniority: '',
+        phone_number: '',
         specialization: '',
         gender: GENDER_CHOICES[0].id,
       }}

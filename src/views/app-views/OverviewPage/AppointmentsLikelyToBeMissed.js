@@ -21,16 +21,21 @@ import AppointmentPreview from '../CalendarPage/AppointmentPreview';
 import { FROM_OVERVIEW_APPOINTMENTS } from 'constants/ClinicConstants';
 import { DownOutlined } from '@ant-design/icons';
 import { setPatientShowMessages } from 'redux/actions/Patient';
+import {
+  convertDateTimeStringToUtcString,
+  removeLeadingZeroFromTime,
+} from 'utils/helpers';
 import { ROUTES } from 'routes';
 import { useHistory } from 'react-router-dom';
 import UpdateAppointmentCommunicationStatus from '../CalendarPage/UpdateAppointmentCommunicationStatus';
+import moment from 'moment';
 
 const { Panel } = Collapse;
 
 // for sorting to be feasible: the name of the attribute should be the name in dataIndex (if object concat with underscore '_') and
 // the value should be the name of actual field in the database as field or table__field = django wise
 const columnMap = {
-  id: 'id',
+  // id: 'id',
   patient_full_name: 'patient__last_name',
   doctor_full_name: 'doctor__last_name',
   date: 'start_datetime',
@@ -129,11 +134,11 @@ const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
   };
 
   const tableColumns = [
-    {
-      title: 'ID',
-      dataIndex: 'id',
-      sorter: true,
-    },
+    // {
+    //   title: 'ID',
+    //   dataIndex: 'id',
+    //   sorter: true,
+    // },
     {
       title: formatMessage(patientPageMessages.columnTitlePatient),
       dataIndex: ['patient', 'full_name'],
@@ -158,6 +163,13 @@ const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
       title: formatMessage(patientPageMessages.columnTitleTime),
       dataIndex: 'time',
       sorter: true,
+      render: (_, row) => (
+        <div className="text-uppercase">
+          {removeLeadingZeroFromTime(
+            moment(row.time, ['h:mm A']).format('hh:mm A')
+          )}
+        </div>
+      ),
     },
     {
       title: formatMessage(patientPageMessages.columnTitleCommunicationStatus),
@@ -165,12 +177,7 @@ const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
       sorter: true,
       render: (_, row) => (
         <div
-          className={`text-left${
-            row.communication_status?.name === 'Not Contacted' ||
-            row.communication_status?.name === 'Contact Again'
-              ? ' blink'
-              : ''
-          }`}
+          className="text-left"
           onClick={(e) =>
             showUpdateAppointmentCommunicationStatusWrapper(e, row)
           }
@@ -238,68 +245,49 @@ const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
   ];
 
   return (
-    <Collapse
-      expandIconPosition="right"
-      ghost
-      className="mb-4"
-      onChange={() => setIsCollapseOpen(!isCollapseOpen)}
-      defaultActiveKey={startOpen ? ['1'] : null}
-    >
-      <Panel
-        key="1"
-        className="overview-collapse"
-        header={collapseHeader}
-        showArrow={false}
-      >
-        <Card className="mt-4 shadow-basic">
-          <Appointments
-            field={LIKELY_TO_BE_MISSED}
-            id={''}
-            columnMap={columnMap}
-          >
-            <Appointments.Table
-              columns={tableColumns}
-              // onRow={(record) => {
-              //   return {
-              //     onClick: () => {
-              //       setActiveAppointment({
-              //         id: record.id,
-              //         type: LIKELY_TO_BE_MISSED,
-              //         patientId: record.patient.id,
-              //       });
-              //     },
-              //   };
-              // }}
-            />
-          </Appointments>
-          {activeAppointment && (
-            <AppointmentPreview
-              handleClose={() => setActiveAppointment(null)}
-              additionalSubmitData={{
-                temporalType: LIKELY_TO_BE_MISSED,
-                actionFrom: FROM_OVERVIEW_APPOINTMENTS,
-              }}
-              patientId={activeAppointment.patientId}
-              staffId={1}
-              appointment_type={LIKELY_TO_BE_MISSED}
-              appointment={activeAppointment.appointment}
-            />
-          )}
-          {showChildModal.modal ===
-            NESTED_MODAL.UPDATE_APPOINTMENT_COMMUNICATION_STATUS && (
-            <UpdateAppointmentCommunicationStatus
-              handleClose={showPreview}
-              id={showChildModal.data.appointment.id}
-              patientId={showChildModal.data.appointment.patient.id}
-              appointment_type={LIKELY_TO_BE_MISSED}
-              updateCommunicationStatusFrom={FROM_OVERVIEW_APPOINTMENTS}
-              staffId={''}
-              appointment={showChildModal.data.appointment}
-            />
-          )}
-        </Card>
-      </Panel>
-    </Collapse>
+    <>
+      <Appointments field={LIKELY_TO_BE_MISSED} id={''} columnMap={columnMap}>
+        <Appointments.Table
+          columns={tableColumns}
+          // onRow={(record) => {
+          //   return {
+          //     onClick: () => {
+          //       setActiveAppointment({
+          //         id: record.id,
+          //         type: LIKELY_TO_BE_MISSED,
+          //         patientId: record.patient.id,
+          //       });
+          //     },
+          //   };
+          // }}
+        />
+      </Appointments>
+      {activeAppointment && (
+        <AppointmentPreview
+          handleClose={() => setActiveAppointment(null)}
+          additionalSubmitData={{
+            temporalType: LIKELY_TO_BE_MISSED,
+            actionFrom: FROM_OVERVIEW_APPOINTMENTS,
+          }}
+          patientId={activeAppointment.patientId}
+          staffId={1}
+          appointment_type={LIKELY_TO_BE_MISSED}
+          appointment={activeAppointment.appointment}
+        />
+      )}
+      {showChildModal.modal ===
+        NESTED_MODAL.UPDATE_APPOINTMENT_COMMUNICATION_STATUS && (
+        <UpdateAppointmentCommunicationStatus
+          handleClose={showPreview}
+          id={showChildModal.data.appointment.id}
+          patientId={showChildModal.data.appointment.patient.id}
+          appointment_type={LIKELY_TO_BE_MISSED}
+          updateCommunicationStatusFrom={FROM_OVERVIEW_APPOINTMENTS}
+          staffId={''}
+          appointment={showChildModal.data.appointment}
+        />
+      )}
+    </>
   );
 };
 

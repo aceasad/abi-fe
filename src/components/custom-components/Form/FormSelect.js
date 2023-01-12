@@ -53,8 +53,8 @@ const FormSelect = ({
         onChange={handleSelected}
         onBlur={() => setFieldTouched(field.name, true)}
       >
-        {options.map((item) => (
-          <Option key={item.id} value={item.id}>
+        {options.map((item, index) => (
+          <Option key={index} value={item.id}>
             {item[optionField]}
           </Option>
         ))}

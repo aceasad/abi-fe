@@ -153,7 +153,7 @@ export const rescheduleAppointmentReminder = (payload) => ({
   payload,
 });
 
-// messages requiring immediate attention
+// Human intervention needed
 export const getMessagesRequiringImmediateAttention = (payload) => ({
   type: GET_MESSAGES_REQUIRING_IMMEDIATE_ATTENTION,
   payload,

@@ -129,7 +129,7 @@ export default defineMessages({
   },
   listAttention: {
     id: `${scope}.list.attention`,
-    defaultMessage: 'Messages requiring immediate attention',
+    defaultMessage: 'Human intervention needed',
   },
   listScreeningInvitesSent: {
     id: `${scope}.list.screeningInvitesSent`,
@@ -149,15 +149,15 @@ export default defineMessages({
   },
   tableMessagesRequiringImmediateAttentionTitle: {
     id: `${scope}.table.messages_requiring_immediate_attention.title`,
-    defaultMessage: 'Messages Requiring Immediate Attention',
+    defaultMessage: 'Human intervention needed',
   },
   tablePassedAppointmentsRequiringImmediateStatusUpdateTitle: {
     id: `${scope}.table.past_appointments_requiring_immediate_status_update.title`,
-    defaultMessage: 'Passed Appointments Requiring Status Update',
+    defaultMessage: 'Past appointments requiring status update',
   },
   tableAppointmentsRemindersTitle: {
     id: `${scope}.table.appointments_reminders.title`,
-    defaultMessage: 'Appointment Reminders',
+    defaultMessage: 'Appointment reminders',
   },
   tableColumnPatient: {
     id: `${scope}.table.column.patient`,
@@ -167,9 +167,13 @@ export default defineMessages({
     id: `${scope}.table.column.appointment`,
     defaultMessage: 'Appointment',
   },
+  tableColumnDoctor: {
+    id: `${scope}.table.column.doctor`,
+    defaultMessage: 'Staff member',
+  },
   tableColumnAppointmentDatetime: {
     id: `${scope}.table.column.appointment_datetime`,
-    defaultMessage: 'Appointment Date/Time',
+    defaultMessage: 'Appointment date/time',
   },
   tableColumnDate: {
     id: `${scope}.table.column.date`,
@@ -189,15 +193,15 @@ export default defineMessages({
   },
   tableColumnReminderDatetime: {
     id: `${scope}.table.column.reminder_datetime`,
-    defaultMessage: 'Reminder Date/Time',
+    defaultMessage: 'Reminder date/time',
   },
   tableColumnReminderStatus: {
     id: `${scope}.table.column.reminder_status`,
-    defaultMessage: 'Reminder Status',
+    defaultMessage: 'Reminder status',
   },
   tableColumnNoShowScore: {
     id: `${scope}.table.column.no_show_score`,
-    defaultMessage: 'No Show Probability',
+    defaultMessage: 'No show probability',
   },
   tableColumnStatus: {
     id: `${scope}.table.column.status`,
@@ -213,7 +217,7 @@ export default defineMessages({
   },
   tableDropdownSeeAppointment: {
     id: `${scope}.table.dropdown.see_appointment`,
-    defaultMessage: 'See Appointment',
+    defaultMessage: 'See appointment',
   },
   tableDropdownAiReachout: {
     id: `${scope}.table.dropdown.reachout`,
@@ -221,27 +225,27 @@ export default defineMessages({
   },
   tableDropdownPatientInfo: {
     id: `${scope}.table.dropdown.patient_info`,
-    defaultMessage: 'Patient Info',
+    defaultMessage: 'Patient info',
   },
   tableDropdownAppointmentInfo: {
     id: `${scope}.table.dropdown.appointment_info`,
-    defaultMessage: 'Appointment Info',
+    defaultMessage: 'Appointment info',
   },
   tableDropdownPreAppointmentQuestionnaireInfo: {
     id: `${scope}.table.dropdown.pre_appointment_questionnaire_info`,
-    defaultMessage: 'Pre Appointment Questionnaire Info',
+    defaultMessage: 'Pre-appointment question info',
   },
   tableDropdownUpdateMessageRequiringImmediateAttentionStatus: {
     id: `${scope}.table.dropdown.update_message_requiring_immediate_attention_status`,
-    defaultMessage: 'Update Status',
+    defaultMessage: 'Change status',
   },
   tableDropdownCancelAppointmentReminder: {
     id: `${scope}.table.dropdown.cancel_appointment_reminder`,
-    defaultMessage: 'Cancel Reminder',
+    defaultMessage: 'Cancel reminder',
   },
   tableDropdownReverseAppointmentReminderCancellation: {
     id: `${scope}.table.dropdown.reverse_appointment_reminder_cancellation`,
-    defaultMessage: 'Reverse Reminder Cancellation',
+    defaultMessage: 'Reverse reminder cancellation',
   },
   tableDropdownRescheduleAppointmentReminder: {
     id: `${scope}.table.dropdown.reschedule_reminder`,
@@ -249,7 +253,7 @@ export default defineMessages({
   },
   asaEfficiencyTooltip: {
     id: `${scope}.asa_data.tooltip.asa_efficiency`,
-    defaultMessage: 'ASA Efficiency',
+    defaultMessage: 'ASA efficiency',
   },
   revenueSavedTooltip: {
     id: `${scope}.asa_data.tooltip.revenue_saved`,
@@ -377,11 +381,11 @@ export default defineMessages({
   },
   messageRequiringImmediateAttentionFormLabelStatusDetails: {
     id: `${scope}.form.label.message_requiring_immediate_attention_status_details`,
-    defaultMessage: 'Status Details',
+    defaultMessage: 'Status details',
   },
   modalTitleUpdateMessageRequiringImmediateAttentionStatus: {
     id: `${scope}.modal.update_message_requiring_immediate_attention_status.title`,
-    defaultMessage: 'Update Status',
+    defaultMessage: 'Change status',
   },
   modalOkTextUpdateMessageRequiringImmediateAttentionStatus: {
     id: `${scope}.modal.update_message_requiring_immediate_attention_status.ok_text`,
@@ -397,7 +401,7 @@ export default defineMessages({
   },
   modalTitlePreAppointmentQuestionnaire: {
     id: `${scope}.modal.pre_appointment_questionnaire.title`,
-    defaultMessage: 'Pre-Appointment Questionnaire Patient Answers',
+    defaultMessage: 'Pre-appointment questionnaire patient answers',
   },
   modalOkTextPreAppointmentQuestionnaire: {
     id: `${scope}.modal.pre_appointment_questionnaire.ok_text`,

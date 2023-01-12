@@ -9,7 +9,11 @@ const PatientInfoListItem = ({ children, className }) => {
     <div className={className}>
       <Flex justifyContent="between" className="mb-3">
         <Text className="mr-4">{children[0]}:</Text>
-        <Text className="text-right text-break">{children[1]}</Text>
+        <Text className="text-right text-break">
+          {children[1]}
+          {children[0] === 'Height' && <span className="ml-1">cm</span>}
+          {children[0] === 'Weight' && <span className="ml-1">kg</span>}
+        </Text>
       </Flex>
     </div>
   );

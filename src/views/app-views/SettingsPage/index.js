@@ -5,9 +5,8 @@ import {
   BarChartOutlined,
   TeamOutlined,
 } from '@ant-design/icons';
-import { Menu } from 'antd';
+import { Card, Layout, Menu, Typography, Grid } from 'antd';
 import { Link, Redirect, Route, Switch } from 'react-router-dom';
-import InnerAppLayout from 'layouts/inner-app-layout';
 import EditClinic from './EditClinic';
 import ProfileSettings from './ProfileSettings';
 import messages from './messages';
@@ -16,6 +15,10 @@ import IndustryAverage from '../IndustryAveragePage';
 import UserSettings from '../UserSettings';
 import { useSelector } from 'react-redux';
 import { makeSelectIsOrganizationOwner } from 'redux/selectors/Auth';
+import utils from 'utils';
+
+const { Title } = Typography;
+const { useBreakpoint } = Grid;
 
 const SettingOption = ({ match, location, isOrganizationOwner }) => {
   const { formatMessage } = useIntl();
@@ -23,7 +26,7 @@ const SettingOption = ({ match, location, isOrganizationOwner }) => {
   return (
     <Menu
       defaultSelectedKeys={`${match.url}/edit-clinic`}
-      mode="inline"
+      mode="horizontal"
       selectedKeys={[location.pathname]}
     >
       <Menu.Item key={`${match.url}/edit-clinic`}>
@@ -74,18 +77,28 @@ const SettingContent = ({ match, isOrganizationOwner }) => {
 
 const SettingsPage = (props) => {
   const isOrganizationOwner = useSelector(makeSelectIsOrganizationOwner());
+  const screens = utils.getBreakPoint(useBreakpoint());
+  const isMobile = !screens.includes('lg');
 
   return (
-    <InnerAppLayout
-      border
-      sideContentWidth={320}
-      sideContent={
-        <SettingOption {...props} isOrganizationOwner={isOrganizationOwner} />
-      }
-      mainContent={
-        <SettingContent {...props} isOrganizationOwner={isOrganizationOwner} />
-      }
-    />
+    <>
+      <Layout>
+        <Card>
+          {isMobile && (
+            <Title level={2} type="primary" className="text-wrap">
+              Settings
+            </Title>
+          )}
+          <div style={{ marginTop: '20px' }} />
+          <SettingOption {...props} isOrganizationOwner={isOrganizationOwner} />
+          <div style={{ marginTop: '20px' }} />
+          <SettingContent
+            {...props}
+            isOrganizationOwner={isOrganizationOwner}
+          />
+        </Card>
+      </Layout>
+    </>
   );
 };
 

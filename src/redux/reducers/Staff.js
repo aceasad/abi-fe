@@ -122,7 +122,7 @@ const staff = (state = initialState, action) =>
           order: action.payload.order || '',
         };
         break;
-      // messages requiring immediate attention
+      // Human intervention needed
       case SET_MESSAGES_REQUIRING_IMMEDIATE_ATTENTION:
         draft[action.payload.field] = {
           ...state[action.payload.field],
