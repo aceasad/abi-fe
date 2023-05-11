@@ -55,8 +55,8 @@ const AppointmentFormModal = ({
   };
   const [query, setQuery] = useState('');
   const debouncedSearch = useDebounce(query, 500);
-
   const { patients, patientsLoading } = useSelector(makeSelectClinicPatients());
+  const [isPasIntegrated, setIsPasIntegrated] = useState(true)
 
   useEffect(() => {
     if (query) {
@@ -78,6 +78,7 @@ const AppointmentFormModal = ({
   );
 
   return (
+
     <Formik
       initialValues={initialState}
       validationSchema={validationSchema}
@@ -86,6 +87,7 @@ const AppointmentFormModal = ({
       validateOnMount
     >
       {({ values, handleSubmit, dirty, isValid, setFieldTouched, touched }) => (
+
         <Modal
           title={title}
           visible
@@ -158,7 +160,7 @@ const AppointmentFormModal = ({
                   </Button>
                 </Col>
               </Row>
-              <RowColumnField
+              {isPasIntegrated?(<></>):(<RowColumnField
                 span={24}
                 label={formatMessage(messages.doctorLabel)}
                 name="doctor"
@@ -167,7 +169,7 @@ const AppointmentFormModal = ({
                 optionField="full_name"
                 defaultOption={values.doctor}
                 required
-              />
+              />)}
               <Row gutter={16}>
                 <Col xs={24} lg={12}>
                   <Field
@@ -182,7 +184,7 @@ const AppointmentFormModal = ({
                     required
                   />
                 </Col>
-                <Col xs={24} lg={12}>
+                {isPasIntegrated?(<></>):(   <Col xs={24} lg={12}>
                   <DirtyFieldWrapper
                     setFieldDirty={setFieldTouched}
                     name="price"
@@ -197,7 +199,8 @@ const AppointmentFormModal = ({
                       decimals={2}
                     />
                   </DirtyFieldWrapper>
-                </Col>
+                </Col>)}
+             
               </Row>
               <Row gutter={16}>
                 <Col xs={24} lg={12}>

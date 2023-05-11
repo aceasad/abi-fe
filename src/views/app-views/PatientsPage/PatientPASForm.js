@@ -24,13 +24,13 @@ import {
 } from 'redux/actions/Anamnesis';
 import { BeforeRouteContext } from 'utils/context';
 import { getPatientDetailsNewPatientForm } from 'redux/actions/Patient';
-import { DATE_FORMAT_DD_MMM_YYYY } from 'constants/DateConstant';
+import { DATE_FORMAT_DD_MM_YYYY } from 'constants/DateConstant';
 import moment from 'moment';
 import { COUNTRY_CODES } from 'constants/CountryCodesConstants';
 
 const { Title } = Typography;
 
-const PatientForm = ({
+const PatientPASForm = ({
   title,
   showList,
   handleSubmit,
@@ -59,7 +59,7 @@ const PatientForm = ({
     const parsedValues = {
       ...values,
       date_of_birth: moment(values.date_of_birth, 'DD/MM/YYYY').format(
-        DATE_FORMAT_DD_MMM_YYYY
+        DATE_FORMAT_DD_MM_YYYY
       ),
       phone_number: values.country_code + values.phone_number,
     };
@@ -145,11 +145,6 @@ const PatientForm = ({
       initialValues={{
         ...initialState,
         country_code: '44',
-        operations: {
-          addedOperations: [],
-          deletedOperations: [],
-          changedOperations: [],
-        },
       }}
       innerRef={formRef}
       onSubmit={handleSubmitWrapper}
@@ -204,6 +199,17 @@ const PatientForm = ({
                     />
                     <ColumnField
                       span={8}
+                      component={FormField}
+                      label={formatMessage(messages.patientIdent)}
+                      name="ExternalIdentificationNumber"
+                      errorTexts={{
+                        label: formatMessage(messages.lastName),
+                        maxValue: MAX,
+                      }}
+                      required
+                    />
+                    <ColumnField
+                      span={8}
                       maxDate={new Date()}
                       component={FormDatePicker}
                       disablePastDates
@@ -211,8 +217,6 @@ const PatientForm = ({
                       name="date_of_birth"
                       required
                     />
-                  </Row>
-                  <Row gutter={16}>
                     <ColumnField
                       span={8}
                       component={FormSelect}
@@ -223,6 +227,9 @@ const PatientForm = ({
                       label={formatMessage(messages.sex)}
                       required
                     />
+                  </Row>
+                  {/* <Row gutter={16}>
+
 
                     <ColumnField
                       span={8}
@@ -244,8 +251,8 @@ const PatientForm = ({
                       min={0}
                       suffix="KGs"
                     />
-                  </Row>
-                  <Row gutter={16}>
+                  </Row> */}
+                  {/* <Row gutter={16}>
                     <ColumnField
                       span={8}
                       component={FormSelect}
@@ -255,7 +262,7 @@ const PatientForm = ({
                       defaultOption={values.ethnicity}
                       label={formatMessage(messages.ethnicity)}
                     />
-                  </Row>
+                  </Row> */}
                 </Col>
               </Row>
 
@@ -307,7 +314,7 @@ const PatientForm = ({
                   </Row>
                 </Col>
               </Row>
-
+              {/* 
               <Row gutter={16}>
                 <Col span={6}>
                   <Title type="secondary" level={2} className="mt-4">
@@ -388,8 +395,8 @@ const PatientForm = ({
                     />
                   </Row>
                 </Col>
-              </Row>
-
+              </Row> */}
+              {/* 
               <Row gutter={16}>
                 <Col span={6}>
                   <Title type="secondary" level={2} className="mt-4">
@@ -452,7 +459,7 @@ const PatientForm = ({
                     </Col>
                   </Row>
                 </Col>
-              </Row>
+              </Row> */}
             </Form>
           </Card>
 
@@ -485,4 +492,4 @@ const PatientForm = ({
   );
 };
 
-export default PatientForm;
+export default PatientPASForm;

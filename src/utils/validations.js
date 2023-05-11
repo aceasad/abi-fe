@@ -114,11 +114,13 @@ export const patientSchema = Yup.object().shape({
   number_of_dependants: Yup.number(),
   insurance: Yup.string().max(MAX),
   street_number: Yup.string().max(8),
-  street_name: Yup.string().max(128).required(),
+  street_name: Yup.string().max(128),
   area_of_living: Yup.string().max(128),
-  city: Yup.string().max(64).required(),
-  post_code: Yup.string().max(16).required(),
+  city: Yup.string().max(64),
+  post_code: Yup.string().max(16),
   country: Yup.string().max(64),
+  ExternalIdentificationNumber: Yup.string().max(64),
+  isPASPatient: Yup.boolean(),
 });
 
 export const userSchema = Yup.object().shape({
@@ -153,6 +155,13 @@ export const createAppointmentValidationSchema = Yup.object().shape({
   time: Yup.string().required(),
   appointmentType: Yup.number().required(),
   price: Yup.number().required(),
+});
+
+export const createPASAppointmentValidationSchema = Yup.object().shape({
+  patient: Yup.number().required(),
+  date: Yup.string().required(),
+  appointmentType: Yup.number().required(),
+  time: Yup.string().required(),
 });
 
 export const updateAppointmentValidationSchema = Yup.object().shape({

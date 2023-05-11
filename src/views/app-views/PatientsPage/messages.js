@@ -19,6 +19,14 @@ export default defineMessages({
     id: `${scope}.button.new`,
     defaultMessage: 'New patient',
   },
+  newPASPatient: {
+    id: `${scope}.button.new`,
+    defaultMessage: 'New PAS patient',
+  },
+  patientIdent: {
+    id: `${scope}.text.patient_ident`,
+    defaultMessage: 'Patient NHS Number',
+  },
   firstName: {
     id: `${scope}.text.first_name`,
     defaultMessage: 'First name',

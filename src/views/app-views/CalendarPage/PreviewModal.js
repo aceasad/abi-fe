@@ -1,5 +1,5 @@
 import Modal from 'antd/lib/modal/Modal';
-import React from 'react';
+import React, {useState} from 'react';
 import { useIntl } from 'react-intl';
 import messages from './messages';
 import appointmentsPageMessages from '../AppointmentsPage/messages';
@@ -26,7 +26,7 @@ function PreviewModal({
     makeSelectSingleAppointment()
   );
   const isLoading = singleLoading || !appointment;
-
+  const [isPasIntegrated, setIsPasIntegrated] = useState(true)
   const footer = [];
   if (!isLoading && new Date(appointment.datetime_iso) > new Date()) {
     footer.push(
@@ -75,14 +75,12 @@ function PreviewModal({
           <Typography.Text strong>
             {appointment?.doctor?.full_name}{' '}
           </Typography.Text>
-          <span className="text-primary">({appointment?.specialization})</span>
+          {isPasIntegrated ? (<></>):(<span className="text-primary">({appointment?.specialization})</span>)}
+
         </>
       ),
     },
-    {
-      label: formatMessage(messages.type),
-      value: appointment?.appointment_type?.name,
-    },
+    
     {
       label: formatMessage(messages.status),
       value: appointment?.status?.name,
@@ -90,6 +88,10 @@ function PreviewModal({
     {
       label: formatMessage(messages.date),
       value: appointment?.date,
+    },
+    {
+      label: formatMessage(messages.type),
+      value: appointment?.appointment_type?.name,
     },
     {
       label: formatMessage(messages.time),
