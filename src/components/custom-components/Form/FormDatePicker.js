@@ -29,9 +29,11 @@ const FormDatePicker = ({
 
   const disabledDate = (current) => {
     // Can not select days before today and today
+    console.log("Current Date", current)
+    console.log(current && current > moment().endOf('day'))
     return current && current > moment().endOf('day');
   };
-  console.log(props.disablePastDates);
+
   return (
     <Form.Item
       label={label}

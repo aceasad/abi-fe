@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import AppointmentFormModal from './AppointmentFormModal';
+import AppointmentPASFormModal from './AppointmentPASFormModal'
 import messages from './messages';
 import { useIntl } from 'react-intl';
-import { createAppointmentValidationSchema } from 'utils/validations';
+import { createAppointmentValidationSchema, createPASAppointmentValidationSchema } from 'utils/validations';
 import { message } from 'antd';
 import { getYearAndMonth, prepareAppointmentData } from 'utils/helpers';
 import {
@@ -27,6 +28,7 @@ const CreateAppointment = ({
 }) => {
   const dispatch = useDispatch();
   const { formatMessage } = useIntl();
+  const [isPasIntegrated, setIsPasIntegrated] = useState(true)
 
   const afterCreate = (newAppointmentStartDatetime) => {
     message.success(formatMessage(messages.newAppointmentCreated));
@@ -60,31 +62,31 @@ const CreateAppointment = ({
   };
 
   const { singleLoading } = useSelector(makeSelectSingleAppointment());
-
+ 
   return (
     <AppointmentFormModal
-      title={formatMessage(messages.createAppointmentTitle)}
-      initialState={{
-        patient: patient_id,
-        doctor: '',
-        appointmentType: '',
-        price: 0,
-        date: '',
-        time: '',
-      }}
-      validationSchema={createAppointmentValidationSchema}
-      isEditForm={false}
-      doctors={doctors}
-      patients={[]}
-      appointmentTypes={appointmentTypes}
-      closeModal={closeModal}
-      handleSubmit={handleSubmit}
-      loadingData={isDataLoading}
-      loading={singleLoading}
-      patientDefault={patient_full_name}
-      patient_id={patient_id}
-    />
-  );
+    title={formatMessage(messages.createAppointmentTitle)}
+    initialState={{
+      patient: patient_id,
+      doctor: '',
+      appointmentType: '',
+      price: 0,
+      date: '',
+      time: '',
+    }}
+    validationSchema={isPasIntegrated ? createPASAppointmentValidationSchema:createAppointmentValidationSchema}
+    isEditForm={false}
+    doctors={doctors}
+    patients={[]}
+    appointmentTypes={appointmentTypes}
+    closeModal={closeModal}
+    handleSubmit={handleSubmit}
+    loadingData={isDataLoading}
+    loading={singleLoading}
+    patientDefault={patient_full_name}
+    patient_id={patient_id}
+  />
+  )
 };
 
 export default CreateAppointment;

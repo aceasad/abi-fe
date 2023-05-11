@@ -22,6 +22,7 @@ const CalendarCollapseList = () => {
   const { formatMessage } = useIntl();
 
   const [activeAppointment, setActiveAppointment] = useState(null);
+  const [isPasIntegrated, setIsPasIntegrated] = useState(true)
 
   const collapseHeader = (data) => (
     <div className="d-flex justify-content-between">
@@ -30,7 +31,8 @@ const CalendarCollapseList = () => {
           {data.doctor}
         </Text>
         &nbsp;
-        <Text className="text-primary">({data.specialization})</Text>
+        {isPasIntegrated ? (<></>):(<Text className="text-primary">({data.specialization})</Text>)}
+        {/*  */}
       </div>
       {/* Badge goes here. */}
     </div>
