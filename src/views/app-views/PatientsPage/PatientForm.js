@@ -24,7 +24,7 @@ import {
 } from 'redux/actions/Anamnesis';
 import { BeforeRouteContext } from 'utils/context';
 import { getPatientDetailsNewPatientForm } from 'redux/actions/Patient';
-import { DATE_FORMAT_DD_MMM_YYYY } from 'constants/DateConstant';
+import { DATE_FORMAT_DD_MM_YYYY } from 'constants/DateConstant';
 import moment from 'moment';
 import { COUNTRY_CODES } from 'constants/CountryCodesConstants';
 
@@ -59,10 +59,11 @@ const PatientForm = ({
     const parsedValues = {
       ...values,
       date_of_birth: moment(values.date_of_birth, 'DD/MM/YYYY').format(
-        DATE_FORMAT_DD_MMM_YYYY
+        DATE_FORMAT_DD_MM_YYYY
       ),
       phone_number: values.country_code + values.phone_number,
     };
+    console.log(parsedValues)
 
     handleSubmit(parsedValues, setErrors, enableRedirect);
   };
