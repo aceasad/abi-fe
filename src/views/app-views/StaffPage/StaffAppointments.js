@@ -53,7 +53,7 @@ const StaffAppointments = ({ staffId, showList }) => {
   const dispatch = useDispatch();
 
   const [activeAppointment, setActiveAppointment] = useState(null);
-  const [isPasIntegrated, setIsPasIntegrated] = useState(true)
+  const { isPasIntegrated } = useSelector(state => state.auth.user);
 
   useEffect(() => {
     activeAppointment && dispatch(getSingleAppointment(activeAppointment.id));

@@ -9,12 +9,13 @@ import messages from './messages';
 import PatientForm from './PatientForm';
 import PatientPASForm from './PatientPASForm';
 import { makeSelectPatientLoading } from 'redux/selectors/Patient';
+import {makeSelectSingleUser} from 'redux/selectors/Users';
 
 const CreatePatient = ({ showList }) => {
   const { formatMessage } = useIntl();
   const dispatch = useDispatch();
   const { loading } = useSelector(makeSelectPatientLoading());
-  const [isPasIntegrated, setIsPasIntegrated] = useState(true)
+  const { isPasIntegrated } = useSelector(state => state.auth.user);
 
   const GENDER_CHOICES = [
     { id: GENDER.MALE, name: formatMessage(messages.male) },

@@ -26,7 +26,7 @@ function PreviewModal({
     makeSelectSingleAppointment()
   );
   const isLoading = singleLoading || !appointment;
-  const [isPasIntegrated, setIsPasIntegrated] = useState(true)
+  const { isPasIntegrated } = useSelector(state => state.auth.user);
   const footer = [];
   if (!isLoading && new Date(appointment.datetime_iso) > new Date()) {
     footer.push(

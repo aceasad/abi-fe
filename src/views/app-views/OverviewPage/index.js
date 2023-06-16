@@ -49,7 +49,7 @@ const OverviewPage = () => {
       dispatch(getOverviewData({ interval: filterValue }));
     }
   }, [dispatch, filterValue]);
-  console.log(messages.title);
+
   return (
     <>
       <PageHeader

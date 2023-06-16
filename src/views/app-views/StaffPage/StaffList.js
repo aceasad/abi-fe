@@ -23,7 +23,7 @@ export const OPTION_KEYS = {
 
 const StaffList = ({ showCreate, editUser, seeAppointments }) => {
   const [staffForDelete, setStaffForDelete] = useState();
-  const [isPasIntegrated, setIsPasIntegrated] = useState(true)
+  const { isPasIntegrated } = useSelector(state => state.auth.user);
   const { count, page } = useSelector(makeSelectPagination());
   const { staff, loading } = useSelector(makeSelectStaff());
 

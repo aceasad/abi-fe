@@ -22,7 +22,7 @@ const CalendarCollapseList = () => {
   const { formatMessage } = useIntl();
 
   const [activeAppointment, setActiveAppointment] = useState(null);
-  const [isPasIntegrated, setIsPasIntegrated] = useState(true)
+  const { isPasIntegrated } = useSelector(state => state.auth.user);
 
   const collapseHeader = (data) => (
     <div className="d-flex justify-content-between">

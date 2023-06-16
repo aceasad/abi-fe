@@ -56,7 +56,7 @@ const AppointmentFormModal = ({
   const [query, setQuery] = useState('');
   const debouncedSearch = useDebounce(query, 500);
   const { patients, patientsLoading } = useSelector(makeSelectClinicPatients());
-  const [isPasIntegrated, setIsPasIntegrated] = useState(true)
+  const { isPasIntegrated } = useSelector(state => state.auth.user);
 
   useEffect(() => {
     if (query) {

@@ -28,7 +28,7 @@ const CreateAppointment = ({
 }) => {
   const dispatch = useDispatch();
   const { formatMessage } = useIntl();
-  const [isPasIntegrated, setIsPasIntegrated] = useState(true)
+  const { isPasIntegrated } = useSelector(state => state.auth.user);
 
   const afterCreate = (newAppointmentStartDatetime) => {
     message.success(formatMessage(messages.newAppointmentCreated));

@@ -20,7 +20,7 @@ import PatientPASForm from './PatientPASForm';
 const UpdatePatient = ({ showList, patientId }) => {
   const { formatMessage } = useIntl();
   const dispatch = useDispatch();
-  const [isPasIntegrated, setIsPasIntegrated] = useState(true)
+  const { isPasIntegrated } = useSelector(state => state.auth.user);
 
   const { patient, loading } = useSelector(makeSelectPatientSingle());
   const { items } = useSelector(makeSelectExistingMedicalConditions());
