@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -15,10 +15,12 @@ import { message } from 'antd';
 import moment from 'moment';
 import { DATE_FORMAT_DD_MMM_YYYY } from 'constants/DateConstant';
 import { makeSelectExistingMedicalConditions } from 'redux/selectors/Anemnesis';
+import PatientPASForm from './PatientPASForm';
 
 const UpdatePatient = ({ showList, patientId }) => {
   const { formatMessage } = useIntl();
   const dispatch = useDispatch();
+  const [isPasIntegrated, setIsPasIntegrated] = useState(true)
 
   const { patient, loading } = useSelector(makeSelectPatientSingle());
   const { items } = useSelector(makeSelectExistingMedicalConditions());
@@ -86,17 +88,34 @@ const UpdatePatient = ({ showList, patientId }) => {
         medicalConditions: [],
       };
 
-  return (
-    <PatientForm
-      title={formatMessage(messages.editPatient)}
-      showList={showList}
-      handleSubmit={handleSubmit}
-      loading={loading}
-      initialState={initialState}
-      genderChoices={GENDER_CHOICES}
-      id={patientId}
-    />
-  );
+  const renderUpdatePatientForm = () =>{
+    if (isPasIntegrated) {
+      return(        
+      <PatientPASForm
+        id={patientId}
+        title={formatMessage(messages.newPASPatient)}
+        showList={showList}
+        handleSubmit={handleSubmit}
+        loading={loading}
+        initialState={initialState}
+        genderChoices={GENDER_CHOICES}
+      />)
+    }
+    else{
+      return(
+        <PatientForm
+        title={formatMessage(messages.editPatient)}
+        showList={showList}
+        handleSubmit={handleSubmit}
+        loading={loading}
+        initialState={initialState}
+        genderChoices={GENDER_CHOICES}
+        id={patientId}
+      />
+      )
+    }
+  }
+  return renderUpdatePatientForm();
 };
 
 export default UpdatePatient;
