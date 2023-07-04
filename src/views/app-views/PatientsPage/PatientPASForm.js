@@ -13,7 +13,7 @@ import ColumnField from 'components/custom-components/Form/ColumnField';
 import messages from './messages';
 import { makeSelectPatientDetails } from 'redux/selectors/Patient';
 import { patientSchema } from 'utils/validations';
-import { MAX } from 'constants/ClinicConstants';
+import { MAX,NHS_MAX } from 'constants/ClinicConstants';
 import { filterNumberInput } from 'utils/helpers';
 import PatientFormExistingConditions from './PatientFormExistingConditions';
 import PatientFormPreviousOperationss from './PatientFormPreviousOperations';
@@ -144,7 +144,7 @@ const PatientPASForm = ({
       enableReinitialize
       initialValues={{
         ...initialState,
-        country_code: '44',
+        // country_code: '44',
       }}
       innerRef={formRef}
       onSubmit={handleSubmitWrapper}
@@ -203,8 +203,8 @@ const PatientPASForm = ({
                       label={formatMessage(messages.patientIdent)}
                       name="ExternalIdentificationNumber"
                       errorTexts={{
-                        label: formatMessage(messages.lastName),
-                        maxValue: MAX,
+                        label: formatMessage(messages.patientIdent),
+                        maxValue: NHS_MAX,
                       }}
                       required
                     />
@@ -286,7 +286,7 @@ const PatientPASForm = ({
                       errorTexts={{
                         label: formatMessage(messages.countryCode),
                         matchesLabel: formatMessage(messages.countryCodeFormat),
-                        maxValue: MAX,
+                        maxValue: 4,
                       }}
                       required
                     />
@@ -298,7 +298,7 @@ const PatientPASForm = ({
                       errorTexts={{
                         label: formatMessage(messages.phoneNumber),
                         matchesLabel: formatMessage(messages.phoneNumberFormat),
-                        maxValue: MAX,
+                        maxValue: 10,
                       }}
                       required
                     />

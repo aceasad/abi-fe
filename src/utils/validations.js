@@ -119,7 +119,7 @@ export const patientSchema = Yup.object().shape({
   city: Yup.string().max(64),
   post_code: Yup.string().max(16),
   country: Yup.string().max(64),
-  ExternalIdentificationNumber: Yup.string().max(64),
+  ExternalIdentificationNumber: Yup.string().max(10),
   isPASPatient: Yup.boolean(),
 });
 
