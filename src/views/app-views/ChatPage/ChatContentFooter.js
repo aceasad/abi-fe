@@ -12,8 +12,11 @@ const { TextArea } = Input;
 const ChatContentFooter = ({ onSend }) => {
   const { formatMessage } = useIntl();
   const [form] = Form.useForm();
+  const { name } = useSelector(state => state.auth.user);
+
   const handleSend = (values) => {
     form.resetFields(['newMessage']);
+    values['newMessage'] = values['newMessage'] + ' - ' + name
     onSend(values);
     textAreaRef.current.focus();
   };
