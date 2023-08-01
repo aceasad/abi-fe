@@ -72,6 +72,11 @@ const ChatContentHeader = ({
     onClickMarkInEmergencySituationResolved(patient_id);
   };
 
+  const onClickMarkInOptOutWrapper = (patient_id) => {
+    setResolveClicked(true);
+    // onClickMarkInOptOutResolved(patient_id);
+  };
+
   const renderMenu = (patient_id) => {
     return (
       <Menu>
@@ -97,7 +102,8 @@ const ChatContentHeader = ({
 
   const is_human_required_or_in_emergency_situation =
     chatInfo?.patient?.is_human_required ||
-    chatInfo?.patient?.is_in_emergency_situation;
+    chatInfo?.patient?.is_in_emergency_situation ||
+    chatInfo?.patient?.is_in_opt_out_situation;
 
   let blinkClass = '';
   let nameWithSuffix = chatInfo?.patient?.full_name;
@@ -113,7 +119,11 @@ const ChatContentHeader = ({
     blinkClass = ' blink-in-emergency-situation';
     nameWrapper = <span>{nameWithSuffix}&nbsp;&#9888;</span>;
   }
-
+  if (chatInfo?.patient?.is_in_opt_out_situation) {
+    // nameWithSuffix = `${chatInfo.patient.full_name} - In emergency situation`;
+    blinkClass = 'blink-in-opt-out';
+    nameWrapper = <span>{nameWithSuffix}&nbsp;&#9888;</span>;
+  }
   return (
     chatInfo && (
       <div className="chat-content-header">
@@ -154,6 +164,21 @@ const ChatContentHeader = ({
             {formatMessage(messages.emergencyResolved)}
           </Checkbox>
         )}
+        {!chatLoading && chatInfo.patient.is_in_opt_out_situation && (
+          <Checkbox
+            key="checkbox-emergency-resolve"
+            defaultChecked={false}
+            disabled={isLoading || resolveClicked}
+            onChange={() =>
+              onClickMarkInOptOutWrapper(
+                chatInfo.patient.id
+              )
+            }
+          >
+            {formatMessage(messages.optOut)}
+          </Checkbox>
+        )}
+
         {!chatLoading && (
           <Checkbox
             key="checkbox-rasa-x"
