@@ -146,6 +146,7 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
                     }}
                   />
                 </Row>
+                
                 <Row gutter={16}>
                   <ColumnField
                     span={16}
@@ -158,6 +159,7 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
                       minValue: MIN_PHONE_LENGTH,
                       maxValue: MAX_PHONE_LENGTH,
                     }}
+                    disabled
                   />
                 </Row>
                 <Row gutter={24}>
