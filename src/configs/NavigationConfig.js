@@ -53,7 +53,7 @@ const pagesNavTree = [
   {
     key: 'documents',
     path: `${APP_PAGES_PREFIX_PATH}/documents`,
-    title: 'Documents',
+    title: 'sidenav.pages.documents',
     icon: PaperClipOutlined,
     breadcrumb: false,
     submenu: [],
@@ -61,7 +61,7 @@ const pagesNavTree = [
   {
     key: 'settings',
     path: `${APP_PAGES_PREFIX_PATH}/settings`,
-    title: 'Settings',
+    title: 'sidenav.pages.settings',
     icon: SettingOutlined,
     breadcrumb: false,
     submenu: [],

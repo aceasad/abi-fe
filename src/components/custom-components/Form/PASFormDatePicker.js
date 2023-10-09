@@ -4,7 +4,7 @@ import { DatePicker, Form } from 'antd';
 import moment from 'moment';
 import { DATE_FORMAT_DD_MM_YYYY } from 'constants/DateConstant';
 
-const FormDatePicker = ({
+const PASFormDatePicker = ({
   label,
   field,
   form: { setFieldValue, setFieldTouched, touched, errors },
@@ -54,11 +54,11 @@ const FormDatePicker = ({
   );
 };
 
-FormDatePicker.defaultProps = {
+PASFormDatePicker.defaultProps = {
   defaultDate: '',
   maxDate: false,
   disablePastDates: false,
   showDefaultDate: true,
 };
 
-export default FormDatePicker;
+export default PASFormDatePicker;

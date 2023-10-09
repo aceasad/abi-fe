@@ -170,6 +170,9 @@ const ChatMenu = (props) => {
                 is_in_emergency_situation={
                   item.patient.is_in_emergency_situation
                 }
+                is_in_opt_out_situation={
+                  item.patient.is_in_opt_out_situation
+                }
               />
               <div className="text-right">
                 <div className="chat-menu-list-item-time">

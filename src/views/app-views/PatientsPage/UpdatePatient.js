@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -13,12 +13,14 @@ import {
 } from 'utils/helpers';
 import { message } from 'antd';
 import moment from 'moment';
-import { DATE_FORMAT_DD_MMM_YYYY } from 'constants/DateConstant';
+import { DATE_FORMAT_DD_MM_YYYY, DATE_FORMAT_DD_MMM_YYYY } from 'constants/DateConstant';
 import { makeSelectExistingMedicalConditions } from 'redux/selectors/Anemnesis';
+import PatientPASForm from './PatientPASForm';
 
 const UpdatePatient = ({ showList, patientId }) => {
   const { formatMessage } = useIntl();
   const dispatch = useDispatch();
+  const { isPasIntegrated } = useSelector(state => state.auth.user);
 
   const { patient, loading } = useSelector(makeSelectPatientSingle());
   const { items } = useSelector(makeSelectExistingMedicalConditions());
@@ -53,14 +55,14 @@ const UpdatePatient = ({ showList, patientId }) => {
   const initialState = patient
     ? {
         ...mapNullObjectFeildsToString(patient),
-        date_of_birth: moment(patient.date_of_birth).format(
-          DATE_FORMAT_DD_MMM_YYYY
-        ),
+        date_of_birth: patient.date_of_birth,
         education: patient?.education?.id,
         ethnicity: patient?.ethnicity?.id,
         material_status: patient?.material_status?.id,
         employment: patient?.employment?.id,
         medicalConditions: items.map((condition) => condition.id),
+        phone_number: patient?.phone_number.substr(patient?.phone_number?.length - 10,patient?.phone_number?.length),
+        country_code:patient?.phone_number.substr(0,patient?.phone_number?.length - 10),
       }
     : {
         first_name: '',
@@ -86,17 +88,37 @@ const UpdatePatient = ({ showList, patientId }) => {
         medicalConditions: [],
       };
 
-  return (
-    <PatientForm
-      title={formatMessage(messages.editPatient)}
-      showList={showList}
-      handleSubmit={handleSubmit}
-      loading={loading}
-      initialState={initialState}
-      genderChoices={GENDER_CHOICES}
-      id={patientId}
-    />
-  );
+  const renderUpdatePatientForm = () =>{
+    if (isPasIntegrated) {
+      console.log(initialState.country_code)
+      console.log(initialState.date_of_birth)
+
+      return(        
+      <PatientPASForm
+        id={patientId}
+        title={formatMessage(messages.newPASPatient)}
+        showList={showList}
+        handleSubmit={handleSubmit}
+        loading={loading}
+        initialState={initialState}
+        genderChoices={GENDER_CHOICES}
+      />)
+    }
+    else{
+      return(
+        <PatientForm
+        title={formatMessage(messages.editPatient)}
+        showList={showList}
+        handleSubmit={handleSubmit}
+        loading={loading}
+        initialState={initialState}
+        genderChoices={GENDER_CHOICES}
+        id={patientId}
+      />
+      )
+    }
+  }
+  return renderUpdatePatientForm();
 };
 
 export default UpdatePatient;

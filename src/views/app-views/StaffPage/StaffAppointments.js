@@ -53,6 +53,7 @@ const StaffAppointments = ({ staffId, showList }) => {
   const dispatch = useDispatch();
 
   const [activeAppointment, setActiveAppointment] = useState(null);
+  const { isPasIntegrated } = useSelector(state => state.auth.user);
 
   useEffect(() => {
     activeAppointment && dispatch(getSingleAppointment(activeAppointment.id));
@@ -65,7 +66,7 @@ const StaffAppointments = ({ staffId, showList }) => {
         onBack={() => showList()}
         avatar={{ src: staffData.profile_picture }}
         title={`${staffData.first_name} ${staffData.last_name}`}
-        subTitle={`${staffData.seniority} ${staffData.specialization}`}
+        subTitle={isPasIntegrated ? ` ` : `${staffData.seniority} ${staffData.specialization}`}
       />
       <Appointments field={SCHEDULED} id={staffId} columnMap={columnMap}>
         <Appointments.Table
