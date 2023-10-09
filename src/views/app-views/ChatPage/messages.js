@@ -48,6 +48,10 @@ export default defineMessages({
     id: `${scope}.chat.resolve_emergency_situation`,
     defaultMessage: 'Emergency resolved',
   },
+  optOut: {
+    id: `${scope}.chat.opt_out`,
+    defaultMessage: 'Opt-Out',
+  },
   male: {
     id: `${staffScope}.text.male`,
     defaultMessage: 'Male',

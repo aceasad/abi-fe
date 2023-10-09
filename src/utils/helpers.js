@@ -90,9 +90,12 @@ export const prepareAppointmentData = (values) => {
   }
 
   let { date, time, patient, price, ...otherValues } = values;
-  const startDatetime = moment(`${date} ${time}`, 'DD-MMM-YYYY HH:mm').format(
+  console.log(date)
+  console.log(time)
+  const startDatetime = moment(`${date} ${time}`, 'DD/MM/YYYY HH:mm').format(
     'YYYY-MM-DDTHH:mm'
   );
+  console.log(startDatetime)
 
   patient = parseInt(patient);
   price = parseFloat(price);
@@ -202,21 +205,21 @@ export const updateChatMenuItems = (
 
   return selectedChat
     ? [
-        {
-          patient: selectedChat.patient,
-          last_message: lastMessage,
-        },
-        ...chatMenuItems.filter(
-          (item) => item.patient.id !== selectedChat.patient.id
-        ),
-      ]
+      {
+        patient: selectedChat.patient,
+        last_message: lastMessage,
+      },
+      ...chatMenuItems.filter(
+        (item) => item.patient.id !== selectedChat.patient.id
+      ),
+    ]
     : [
-        {
-          patient: newMessagePayload.patient,
-          last_message: lastMessage,
-        },
-        ...chatMenuItems,
-      ];
+      {
+        patient: newMessagePayload.patient,
+        last_message: lastMessage,
+      },
+      ...chatMenuItems,
+    ];
 };
 
 export const updateConversation = (conversation, newMessagePayload) => {

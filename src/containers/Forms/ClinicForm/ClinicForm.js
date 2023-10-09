@@ -34,6 +34,8 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
     clinicData?.start_of_work === '00:00:00' &&
       clinicData?.end_of_work === '00:00:00'
   );
+  const { isPasIntegrated } = useSelector(state => state.auth.user);
+
   const location = useLocation();
 
   const editClinicSlug = '/edit-clinic';
@@ -49,7 +51,8 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
     if (!values.photo) {
       formData.append('photo', '');
     }
-
+    formData.delete('isPasIntegrated')
+    formData.append('isPasIntegrated',isPasIntegrated)
     if (clinicData) {
       dispatch(
         updateClinic({
@@ -91,6 +94,8 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
           parking_size: clinicData?.parking_size || 0,
           start_of_work: clinicData?.start_of_work || initialWorkTime,
           end_of_work: clinicData?.end_of_work || initialWorkTime,
+          PasAPIEndpoint: clinicData?.PasAPIEndpoint || '',
+          isPasIntegrated: clinicData?.isPasIntegrated || isPasIntegrated,
         }}
         enableReinitialize
         validationSchema={clinicSchema}
@@ -141,6 +146,7 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
                     }}
                   />
                 </Row>
+                
                 <Row gutter={16}>
                   <ColumnField
                     span={16}
@@ -153,6 +159,7 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
                       minValue: MIN_PHONE_LENGTH,
                       maxValue: MAX_PHONE_LENGTH,
                     }}
+                    disabled
                   />
                 </Row>
                 <Row gutter={24}>

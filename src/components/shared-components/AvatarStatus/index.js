@@ -25,6 +25,7 @@ export const AvatarStatus = (props) => {
     text,
     is_human_required,
     is_in_emergency_situation,
+    is_in_opt_out_situation,
     onNameClick,
   } = props;
 
@@ -40,6 +41,10 @@ export const AvatarStatus = (props) => {
   if (is_in_emergency_situation) {
     // nameWithSuffix = `${chatInfo.patient.full_name} - In emergency situation`;
     blinkClass = ' blink-in-emergency-situation';
+    nameWrapper = <span>{nameWithSuffix}&nbsp;&#9888;</span>;
+  }
+  if(is_in_opt_out_situation){
+    blinkClass = ' blink-in-opt-out';
     nameWrapper = <span>{nameWithSuffix}&nbsp;&#9888;</span>;
   }
 

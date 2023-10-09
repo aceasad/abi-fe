@@ -85,7 +85,7 @@ export default defineMessages({
   },
   error_input_label_post_code: {
     id: `${scope}.error.post_code`,
-    defaultMessage: 'Post Code',
+    defaultMessage: 'Postcode',
   },
   error_input_label_country: {
     id: `${scope}.error.country`,

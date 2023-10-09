@@ -23,7 +23,7 @@ export const OPTION_KEYS = {
 
 const StaffList = ({ showCreate, editUser, seeAppointments }) => {
   const [staffForDelete, setStaffForDelete] = useState();
-
+  const { isPasIntegrated } = useSelector(state => state.auth.user);
   const { count, page } = useSelector(makeSelectPagination());
   const { staff, loading } = useSelector(makeSelectStaff());
 
@@ -106,11 +106,25 @@ const StaffList = ({ showCreate, editUser, seeAppointments }) => {
             dataSource={staff}
             renderItem={(staffItem) => (
               <List.Item>
-                <CardComponent
+                {isPasIntegrated ? (<CardComponent
+                  key={staffItem.id}
+                  title={staffItem.first_name + ' ' + staffItem.last_name}
+                  description={''}
+                  avatar={staffItem.profile_picture}
+                  action={formatMessage(messages.seeAppointments)}
+                  Options={() => (
+                    <StaffCardOptions
+                      handleMenuClick={({ key }) =>
+                        handleOptionClick(staffItem.id, key)
+                      }
+                    />
+                  )}
+                  handleClick={() => seeAppointments(staffItem.id)}
+                />):( <CardComponent
                   key={staffItem.id}
                   title={staffItem.first_name + ' ' + staffItem.last_name}
                   description={
-                    staffItem.seniority + ' ' + staffItem.specialization
+                staffItem.seniority + ' ' + staffItem.specialization
                   }
                   avatar={staffItem.profile_picture}
                   action={formatMessage(messages.seeAppointments)}
@@ -122,7 +136,8 @@ const StaffList = ({ showCreate, editUser, seeAppointments }) => {
                     />
                   )}
                   handleClick={() => seeAppointments(staffItem.id)}
-                />
+                />)}
+               
               </List.Item>
             )}
           />

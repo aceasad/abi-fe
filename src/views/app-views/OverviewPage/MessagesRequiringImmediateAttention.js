@@ -36,7 +36,7 @@ import { getSafe, convertDateTimeStringToUtcString } from 'utils/helpers';
 import UpdateMessageRequiringImmediateAttentionStatus from './UpdateMessageRequiringImmediateAttentionStatus';
 import PreAppointmentQuestionnairePreviewModal from './PreAppointmentQuestionnairePreviewModal';
 import patient from 'redux/reducers/Patient';
-
+import { useSelector } from 'react-redux';
 const { Panel } = Collapse;
 
 const columnMap = {
@@ -57,6 +57,7 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
   const history = useHistory();
   const { formatMessage } = useIntl();
   const dispatch = useDispatch();
+  const { isPasIntegrated } = useSelector(state => state.auth.user);
 
   const [activeAppointment, setActiveAppointment] = useState(null);
   useEffect(() => {
@@ -65,6 +66,117 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
     }
   }, [activeAppointment, dispatch]);
 
+  let tableColumns = [
+    {
+      title: 'Date/Time',
+      dataIndex: 'created_datetime',
+      sorter: true,
+      render: (_, row) => {
+        return {
+          children: (
+            <div>
+              {convertDateTimeStringToUtcString(
+                row.created_datetime,
+                'DD/MM/YYYY HH:mm:ss a',
+                'DD/MM/YYYY, h:mm A'
+              )}
+            </div>
+          ),
+          props: {
+            'data-label': 'Date/Time',
+          },
+        };
+      },
+    },
+    {
+      title: formatMessage(overviewPageMessages.columnTitlePatient),
+      dataIndex: ['patient', 'full_name'],
+      sorter: true,
+      render: (_, row) => ({
+        children: _,
+        props: {
+          'data-label': formatMessage(overviewPageMessages.columnTitlePatient),
+        },
+      }),
+    },
+    {
+      title: formatMessage(overviewPageMessages.columnTitleEvent),
+      dataIndex: ['message_requiring_immediate_attention_type', 'name'],
+      sorter: true,
+      render: (_, row) => ({
+        children: _,
+        props: {
+          'data-label': formatMessage(overviewPageMessages.columnTitleEvent),
+        },
+      }),
+    },
+    {
+      title: formatMessage(overviewPageMessages.columnTitlePriority),
+      dataIndex: ['priority', 'name'],
+      sorter: true,
+      render: (_, row) => ({
+        children: (
+          <div
+            className={`mria-priority-${getSafe(() =>
+              row.priority?.name.toLowerCase()
+            )}`}
+          >
+            {row.priority?.name}
+          </div>
+        ),
+        props: {
+          'data-label': formatMessage(overviewPageMessages.columnTitlePriority),
+        },
+      }),
+    },
+    {
+      title: formatMessage(overviewPageMessages.columnTitleStatus),
+      dataIndex: ['status', 'name'],
+      sorter: true,
+      render: (_, row) => ({
+        children: (
+          <div
+            onClick={(e) =>
+              showUpdateMessageRequiringImmediateAttentionStatusWrapper(e, row)
+            }
+            className={`ant-tag text-left${
+              row.status?.name === 'Pending' ? ' ant-tag-red' : ''
+            }`}
+          >
+            {row.status?.name} {/*  <CaretDownOutlined /> */}
+          </div>
+        ),
+        props: {
+          'data-label': formatMessage(overviewPageMessages.columnTitleStatus),
+        },
+      }),
+    },
+    {
+      key: 'action',
+      render: (_, row) => (
+        <div className="text-right">
+          <Dropdown
+            overlay={() => menu(row)}
+            trigger={['click']}
+            placement="bottomRight"
+          >
+            <Button type="primary" ghost>
+              {formatMessage(overviewPageMessages.tableDropdownTitleActions)}
+              <DownOutlined />
+            </Button>
+          </Dropdown>
+        </div>
+      ),
+    },
+  ];
+  useEffect(()=>{
+    if(isPasIntegrated){
+      console.log("LENGHT OF TABLE COLUMS",tableColumns.length)
+      tableColumns=tableColumns.splice(3,1)
+      console.log("LENGHT OF TABLE COLUMS",tableColumns.length)
+    }
+  },[])
+  
   const [
     activePreAppointmentQuestionnaire,
     setActivePreAppointmentQuestionnaire,
@@ -188,109 +300,7 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
     );
   };
 
-  const tableColumns = [
-    {
-      title: 'Date/Time',
-      dataIndex: 'created_datetime',
-      sorter: true,
-      render: (_, row) => {
-        return {
-          children: (
-            <div>
-              {convertDateTimeStringToUtcString(
-                row.created_datetime,
-                'DD/MM/YYYY HH:mm:ss a',
-                'DD/MM/YYYY, h:mm A'
-              )}
-            </div>
-          ),
-          props: {
-            'data-label': 'Date/Time',
-          },
-        };
-      },
-    },
-    {
-      title: formatMessage(overviewPageMessages.columnTitlePatient),
-      dataIndex: ['patient', 'full_name'],
-      sorter: true,
-      render: (_, row) => ({
-        children: _,
-        props: {
-          'data-label': formatMessage(overviewPageMessages.columnTitlePatient),
-        },
-      }),
-    },
-    {
-      title: formatMessage(overviewPageMessages.columnTitleEvent),
-      dataIndex: ['message_requiring_immediate_attention_type', 'name'],
-      sorter: true,
-      render: (_, row) => ({
-        children: _,
-        props: {
-          'data-label': formatMessage(overviewPageMessages.columnTitleEvent),
-        },
-      }),
-    },
-    {
-      title: formatMessage(overviewPageMessages.columnTitlePriority),
-      dataIndex: ['priority', 'name'],
-      sorter: true,
-      render: (_, row) => ({
-        children: (
-          <div
-            className={`mria-priority-${getSafe(() =>
-              row.priority?.name.toLowerCase()
-            )}`}
-          >
-            {row.priority?.name}
-          </div>
-        ),
-        props: {
-          'data-label': formatMessage(overviewPageMessages.columnTitlePriority),
-        },
-      }),
-    },
-    {
-      title: formatMessage(overviewPageMessages.columnTitleStatus),
-      dataIndex: ['status', 'name'],
-      sorter: true,
-      render: (_, row) => ({
-        children: (
-          <div
-            onClick={(e) =>
-              showUpdateMessageRequiringImmediateAttentionStatusWrapper(e, row)
-            }
-            className={`ant-tag text-left${
-              row.status?.name === 'Pending' ? ' ant-tag-red' : ''
-            }`}
-          >
-            {row.status?.name} {/*  <CaretDownOutlined /> */}
-          </div>
-        ),
-        props: {
-          'data-label': formatMessage(overviewPageMessages.columnTitleStatus),
-        },
-      }),
-    },
-    {
-      key: 'action',
-      render: (_, row) => (
-        <div className="text-right">
-          <Dropdown
-            overlay={() => menu(row)}
-            trigger={['click']}
-            placement="bottomRight"
-          >
-            <Button type="primary" ghost>
-              {formatMessage(overviewPageMessages.tableDropdownTitleActions)}
-              <DownOutlined />
-            </Button>
-          </Dropdown>
-        </div>
-      ),
-    },
-  ];
+ 
 
   return (
     <>

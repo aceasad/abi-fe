@@ -30,7 +30,7 @@ export default defineMessages({
   },
   postCode: {
     id: `${scope}.input_label.address`,
-    defaultMessage: 'Post code',
+    defaultMessage: 'Postcode',
   },
   country: {
     id: `${scope}.input_label.country`,
@@ -90,7 +90,7 @@ export default defineMessages({
   },
   errorInputLabelPostCode: {
     id: `${scope}.error.post_code`,
-    defaultMessage: 'Post code',
+    defaultMessage: 'Postcode',
   },
   errorInputLabelCountry: {
     id: `${scope}.error.country`,
