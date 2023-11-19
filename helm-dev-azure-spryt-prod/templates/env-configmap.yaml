@@ -4,8 +4,8 @@ metadata:
   name: abi-fe-env-configmap
   namespace: production
 data:
-  REACT_APP_API_URL: http://20.108.107.239/abi-be/api/v1
-  REACT_APP_SOCKETS_DOMAIN: wss://20.108.107.239/abi-be/ws/chat
+  REACT_APP_API_URL: http://51.11.59.31/abi-be/api/v1
+  REACT_APP_SOCKETS_DOMAIN: wss://51.11.59.31/abi-be/ws/chat
   REACT_APP_URL_PREFIX_PATH: ""
   REACT_APP_API_CDN: ""
   REACT_APP_FACEBOOK_APP_ID: ""
