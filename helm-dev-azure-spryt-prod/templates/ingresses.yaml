@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: abi-fe-ingress
+  name: abi-fe-nginx-ingress
   namespace: production
   annotations:
     kubernetes.io/ingress.class: abi-fe-nginx-ingress
@@ -16,11 +16,6 @@ spec:
             name: abi-fe-service
             port:
               number: 80
-
-  tls:
-  - hosts:
-    - prod.spryt.com
-    secretName: self-tls
 ---
 
 apiVersion: v1
