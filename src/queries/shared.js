@@ -4,7 +4,7 @@ import appointmentService from 'services/AppointmentService';
 import AppointmentService from 'services/AppointmentService';
 import chatService from 'services/ChatService';
 import patientService from 'services/PatientService';
-
+import PasService from 'services/PasService'
 export const useGetAvailableTimeslots = (
   doctor,
   patient,
@@ -27,6 +27,7 @@ export const useGetAvailableTimeslots = (
       onSuccess: (data) => setDisabledCallback(data),
     }
   );
+
 
 export const useSearchMedicalConditions = (organizationId, query, enabled) =>
   useQuery(
@@ -94,3 +95,8 @@ export const useToggleRasaActivity = () =>
 
 export const useMarkConversationAsRead = () =>
   useMutation(chatService.markConversationAsRead);
+
+export const useSyncPasService = () =>
+  useMutation(PasService.updatePas);
+
+  

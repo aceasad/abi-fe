@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Form } from 'antd';
+import { Button, Form, Modal, Row, Col, Typography } from 'antd';
 import { MailOutlined, LockOutlined } from '@ant-design/icons';
 import { signIn } from 'redux/actions/Auth';
 import { useHistory } from 'react-router-dom';
@@ -14,9 +14,12 @@ import { ROUTES } from 'routes';
 import { passwordMinLength } from 'constants/Validation';
 import FormField from 'components/custom-components/Form/FormField';
 import { makeSelectLoginDetails } from 'redux/selectors/Auth';
-
+/*
+Access to this computer/Solution and any information it contains is limited to authorised users only.  Legal action can be taken against unauthorised use of, or unauthorised access to, this computer/Solution and/or any information it contains, including pursuant to the Computer Misuse Act 1990.  If you are an authorised user, by proceeding to access and use this computer/Solution and/or the information it contains, you are accepting any terms of use, notices and policies which are contained or referenced within it or which have otherwise been drawn to your attention as an authorised user.
+*/
 export const LoginForm = () => {
   let history = useHistory();
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const dispatch = useDispatch();
   const { loading, message, showMessage, token } = useSelector(
     makeSelectLoginDetails()
@@ -24,12 +27,20 @@ export const LoginForm = () => {
   const { formatMessage } = useIntl();
 
   const onLogin = (values) => {
-    dispatch(signIn(values));
+    setIsModalVisible(true);
+    setTimeout(() => {
+        dispatch(signIn(values));
+        setIsModalVisible(false);
+    }, 3000);
+
   };
 
   useEffect(() => {
     if (token) {
       history.push(ROUTES.DASHBOARD);
+    }
+    else{
+      setIsModalVisible(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
@@ -125,6 +136,21 @@ export const LoginForm = () => {
           </Form>
         )}
       </Formik>
+
+      {isModalVisible ? (      
+      <Modal
+          title={"Warning"}
+          visible
+          destroyOnClose
+          footer={[]}
+        >
+              <Row gutter={16} className="d-flex">
+
+                  <Typography align="center">
+                     Access to this computer/Solution and any information it contains is limited to authorised users only.  Legal action can be taken against unauthorised use of, or unauthorised access to, this computer/Solution and/or any information it contains, including pursuant to the Computer Misuse Act 1990.  If you are an authorised user, by proceeding to access and use this computer/Solution and/or the information it contains, you are accepting any terms of use, notices and policies which are contained or referenced within it or which have otherwise been drawn to your attention as an authorised user.
+                  </Typography>
+              </Row>
+        </Modal>): (<></>)}
     </>
   );
 };
