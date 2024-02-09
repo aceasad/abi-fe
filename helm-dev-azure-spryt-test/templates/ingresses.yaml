@@ -12,11 +12,11 @@ metadata:
 spec:
   tls:
     - hosts:
-      - dev.spryt.com
+      - test.spryt.com
       secretName: dev-tts-secret
 
   rules:
-  - host: dev.spryt.com
+  - host: test.spryt.com
   - http:
       paths:
       - path: /
