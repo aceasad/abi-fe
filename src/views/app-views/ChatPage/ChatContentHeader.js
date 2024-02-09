@@ -166,7 +166,7 @@ const ChatContentHeader = ({
         )}
         {!chatLoading && chatInfo.patient.is_in_opt_out_situation && (
           <Checkbox
-            key="checkbox-emergency-resolve"
+            key="checkbox-optout-resolve"
             defaultChecked={false}
             disabled={isLoading || resolveClicked}
             onChange={() =>
