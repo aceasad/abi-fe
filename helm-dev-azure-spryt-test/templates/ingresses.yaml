@@ -6,18 +6,17 @@ metadata:
   name: abi-fe-ingress
   namespace: spryt-test
   annotations:
-    # kubernetes.io/ingress.class: abi-fe-nginx-ingress
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    kubernetes.io/ingress.class: abi-fe-nginx-ingress
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
     cert-manager.io/cluster-issuer: "letsencrypt-frontend"
 
 spec:
-  ingressClassName: abi-fe-nginx-ingress
   tls:
   - hosts:
     - test.spryt.com
     secretName: frontend-tts
   rules:
-  - host: test.backend.spryt.com
+  - host: test.spryt.com
     http:
       paths:
       - path: /
