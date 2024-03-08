@@ -14,36 +14,65 @@ import { ROUTES } from 'routes';
 import { passwordMinLength } from 'constants/Validation';
 import FormField from 'components/custom-components/Form/FormField';
 import { makeSelectLoginDetails } from 'redux/selectors/Auth';
+import { ReCaptcha } from 'components/reCaptcha'
+import axios from 'axios'
+
 /*
 Access to this computer/Solution and any information it contains is limited to authorised users only.  Legal action can be taken against unauthorised use of, or unauthorised access to, this computer/Solution and/or any information it contains, including pursuant to the Computer Misuse Act 1990.  If you are an authorised user, by proceeding to access and use this computer/Solution and/or the information it contains, you are accepting any terms of use, notices and policies which are contained or referenced within it or which have otherwise been drawn to your attention as an authorised user.
 */
 export const LoginForm = () => {
   let history = useHistory();
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [reToken,setreToken] = useState('')
+  const [submitEnable,setSubmitEnable] = useState(false)
+
+  const handleReToken = (t) => {
+    setreToken(t)
+
+  }
+
   const dispatch = useDispatch();
   const { loading, message, showMessage, token } = useSelector(
     makeSelectLoginDetails()
   );
   const { formatMessage } = useIntl();
 
+
   const onLogin = (values) => {
-    setIsModalVisible(true);
-    setTimeout(() => {
-        dispatch(signIn(values));
-        setIsModalVisible(false);
-    }, 3000);
+    values.retoken = reToken
+    // EVALUATE GOOGLE RECAPCHA HERE
+    axios.post(process.env.REACT_APP_API_URL+'/googleverify/recapture/', {'retoken': reToken})
+    .then(response => {
+      // Handle success
+      console.log('Success:', response.data);
+      setIsModalVisible(true);
+      setTimeout(() => {
+          dispatch(signIn(values));
+          setIsModalVisible(false);
+      }, 3000);
+      // Perform actions based on response
+    })
+    .catch(error => {
+      // Handle failure
+      console.error('Error:', error);
+      // Perform actions based on error
+    });
+    
 
   };
 
   useEffect(() => {
-    if (token) {
-      history.push(ROUTES.DASHBOARD);
-    }
-    else{
-      setIsModalVisible(false);
-    }
+    if(reToken.length){
+      setSubmitEnable(true)
+      if (token) {
+        history.push(ROUTES.DASHBOARD);
+      }
+      else{
+        setIsModalVisible(false);
+      }
+   }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token]);
+  }, [token,reToken]);
 
   const PasswordLabel = ({ email }) => (
     <div className={'d-flex justify-content-between w-100 align-items-center'}>
@@ -120,6 +149,9 @@ export const LoginForm = () => {
               }}
               labelBlock={true}
             />
+            <Form.Item className = 'mt-sm-5 ml-sm-4'>
+              <ReCaptcha siteKey={'6LdPfZEpAAAAAA1xOWHQRv4CryFXqpP3HGVCRhS4'} callback={handleReToken} />
+            </Form.Item>
 
             <Form.Item className="mt-sm-5">
               <Button
@@ -127,7 +159,7 @@ export const LoginForm = () => {
                 type="primary"
                 htmlType="submit"
                 block
-                disabled={!dirty || !isValid}
+                disabled={!dirty || !isValid || !submitEnable}
                 loading={loading}
               >
                 {formatMessage(messages.loginButton)}
