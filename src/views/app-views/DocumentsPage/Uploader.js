@@ -26,11 +26,16 @@ const Uploader = ({ handleUpdateDataSource, appointmentTypes }) => {
 
   const handleOk = (values) => {
     setConfirmLoading(true);
-
-    const appointment_type_name = appointmentTypes.find(
-      (type) => type.id === values.appointmentType
-    )['name'];
-
+    let appointment_type_name;
+    try{
+      appointment_type_name = appointmentTypes.find(
+        (type) => type.id === values.appointmentType
+      )['name'];  
+  
+    }catch{
+      appointment_type_name = null;
+    }
+    console.log(appointment_type_name)
     createDocument({
       file: fileListToUpload[0],
       document_name: values.document_name,
