@@ -3,9 +3,8 @@ kind: Ingress
 metadata:
   name: abi-fe-nginx-ingress
   namespace: production
-  annotations:
-    spec.ingressClassName: abi-fe-nginx-ingress
 spec:
+  ingressClassName: abi-fe-nginx-ingress
   rules:
   - http:
       paths:
