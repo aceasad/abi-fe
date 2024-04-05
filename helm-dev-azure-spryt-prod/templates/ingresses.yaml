@@ -3,6 +3,8 @@ kind: Ingress
 metadata:
   name: abi-fe-nginx-ingress
   namespace: production
+  annotations:
+    kubernetes.io/ingress.class: abi-fe-ingress
 spec:
   ingressClassName: abi-fe-nginx-ingress
   rules:
