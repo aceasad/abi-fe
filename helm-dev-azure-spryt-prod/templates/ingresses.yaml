@@ -4,14 +4,11 @@ metadata:
   name: abi-fe-nginx-ingress
   namespace: production
   annotations:
-    spec.ingressClassName: abi-fe-nginx-ingress
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     cert-manager.io/cluster-issuer: "letsencrypt-frontend"
-    kubernetes.io/ingress.class: "abi-be-nginx-ingress"
-    kubernetes.io/internal-dns.create: "true"
+    kubernetes.io/ingress.class: abi-fe-nginx-ingress
 spec:
-  ingressClassName: abi-fe-nginx-ingress
   tls:
   - hosts:
     - prod.spryt.com
