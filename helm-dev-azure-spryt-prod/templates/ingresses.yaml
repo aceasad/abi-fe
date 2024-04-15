@@ -1,4 +1,4 @@
-apiVersion: networking.k8s.io/v1
+{% comment %} apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: abi-fe-nginx-ingress
@@ -22,8 +22,8 @@ spec:
           service:
             name: abi-fe-service
             port:
-              number: 80
----
+              number: 80 {% endcomment %}
+{% comment %} --- {% endcomment %}
 
 apiVersion: v1
 kind: Service
