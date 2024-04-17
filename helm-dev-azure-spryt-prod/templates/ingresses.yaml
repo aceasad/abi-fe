@@ -6,8 +6,8 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     cert-manager.io/cluster-issuer: "letsencrypt-frontend"
-    kubernetes.io/ingress.class: abi-fe-nginx-ingress
 spec:
+  ingressClassName: abi-fe-nginx-ingress
   tls:
   - hosts:
     - prod.spryt.com
@@ -23,7 +23,7 @@ spec:
             name: abi-fe-service
             port:
               number: 80 {% endcomment %}
-{% comment %} --- {% endcomment %}
+---
 
 apiVersion: v1
 kind: Service
