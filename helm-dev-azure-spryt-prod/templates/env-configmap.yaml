@@ -6,7 +6,7 @@ metadata:
 data:
   REACT_APP_API_URL: https://prod.backend.spryt.com/abi-be/api/v1
   REACT_APP_SOCKETS_DOMAIN: wss://prod.backend.spryt.com/abi-be/ws/chat
-  REACT_APP_URL_PREFIX_PATH: abi-fe
+  REACT_APP_URL_PREFIX_PATH: ""
   REACT_APP_API_CDN: ""
   REACT_APP_FACEBOOK_APP_ID: ""
   REACT_APP_GOOGLE_CLIENT_ID: ""
