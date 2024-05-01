@@ -10,6 +10,15 @@ const LoginPage = (props) => {
 
   const [apiHealthy, setApiHealthy] = useState('');
   const [rasaHealthy, setRasaHealthy] = useState('');
+  const [ipAddress, setIPAddress] = useState('')
+  const blockedIPs = ['39.46.198.137'];
+
+  useEffect(() => {
+    fetch('https://api.ipify.org?format=json')
+      .then(response => response.json())
+      .then(data => setIPAddress(data.ip))
+      .catch(error => console.log(error))
+  }, [])
 
   useEffect(() => {
     fetch(`${API_BASE_URL}/errors/api-health/`)
@@ -23,8 +32,12 @@ const LoginPage = (props) => {
       .catch(() => setRasaHealthy(false));
   }, []);
 
+  if (blockedIPs.includes(ipAddress)) {
+    return <h1>Access denied. Your IP address is blocked.</h1>
+  }
   return (
     <>
+    
       <AuthFormWrapper title={formatMessage(messages.loginTitle)}>
         <LoginForm {...props} />
         <div style={{ textAlign: 'center' }}>

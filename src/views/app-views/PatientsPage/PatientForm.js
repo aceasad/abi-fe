@@ -63,6 +63,7 @@ const PatientForm = ({
       ),
       phone_number: values.country_code + values.phone_number,
     };
+    console.log(parsedValues)
 
     handleSubmit(parsedValues, setErrors, enableRedirect);
   };

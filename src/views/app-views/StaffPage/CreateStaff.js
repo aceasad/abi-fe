@@ -8,7 +8,7 @@ import { message } from 'antd';
 import { createStaff } from 'redux/actions/Staff';
 import { GENDER } from 'constants/UserConstants';
 import moment from 'moment';
-import { DATE_FORMAT_DD_MMM_YYYY } from 'constants/DateConstant';
+import { DATE_FORMAT_DD_MM_YYYY,DATE_FORMAT_DD_MMM_YYYY } from 'constants/DateConstant';
 
 const CreateStaff = ({ showList }) => {
   const { formatMessage } = useIntl();
@@ -24,7 +24,7 @@ const CreateStaff = ({ showList }) => {
       ...values,
       date_of_birth: moment(
         moment(values.date_of_birth).format('DD-MM-YYYY')
-      ).format(DATE_FORMAT_DD_MMM_YYYY),
+      ).format(DATE_FORMAT_DD_MM_YYYY),
     };
 
     const preparedData = prepareFormData(parsedValues);

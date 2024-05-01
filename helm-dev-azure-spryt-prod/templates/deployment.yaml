@@ -3,7 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: abi-fe
-  namespace: spryt-prod
+  namespace: production
   labels:
     app: abi-fe
 spec:
@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: abi-fe
-        image: sprytacrprod.azurecr.io/abi-fe:latest
+        image: sprytacrproduction.azurecr.io/abi-fe:latest
         ports:
         - containerPort: 80
         imagePullPolicy: Always

@@ -1,13 +1,10 @@
-## abi-fe K8S INGRESSES
-# abi-fe k8s Ingress
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: abi-fe-ingress
-  namespace: spryt-prod
+  name: abi-fe-nginx-ingress
+  namespace: production
   annotations:
     kubernetes.io/ingress.class: abi-fe-nginx-ingress
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
 spec:
   rules:
   - http:
@@ -19,16 +16,13 @@ spec:
             name: abi-fe-service
             port:
               number: 80
-
 ---
 
-## abi-fe K8S SERVICES
-# abi-fe k8s service
 apiVersion: v1
 kind: Service
 metadata:
   name: abi-fe-service
-  namespace: spryt-prod
+  namespace: production
   labels:
     app: abi-fe
 spec:
