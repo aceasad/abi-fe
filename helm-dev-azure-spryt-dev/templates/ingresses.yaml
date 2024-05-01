@@ -8,8 +8,15 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: abi-fe-nginx-ingress
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    cert-manager.io/cluster-issuer: "letsencrypt-frontend"
+
 spec:
+  tls:
+  - hosts:
+    - dev.spryt.com
+    secretName: frontend-tts
   rules:
+  - host: dev.spryt.com
   - http:
       paths:
       - path: /
