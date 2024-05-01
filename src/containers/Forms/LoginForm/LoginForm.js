@@ -22,15 +22,6 @@ Access to this computer/Solution and any information it contains is limited to a
 */
 export const LoginForm = () => {
   let history = useHistory();
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [reToken,setreToken] = useState('')
-  const [submitEnable,setSubmitEnable] = useState(false)
-
-  const handleReToken = (t) => {
-    setreToken(t)
-
-  }
-
   const dispatch = useDispatch();
   const { loading, message, showMessage, token } = useSelector(
     makeSelectLoginDetails()
@@ -150,7 +141,7 @@ export const LoginForm = () => {
               labelBlock={true}
             />
             <Form.Item className = 'mt-sm-5 ml-sm-4'>
-              <ReCaptcha siteKey={'6LdPfZEpAAAAAA1xOWHQRv4CryFXqpP3HGVCRhS4'} callback={handleReToken} />
+              <ReCaptcha siteKey={'6Lf2NrcpAAAAABZn_Lw6SydK01wORSAJmXCWZ6-O'} callback={handleReToken} />
             </Form.Item>
 
             <Form.Item className="mt-sm-5">
