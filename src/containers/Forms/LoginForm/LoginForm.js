@@ -22,6 +22,15 @@ Access to this computer/Solution and any information it contains is limited to a
 */
 export const LoginForm = () => {
   let history = useHistory();
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [reToken,setreToken] = useState('')
+  const [submitEnable,setSubmitEnable] = useState(false)
+
+  const handleReToken = (t) => {
+    setreToken(t)
+
+  }
+
   const dispatch = useDispatch();
   const { loading, message, showMessage, token } = useSelector(
     makeSelectLoginDetails()
