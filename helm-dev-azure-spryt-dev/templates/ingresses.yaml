@@ -7,7 +7,7 @@ metadata:
   namespace: spryt-dev
   annotations:
     kubernetes.io/ingress.class: abi-fe-nginx-ingress
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
     cert-manager.io/cluster-issuer: "letsencrypt-frontend"
 
 spec:
