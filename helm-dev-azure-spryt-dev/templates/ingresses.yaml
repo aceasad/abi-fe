@@ -1,34 +1,3 @@
-## abi-fe K8S INGRESSES
-# abi-fe k8s Ingress
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: abi-fe-ingress
-  namespace: spryt-dev
-  annotations:
-    kubernetes.io/ingress.class: abi-fe-nginx-ingress
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    cert-manager.io/cluster-issuer: "letsencrypt-frontend"
-
-spec:
-  tls:
-  - hosts:
-    - dev.spryt.com
-    secretName: frontend-tts
-  rules:
-  - host: dev.spryt.com
-  - http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: abi-fe-service
-            port:
-              number: 80
-
----
-
 ## abi-fe K8S SERVICES
 # abi-fe k8s service
 apiVersion: v1
