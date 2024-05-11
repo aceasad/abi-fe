@@ -4,8 +4,8 @@ metadata:
   name: abi-fe-env-configmap
   namespace: spryt-dev 
 data:
-  REACT_APP_API_URL: http://20.103.24.0/abi-be/api/v1
-  REACT_APP_SOCKETS_DOMAIN: wss://20.103.24.0/abi-be/ws/chat
+  REACT_APP_API_URL: https://dev.backend.spryt.com/abi-be/api/v1
+  REACT_APP_SOCKETS_DOMAIN: wss://dev.backend.spryt.com/abi-be/ws/chat
   REACT_APP_URL_PREFIX_PATH: ""
   REACT_APP_API_CDN: ""
   REACT_APP_FACEBOOK_APP_ID: ""
@@ -18,3 +18,4 @@ data:
   REACT_APP_SHOW_MESSAGES_REQUIRING_IMMEDIATE_ATTENTION: "true"
   REACT_APP_SHOW_APPOINTMENTS_REMINDERS: "true"
   REACT_APP_SHOW_KPIS: "true"
+  CAPTCHA_CLIENT_KEY_V2: 6Lc5-MwpAAAAAFJnhYI3lqTIwhFJ6DPTu3L20o_x
