@@ -171,9 +171,7 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
   ];
   useEffect(()=>{
     if(isPasIntegrated){
-      console.log("LENGHT OF TABLE COLUMS",tableColumns.length)
       tableColumns=tableColumns.splice(3,1)
-      console.log("LENGHT OF TABLE COLUMS",tableColumns.length)
     }
   },[])
   

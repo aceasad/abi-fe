@@ -27,8 +27,10 @@ const DocumentsPage = () => {
           key: item.id,
         };
       });
-
-      setListOfDocuments(data);
+      var filtered_data = data.filter(function( obj ) {
+        return obj.document_name != 'Context Document';
+      });
+      setListOfDocuments(filtered_data);
     }
     fetchData();
   }, []);
@@ -109,26 +111,26 @@ const DocumentsPage = () => {
         </a>
       ),
     },
-    {
-      title: 'Actions',
-      key: 'action',
-      render: (_, record) => (
-        <Space size="middle">
-          <AskQuestions
-            initialValues={record}
-            handleUpdateDataSource={handleUpdateDataSource}
-          />
-          <EditModal
-            initialValues={record}
-            handleUpdateDataSource={handleUpdateDataSource}
-          />
-          <DeleteModal
-            initialValues={record}
-            handleUpdateDataSource={handleUpdateDataSource}
-          />
-        </Space>
-      ),
-    },
+    // {
+    //   title: 'Actions',
+    //   key: 'action',
+    //   render: (_, record) => (
+    //     <Space size="middle">
+    //       <AskQuestions
+    //         initialValues={record}
+    //         handleUpdateDataSource={handleUpdateDataSource}
+    //       />
+    //       <EditModal
+    //         initialValues={record}
+    //         handleUpdateDataSource={handleUpdateDataSource}
+    //       />
+    //       <DeleteModal
+    //         initialValues={record}
+    //         handleUpdateDataSource={handleUpdateDataSource}
+    //       />
+    //     </Space>
+    //   ),
+    // },
   ];
 
   return (

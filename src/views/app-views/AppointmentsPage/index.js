@@ -50,11 +50,11 @@ const AppointmentsPage = () => {
         }
         extra={[
           <Space key="0">
-            <Button type="primary" onClick={() => setIsModalVisible(true)}>
+            {/* <Button type="primary" onClick={() => setIsModalVisible(true)}>
               {formatMessage({
                 id: 'appointments_page.button.new_appointment',
               })}
-            </Button>
+            </Button> */}
             {isPasIntegrated? (
             <Button type="primary" onClick={() => setPASIsModalVisible(true)}>
               {formatMessage({

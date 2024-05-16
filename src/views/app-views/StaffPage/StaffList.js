@@ -106,7 +106,8 @@ const StaffList = ({ showCreate, editUser, seeAppointments }) => {
             dataSource={staff}
             renderItem={(staffItem) => (
               <List.Item>
-                {isPasIntegrated ? (<CardComponent
+                {isPasIntegrated ? (
+                <CardComponent
                   key={staffItem.id}
                   title={staffItem.first_name + ' ' + staffItem.last_name}
                   description={''}
