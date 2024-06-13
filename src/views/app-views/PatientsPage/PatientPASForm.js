@@ -208,7 +208,7 @@ const PatientPASForm = ({
                       }}
                       required
                     />
-                    <ColumnField
+                    {/* <ColumnField
                       span={8}
                       maxDate={new Date()}
                       component={FormDatePicker}
@@ -216,8 +216,8 @@ const PatientPASForm = ({
                       label={formatMessage(messages.dateOfBirth)}
                       name="date_of_birth"
                       required
-                    />
-                    <ColumnField
+                    /> */}
+                    {/* <ColumnField
                       span={8}
                       component={FormSelect}
                       name="gender"
@@ -226,7 +226,7 @@ const PatientPASForm = ({
                       defaultOption={values.gender}
                       label={formatMessage(messages.sex)}
                       required
-                    />
+                    /> */}
                   </Row>
                   {/* <Row gutter={16}>
 
@@ -303,7 +303,7 @@ const PatientPASForm = ({
                       required
                     />
                   </Row>
-                  <Row gutter={16}>
+                  {/* <Row gutter={16}>
                     <ColumnField
                       span={12}
                       component={FormField}
@@ -311,7 +311,7 @@ const PatientPASForm = ({
                       name="email"
                       required
                     />
-                  </Row>
+                  </Row> */}
                 </Col>
               </Row>
               {/* 

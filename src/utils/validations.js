@@ -28,7 +28,7 @@ const passwordRepeatValidation = (refField) =>
     .required()
     .oneOf([Yup.ref(refField)]);
 
-const usernameSchema = Yup.string().email().required();
+const usernameSchema = Yup.string().email();
 const nameSchema = Yup.string().trim().max(MAX).required();
 
 export const loginSchema = Yup.object().shape({
@@ -104,8 +104,8 @@ export const changePasswordSchema = Yup.object().shape({
 export const patientSchema = Yup.object().shape({
   first_name: Yup.string().trim().max(MAX).required(),
   last_name: Yup.string().trim().max(MAX).required(),
-  gender: Yup.string().required(),
-  date_of_birth: Yup.string().required(),
+  gender: Yup.string(),
+  date_of_birth: Yup.string(),
   height: Yup.number(),
   weight: Yup.number(),
   country_code: Yup.string().matches(phoneFormat).max(MAX).required(),
