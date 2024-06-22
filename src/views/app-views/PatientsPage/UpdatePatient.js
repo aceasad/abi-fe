@@ -90,9 +90,7 @@ const UpdatePatient = ({ showList, patientId }) => {
 
   const renderUpdatePatientForm = () =>{
     if (isPasIntegrated) {
-      console.log(initialState.country_code)
-      console.log(initialState.date_of_birth)
-
+      initialState.date_of_birth = '5/11/1992'
       return(        
       <PatientPASForm
         id={patientId}
