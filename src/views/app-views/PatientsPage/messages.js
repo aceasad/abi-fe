@@ -95,6 +95,10 @@ export default defineMessages({
     id: `${detailScope}.error.email_already_exists`,
     defaultMessage: 'Email is already taken',
   },
+  nhsNumberIncorrect: {
+    id: `${detailScope}.error.incorrect_external_identification_number`,
+    defaultMessage: 'NHS number is incorrect!',
+  },
   dateOfBirth: {
     id: `${detailScope}.side.form.date_of_birth`,
     defaultMessage: 'Date of birth',
