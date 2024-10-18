@@ -16,6 +16,7 @@ const ENDPOINTS = {
   MARK_CONVERSATION_NOT_IN_EMERGENCY_SITUATION:
     '/patients/:id/mark-conversation-not-in-emergency-situation/',
   GET_PATIENTS_DETAILS_NEW_PATIENT_FORM: '/patients/patient-details/',
+  UPLOADPATIENTSCSV:'/patients/uploadcsv/'
 };
 
 class PatientService extends ApiService {
@@ -95,6 +96,16 @@ class PatientService extends ApiService {
     this.apiClient.post(
       ENDPOINTS.MARK_CONVERSATION_NOT_IN_EMERGENCY_SITUATION.replace(':id', id)
     );
+  uploadPatientCSV = (payload) => {
+      const formData = new FormData();
+      formData.append('file', payload.file);
+  
+      return this.apiClient.post(ENDPOINTS.UPLOADPATIENTSCSV, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+    };
 }
 
 const patientService = new PatientService();

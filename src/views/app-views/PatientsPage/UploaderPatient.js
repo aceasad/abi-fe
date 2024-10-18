@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { Button } from 'antd';
-import documentsService from 'services/DocumentsService';
+import patientsService from 'services/PatientService';
 import Modal from 'antd/lib/modal/Modal';
-import Dropzone from './Dropzone';
+import Dropzone from '../DocumentsPage/Dropzone';
 import FormField from 'components/custom-components/Form/FormField';
 import FormSelect from 'components/custom-components/Form/FormSelect';
 import Form from 'antd/lib/form/Form';
 import { Field, Formik } from 'formik';
 
-const UploaderPatient = ({ handleUpdateDataSource, appointmentTypes }) => {
+const UploaderPatient = ({onUploadComplete }) => {
   const [open, setOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [fileListToUpload, setFileListToUpload] = useState([]);
@@ -18,32 +18,29 @@ const UploaderPatient = ({ handleUpdateDataSource, appointmentTypes }) => {
     setFileListToUpload([]);
   };
 
-  const createDocument = async (payload) => {
-    const response = await documentsService.createDocument(payload);
-
-    handleUpdateDataSource(response.data);
+  const createPatient = async (payload) => {
+    const response = await patientsService.uploadPatientCSV(payload);
+    // handleUpdateDataSource(response.data);
   };
 
   const handleOk = (values) => {
     setConfirmLoading(true);
-    let appointment_type_name;
-    try{
-      appointment_type_name = appointmentTypes.find(
-        (type) => type.id === values.appointmentType
-      )['name'];  
-  
-    }catch{
-      appointment_type_name = null;
-    }
-    console.log(appointment_type_name)
-    createDocument({
+
+    createPatient({
       file: fileListToUpload[0],
-      document_name: values.document_name,
-      appointment_type_name,
     }).then(() => {
       setOpen(false);
       setConfirmLoading(false);
     });
+
+    setTimeout(() => {
+      console.log("Upload complete!");
+      
+      // Call the callback when done
+      if (onUploadComplete) {
+        onUploadComplete();
+      }
+    }, 1000); // Simulate a 2-second upload delay
   };
 
   const handleCancel = () => {
@@ -55,24 +52,21 @@ const UploaderPatient = ({ handleUpdateDataSource, appointmentTypes }) => {
       <div
         style={{
           marginLeft: 'auto',
-          marginBottom: '2rem',
         }}
       >
         <Button type="primary" onClick={showModal}>
-          Upload document
+          Bulk Upload
         </Button>
       </div>
       <Formik
-        initialValues={{
-          appointmentType: '',
-        }}
+        initialValues={{}}
         onSubmit={handleOk}
         enableReinitialize
         validateOnMount
       >
         {({ values, handleSubmit }) => (
           <Modal
-            title="Upload Your Document"
+            title="Bulk Upload of Patients from EMIS exported CSV"
             visible={open}
             destroyOnClose
             confirmLoading={confirmLoading}
@@ -103,23 +97,6 @@ const UploaderPatient = ({ handleUpdateDataSource, appointmentTypes }) => {
               onChange={setFileListToUpload}
               fileListToUpload={fileListToUpload}
             />
-            <div style={{ marginTop: '30px' }}>
-              <Form layout="vertical" name="document-form">
-                <Field
-                  label="Document Name"
-                  component={FormField}
-                  name="document_name"
-                />
-                <Field
-                  label="Appointment Type"
-                  component={FormSelect}
-                  name="appointmentType"
-                  options={appointmentTypes}
-                  optionField="name"
-                  defaultOption={values.appointmentType}
-                />
-              </Form>
-            </div>
           </Modal>
         )}
       </Formik>

@@ -19,6 +19,10 @@ export default defineMessages({
     id: `${scope}.button.new`,
     defaultMessage: 'New patient',
   },
+  newBulkPatientUpload: {
+    id: `${scope}.button.upload`,
+    defaultMessage: 'Upload CSV',
+  },
   newPASPatient: {
     id: `${scope}.button.new`,
     defaultMessage: 'New PAS patient',
