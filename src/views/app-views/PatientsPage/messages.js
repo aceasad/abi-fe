@@ -19,6 +19,10 @@ export default defineMessages({
     id: `${scope}.button.new`,
     defaultMessage: 'New patient',
   },
+  newBulkPatientUpload: {
+    id: `${scope}.button.upload`,
+    defaultMessage: 'Upload CSV',
+  },
   newPASPatient: {
     id: `${scope}.button.new`,
     defaultMessage: 'New PAS patient',
@@ -94,6 +98,10 @@ export default defineMessages({
   emailAlreadyTaken: {
     id: `${detailScope}.error.email_already_exists`,
     defaultMessage: 'Email is already taken',
+  },
+  nhsNumberIncorrect: {
+    id: `${detailScope}.error.incorrect_external_identification_number`,
+    defaultMessage: 'NHS number is incorrect!',
   },
   dateOfBirth: {
     id: `${detailScope}.side.form.date_of_birth`,
