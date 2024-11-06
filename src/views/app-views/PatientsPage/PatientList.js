@@ -30,13 +30,14 @@ import {
   deletePatient,
 } from 'redux/actions/Patient';
 import messages from './messages';
-import { DEFAULT_PAGINATION_LIMIT } from 'constants/ApiConstant';
+import { DEFAULT_PAGINATION_LIMIT,SET_DEFAULT_PAGINATION_LIMIT } from 'constants/ApiConstant';
 import { makeSelectPatients } from 'redux/selectors/Patient';
 import Modal from 'components/shared-components/Modal';
 import moment from 'moment';
 import utils from 'utils';
 import UploaderPatient from './UploaderPatient';
 import patientService from 'services/PatientService';
+
 const { useBreakpoint } = Grid;
 
 const PatientList = ({ showCreate, updatePatient, showPreview }) => {
@@ -48,7 +49,6 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
   const screens = utils.getBreakPoint(useBreakpoint());
   const isMobile = !screens.includes('lg');
   const [isUploadCompleted, setIsUploadCompleted] = useState(false);
-
   const { count, patients, loading, page } = useSelector(makeSelectPatients());
 
   useEffect(() => {
@@ -59,67 +59,7 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
   const handleUploadCompletion = () => {
     setIsUploadCompleted(prev => !prev);  // Toggle state to rerun useEffect
   };
-  // const handleUpdateDataSource = (newValues, type) => {
-  //   if (type === 'delete') {
-  //     const filteredData = listOfPatients.filter(
-  //       (item) => item.id !== newValues
-  //     );
-  //     setListOfPatients(filteredData);
-  //     return;
-  //   }
 
-  //   const shouldUpdateListOfPatients = listOfPatients.find(
-  //     (item) => item.id === newValues.id
-  //   );
-
-  //   if (shouldUpdateListOfPatients) {
-  //     const updatedDataSource = listOfPatients.map((item) => {
-  //       if (item.id === newValues.id) {
-  //         return {
-  //           ...newValues,
-  //           key: newValues.id,
-  //         };
-  //       }
-  //       return item;
-  //     });
-
-  //     setListOfPatients(updatedDataSource);
-  //   } else {
-  //     setListOfPatients([
-  //       ...listOfPatients,
-  //       {
-  //         ...newValues,
-  //         key: newValues.id,
-  //       },
-  //     ]);
-  //   }
-  // };
-  // const dropdownMenu = (row) => (
-  //   <Menu>
-  //     <Menu.Item
-  //       onClick={({ domEvent }) => {
-  //         domEvent.stopPropagation();
-  //         updatePatient(row.id);
-  //       }}
-  //     >
-  //       <Flex alignItems="center">
-  //         <EditFilled />
-  //         <span className="ml-2">{formatMessage(messages.editPatient)}</span>
-  //       </Flex>
-  //     </Menu.Item>
-  //     <Menu.Item
-  //       onClick={({ domEvent }) => {
-  //         domEvent.stopPropagation();
-  //         setPatientForDelete(row);
-  //       }}
-  //     >
-  //       <Flex alignItems="center">
-  //         <DeleteOutlined />
-  //         <span className="ml-2">{formatMessage(messages.patientDelete)}</span>
-  //       </Flex>
-  //     </Menu.Item>
-  //   </Menu>
-  // );
 
   const tableColumns = [
     {
@@ -199,6 +139,9 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
   const handlePaginationChange = (page) => {
     dispatch(setPatientPage(page));
   };
+  const handlePaginationSizeChange = (current,size) => {
+    SET_DEFAULT_PAGINATION_LIMIT(size)
+  };
 
   const handleChange = (_, __, sortInfo, e) => {
     if (e.action === 'sort') dispatch(setOrder(sortInfo));
@@ -256,6 +199,7 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
               defaultPageSize: DEFAULT_PAGINATION_LIMIT,
               total: count,
               onChange: handlePaginationChange,
+              onShowSizeChange: (current,size) => handlePaginationSizeChange(current,size), // Custom handler for page size change
               hideOnSinglePage: true,
               current: page,
             }}
