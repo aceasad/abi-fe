@@ -35,6 +35,11 @@ export const MASS_INVITE_MIN_AGE = 18;
 export const MASS_INVITE_MAX_AGE = 100;
 
 export const CHAT_FILTERS = {
+  BOOKED:'BOOKED',
+  RESCHEDULED:'RESCHEDULED',
+  CANCELLED:'CANCELLED',
+  ASKED_QUESTION:'ASKED_QUESTION',
+  NO_RESPONSE:'NO_RESPONSE',
   HUMAN_INTERVENTION_REQUIRED: 'human_intervention_required',
   IN_EMERGENCY_SITUATION: 'in_emergency_situation',
   LIKELY_TO_MISS_NEXT_APPOINTMENT: 'likely_to_miss_next_appointment',

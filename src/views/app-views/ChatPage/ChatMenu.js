@@ -61,6 +61,27 @@ const ChatMenu = (props) => {
       label: formatMessage(messages.likelyToMissNextAppointmentFilter),
       value: CHAT_FILTERS.LIKELY_TO_MISS_NEXT_APPOINTMENT,
     },
+    {
+      label: formatMessage(messages.bookedFilter),
+      value: CHAT_FILTERS.BOOKED,
+    },
+    {
+      label: formatMessage(messages.rescheduleFilter),
+      value: CHAT_FILTERS.RESCHEDULED,
+    },
+    {
+      label: formatMessage(messages.cancelledFilter),
+      value: CHAT_FILTERS.CANCELLED,
+    },
+    {
+      label: formatMessage(messages.noResponseFilter),
+      value: CHAT_FILTERS.NO_RESPONSE,
+    },
+    {
+      label: formatMessage(messages.askedQuestionFilter),
+      value: CHAT_FILTERS.ASKED_QUESTION,
+    },
+
   ];
 
   const [filter, setFilter] = useState(CONVERSATION_FILTERS[0].value);
