@@ -94,7 +94,16 @@ function* createPatient({ payload }) {
     yield getPatients();
   } catch (err) {
     if (err?.response?.status === 400) {
-      yield payload.setErrors({ email: messages.emailAlreadyTaken });
+      var error_data = err?.response?.data
+      if (error_data['ExternalIdentificationNumber'] == 'NHS number is incorrect!'){
+        yield payload.setErrors({ ExternalIdentificationNumber: messages.nhsNumberIncorrect });
+      }
+      else if(error_data['phone_number'] == 'patient with this phone number already exists.'){
+        yield payload.setErrors({ phone_number: messages.phoneNumberAlreadyExists });
+      }
+      else{
+        yield payload.setErrors({ email: messages.emailAlreadyTaken });
+      }
     }
   } finally {
     yield put(setPatientLoading(false));
