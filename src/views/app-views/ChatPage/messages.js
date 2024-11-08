@@ -142,7 +142,7 @@ export default defineMessages({
   },  
   rescheduleFilter: {
     id: `${scope}.filters.reschedule`,
-    defaultMessage: 'Reschedulled',
+    defaultMessage: 'Rescheduled',
   },  
   cancelledFilter: {
     id: `${scope}.filters.cancelled`,
