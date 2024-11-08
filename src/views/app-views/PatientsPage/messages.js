@@ -103,6 +103,10 @@ export default defineMessages({
     id: `${detailScope}.error.incorrect_external_identification_number`,
     defaultMessage: 'NHS number is incorrect!',
   },
+  phoneNumberAlreadyExists: {
+    id: `${detailScope}.error.phone_number`,
+    defaultMessage: 'Phone number is already added by another clinic!',
+  },
   dateOfBirth: {
     id: `${detailScope}.side.form.date_of_birth`,
     defaultMessage: 'Date of birth',

@@ -136,4 +136,24 @@ export default defineMessages({
     id: `${scope}.placeholder.chat_disabled`,
     defaultMessage: 'Last message was more than 24 hours ago',
   },
+  bookedFilter: {
+    id: `${scope}.filters.booked`,
+    defaultMessage: 'Scheduled',
+  },  
+  rescheduleFilter: {
+    id: `${scope}.filters.reschedule`,
+    defaultMessage: 'Reschedulled',
+  },  
+  cancelledFilter: {
+    id: `${scope}.filters.cancelled`,
+    defaultMessage: 'Cancelled',
+  },  
+  noResponseFilter: {
+    id: `${scope}.filters.no_response`,
+    defaultMessage: 'No Response',
+  },  
+  askedQuestionFilter: {
+    id: `${scope}.filters.asked_question`,
+    defaultMessage: 'Asked Question',
+  },
 });
