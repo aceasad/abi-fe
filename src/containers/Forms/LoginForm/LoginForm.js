@@ -150,7 +150,7 @@ export const LoginForm = () => {
               labelBlock={true}
             />
             <Form.Item className = 'mt-sm-5 ml-sm-4'>
-              <ReCaptcha siteKey={'6Lf2NrcpAAAAABZn_Lw6SydK01wORSAJmXCWZ6-O'} callback={handleReToken} />
+              <ReCaptcha siteKey={'6Lcoc4gqAAAAAJ_mhsJyfgAr7CbSlO9l62_crs5G'} callback={handleReToken} />
             </Form.Item>
 
             <Form.Item className="mt-sm-5">
