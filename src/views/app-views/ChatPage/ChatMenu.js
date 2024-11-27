@@ -57,10 +57,10 @@ const ChatMenu = (props) => {
       label: formatMessage(messages.inEmergencySituationFilter),
       value: CHAT_FILTERS.IN_EMERGENCY_SITUATION,
     },
-    {
-      label: formatMessage(messages.likelyToMissNextAppointmentFilter),
-      value: CHAT_FILTERS.LIKELY_TO_MISS_NEXT_APPOINTMENT,
-    },
+    // {
+    //   label: formatMessage(messages.likelyToMissNextAppointmentFilter),
+    //   value: CHAT_FILTERS.LIKELY_TO_MISS_NEXT_APPOINTMENT,
+    // },
     {
       label: formatMessage(messages.bookedFilter),
       value: CHAT_FILTERS.BOOKED,

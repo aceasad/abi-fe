@@ -97,7 +97,7 @@ const OverviewPage = () => {
               </Tabs.TabPane>
             )}
 
-            {SHOW_APPOINTMENTS_LIKELY_TO_BE_MISSED && (
+            {/* {SHOW_APPOINTMENTS_LIKELY_TO_BE_MISSED && (
               <Tabs.TabPane
                 tab={formatMessage(
                   messages.tableAppointmentsLikelyToBeMissedTitle
@@ -111,7 +111,7 @@ const OverviewPage = () => {
                   )}
                 />
               </Tabs.TabPane>
-            )}
+            )} */}
             {SHOW_PASSED_APPOINTMENTS_REQUIRING_IMMEDIATE_ATTENTION && (
               <Tabs.TabPane
                 tab={formatMessage(

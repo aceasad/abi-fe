@@ -103,10 +103,10 @@ function PreviewModal({
       label: formatMessage(messages.appointmentPrice),
       value: `£${appointment?.price}`,
     },
-    {
-      label: formatMessage(appointmentsPageMessages.appointmentPrediction),
-      value: RenderPredictionText(appointment),
-    },
+    // {
+    //   label: formatMessage(appointmentsPageMessages.appointmentPrediction),
+    //   value: RenderPredictionText(appointment),
+    // },
   ];
 
   const detailsList = detailsListData.map((item, index) => (

@@ -42,6 +42,6 @@ export const CHAT_FILTERS = {
   NO_RESPONSE:'NO_RESPONSE',
   HUMAN_INTERVENTION_REQUIRED: 'human_intervention_required',
   IN_EMERGENCY_SITUATION: 'in_emergency_situation',
-  LIKELY_TO_MISS_NEXT_APPOINTMENT: 'likely_to_miss_next_appointment',
+  // LIKELY_TO_MISS_NEXT_APPOINTMENT: 'likely_to_miss_next_appointment',
   ALL: 'all',
 };
