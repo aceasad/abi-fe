@@ -45,23 +45,3 @@ spec:
   selector:
     app: abi-fe
 
----
-
-## abi-fe K8S SERVICES
-# abi-fe k8s service
-apiVersion: v1
-kind: Service
-metadata:
-  name: abi-fe-service
-  namespace: spryt-dev
-  labels:
-    app: abi-fe
-spec:
-  type: ClusterIP
-  ports:
-  - port: 80
-    targetPort: 80
-    protocol: TCP
-    name: http
-  selector:
-    app: abi-fe
