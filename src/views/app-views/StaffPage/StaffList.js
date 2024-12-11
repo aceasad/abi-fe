@@ -103,9 +103,9 @@ const StaffList = ({ showCreate, editUser, seeAppointments }) => {
               xl: 4,
               xxl: 5,
             }}
-            dataSource={staff}
+            dataSource={staff.map((st) => ({ ...st, key: st.id || st.key }))}
             renderItem={(staffItem) => (
-              <List.Item>
+              <List.Item key={staffItem.id}>
                 {isPasIntegrated ? (
                 <CardComponent
                   key={staffItem.id}

@@ -29,6 +29,7 @@ import {
   SHOW_APPOINTMENTS_REMINDERS,
   SHOW_KPIS,
 } from 'configs/AppConfig';
+import { getMessageRequiringImmediateAttentionStatuses } from 'redux/actions/Appointment';
 
 const { Option } = Select;
 
@@ -45,6 +46,7 @@ const OverviewPage = () => {
   const [filterValue, setFilterValue] = useState(filters[0].value);
 
   useEffect(() => {
+      dispatch(getMessageRequiringImmediateAttentionStatuses());
     if (SHOW_KPIS) {
       dispatch(getOverviewData({ interval: filterValue }));
     }

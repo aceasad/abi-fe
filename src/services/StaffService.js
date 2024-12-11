@@ -128,10 +128,14 @@ class StaffService extends ApiService {
           }
     );
 
-  updateMessageRequiringImmediateAttention = (payload) =>
-    this.apiClient.post(
-      `${ENDPOINTS.UPDATE_MESSAGE_REQUIRING_IMMEDIATE_ATTENTION}${payload}/`
+  updateMessageRequiringImmediateAttention = (payload) =>{
+    const { id, ...updatedPayload } = payload;
+    this.apiClient.patch(
+      `${ENDPOINTS.UPDATE_MESSAGE_REQUIRING_IMMEDIATE_ATTENTION}${id}/`,
+      updatedPayload
     );
+
+  }
 }
 
 const staffService = new StaffService();

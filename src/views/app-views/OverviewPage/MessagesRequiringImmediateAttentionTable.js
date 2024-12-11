@@ -26,7 +26,7 @@ const MessagesRequiringImmediateAttentionTable = ({
     <div className="responsive-table ant-table-row-pointer">
       <Table
         columns={columns}
-        dataSource={items}
+        dataSource={items.map((item) => ({ ...item, key: item.id || item.key }))}
         onRow={onRow}
         onChange={handleChange}
         pagination={{

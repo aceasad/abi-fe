@@ -15,7 +15,7 @@ const ENDPOINTS = {
   GET_APPOINTMENT_MISSING_REASONS: '/missing-reasons/',
   GET_APPOINTMENT_CANCELLATION_REASONS: '/cancellation-reasons/',
   GET_MESSAGE_REQUIRING_IMMEDIATE_ATTENTION_STATUSES:
-    '/messages-requiring-immediate-attention-statuses/',
+    '/messages-requiring-immediate-attention/all_status/',
 };
 
 class AppointmentService extends ApiService {

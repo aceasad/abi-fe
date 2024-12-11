@@ -56,40 +56,38 @@ const UpdateMessageRequiringImmediateAttentionStatus = ({
         messages.MessageRequiringImmediateAttentionStatusUpdateSuccess
       )
     );
+    setTimeout(handleClose(),1000);
     if (
       updateMessageRequiringImmediateAttentionStatusFrom ===
       FROM_OVERVIEW_APPOINTMENTS
     ) {
+      console.log("from overview appointment")
       dispatch(
-        getMessagesRequiringImmediateAttention({
+        getMessagesRequiringImmediateAttention(
+          {
           id: '',
           field: appointment_type,
-        })
-      );
+        }
+      )
+      );      
     }
-
-    handleClose();
   };
 
   const handleSubmit = (values) => {
     dispatch(
       updateAppointmentMessageRequiringImmediateAttentionStatus({
         id,
-        data: prepareData(values),
+        // data: prepareData(values),
         status: messageRequiringImmediateAttentionStatuses.find(
           (status) => status.id === values.status
-        ),
-        field: MESSAGES_REQUIRING_IMMEDIATE_ATTENTION,
-        afterMessageRequiringImmediateAttentionStatusUpdate,
+        )?.id || 0,
+        status_details: values.status_details,
+        // field: MESSAGES_REQUIRING_IMMEDIATE_ATTENTION,
+        // afterMessageRequiringImmediateAttentionStatusUpdate,
       })
     );
+    afterMessageRequiringImmediateAttentionStatusUpdate();
   };
-
-  useEffect(() => {
-    if (!messageRequiringImmediateAttentionStatuses?.length) {
-      dispatch(getMessageRequiringImmediateAttentionStatuses());
-    }
-  }, [dispatch, messageRequiringImmediateAttentionStatuses?.length]);
 
   const initialState = messageRequiringImmediateAttention
     ? {

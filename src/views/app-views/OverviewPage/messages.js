@@ -407,4 +407,8 @@ export default defineMessages({
     id: `${scope}.modal.pre_appointment_questionnaire.ok_text`,
     defaultMessage: 'Close',
   },
+  MessageRequiringImmediateAttentionStatusUpdateSuccess:{
+    id: `${scope}.text.update_successfully`,
+    defaultMessage: 'Updated Successfully',
+  }
 });

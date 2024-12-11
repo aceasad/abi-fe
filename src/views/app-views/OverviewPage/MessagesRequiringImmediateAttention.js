@@ -20,6 +20,7 @@ import {
   SCHEDULED,
 } from 'redux/reducers/Staff';
 import {
+  getMessageRequiringImmediateAttentionStatuses,
   getSingleAppointment,
   getSinglePreAppointmentQuestionnaire,
 } from 'redux/actions/Appointment';
@@ -65,6 +66,10 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
       dispatch(getSingleAppointment(activeAppointment.id));
     }
   }, [activeAppointment, dispatch]);
+  
+  useEffect(() => {
+      dispatch(getMessageRequiringImmediateAttentionStatuses());
+  }, [dispatch]);
 
   let tableColumns = [
     {
@@ -110,25 +115,25 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
         },
       }),
     },
-    {
-      title: formatMessage(overviewPageMessages.columnTitlePriority),
-      dataIndex: ['priority', 'name'],
-      sorter: true,
-      render: (_, row) => ({
-        children: (
-          <div
-            className={`mria-priority-${getSafe(() =>
-              row.priority?.name.toLowerCase()
-            )}`}
-          >
-            {row.priority?.name}
-          </div>
-        ),
-        props: {
-          'data-label': formatMessage(overviewPageMessages.columnTitlePriority),
-        },
-      }),
-    },
+    // {
+    //   title: formatMessage(overviewPageMessages.columnTitlePriority),
+    //   dataIndex: ['priority', 'name'],
+    //   sorter: true,
+    //   render: (_, row) => ({
+    //     children: (
+    //       <div
+    //         className={`mria-priority-${getSafe(() =>
+    //           row.priority?.name.toLowerCase()
+    //         )}`}
+    //       >
+    //         {row.priority?.name}
+    //       </div>
+    //     ),
+    //     props: {
+    //       'data-label': formatMessage(overviewPageMessages.columnTitlePriority),
+    //     },
+    //   }),
+    // },
     {
       title: formatMessage(overviewPageMessages.columnTitleStatus),
       dataIndex: ['status', 'name'],
@@ -169,11 +174,11 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
       ),
     },
   ];
-  useEffect(()=>{
-    if(isPasIntegrated){
-      tableColumns=tableColumns.splice(3,1)
-    }
-  },[])
+  // useEffect(()=>{
+  //   if(isPasIntegrated){
+  //     tableColumns=tableColumns.splice(3,1)
+  //   }
+  // },[tableColumns])
   
   const [
     activePreAppointmentQuestionnaire,
@@ -216,13 +221,10 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
     e,
     row
   ) => {
-    alert('Coming Soon!');
-    return;
-
+    // alert('Coming Soon!');
+    // return;
     e.stopPropagation();
-    showUpdateMessageRequiringImmediateAttentionStatus({
-      appointment: row,
-    });
+    showUpdateMessageRequiringImmediateAttentionStatus(row);
   };
 
   const collapseHeader = (
@@ -281,12 +283,12 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
           </Menu.Item>
         )}
         <Menu.Item
-          key="1"
+          key="2"
           onClick={({ domEvent }) => {
             domEvent.stopPropagation();
             showUpdateMessageRequiringImmediateAttentionStatusWrapper(
               domEvent,
-              row.id
+              row
             );
           }}
         >

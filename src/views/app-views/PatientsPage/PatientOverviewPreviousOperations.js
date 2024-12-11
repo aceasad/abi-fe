@@ -51,7 +51,7 @@ const PatientOverviewPreviousOperations = ({ patientId }) => {
       </div>
       <Table
         columns={columnsHistory}
-        dataSource={items}
+        dataSource={items.map((item) => ({ ...item, key: item.id || item.key }))}
         loading={loading}
         pagination={{
           defaultPageSize: DEFAULT_SMALL_PAGINATION_LIMIT,
