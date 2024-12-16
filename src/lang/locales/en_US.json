@@ -610,5 +610,13 @@
   "overview_page.modal.update_message_requiring_immediate_attention_status.cancel_text": "Cancel",
   "overview_page.modal.update_message_requiring_immediate_attention_status.error": "Error",
   "overview_page.modal.pre_appointment_questionnaire.title": "Pre-appointment questionnaire patient answers",
-  "overview_page.modal.pre_appointment_questionnaire.ok_text": "Close"
+  "overview_page.modal.pre_appointment_questionnaire.ok_text": "Close",
+  "overview_page.table.patient_progress.title": "Patient Progress",
+  "overview_page.text.update_successfully":"Successfully Updated",
+  "overview_page.clinicstats.decline":"Declines",
+  "overview_page.clinicstats.bookings":"Bookings",
+  "overview_page.clinicstats.openconversation":"Open Conversation",
+  "overview_page.clinicstats.title":"Clinic Statistics",
+  "overview_page.clinicstats.patientsenrolled":"Patients Enrolled"
+
 }

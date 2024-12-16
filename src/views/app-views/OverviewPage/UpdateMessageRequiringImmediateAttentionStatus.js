@@ -56,20 +56,16 @@ const UpdateMessageRequiringImmediateAttentionStatus = ({
         messages.MessageRequiringImmediateAttentionStatusUpdateSuccess
       )
     );
-    setTimeout(handleClose(),1000);
+    setTimeout(handleClose(), 1000);
     if (
       updateMessageRequiringImmediateAttentionStatusFrom ===
       FROM_OVERVIEW_APPOINTMENTS
     ) {
       console.log("from overview appointment")
+      var payload = { id: null, field: 'messages_requiring_immediate_attention' }
       dispatch(
-        getMessagesRequiringImmediateAttention(
-          {
-          id: '',
-          field: appointment_type,
-        }
-      )
-      );      
+        getMessagesRequiringImmediateAttention(payload)
+      );
     }
   };
 
@@ -82,7 +78,7 @@ const UpdateMessageRequiringImmediateAttentionStatus = ({
           (status) => status.id === values.status
         )?.id || 0,
         status_details: values.status_details,
-        // field: MESSAGES_REQUIRING_IMMEDIATE_ATTENTION,
+        field: MESSAGES_REQUIRING_IMMEDIATE_ATTENTION,
         // afterMessageRequiringImmediateAttentionStatusUpdate,
       })
     );
@@ -91,13 +87,13 @@ const UpdateMessageRequiringImmediateAttentionStatus = ({
 
   const initialState = messageRequiringImmediateAttention
     ? {
-        status: messageRequiringImmediateAttention.status?.id,
-        status_details: messageRequiringImmediateAttention.status_details,
-      }
+      status: messageRequiringImmediateAttention.status?.id,
+      status_details: messageRequiringImmediateAttention.status_details,
+    }
     : {
-        status: '',
-        status_details: '',
-      };
+      status: '',
+      status_details: '',
+    };
 
   return (
     <Formik initialValues={initialState} onSubmit={handleSubmit}>

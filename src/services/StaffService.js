@@ -93,7 +93,7 @@ class StaffService extends ApiService {
     this.apiClient.get(
       !id
         ? `${ENDPOINTS.GET_MESSAGES_REQUIRING_IMMEDIATE_ATTENTION[state_field]}`
-        : `${ENDPOINTS.GET_MESSAGES_REQUIRING_IMMEDIATE_ATTENTION[state_field]}${id}/`,
+        : `${ENDPOINTS.GET_MESSAGES_REQUIRING_IMMEDIATE_ATTENTION[state_field]}`,
       {
         params: {
           ordering: field

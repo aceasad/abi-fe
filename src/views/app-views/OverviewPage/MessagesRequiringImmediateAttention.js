@@ -66,9 +66,9 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
       dispatch(getSingleAppointment(activeAppointment.id));
     }
   }, [activeAppointment, dispatch]);
-  
+
   useEffect(() => {
-      dispatch(getMessageRequiringImmediateAttentionStatuses());
+    dispatch(getMessageRequiringImmediateAttentionStatuses());
   }, [dispatch]);
 
   let tableColumns = [
@@ -144,9 +144,8 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
             onClick={(e) =>
               showUpdateMessageRequiringImmediateAttentionStatusWrapper(e, row)
             }
-            className={`ant-tag text-left${
-              row.status?.name === 'Pending' ? ' ant-tag-red' : ''
-            }`}
+            className={`ant-tag text-left${row.status?.name === 'Pending' ? ' ant-tag-red' : ''
+              }`}
           >
             {row.status?.name} {/*  <CaretDownOutlined /> */}
           </div>
@@ -179,7 +178,7 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
   //     tableColumns=tableColumns.splice(3,1)
   //   }
   // },[tableColumns])
-  
+
   const [
     activePreAppointmentQuestionnaire,
     setActivePreAppointmentQuestionnaire,
@@ -300,7 +299,7 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
     );
   };
 
- 
+
 
   return (
     <>
@@ -311,17 +310,17 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
       >
         <MessagesRequiringImmediateAttentionTable.Table
           columns={tableColumns}
-          // onRow={(record) => {
-          //   return {
-          //     onClick: () => {
-          //       setActiveAppointment({
-          //         id: record.id,
-          //         type: SCHEDULED,
-          //         patientId: record.patient.id,
-          //       });
-          //     },
-          //   };
-          // }}
+        // onRow={(record) => {
+        //   return {
+        //     onClick: () => {
+        //       setActiveAppointment({
+        //         id: record.id,
+        //         type: SCHEDULED,
+        //         patientId: record.patient.id,
+        //       });
+        //     },
+        //   };
+        // }}
         />
       </MessagesRequiringImmediateAttentionTable>
       {activeAppointment && (
@@ -343,17 +342,18 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
       )}
       {showChildModal.modal ===
         NESTED_MODAL.UPDATE_MESSAGE_REQUIRING_IMMEDIATE_ATTENTION_STATUS && (
-        <UpdateMessageRequiringImmediateAttentionStatus
-          handleClose={showPreview}
-          id={showChildModal.data.id}
-          patientId={showChildModal.data?.patient?.id}
-          updateMessageRequiringImmediateAttentionStatusFrom={
-            FROM_OVERVIEW_APPOINTMENTS
-          }
-          staffId={''}
-          messageRequiringImmediateAttention={showChildModal.data}
-        />
-      )}
+          <UpdateMessageRequiringImmediateAttentionStatus
+            handleClose={showPreview}
+            id={showChildModal.data.id}
+            patientId={showChildModal.data?.patient?.id}
+            updateMessageRequiringImmediateAttentionStatusFrom={
+              FROM_OVERVIEW_APPOINTMENTS
+            }
+            staffId={''}
+            messageRequiringImmediateAttention={showChildModal.data}
+          />
+        )
+      }
     </>
   );
 };

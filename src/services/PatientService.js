@@ -16,7 +16,8 @@ const ENDPOINTS = {
   MARK_CONVERSATION_NOT_IN_EMERGENCY_SITUATION:
     '/patients/:id/mark-conversation-not-in-emergency-situation/',
   GET_PATIENTS_DETAILS_NEW_PATIENT_FORM: '/patients/patient-details/',
-  UPLOADPATIENTSCSV:'/patients/uploadcsv/'
+  UPLOADPATIENTSCSV: '/patients/uploadcsv/',
+  PATIENTPROGRESS: '/patients/get-all-communication-status-for-patient/'
 };
 
 class PatientService extends ApiService {
@@ -70,11 +71,11 @@ class PatientService extends ApiService {
     next
       ? this.apiClient.get(next)
       : this.apiClient.get(ENDPOINTS.SEARCH_PATIENTS, {
-          params: {
-            search: query,
-            organization: organizationId,
-          },
-        });
+        params: {
+          search: query,
+          organization: organizationId,
+        },
+      });
 
   getMoreSearchResults = (next) => next && this.apiClient.get(next);
 
@@ -97,15 +98,18 @@ class PatientService extends ApiService {
       ENDPOINTS.MARK_CONVERSATION_NOT_IN_EMERGENCY_SITUATION.replace(':id', id)
     );
   uploadPatientCSV = (payload) => {
-      const formData = new FormData();
-      formData.append('file', payload.file);
-  
-      return this.apiClient.post(ENDPOINTS.UPLOADPATIENTSCSV, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-    };
+    const formData = new FormData();
+    formData.append('file', payload.file);
+
+    return this.apiClient.post(ENDPOINTS.UPLOADPATIENTSCSV, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  };
+  getPatientProgress = () => {
+    return this.apiClient.get(ENDPOINTS.PATIENTPROGRESS);
+  }
 }
 
 const patientService = new PatientService();

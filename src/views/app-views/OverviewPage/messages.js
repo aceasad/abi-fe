@@ -27,6 +27,10 @@ export default defineMessages({
     id: `${scope}.booking.title`,
     defaultMessage: 'Booking',
   },
+  clinicStatsTitle: {
+    id: `${scope}.clinicstats.title`,
+    defaultMessage: 'Clinic Statistics',
+  },
   asaDataTitle: {
     id: `${scope}.asa_data.title`,
     defaultMessage: 'Asa data',
@@ -42,6 +46,22 @@ export default defineMessages({
   bookingAfterInvite: {
     id: `${scope}.booking.after_invite`,
     defaultMessage: 'Bookings made after sending invite',
+  },
+  clinicStatsPatientEnrolled: {
+    id: `${scope}.clinicstats.patientsenrolled`,
+    defaultMessage: 'Patient Enrolled',
+  },
+  clinicStatsOpenConversation: {
+    id: `${scope}.clinicstats.openconversation`,
+    defaultMessage: 'Open Conversation',
+  },
+  clinicStatsBookings: {
+    id: `${scope}.clinicstats.bookings`,
+    defaultMessage: 'Bookings',
+  },
+  clinicStatsDecline: {
+    id: `${scope}.clinicstats.decline`,
+    defaultMessage: 'Declines',
   },
   bookingEfficiency: {
     id: `${scope}.booking.efficiency`,
@@ -150,6 +170,10 @@ export default defineMessages({
   tableMessagesRequiringImmediateAttentionTitle: {
     id: `${scope}.table.messages_requiring_immediate_attention.title`,
     defaultMessage: 'Human intervention needed',
+  },
+  tablePatientProgressTitle: {
+    id: `${scope}.table.patient_progress.title`,
+    defaultMessage: 'Patient Progress',
   },
   tablePassedAppointmentsRequiringImmediateStatusUpdateTitle: {
     id: `${scope}.table.past_appointments_requiring_immediate_status_update.title`,
@@ -407,7 +431,7 @@ export default defineMessages({
     id: `${scope}.modal.pre_appointment_questionnaire.ok_text`,
     defaultMessage: 'Close',
   },
-  MessageRequiringImmediateAttentionStatusUpdateSuccess:{
+  MessageRequiringImmediateAttentionStatusUpdateSuccess: {
     id: `${scope}.text.update_successfully`,
     defaultMessage: 'Updated Successfully',
   }
