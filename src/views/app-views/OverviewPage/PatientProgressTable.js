@@ -2,14 +2,7 @@ import { Card, Table, Progress, Button } from 'antd';
 import React, { useState, useEffect } from 'react';
 import { DEFAULT_LIMIT } from 'services/StaffService';
 import patientService from 'services/PatientService'
-// Sample data for the table
-
-
-// Function to determine progress color
-
-
-// Columns configuration
-
+import moment from 'moment';
 
 const PatientProgressTable = ({
   column,
@@ -25,30 +18,30 @@ const PatientProgressTable = ({
 }) => {
 
   const [data, setData] = useState([])
-  const getProgressColor = (status) => {
-    console.log(status);
+  const [sortedInfo, setSortedInfo] = useState({});
 
-    if (status == 'Completed') {
-      return "#008000";
-    } else if (status == 'In Progress') {
-      return "#f5836b";
-    } else if (status == 'Answered') {
-      return "#A020F0";
+  const getProgressColor = (status) => {
+    if (status == 'Rescheduled' || status == 'Booked') {
+      return "#18D9C5"; // Green
+    } else if (status == 'Asked Question' || status == 'Rescheduling' || status == 'Cancelling' || status == 'Booking') {
+      return "#FFBF00"; // Yellow
+    } else if (status == 'Cancelled' || status == 'No Response') {
+      return "#FF474C"; // Red
     } else {
       // return "#9C27B0";
-      return "#03A9F4";
+      return "#E880FF";
     }
   };
 
   const statusMapping = {
-    "RESCHEDULING": { status: "Started", progressbar: 20 },
-    "CANCELLING": { status: "Started", progressbar: 20 },
-    "BOOKING": { status: "Started", progressbar: 20 },
-    "NO_RESPONSE": { status: "In Progress", progressbar: 50 },
-    "BOOKED": { status: "Completed", progressbar: 100 },
-    "RESCHEDULED": { status: "Completed", progressbar: 100 },
-    "CANCELLED": { status: "Completed", progressbar: 100 },
-    "ASKED_QUESTION": { status: "Answered", progressbar: 100 }
+    "RESCHEDULING": { status: "Rescheduling", progressbar: 20 },
+    "CANCELLING": { status: "Cancelling", progressbar: 20 },
+    "BOOKING": { status: "Booking", progressbar: 20 },
+    "NO_RESPONSE": { status: "No Response", progressbar: 50 },
+    "BOOKED": { status: "Booked", progressbar: 100 },
+    "RESCHEDULED": { status: "Rescheduled", progressbar: 100 },
+    "CANCELLED": { status: "Cancelled", progressbar: 100 },
+    "ASKED_QUESTION": { status: "Asked Question", progressbar: 100 }
   };
 
   const columns = [
@@ -56,15 +49,50 @@ const PatientProgressTable = ({
       title: "Patient Name",
       dataIndex: "Patient Name",
       key: "Patient Name",
+      sorter: true,
+      sortOrder: sortedInfo.columnKey === 'Patient Name' && sortedInfo.order,
+      render: text => <div>{text}</div>,
     },
+    {
+      title: "Invitation Sent",
+      dataIndex: "Inviration Sent",
+      key: "Invitation Sent",
+      sorter: true,
+      sortOrder: sortedInfo.columnKey === 'Invitation Sent' && sortedInfo.order,
+      render: (_, record) => {
+        const invitationSent = record["Invitation Sent"]; // or whatever field name contains the datetime
+        const formattedDatetime = moment(invitationSent).format('DD/MM/YYYY hh:mm A');
+        return (
+          <div className="text-left text-uppercase">{`${formattedDatetime}`}
+          </div>
+        );
+      },
+    },
+    {
+      title: "Last Contact",
+      dataIndex: "Last Contact",
+      key: "Last Contact",
+      sorter: true,
+      sortOrder: sortedInfo.columnKey === 'Last Contact' && sortedInfo.order,
+      render: (_, record) => {
+        const lastContacted = record["Last Contact"]; // or whatever field name contains the datetime
+        if (lastContacted !== null) {
+          const formattedDatetime = moment(lastContacted).format('DD/MM/YYYY hh:mm A');
+          return (
+            <div className="text-left text-uppercase">{`${formattedDatetime}`}
+            </div>
+          );
+        } else {
+          return (
+            <div className="text-left">{`${"Not Contacted"}`}
+            </div>
+          );
 
-    {
-      title: "Process",
-      dataIndex: "Process",
-      key: "Process",
+        }
+      },
     },
     {
-      title: "Status",
+      title: "Booking Progress",
       dataIndex: "status",
       key: "status",
       render: (_, record) => {
@@ -82,23 +110,6 @@ const PatientProgressTable = ({
         );
       },
     },
-    {
-      title: "Progress",
-      dataIndex: "progress",
-      key: "progress",
-      render: (_, record) => {
-        return (
-          <>
-            <Progress
-              percent={record.Progressbar}
-              showInfo={false}
-              size="small"
-              strokeColor={getProgressColor(record.Status)}
-            />
-          </>
-        )
-      },
-    },
   ];
   const getProgresData = async () => {
     var res = await patientService.getPatientProgress()
@@ -107,7 +118,6 @@ const PatientProgressTable = ({
       const process = item.Process.toUpperCase(); // Ensure consistent key lookup
       const mapped = statusMapping[process] || { status: "Unknown", progressbar: 0 };
 
-      // Add new keys to the object
       item.Process = process
         .toLowerCase()
         .replace(/_/g, " ")
@@ -117,13 +127,6 @@ const PatientProgressTable = ({
     });
 
     console.log(formattedData);
-
-    // for (const item in formattedData) {
-    //   // item['Process'] = item['Process'].replace("_", " ").capitalize()
-    //   console.log(item['Process']);
-    // }
-    // console.log(formattedData)
-    // setData(res.data)
     setData(formattedData)
 
   }
@@ -132,94 +135,68 @@ const PatientProgressTable = ({
     getProgresData()
   }, [])
 
+  // Handle sorting change
+  const handleTableChange = (pagination, filters, sorter) => {
+    setSortedInfo(sorter); // Store the sorting information
+
+    // Perform sorting client-side based on the column and order
+    const sortedData = [...data]; // Create a copy of the current data
+    if (sorter.order) {
+      const sortOrder = sorter.order === 'ascend' ? 1 : -1;
+      const columnKey = sorter.field;
+      sortedData.sort((a, b) => {
+        // Handle string sorting
+        if (typeof a[columnKey] === 'string') {
+          return (a[columnKey].localeCompare(b[columnKey])) * sortOrder;
+        }
+        // Handle date sorting
+        if (moment(a[columnKey]).isValid() && moment(b[columnKey]).isValid()) {
+          return (moment(a[columnKey]).isBefore(moment(b[columnKey])) ? -1 : 1) * sortOrder;
+        }
+        // Handle numerical sorting
+        return (a[columnKey] - b[columnKey]) * sortOrder;
+      });
+    }
+    setData(sortedData); // Set the sorted data to state
+  };
   return (
     <Card>
-      {/* <Typography.Title level={4}>{title}</Typography.Title> */}
       <div className="responsive-table ant-table-row-pointer">
         <Table
           columns={columns}
           dataSource={data}
-          // pagination={{
-          //   defaultPageSize: pageSize,
-          //   total: data.length,
-          //   onChange: handlePaginationChange,
-          //   hideOnSinglePage: true,
-          //   current: 1,
-          // }}
-          rowKey={(record) => data.indexOf(record)}// To uniquely identify rows
+          onChange={handleTableChange} 
+          rowKey="PatientId"// To uniquely identify rows
         />
       </div>
     </Card>
   )
 }
 
-
-// PatientProgressTable.defaultProps = {
-//   onRow: () => ({}),
-//   handleChange: () => {},
-// };
-
-// const PatientProgress = ({
-//   id,
-//   field,
-//   children,
-//   columnMap,
-// }) => {
-//   if (!children) throw new Error('Component must have children');
-
-// const { items, loading, page, count } = useSelector(
-//   makeSelectMessagesRequiringImmediateAttentionRequestData(field)
-// );
-
-// const dispatch = useDispatch();
-
-// useEffect(() => {
-//   dispatch(getMessagesRequiringImmediateAttention({ id, field }));
-// }, [dispatch, id, field]);
-
-// const handlePaginationChange = (page) => {
-//   dispatch(setMessagesRequiringImmediateAttentionPage({ page, field, id }));
-// };
-
-// const handleChange = (_, __, sortField, e) => {
-//   if (e.action === 'sort')
-//     // dispatch(
-//     //   setMessagesRequiringImmediateAttentionOrder({
-//     //     ...sortField,
-//     //     sort_field: columnMap
-//     //       ? columnMap[
-//     //           Array.isArray(sortField.field)
-//     //             ? sortField.field.join('_')
-//     //             : sortField.field
-//     //         ]
-//     //       : sortField.field,
-//     //     field,
-//     //     id,
-//     //   })
-//     // );
-//     console.log("Add code for order / sort here")
-// };
-
-//   const elements = React.Children.map(children, (child) => {
-//     if (
-//       React.isValidElement(child) &&
-//       child.type.name === PatientProgressTable.name
-//     ) {
-//       return React.cloneElement(child, {
-//         items,
-//         pageSize: DEFAULT_LIMIT,
-//         // loading,
-//         // page,
-//         // count,
-//         // handlePaginationChange,
-//         handleChange,
-//       });
-//     }
-//     return child;
-//   });
-//   return <div>{elements}</div>;
-// };
-
-// PatientProgressTable.Table = PatientProgressTable;
-
 export default PatientProgressTable;
+
+
+    //   {
+    //     title: "Progress",
+    //     dataIndex: "progress",
+    //     key: "progress",
+    //     render: (_, record) => {
+    //       return (
+    //         <>
+    //           <Progress
+    //             percent={record.Progressbar}
+    //             showInfo={false}
+    //             size="small"
+    //             strokeColor={getProgressColor(record.Status)}
+    //           />
+    //         </>
+    //       )
+    //     },
+    //   },
+
+    
+    // {
+    //   title: "Process",
+    //   dataIndex: "Process",
+    //   key: "Process",
+    // },

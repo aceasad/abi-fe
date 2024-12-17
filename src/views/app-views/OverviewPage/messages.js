@@ -49,7 +49,11 @@ export default defineMessages({
   },
   clinicStatsPatientEnrolled: {
     id: `${scope}.clinicstats.patientsenrolled`,
-    defaultMessage: 'Patient Enrolled',
+    defaultMessage: 'Patient Invited',
+  },
+  clinicStatsAlreadyScreened: {
+    id: `${scope}.clinicstats.AlreadyScreened`,
+    defaultMessage: 'Already Screened',
   },
   clinicStatsOpenConversation: {
     id: `${scope}.clinicstats.openconversation`,
@@ -173,7 +177,7 @@ export default defineMessages({
   },
   tablePatientProgressTitle: {
     id: `${scope}.table.patient_progress.title`,
-    defaultMessage: 'Patient Progress',
+    defaultMessage: 'Booking Progress',
   },
   tablePassedAppointmentsRequiringImmediateStatusUpdateTitle: {
     id: `${scope}.table.past_appointments_requiring_immediate_status_update.title`,

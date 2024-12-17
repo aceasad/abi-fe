@@ -167,12 +167,12 @@ const OverviewPage = () => {
       {/* {SHOW_KPIS && (
         <Row gutter={48}>
           <Col span={24} className="mt-4">
-          <GroupCollapse
+            <GroupCollapse
               startOpen
               title={formatMessage(messages.clinicStatsTitle)}
               group={<ClinicStats title={formatMessage(messages.bookingTitle)} />}
-            />
-            <GroupCollapse
+            /> */}
+      {/* <GroupCollapse
               startOpen
               title={formatMessage(messages.bookingTitle)}
               group={<Booking title={formatMessage(messages.bookingTitle)} />}
@@ -195,7 +195,8 @@ const OverviewPage = () => {
                 />
               }
             />
-          </Col>
+           */}
+      {/* </Col>
         </Row>
       )} */}
     </>
