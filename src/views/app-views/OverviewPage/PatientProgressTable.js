@@ -25,7 +25,7 @@ const PatientProgressTable = ({
       return "#18D9C5"; // Green
     } else if (status == 'Asked Question' || status == 'Rescheduling' || status == 'Cancelling' || status == 'Booking') {
       return "#FFBF00"; // Yellow
-    } else if (status == 'Cancelled' || status == 'No Response') {
+    } else if (status == 'Cancelled' || status == 'No Response' || status == 'Inactive') {
       return "#FF474C"; // Red
     } else {
       // return "#9C27B0";
@@ -37,7 +37,7 @@ const PatientProgressTable = ({
     "RESCHEDULING": { status: "Rescheduling", progressbar: 20 },
     "CANCELLING": { status: "Cancelling", progressbar: 20 },
     "BOOKING": { status: "Booking", progressbar: 20 },
-    "NO_RESPONSE": { status: "No Response", progressbar: 50 },
+    "NO_RESPONSE": { status: "Inactive", progressbar: 50 },
     "BOOKED": { status: "Booked", progressbar: 100 },
     "RESCHEDULED": { status: "Rescheduled", progressbar: 100 },
     "CANCELLED": { status: "Cancelled", progressbar: 100 },
@@ -73,6 +73,7 @@ const PatientProgressTable = ({
       dataIndex: "Last Contact",
       key: "Last Contact",
       sorter: true,
+      defaultSortOrder: "descend",
       sortOrder: sortedInfo.columnKey === 'Last Contact' && sortedInfo.order,
       render: (_, record) => {
         const lastContacted = record["Last Contact"]; // or whatever field name contains the datetime
@@ -84,7 +85,7 @@ const PatientProgressTable = ({
           );
         } else {
           return (
-            <div className="text-left">{`${"Not Contacted"}`}
+            <div className="text-left">{`${""}`}
             </div>
           );
 
@@ -167,6 +168,7 @@ const PatientProgressTable = ({
           dataSource={data}
           onChange={handleTableChange} 
           rowKey="PatientId"// To uniquely identify rows
+          sortedInfo={sortedInfo}
         />
       </div>
     </Card>
