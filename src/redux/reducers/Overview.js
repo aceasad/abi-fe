@@ -1,6 +1,7 @@
 import produce from 'immer';
 import {
   SET_OVERVIEW_SUMMARY_DATA,
+  SET_OVERVIEW_CLINICSTATS_DATA,
   SET_OVERVIEW_SUMMARY_DATA_LOADING,
 } from 'redux/constants/Overview';
 
@@ -17,6 +18,11 @@ const initialState = {
   uptakeAverage: 0,
   coverage: 0,
   coverageAverage: 0,
+  patients_enrolled: 0,
+  already_screened:0,
+  open_conversations:0,
+  bookings:0,
+  declines:0,
   preferences: {
     byDay: {
       monday: 0,
@@ -57,6 +63,13 @@ const chats = (state = initialState, action) =>
           byDay: action.payload.preferences.by_day,
           byPeriod: action.payload.preferences.by_period,
         };
+        break;
+      case SET_OVERVIEW_CLINICSTATS_DATA:
+        draft.patients_enrolled = action.payload.patients_enrolled;
+        draft.already_screened = action.payload.already_screened;
+        draft.open_conversations = action.payload.open_conversations;
+        draft.bookings = action.payload.bookings;
+        draft.declines = action.payload.declines;
         break;
       case SET_OVERVIEW_SUMMARY_DATA_LOADING:
         draft.loading = action.payload;
