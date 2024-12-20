@@ -57,7 +57,7 @@ export default defineMessages({
   },
   clinicStatsOpenConversation: {
     id: `${scope}.clinicstats.openconversation`,
-    defaultMessage: 'Open Conversation',
+    defaultMessage: 'Patients Engaged',
   },
   clinicStatsBookings: {
     id: `${scope}.clinicstats.bookings`,
@@ -177,7 +177,7 @@ export default defineMessages({
   },
   tablePatientProgressTitle: {
     id: `${scope}.table.patient_progress.title`,
-    defaultMessage: 'Booking Progress',
+    defaultMessage: 'Booking progress',
   },
   tablePassedAppointmentsRequiringImmediateStatusUpdateTitle: {
     id: `${scope}.table.past_appointments_requiring_immediate_status_update.title`,

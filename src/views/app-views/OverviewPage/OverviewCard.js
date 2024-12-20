@@ -24,12 +24,20 @@ const OverviewCard = ({
         bodyStyle={{ height: '100%' }}
       >
         <Flex flexDirection="column height-100">
-          <div
+          {/* <div
             className={`overview-card__icon overview-card__icon--${getClassTitle()}`}
           >
             {icon}
-          </div>
-          <Title level={4} type="secondary" className="text-wrap">
+          </div> */}
+          <Title
+            level={1}
+            className={`text-break font-weight-bolder mb-0 align-center ${responsiveScore ? 'overview-card__score' : ''
+              }`}
+            style={{ textAlign: 'center' }}
+          >
+            {content}
+          </Title>
+          <Title level={4} type="secondary" className="text-wrap" style={{ textAlign: 'center' }}>
             {title}
           </Title>
           <Flex
@@ -37,14 +45,7 @@ const OverviewCard = ({
             alignItems="baseline"
             className="mt-auto"
           >
-            <Title
-              level={1}
-              className={`text-break font-weight-bolder mb-0 ${
-                responsiveScore ? 'overview-card__score' : ''
-              }`}
-            >
-              {content}
-            </Title>
+
             {!noTooltip && (
               <Tooltip title={tooltip} placement="bottom">
                 <QuestionCircleFilled />

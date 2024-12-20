@@ -22,7 +22,7 @@ const ClinicStats = ({ title }) => {
             span={4}
             title={formatMessage(messages.clinicStatsPatientEnrolled)}
             tooltip={formatMessage(messages.clinicStatsPatientEnrolled)}
-            content={`${patients_enrolled ?? 0}`}
+            content={`${parseInt(patients_enrolled ?? 0, 10)}`}
             styleTitle={title}
             icon={<MdAssignmentTurnedIn color="#ffffff" size="40" />}
             noTooltip
@@ -31,7 +31,7 @@ const ClinicStats = ({ title }) => {
             span={4}
             title={formatMessage(messages.clinicStatsOpenConversation)}
             tooltip={formatMessage(messages.clinicStatsOpenConversation)}
-            content={`${open_conversations ?? 0}`}
+            content={`${parseInt(open_conversations ?? 0, 10)}`}
             styleTitle={title}
             icon={<MdShowChart color="#ffffff" size="40" />}
           />
@@ -39,7 +39,7 @@ const ClinicStats = ({ title }) => {
             span={4}
             title={formatMessage(messages.clinicStatsBookings)}
             tooltip={formatMessage(messages.clinicStatsBookings)}
-            content={`${bookings ?? 0}`}
+            content={`${parseInt(bookings ?? 0, 10)}`}
             styleTitle={title}
             icon={<MdShowChart color="#ffffff" size="40" />}
           />
@@ -47,7 +47,7 @@ const ClinicStats = ({ title }) => {
             span={4}
             title={formatMessage(messages.clinicStatsDecline)}
             tooltip={formatMessage(messages.clinicStatsDecline)}
-            content={`${declines ?? 0}`}
+            content={`${parseInt(declines ?? 0, 10)}`}
             styleTitle={title}
             icon={<MdShowChart color="#ffffff" size="40" />}
           />
@@ -55,7 +55,7 @@ const ClinicStats = ({ title }) => {
             span={4}
             title={formatMessage(messages.clinicStatsAlreadyScreened)}
             tooltip={formatMessage(messages.clinicStatsAlreadyScreened)}
-            content={`${already_screened ?? 0}`}
+            content={`${parseInt(already_screened ?? 0, 10)}`}
             styleTitle={title}
             icon={<MdShowChart color="#ffffff" size="40" />}
           />

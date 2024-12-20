@@ -93,7 +93,7 @@ const PatientProgressTable = ({
       },
     },
     {
-      title: "Booking Progress",
+      title: "Booking progress",
       dataIndex: "status",
       key: "status",
       render: (_, record) => {
@@ -126,7 +126,19 @@ const PatientProgressTable = ({
       item.Status = mapped.status;
       item.Progressbar = mapped.progressbar;
     });
-
+    formattedData.sort((a, b) => {
+      // First check Last Contact, if both are null, move to Invitation Sent
+      if (a["Last Contact"] && b["Last Contact"]) {
+        return new Date(b["Last Contact"]) - new Date(a["Last Contact"]); // Sort descending
+      } else if (a["Last Contact"] && !b["Last Contact"]) {
+        return -1; // a comes first if b doesn't have a Last Contact
+      } else if (!a["Last Contact"] && b["Last Contact"]) {
+        return 1; // b comes first if a doesn't have a Last Contact
+      } else {
+        // Both Last Contact are null, fallback to Invitation Sent
+        return new Date(b["Invitation Sent"]) - new Date(a["Invitation Sent"]);
+      }
+    });
     console.log(formattedData);
     setData(formattedData)
 

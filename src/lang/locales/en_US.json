@@ -611,12 +611,12 @@
   "overview_page.modal.update_message_requiring_immediate_attention_status.error": "Error",
   "overview_page.modal.pre_appointment_questionnaire.title": "Pre-appointment questionnaire patient answers",
   "overview_page.modal.pre_appointment_questionnaire.ok_text": "Close",
-  "overview_page.table.patient_progress.title": "Booking Progress",
+  "overview_page.table.patient_progress.title": "Booking progress",
   "overview_page.text.update_successfully":"Successfully Updated",
   "overview_page.clinicstats.decline":"Declines",
   "overview_page.clinicstats.bookings":"Bookings",
-  "overview_page.clinicstats.openconversation":"Open Conversation",
-  "overview_page.clinicstats.title":"Clinic Statistics",
-  "overview_page.clinicstats.patientsenrolled":"Patients Enrolled"
+  "overview_page.clinicstats.openconversation":"Patients Engaged",
+  "overview_page.clinicstats.title":"Key Performance Indicators",
+  "overview_page.clinicstats.patientsenrolled":"Patients Invited"
 
 }
