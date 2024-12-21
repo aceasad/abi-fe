@@ -105,6 +105,7 @@
 
   "sidenav.pages": "Pages",
   "sidenav.pages.overview": "Overview",
+  "sidenav.pages.kpis": "KPIs",
   "sidenav.pages.appointments": "Appointments",
   "sidenav.pages.patients": "Patients",
   "sidenav.pages.staff": "Staff",
@@ -617,6 +618,6 @@
   "overview_page.clinicstats.bookings":"Bookings",
   "overview_page.clinicstats.openconversation":"Patients Engaged",
   "overview_page.clinicstats.title":"Key Performance Indicators",
-  "overview_page.clinicstats.patientsenrolled":"Patients Invited"
-
+  "overview_page.clinicstats.patientsenrolled":"Patients Invited",
+  "overview_page.clinicstats.AlreadyScreened":"Already Screened"
 }

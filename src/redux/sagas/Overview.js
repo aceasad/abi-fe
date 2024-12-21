@@ -24,7 +24,6 @@ export function* getOverviewClinicStatsData({ payload }) {
       overviewService.getClinicStatsData,
       payload.month
     );
-    console.log(data)
     yield put(setOverviewClinicStatsData(data));
   } catch (err) {
   } finally {

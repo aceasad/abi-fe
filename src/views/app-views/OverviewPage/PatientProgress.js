@@ -96,7 +96,6 @@ const PatientProgress = ({ title, startOpen }) => {
 
   const getProgresData = async () => {
     data = getPatientProgress()
-    console.log(data)
   }
 
   useEffect(() => {
