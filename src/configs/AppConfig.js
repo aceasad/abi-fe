@@ -17,7 +17,10 @@ export const SHOW_MESSAGES_REQUIRING_IMMEDIATE_ATTENTION =
   env.SHOW_MESSAGES_REQUIRING_IMMEDIATE_ATTENTION === 'true';
 export const SHOW_APPOINTMENTS_REMINDERS =
   env.SHOW_APPOINTMENTS_REMINDERS === 'true';
-export const SHOW_KPIS = env.SHOW_KPIS === 'true';
+export const SHOW_PATIENT_PROGRESS = 
+  env.SHOW_PATIENT_PROGRESS === 'true';
+export const SHOW_KPIS = 
+  env.SHOW_KPIS === 'true';
 
 export const THEME_CONFIG = {
   navCollapsed: false,

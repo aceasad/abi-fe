@@ -3,6 +3,19 @@ import reducers from '../reducers';
 
 const selectOverviewDomain = (state) => state.overview || reducers;
 
+const makeSelectClinicStatsData = createSelector(
+  selectOverviewDomain,
+  (substate) => ({
+    patients_enrolled: substate.patients_enrolled,
+    already_screened: substate.already_screened,
+    open_conversations: substate.open_conversations,
+    declines: substate.declines,
+    bookings: substate.bookings,
+    report_month: substate.report_month,
+    loading: substate.loading,
+  })
+);
+
 const makeSelectBookingData = createSelector(
   selectOverviewDomain,
   (substate) => ({
@@ -53,4 +66,5 @@ export {
   makeSelectAppointmentData,
   makeSelectPreferencesData,
   makeSelectUptakeData,
+  makeSelectClinicStatsData,
 };

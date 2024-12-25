@@ -20,6 +20,7 @@ import {
   SCHEDULED,
 } from 'redux/reducers/Staff';
 import {
+  getMessageRequiringImmediateAttentionStatuses,
   getSingleAppointment,
   getSinglePreAppointmentQuestionnaire,
 } from 'redux/actions/Appointment';
@@ -66,6 +67,10 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
     }
   }, [activeAppointment, dispatch]);
 
+  useEffect(() => {
+    dispatch(getMessageRequiringImmediateAttentionStatuses());
+  }, [dispatch]);
+
   let tableColumns = [
     {
       title: 'Date/Time',
@@ -110,25 +115,25 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
         },
       }),
     },
-    {
-      title: formatMessage(overviewPageMessages.columnTitlePriority),
-      dataIndex: ['priority', 'name'],
-      sorter: true,
-      render: (_, row) => ({
-        children: (
-          <div
-            className={`mria-priority-${getSafe(() =>
-              row.priority?.name.toLowerCase()
-            )}`}
-          >
-            {row.priority?.name}
-          </div>
-        ),
-        props: {
-          'data-label': formatMessage(overviewPageMessages.columnTitlePriority),
-        },
-      }),
-    },
+    // {
+    //   title: formatMessage(overviewPageMessages.columnTitlePriority),
+    //   dataIndex: ['priority', 'name'],
+    //   sorter: true,
+    //   render: (_, row) => ({
+    //     children: (
+    //       <div
+    //         className={`mria-priority-${getSafe(() =>
+    //           row.priority?.name.toLowerCase()
+    //         )}`}
+    //       >
+    //         {row.priority?.name}
+    //       </div>
+    //     ),
+    //     props: {
+    //       'data-label': formatMessage(overviewPageMessages.columnTitlePriority),
+    //     },
+    //   }),
+    // },
     {
       title: formatMessage(overviewPageMessages.columnTitleStatus),
       dataIndex: ['status', 'name'],
@@ -139,9 +144,8 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
             onClick={(e) =>
               showUpdateMessageRequiringImmediateAttentionStatusWrapper(e, row)
             }
-            className={`ant-tag text-left${
-              row.status?.name === 'Pending' ? ' ant-tag-red' : ''
-            }`}
+            className={`ant-tag text-left${row.status?.name === 'Pending' ? ' ant-tag-red' : ''
+              }`}
           >
             {row.status?.name} {/*  <CaretDownOutlined /> */}
           </div>
@@ -169,12 +173,12 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
       ),
     },
   ];
-  useEffect(()=>{
-    if(isPasIntegrated){
-      tableColumns=tableColumns.splice(3,1)
-    }
-  },[])
-  
+  // useEffect(()=>{
+  //   if(isPasIntegrated){
+  //     tableColumns=tableColumns.splice(3,1)
+  //   }
+  // },[tableColumns])
+
   const [
     activePreAppointmentQuestionnaire,
     setActivePreAppointmentQuestionnaire,
@@ -216,13 +220,10 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
     e,
     row
   ) => {
-    alert('Coming Soon!');
-    return;
-
+    // alert('Coming Soon!');
+    // return;
     e.stopPropagation();
-    showUpdateMessageRequiringImmediateAttentionStatus({
-      appointment: row,
-    });
+    showUpdateMessageRequiringImmediateAttentionStatus(row);
   };
 
   const collapseHeader = (
@@ -281,12 +282,12 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
           </Menu.Item>
         )}
         <Menu.Item
-          key="1"
+          key="2"
           onClick={({ domEvent }) => {
             domEvent.stopPropagation();
             showUpdateMessageRequiringImmediateAttentionStatusWrapper(
               domEvent,
-              row.id
+              row
             );
           }}
         >
@@ -298,7 +299,7 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
     );
   };
 
- 
+
 
   return (
     <>
@@ -309,17 +310,17 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
       >
         <MessagesRequiringImmediateAttentionTable.Table
           columns={tableColumns}
-          // onRow={(record) => {
-          //   return {
-          //     onClick: () => {
-          //       setActiveAppointment({
-          //         id: record.id,
-          //         type: SCHEDULED,
-          //         patientId: record.patient.id,
-          //       });
-          //     },
-          //   };
-          // }}
+        // onRow={(record) => {
+        //   return {
+        //     onClick: () => {
+        //       setActiveAppointment({
+        //         id: record.id,
+        //         type: SCHEDULED,
+        //         patientId: record.patient.id,
+        //       });
+        //     },
+        //   };
+        // }}
         />
       </MessagesRequiringImmediateAttentionTable>
       {activeAppointment && (
@@ -341,17 +342,18 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
       )}
       {showChildModal.modal ===
         NESTED_MODAL.UPDATE_MESSAGE_REQUIRING_IMMEDIATE_ATTENTION_STATUS && (
-        <UpdateMessageRequiringImmediateAttentionStatus
-          handleClose={showPreview}
-          id={showChildModal.data.id}
-          patientId={showChildModal.data?.patient?.id}
-          updateMessageRequiringImmediateAttentionStatusFrom={
-            FROM_OVERVIEW_APPOINTMENTS
-          }
-          staffId={''}
-          messageRequiringImmediateAttention={showChildModal.data}
-        />
-      )}
+          <UpdateMessageRequiringImmediateAttentionStatus
+            handleClose={showPreview}
+            id={showChildModal.data.id}
+            patientId={showChildModal.data?.patient?.id}
+            updateMessageRequiringImmediateAttentionStatusFrom={
+              FROM_OVERVIEW_APPOINTMENTS
+            }
+            staffId={''}
+            messageRequiringImmediateAttention={showChildModal.data}
+          />
+        )
+      }
     </>
   );
 };

@@ -13,6 +13,11 @@ export const AppViews = () => {
           component={lazy(() => import(`./OverviewPage`))}
         />
         <Route
+          exact
+          path={`${APP_PAGES_PREFIX_PATH}/kpis`}
+          component={lazy(() => import(`./KpisPage`))}
+        />
+        <Route
           path={`${APP_PAGES_PREFIX_PATH}/appointments`}
           component={lazy(() => import(`./AppointmentsPage`))}
         />

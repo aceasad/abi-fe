@@ -56,50 +56,44 @@ const UpdateMessageRequiringImmediateAttentionStatus = ({
         messages.MessageRequiringImmediateAttentionStatusUpdateSuccess
       )
     );
+    setTimeout(handleClose(), 1000);
     if (
       updateMessageRequiringImmediateAttentionStatusFrom ===
       FROM_OVERVIEW_APPOINTMENTS
     ) {
+      // console.log("from overview appointment")
+      var payload = { id: null, field: 'messages_requiring_immediate_attention' }
       dispatch(
-        getMessagesRequiringImmediateAttention({
-          id: '',
-          field: appointment_type,
-        })
+        getMessagesRequiringImmediateAttention(payload)
       );
     }
-
-    handleClose();
   };
 
   const handleSubmit = (values) => {
     dispatch(
       updateAppointmentMessageRequiringImmediateAttentionStatus({
         id,
-        data: prepareData(values),
+        // data: prepareData(values),
         status: messageRequiringImmediateAttentionStatuses.find(
           (status) => status.id === values.status
-        ),
+        )?.id || 0,
+        status_details: values.status_details,
         field: MESSAGES_REQUIRING_IMMEDIATE_ATTENTION,
-        afterMessageRequiringImmediateAttentionStatusUpdate,
+        // afterMessageRequiringImmediateAttentionStatusUpdate,
       })
     );
+    afterMessageRequiringImmediateAttentionStatusUpdate();
   };
-
-  useEffect(() => {
-    if (!messageRequiringImmediateAttentionStatuses?.length) {
-      dispatch(getMessageRequiringImmediateAttentionStatuses());
-    }
-  }, [dispatch, messageRequiringImmediateAttentionStatuses?.length]);
 
   const initialState = messageRequiringImmediateAttention
     ? {
-        status: messageRequiringImmediateAttention.status?.id,
-        status_details: messageRequiringImmediateAttention.status_details,
-      }
+      status: messageRequiringImmediateAttention.status?.id,
+      status_details: messageRequiringImmediateAttention.status_details,
+    }
     : {
-        status: '',
-        status_details: '',
-      };
+      status: '',
+      status_details: '',
+    };
 
   return (
     <Formik initialValues={initialState} onSubmit={handleSubmit}>

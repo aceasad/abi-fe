@@ -99,14 +99,14 @@ function PreviewModal({
         moment(appointment?.time, 'HH:mm a').format('hh:mm A')
       ),
     },
-    {
-      label: formatMessage(messages.appointmentPrice),
-      value: `£${appointment?.price}`,
-    },
     // {
-    //   label: formatMessage(appointmentsPageMessages.appointmentPrediction),
-    //   value: RenderPredictionText(appointment),
+    //   label: formatMessage(messages.appointmentPrice),
+    //   value: `£${appointment?.price}`,
     // },
+    {
+      label: formatMessage(appointmentsPageMessages.appointmentPrediction),
+      value: RenderPredictionText(appointment),
+    },
   ];
 
   const detailsList = detailsListData.map((item, index) => (

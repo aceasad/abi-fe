@@ -2,6 +2,7 @@
     "npm.exclude": "",
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "[javascript]": {
-        "editor.formatOnSave": true
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "vscode.typescript-language-features"
     }
 }

@@ -150,7 +150,7 @@ const appointment = (state = initialState, action) =>
         break;
       case SET_MESSAGE_REQUIRING_IMMEDIATE_ATTENTION_STATUSES:
         draft.messageRequiringImmediateAttentionStatuses =
-          action.payload.results;
+          action.payload;
         break;
 
       // save appointment status

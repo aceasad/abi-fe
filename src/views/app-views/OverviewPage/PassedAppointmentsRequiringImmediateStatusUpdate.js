@@ -161,6 +161,7 @@ const PassedAppointmentsRequiringImmediateStatusUpdate = ({
     //   dataIndex: 'id',
     //   sorter: true,
     // },
+    // (${row.doctor.seniority} ${row.doctor.specialization})
     {
       title: formatMessage(patientPageMessages.columnTitlePatient),
       dataIndex: ['patient', 'full_name'],
@@ -172,7 +173,7 @@ const PassedAppointmentsRequiringImmediateStatusUpdate = ({
       sorter: true,
       render: (_, row) => (
         <div className="text-left">
-          {`${row.doctor.full_name} (${row.doctor.seniority} ${row.doctor.specialization})`}
+          {`${row.doctor.full_name}`} 
         </div>
       ),
     },

@@ -268,7 +268,7 @@ export const setAppointmentCancellationReasons = (payload) => ({
 });
 
 // message requiring immediate attention statuses
-export const getMessageRequiringImmediateAttentionStatuses = (payload) => ({
+export const  getMessageRequiringImmediateAttentionStatuses = (payload) => ({
   type: GET_MESSAGE_REQUIRING_IMMEDIATE_ATTENTION_STATUSES,
   payload,
 });
