@@ -10,6 +10,19 @@ const renderAvatar = (props) => {
   );
 };
 
+const getStatusColor = (status) => {
+  console.log('status', status);
+  if (status === 'RESCHEDULED' || status === 'BOOKED' || status === 'REMINDED') {
+    return '#18D9C5'; // Green
+  } else if (status === 'ASKED_QUESTION' || status === 'RESCHEDULING' || status === 'CANCELLING' || status === 'BOOKING' || status === 'INVITED' || status === 'INCOMPLETE' || status === 'SCREENED_ELSEWHERE') {
+    return '#FFBF00'; // Yellow
+  } else if (status === 'CANCELLED' || status === 'NO_RESPONSE' || status === 'INACTIVE') {
+    return '#FF474C'; // Red
+  } else {
+    return '#E880FF'; // Default color
+  }
+};
+
 export const AvatarStatus = (props) => {
   const {
     name,
@@ -26,6 +39,7 @@ export const AvatarStatus = (props) => {
     is_human_required,
     is_in_emergency_situation,
     is_in_opt_out_situation,
+    communication_status,
     onNameClick,
   } = props;
 
@@ -43,10 +57,23 @@ export const AvatarStatus = (props) => {
     blinkClass = ' blink-in-emergency-situation';
     nameWrapper = <span>{nameWithSuffix}&nbsp;&#9888;</span>;
   }
-  if(is_in_opt_out_situation){
+  if (is_in_opt_out_situation) {
     blinkClass = ' blink-in-opt-out';
     nameWrapper = <span>{nameWithSuffix}&nbsp;&#9888;</span>;
   }
+
+  const statusDot = (
+    <span
+      style={{
+        width: '8px',
+        height: '8px',
+        borderRadius: '50%',
+        backgroundColor: getStatusColor(communication_status),
+        display: 'inline-block',
+        marginLeft: '6px'
+      }}
+    />
+  );
 
   return (
     <div className="avatar-status d-flex align-items-center">
@@ -59,10 +86,12 @@ export const AvatarStatus = (props) => {
               className={`avatar-status-name clickable${blinkClass}`}
             >
               {nameWrapper}
+              {statusDot}
             </div>
           ) : (
             <div className={`avatar-status-name${blinkClass}`}>
               {nameWrapper}
+              {statusDot}
             </div>
           )}
           <span>{suffix}</span>
@@ -78,6 +107,7 @@ AvatarStatus.propTypes = {
   src: PropTypes.string,
   type: PropTypes.string,
   onNameClick: PropTypes.func,
+  communication_status: PropTypes.string,
 };
 
 export default AvatarStatus;

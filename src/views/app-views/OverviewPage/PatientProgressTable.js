@@ -1,4 +1,4 @@
-import { Card, Table, Button } from 'antd';
+import { Card, Table, Button, Select } from 'antd';
 import React, { useState, useEffect } from 'react';
 import { DEFAULT_LIMIT } from 'services/StaffService';
 import patientService from 'services/PatientService';
@@ -22,11 +22,12 @@ const PatientProgressTable = ({
     total: 0, // Total number of records (calculated dynamically based on data length)
     pageSizeOptions: ['10', '20', '50', '100', '200'], // Available page size options
   });
+  const [filterStatus, setFilterStatus] = useState(null); // Add new state for filter
 
   const getProgressColor = (status) => {
     if (status === 'Rescheduled' || status === 'Booked' || status === 'Reminded') {
       return '#18D9C5'; // Green
-    } else if (status === 'Asked Question' || status === 'Rescheduling' || status === 'Cancelling' || status === 'Booking' || status === 'Invited' || status === 'Incomplete') {
+    } else if (status === 'Asked Question' || status === 'Rescheduling' || status === 'Cancelling' || status === 'Booking' || status === 'Invited' || status === 'Incomplete' || status === 'Screened Elsewhere') {
       return '#FFBF00'; // Yellow
     } else if (status === 'Cancelled' || status === 'No Response' || status === 'Inactive') {
       return '#FF474C'; // Red
@@ -46,8 +47,18 @@ const PatientProgressTable = ({
     INVITED: { status: 'Invited', progressbar: 100 },
     ASKED_QUESTION: { status: 'Asked Question', progressbar: 100 },
     INCOMPLETE: { status: 'Incomplete', progressbar: 100 },
-    REMINDED: { status: 'Reminded', progressbar: 100 }
+    REMINDED: { status: 'Reminded', progressbar: 100 },
+    SCREENED_ELSEWHERE: { status: 'Screened Elsewhere', progressbar: 100 },
+    INACTIVE: { status: 'Inactive', progressbar: 100 },
   };
+
+  const statusOptions = [
+    { value: 'ALL', label: 'All' },
+    ...Object.keys(statusMapping).map(key => ({
+      value: key,
+      label: statusMapping[key].status
+    }))
+  ];
 
   const columns = [
     {
@@ -126,14 +137,17 @@ const PatientProgressTable = ({
 
   const getProgressData = async () => {
     try {
-      const res = await patientService.getPatientProgress(); // Fetch all data
-      const formattedData = res.data; // Assuming the response data is an array of items
+      const res = await patientService.getPatientProgress();
+      const formattedData = res.data;
 
       // Process the data and map status
       formattedData.forEach((item) => {
         const process = item.Process.toUpperCase();
         const mapped = statusMapping[process] || { status: 'Unknown', progressbar: 0 };
 
+        // Store the original process value for filtering
+        item.originalProcess = process;
+        // Transform process for display
         item.Process = process
           .toLowerCase()
           .replace(/_/g, ' ')
@@ -175,11 +189,24 @@ const PatientProgressTable = ({
   }, []);
 
   useEffect(() => {
-    // Update displayed data when page or pageSize changes
+    // First apply status filter
+    let filteredData = data;
+    if (filterStatus && filterStatus !== 'ALL') {
+      filteredData = data.filter(item => item.originalProcess === filterStatus);
+    }
+
+    // Then apply pagination
     const startIndex = (pagination.current - 1) * pagination.pageSize;
     const endIndex = startIndex + pagination.pageSize;
-    setDisplayData(data.slice(startIndex, endIndex)); // Update displayed data
-  }, [pagination.current, pagination.pageSize, data]);
+    setDisplayData(filteredData.slice(startIndex, endIndex));
+
+    // Update pagination total
+    setPagination(prev => ({
+      ...prev,
+      total: filteredData.length,
+      current: 1,
+    }));
+  }, [pagination.current, pagination.pageSize, data, filterStatus]);
 
   // Handle sorting change
   const handleTableChange = (pagination, filters, sorter) => {
@@ -237,8 +264,22 @@ const PatientProgressTable = ({
     });
   };
 
+  // Add handler for filter change
+  const handleFilterChange = (value) => {
+    setFilterStatus(value);
+  };
+
   return (
     <Card>
+      <div style={{ marginBottom: 16 }}>
+        <Select
+          style={{ width: 200 }}
+          placeholder="Filter by status"
+          allowClear
+          options={statusOptions}
+          onChange={handleFilterChange}
+        />
+      </div>
       <div className="responsive-table ant-table-row-pointer">
         <Table
           columns={columns}
