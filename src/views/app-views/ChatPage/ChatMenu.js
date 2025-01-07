@@ -194,6 +194,7 @@ const ChatMenu = (props) => {
                 is_in_opt_out_situation={
                   item.patient.is_in_opt_out_situation
                 }
+                communication_status={item.patient.conversation_status}
               />
               <div className="text-right">
                 <div className="chat-menu-list-item-time">
@@ -202,7 +203,7 @@ const ChatMenu = (props) => {
                   )}
                 </div>
                 {item?.last_message.status === MESSAGE_STATUS.SENT &&
-                !item?.last_message.is_answer ? (
+                  !item?.last_message.is_answer ? (
                   <Badge count={1} style={{ backgroundColor: COLOR_1 }} />
                 ) : (
                   <span></span>
