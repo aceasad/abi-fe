@@ -208,13 +208,17 @@ const PatientProgressTable = ({
     }));
   }, [pagination.current, pagination.pageSize, data, filterStatus]);
 
-  // Handle sorting change
-  const handleTableChange = (pagination, filters, sorter) => {
-    setSortedInfo(sorter); // Store the sorting information
+  // Modified handleTableChange to handle both sorting and pagination
+  const handleTableChange = (paginationParams, filters, sorter) => {
+    setSortedInfo(sorter);
+    setPagination(prev => ({
+      ...prev,
+      current: paginationParams.current,
+      pageSize: paginationParams.pageSize
+    }));
 
-    // Perform sorting client-side based on the column and order
-    const sortedData = [...data]; // Create a copy of the current data
-
+    // Sorting logic remains the same
+    const sortedData = [...data];
     if (sorter.order) {
       const sortOrder = sorter.order === 'ascend' ? 1 : -1;
       const columnKey = sorter.field;
@@ -251,17 +255,7 @@ const PatientProgressTable = ({
         });
       }
     }
-
-    setData(sortedData); // Set the sorted data to state
-  };
-
-  // Handle pagination change
-  const handlePaginationChange = (page, pageSize) => {
-    setPagination({
-      ...pagination,
-      current: page,
-      pageSize,
-    });
+    setData(sortedData);
   };
 
   // Add handler for filter change
@@ -283,18 +277,16 @@ const PatientProgressTable = ({
       <div className="responsive-table ant-table-row-pointer">
         <Table
           columns={columns}
-          dataSource={displayData} // Show only the paginated data
-          onChange={handleTableChange}
-          rowKey="PatientId" // To uniquely identify rows
+          dataSource={displayData}
+          onChange={handleTableChange}  // This will now handle both sorting and pagination
+          rowKey="PatientId"
           sortedInfo={sortedInfo}
           pagination={{
             current: pagination.current,
             pageSize: pagination.pageSize,
             total: pagination.total,
-            pageSizeOptions: pagination.pageSizeOptions, // Available page size options
-            onChange: handlePaginationChange,
-            showSizeChanger: true, // Show the page size changer
-            onShowSizeChange: handlePaginationChange, // Handle page size change
+            pageSizeOptions: pagination.pageSizeOptions,
+            showSizeChanger: true,
           }}
           loading={loading}
         />
