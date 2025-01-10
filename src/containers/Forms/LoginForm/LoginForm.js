@@ -16,7 +16,9 @@ import FormField from 'components/custom-components/Form/FormField';
 import { makeSelectLoginDetails } from 'redux/selectors/Auth';
 import { ReCaptcha } from 'components/reCaptcha'
 import axios from 'axios'
-
+import {
+  CAPTCHA_CLIENT_KEY_V2
+} from 'configs/AppConfig';
 /*
 Access to this computer/Solution and any information it contains is limited to authorised users only.  Legal action can be taken against unauthorised use of, or unauthorised access to, this computer/Solution and/or any information it contains, including pursuant to the Computer Misuse Act 1990.  If you are an authorised user, by proceeding to access and use this computer/Solution and/or the information it contains, you are accepting any terms of use, notices and policies which are contained or referenced within it or which have otherwise been drawn to your attention as an authorised user.
 */
@@ -150,7 +152,7 @@ export const LoginForm = () => {
               labelBlock={true}
             />
             <Form.Item className='mt-sm-5 ml-sm-4'>
-              <ReCaptcha siteKey={'6Lcoc4gqAAAAAJ_mhsJyfgAr7CbSlO9l62_crs5G'} callback={handleReToken} />
+              <ReCaptcha siteKey={CAPTCHA_CLIENT_KEY_V2} callback={handleReToken} />
             </Form.Item>
 
             <Form.Item className="mt-sm-5">
