@@ -204,7 +204,6 @@ const PatientProgressTable = ({
     setPagination(prev => ({
       ...prev,
       total: filteredData.length,
-      current: 1,
     }));
   }, [pagination.current, pagination.pageSize, data, filterStatus]);
 
@@ -261,6 +260,11 @@ const PatientProgressTable = ({
   // Add handler for filter change
   const handleFilterChange = (value) => {
     setFilterStatus(value);
+    // Reset to page 1 when filter changes
+    setPagination(prev => ({
+      ...prev,
+      current: 1
+    }));
   };
 
   return (
