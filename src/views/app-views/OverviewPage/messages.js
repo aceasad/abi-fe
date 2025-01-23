@@ -53,7 +53,7 @@ export default defineMessages({
   },
   clinicStatsAlreadyScreened: {
     id: `${scope}.clinicstats.AlreadyScreened`,
-    defaultMessage: 'Already Screened',
+    defaultMessage: ' Screened elsewhere',
   },
   clinicStatsOpenConversation: {
     id: `${scope}.clinicstats.openconversation`,
