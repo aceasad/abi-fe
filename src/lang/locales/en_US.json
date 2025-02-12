@@ -616,8 +616,10 @@
   "overview_page.text.update_successfully":"Successfully Updated",
   "overview_page.clinicstats.decline":"Declines",
   "overview_page.clinicstats.bookings":"Bookings",
-  "overview_page.clinicstats.openconversation":"Patients Engaged",
+  "overview_page.clinicstats.openconversation":"Patients Engaged per Month",
   "overview_page.clinicstats.title":"Key Performance Indicators",
-  "overview_page.clinicstats.patientsenrolled":"Patients Invited",
-  "overview_page.clinicstats.AlreadyScreened":" Screened elsewhere"
+  "overview_page.clinicstats.patientsenrolled":"Patients Invited on WhatsApp",
+  "overview_page.clinicstats.patients_engaged":" Screened elsewhere",
+  "overview_page.clinicstats.patients_engaged_after_invite":"Successful Invitation Rate",
+  "overview_page.clinicstats.not_on_whatsapp":"Patients not on Whatsapp"
 }

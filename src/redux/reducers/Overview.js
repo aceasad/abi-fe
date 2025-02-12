@@ -19,10 +19,12 @@ const initialState = {
   coverage: 0,
   coverageAverage: 0,
   patients_enrolled: 0,
-  already_screened:0,
-  open_conversations:0,
-  bookings:0,
-  declines:0,
+  not_on_whatsapp: 0,
+  patients_engaged_after_invite: 0,
+  already_screened: 0,
+  open_conversations: 0,
+  bookings: 0,
+  declines: 0,
   preferences: {
     byDay: {
       monday: 0,
@@ -70,6 +72,8 @@ const chats = (state = initialState, action) =>
         draft.open_conversations = action.payload.open_conversations;
         draft.bookings = action.payload.bookings;
         draft.declines = action.payload.declines;
+        draft.patients_engaged_after_invite = action.payload.patients_engaged_after_invite;
+        draft.not_on_whatsapp = action.payload.not_on_whatsapp;
         break;
       case SET_OVERVIEW_SUMMARY_DATA_LOADING:
         draft.loading = action.payload;

@@ -49,7 +49,11 @@ export default defineMessages({
   },
   clinicStatsPatientEnrolled: {
     id: `${scope}.clinicstats.patientsenrolled`,
-    defaultMessage: 'Patient Invited',
+    defaultMessage: 'Patient Invited On WhatsApp',
+  },
+  clinicStatsInvitationRate: {
+    id: `${scope}.clinicstats.patients_engaged_after_invite`,
+    defaultMessage: 'Successful Invitation Rate',
   },
   clinicStatsAlreadyScreened: {
     id: `${scope}.clinicstats.AlreadyScreened`,
@@ -57,7 +61,7 @@ export default defineMessages({
   },
   clinicStatsOpenConversation: {
     id: `${scope}.clinicstats.openconversation`,
-    defaultMessage: 'Patients Engaged',
+    defaultMessage: 'Patients Engaged per Month',
   },
   clinicStatsBookings: {
     id: `${scope}.clinicstats.bookings`,
