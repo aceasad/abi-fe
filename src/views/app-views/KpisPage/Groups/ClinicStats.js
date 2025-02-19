@@ -47,7 +47,7 @@ const ClinicStats = ({ title }) => {
           span={6}
           title={formatMessage(messages.clnincStatsInvitationRate)}
           // tooltip={formatMessage(messages.clinicStatsBookings)}
-          content={`${parseInt((((patients_enrolled - not_on_whatsapp) / patients_engaged_after_invite) * 100) ?? 0, 10)}%`}
+          content={`${parseInt(((patients_engaged_after_invite / (patients_enrolled - not_on_whatsapp)) * 100) ?? 0, 10)}%`}
           styleTitle={title}
           icon={<MdShowChart color="#ffffff" size="40" />}
           noTooltip
