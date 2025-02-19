@@ -28,8 +28,8 @@ const ClinicStats = ({ title }) => {
         />
         <OverviewCard
           span={6}
-          title={formatMessage(messages.clinicStatsInvitationRate)}
-          content={`${parseInt((patients_engaged_after_invite) ?? 0, 10)}%`}
+          title={formatMessage(messages.clinicStatsInvitesRecieved)}
+          content={`${parseInt((patients_enrolled - not_on_whatsapp) ?? 0, 10)}`}
           styleTitle={title}
           icon={<MdAssignmentTurnedIn color="#ffffff" size="40" />}
           noTooltip
@@ -38,16 +38,16 @@ const ClinicStats = ({ title }) => {
           span={6}
           title={formatMessage(messages.clinicStatsOpenConversation)}
           // tooltip={formatMessage(messages.clinicStatsOpenConversation)}
-          content={`${parseInt(open_conversations ?? 0, 10)}`}
+          content={`${parseInt(patients_engaged_after_invite ?? 0, 10)}`}
           styleTitle={title}
           icon={<MdShowChart color="#ffffff" size="40" />}
           noTooltip
         />
         <OverviewCard
           span={6}
-          title={formatMessage(messages.clinicStatsNotOnWhatsapp)}
+          title={formatMessage(messages.clnincStatsInvitationRate)}
           // tooltip={formatMessage(messages.clinicStatsBookings)}
-          content={`${parseInt(not_on_whatsapp ?? 0, 10)}`}
+          content={`${parseInt((((patients_enrolled - not_on_whatsapp) / patients_engaged_after_invite) * 100) ?? 0, 10)}%`}
           styleTitle={title}
           icon={<MdShowChart color="#ffffff" size="40" />}
           noTooltip
