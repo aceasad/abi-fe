@@ -11,8 +11,10 @@ const makeSelectClinicStatsData = createSelector(
     open_conversations: substate.open_conversations,
     declines: substate.declines,
     bookings: substate.bookings,
+    patients_engaged_after_invite: substate.patients_engaged_after_invite,
+    snooze: substate.snooze,
+    not_on_whatsapp: substate.not_on_whatsapp,
     report_month: substate.report_month,
-    loading: substate.loading,
   })
 );
 
