@@ -59,6 +59,10 @@ export default defineMessages({
     id: `${scope}.clinicstats.AlreadyScreened`,
     defaultMessage: ' Screened elsewhere',
   },
+  clinicStatsSnoozed: {
+    id: `${scope}.clinicstats.clinicStatsSnoozed`,
+    defaultMessage: 'Snoozed',
+  },
   clinicStatsOpenConversation: {
     id: `${scope}.clinicstats.openconversation`,
     defaultMessage: 'Patients Engaged per Month',
@@ -66,6 +70,10 @@ export default defineMessages({
   clinicStatsBookings: {
     id: `${scope}.clinicstats.bookings`,
     defaultMessage: 'Bookings',
+  },
+  clinicStatsNotOnWhatsapp: {
+    id: `${scope}.clinicstats.notonwhatsapp`,
+    defaultMessage: 'Not On WhatsApp',
   },
   clinicStatsDecline: {
     id: `${scope}.clinicstats.decline`,

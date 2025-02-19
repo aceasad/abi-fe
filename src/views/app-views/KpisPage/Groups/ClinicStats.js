@@ -11,14 +11,14 @@ import { MdAssignmentTurnedIn, MdShowChart } from 'react-icons/md';
 const ClinicStats = ({ title }) => {
   const { formatMessage } = useIntl();
 
-  const { patients_enrolled, open_conversations, bookings, declines, already_screened, patients_engaged_after_invite } = useSelector(
+  const { patients_enrolled, open_conversations, bookings, declines, already_screened, patients_engaged_after_invite, not_on_whatsapp, snooze } = useSelector(
     makeSelectClinicStatsData
   );
   return (
     <div className="mb-4">
       <GroupRow>
         <OverviewCard
-          span={4}
+          span={6}
           title={formatMessage(messages.clinicStatsPatientEnrolled)}
           // tooltip={formatMessage(messages.clinicStatsPatientEnrolled)}
           content={`${parseInt((patients_enrolled) ?? 0, 10)}`}
@@ -27,7 +27,7 @@ const ClinicStats = ({ title }) => {
           noTooltip
         />
         <OverviewCard
-          span={4}
+          span={6}
           title={formatMessage(messages.clinicStatsInvitationRate)}
           content={`${parseInt((patients_engaged_after_invite) ?? 0, 10)}%`}
           styleTitle={title}
@@ -35,7 +35,7 @@ const ClinicStats = ({ title }) => {
           noTooltip
         />
         <OverviewCard
-          span={4}
+          span={6}
           title={formatMessage(messages.clinicStatsOpenConversation)}
           // tooltip={formatMessage(messages.clinicStatsOpenConversation)}
           content={`${parseInt(open_conversations ?? 0, 10)}`}
@@ -44,10 +44,10 @@ const ClinicStats = ({ title }) => {
           noTooltip
         />
         <OverviewCard
-          span={4}
-          title={formatMessage(messages.clinicStatsBookings)}
+          span={6}
+          title={formatMessage(messages.clinicStatsNotOnWhatsapp)}
           // tooltip={formatMessage(messages.clinicStatsBookings)}
-          content={`${parseInt(bookings ?? 0, 10)}`}
+          content={`${parseInt(not_on_whatsapp ?? 0, 10)}`}
           styleTitle={title}
           icon={<MdShowChart color="#ffffff" size="40" />}
           noTooltip
@@ -56,7 +56,17 @@ const ClinicStats = ({ title }) => {
       </GroupRow>
       <GroupRow>
         <OverviewCard
-          span={4}
+          span={6}
+          title={formatMessage(messages.clinicStatsBookings)}
+          // tooltip={formatMessage(messages.clinicStatsBookings)}
+          content={`${parseInt(bookings ?? 0, 10)}`}
+          styleTitle={title}
+          icon={<MdShowChart color="#ffffff" size="40" />}
+          noTooltip
+        />
+
+        <OverviewCard
+          span={6}
           title={formatMessage(messages.clinicStatsDecline)}
           // tooltip={formatMessage(messages.clinicStatsDecline)}
           content={`${parseInt(declines ?? 0, 10)}`}
@@ -65,10 +75,20 @@ const ClinicStats = ({ title }) => {
           noTooltip
         />
         <OverviewCard
-          span={4}
+          span={6}
           title={formatMessage(messages.clinicStatsAlreadyScreened)}
           // tooltip={formatMessage(messages.clinicStatsAlreadyScreened)}
           content={`${parseInt(already_screened ?? 0, 10)}`}
+          styleTitle={title}
+          icon={<MdShowChart color="#ffffff" size="40" />}
+          noTooltip
+        />
+
+        <OverviewCard
+          span={6}
+          title={formatMessage(messages.clinicStatsSnoozed)}
+          // tooltip={formatMessage(messages.clinicStatsAlreadyScreened)}
+          content={`${parseInt(snooze ?? 0, 10)}`}
           styleTitle={title}
           icon={<MdShowChart color="#ffffff" size="40" />}
           noTooltip

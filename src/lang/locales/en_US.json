@@ -621,5 +621,6 @@
   "overview_page.clinicstats.patientsenrolled":"Patients Invited on WhatsApp",
   "overview_page.clinicstats.patients_engaged":" Screened elsewhere",
   "overview_page.clinicstats.patients_engaged_after_invite":"Successful Invitation Rate",
+  "overview_page.clinicstats.snooze":"Snooze",
   "overview_page.clinicstats.not_on_whatsapp":"Patients not on Whatsapp"
 }

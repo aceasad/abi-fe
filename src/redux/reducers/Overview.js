@@ -21,6 +21,7 @@ const initialState = {
   patients_enrolled: 0,
   not_on_whatsapp: 0,
   patients_engaged_after_invite: 0,
+  snooze: 0,
   already_screened: 0,
   open_conversations: 0,
   bookings: 0,
@@ -73,6 +74,7 @@ const chats = (state = initialState, action) =>
         draft.bookings = action.payload.bookings;
         draft.declines = action.payload.declines;
         draft.patients_engaged_after_invite = action.payload.patients_engaged_after_invite;
+        draft.snooze = action.payload.snooze;
         draft.not_on_whatsapp = action.payload.not_on_whatsapp;
         break;
       case SET_OVERVIEW_SUMMARY_DATA_LOADING:
