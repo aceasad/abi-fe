@@ -17,7 +17,8 @@ const ENDPOINTS = {
     '/patients/:id/mark-conversation-not-in-emergency-situation/',
   GET_PATIENTS_DETAILS_NEW_PATIENT_FORM: '/patients/patient-details/',
   UPLOADPATIENTSCSV: '/patients/uploadcsv/',
-  PATIENTPROGRESS: '/patients/get-all-communication-status-for-patient/'
+  PATIENTPROGRESS: '/patients/get-all-communication-status-for-patient/',
+  DOWNLOADPATIENTSNOTONWHATSAPP: '/patients/download_not_on_whatsapp_patients_text_file/'
 };
 
 class PatientService extends ApiService {
@@ -109,6 +110,9 @@ class PatientService extends ApiService {
   };
   getPatientProgress = () => {
     return this.apiClient.get(ENDPOINTS.PATIENTPROGRESS);
+  }
+  postDownloadPatientsNotOnWhatsapp = (formData) => {
+    return this.apiClient.post(ENDPOINTS.DOWNLOADPATIENTSNOTONWHATSAPP, formData)
   }
 }
 
