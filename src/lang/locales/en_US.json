@@ -618,9 +618,9 @@
   "overview_page.clinicstats.bookings":"Bookings",
   "overview_page.clinicstats.openconversation":"Patients engaged",
   "overview_page.clinicstats.title":"Key Performance Indicators",
-  "overview_page.clinicstats.patientsenrolled":"Patient Invited",
+  "overview_page.clinicstats.total_patients_added":"Patient invited",
   "overview_page.clinicstats.patients_engaged":" Screened elsewhere",
-  "overview_page.clinicstats.patients_invite_recieved":"Invites recieved by patients",
-  "overview_page.clinicstats.snooze":"Snooze",
-  "overview_page.clinicstats.invitationrate":"Engagement Rate"
+  "overview_page.clinicstats.patients_invite_recieved":"Invites delivered",
+  "overview_page.clinicstats.snooze":"Snoozed",
+  "overview_page.clinicstats.invitationrate":"Engagement"
 }

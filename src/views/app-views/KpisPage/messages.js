@@ -48,7 +48,7 @@ export default defineMessages({
     defaultMessage: 'Bookings made after sending invite',
   },
   clinicStatsPatientEnrolled: {
-    id: `${scope}.clinicstats.patientsenrolled`,
+    id: `${scope}.clinicstats.total_patients_added`,
     defaultMessage: 'Patient Invited',
   },
   clinicStatsInvitesRecieved: {
