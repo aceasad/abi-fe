@@ -2,11 +2,12 @@ import {
   Col,
   PageHeader,
   Row,
-  Select,
+  DatePicker,
   Typography,
   Tabs,
   Card,
   Layout,
+  Button,
 } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
@@ -19,70 +20,61 @@ import Uptake from './Groups/Uptake';
 import ClinicStats from './Groups/ClinicStats';
 import { useDispatch } from 'react-redux';
 import { getOverviewClinicStatsData } from 'redux/actions/Overview';
-
+import { DownloadOutlined } from '@ant-design/icons';
+import overviewService from 'services/OverviewService';
 import {
   SHOW_KPIS,
 } from 'configs/AppConfig';
 
-const { Option } = Select;
+const { RangePicker } = DatePicker;
+
+const downloadKpiData = async (start_time, end_time) => {
+  try {
+    const response = await overviewService.downloadClinicStatsData(start_time, end_time);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
 
 const KpisPage = () => {
   const { formatMessage } = useIntl();
   const dispatch = useDispatch();
 
-  // Function to get the last 12 months as an array of objects
-  const getLast12Months = () => {
-    const months = [];
-    const currentDate = new Date();
-    // Array of month names (index corresponds to month number, e.g., January is 0, February is 1, etc.)
-    const monthNames = [
-      "January", "February", "March", "April", "May", "June",
-      "July", "August", "September", "October", "November", "December"
-    ];
+  const [dateRange, setDateRange] = useState([null, null]);
 
-    // Get the month number (e.g., "November" -> 11)
-    const currentYear = currentDate.getFullYear();
+  const handleDownload = async () => {
+    try {
+      const start_time = dateRange[0] ? dateRange[0].format('YYYY-MM-DD') : undefined;
+      const end_time = dateRange[1] ? dateRange[1].format('YYYY-MM-DD') : undefined;
 
-    // Loop to get the last 12 months, including the current one
-    for (let i = 0; i < 12; i++) {
-      const monthIndex = currentDate.getMonth() - i;
-      // Calculate correct month and adjust year if necessary
-      const adjustedDate = new Date(currentYear, monthIndex);
+      const filename = dateRange[0] && dateRange[1]
+        ? `kpi-data-${start_time}-to-${end_time}.zip`
+        : 'kpi-data-all-time.zip';
 
-      const monthName = adjustedDate.toLocaleString('default', { month: 'long' }); // Get the full month name
-      const month = (adjustedDate.getMonth() + 1).toString().padStart(2, '0'); // Ensure month is 2 digits
-      const formattedDate = `${adjustedDate.getFullYear()}-${month}-01`;
-
-      months.push({
-        value: formattedDate, // Month name used as value
-        label: monthName // Month name also used as label
-      });
+      const response = await downloadKpiData(start_time, end_time);
+      const blob = new Blob([response.data], { type: 'application/zip' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error('Download failed:', error);
     }
-
-    return months; // Return months in descending order (starting with the current month)
   };
-
-
-  const filters = [
-    { value: 'All', label: 'All' },
-    ...getLast12Months(),
-  ];
-  const [filterValue, setFilterValue] = useState(filters[0].value);
 
   useEffect(() => {
     if (SHOW_KPIS) {
-      // dispatch(getOverviewData({ interval: filterValue }));
-      var month = null
-      if (filterValue == 'All') {
-        var month = null
-      } else {
-        console.log(filterValue)
-        month = filterValue
-        // month = convertMonthToDate(filterValue)
-      }
-      dispatch(getOverviewClinicStatsData({ month: month }))
+      const start_time = dateRange[0] ? dateRange[0].format('YYYY-MM-DD') : null;
+      const end_time = dateRange[1] ? dateRange[1].format('YYYY-MM-DD') : null;
+
+      dispatch(getOverviewClinicStatsData({ start_time, end_time }));
     }
-  }, [dispatch, filterValue]);
+  }, [dispatch, dateRange]);
 
   return (
     <>
@@ -98,19 +90,22 @@ const KpisPage = () => {
         <Card>
           {SHOW_KPIS && (
             <>
-              <Row>
-                <Select
-                  key="0"
-                  style={{ width: 120 }}
-                  onChange={setFilterValue}
-                  value={filterValue}
-                >
-                  {filters.map((item, index) => (
-                    <Option key={index} value={item.value}>
-                      {item.label}
-                    </Option>
-                  ))}
-                </Select>
+              <Row justify="space-between" align="middle">
+                <Col>
+                  <RangePicker
+                    onChange={(dates) => setDateRange(dates)}
+                    value={dateRange}
+                  />
+                </Col>
+                <Col>
+                  <Button
+                    type="primary"
+                    icon={<DownloadOutlined />}
+                    onClick={handleDownload}
+                  >
+                    Export Data
+                  </Button>
+                </Col>
               </Row>
               <Row gutter={48}>
                 <Col span={24} className="mt-4">
