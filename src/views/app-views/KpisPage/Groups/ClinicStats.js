@@ -57,7 +57,6 @@ const ClinicStats = ({ title }) => {
         />
 
       </GroupRow>
-
       <GroupRow>
         <OverviewCard
           span={6}
@@ -68,8 +67,6 @@ const ClinicStats = ({ title }) => {
           icon={<MdShowChart color="#ffffff" size="40" />}
           noTooltip
         />
-
-
         <OverviewCard
           span={6}
           title={"Booking rate"}
@@ -79,7 +76,6 @@ const ClinicStats = ({ title }) => {
           icon={<MdShowChart color="#ffffff" size="40" />}
           noTooltip
         />
-
         <OverviewCard
           span={6}
           title={formatMessage(messages.clinicStatsDecline)}
@@ -142,7 +138,6 @@ const ClinicStats = ({ title }) => {
           noTooltip
         />
       </GroupRow>
-
       <GroupRow>
         <OverviewCard
           span={6}
