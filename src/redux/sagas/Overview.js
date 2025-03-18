@@ -22,7 +22,8 @@ export function* getOverviewClinicStatsData({ payload }) {
     yield put(setOverviewClinicStatsLoading(true));
     const { data } = yield call(
       overviewService.getClinicStatsData,
-      payload.month
+      payload.start_time,
+      payload.end_time
     );
     yield put(setOverviewClinicStatsData(data));
   } catch (err) {
