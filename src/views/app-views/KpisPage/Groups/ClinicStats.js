@@ -98,91 +98,91 @@ const ClinicStats = ({ title }) => {
           icon={<MdShowChart color="#ffffff" size="40" />}
           noTooltip
         />
-        <GroupRow>
-          <OverviewCard
-            span={6}
-            title={"Opt-out"}
-            // tooltip={formatMessage(messages.clinicStatsBookings)}
-            content={`${parseInt(opt_out ?? 0, 10)}`}
-            styleTitle={title}
-            icon={<MdShowChart color="#ffffff" size="40" />}
-            noTooltip
-          />
+      </GroupRow>
+      <GroupRow>
+        <OverviewCard
+          span={6}
+          title={"Opt-out"}
+          // tooltip={formatMessage(messages.clinicStatsBookings)}
+          content={`${parseInt(opt_out ?? 0, 10)}`}
+          styleTitle={title}
+          icon={<MdShowChart color="#ffffff" size="40" />}
+          noTooltip
+        />
 
 
-          <OverviewCard
-            span={6}
-            title={formatMessage(messages.clinicStatsSnoozed)}
-            // tooltip={formatMessage(messages.clinicStatsAlreadyScreened)}
-            content={`${parseInt(snoozed ?? 0, 10)}`}
-            styleTitle={title}
-            icon={<MdShowChart color="#ffffff" size="40" />}
-            noTooltip
-          />
+        <OverviewCard
+          span={6}
+          title={formatMessage(messages.clinicStatsSnoozed)}
+          // tooltip={formatMessage(messages.clinicStatsAlreadyScreened)}
+          content={`${parseInt(snoozed ?? 0, 10)}`}
+          styleTitle={title}
+          icon={<MdShowChart color="#ffffff" size="40" />}
+          noTooltip
+        />
 
-          <OverviewCard
-            span={6}
-            title={"Emergency situation"}
-            // tooltip={formatMessage(messages.clinicStatsAlreadyScreened)}
-            content={`${parseInt(emergency_situation ?? 0, 10)}`}
-            styleTitle={title}
-            icon={<MdShowChart color="#ffffff" size="40" />}
-            noTooltip
-          />
-
-
-          <OverviewCard
-            span={6}
-            title={"Human intervention needed"}
-            // tooltip={formatMessage(messages.clinicStatsAlreadyScreened)}
-            content={`${parseInt(human_intervention ?? 0, 10)}`}
-            styleTitle={title}
-            icon={<MdShowChart color="#ffffff" size="40" />}
-            noTooltip
-          />
+        <OverviewCard
+          span={6}
+          title={"Emergency situation"}
+          // tooltip={formatMessage(messages.clinicStatsAlreadyScreened)}
+          content={`${parseInt(emergency_situation ?? 0, 10)}`}
+          styleTitle={title}
+          icon={<MdShowChart color="#ffffff" size="40" />}
+          noTooltip
+        />
 
 
-          <OverviewCard
-            span={6}
-            title={"Attended"}
-            // tooltip={formatMessage(messages.clinicStatsBookings)}
-            content={`${parseInt(attended ?? 0, 10)}`}
-            styleTitle={title}
-            icon={<MdShowChart color="#ffffff" size="40" />}
-            noTooltip
-          />
-          <OverviewCard
-            span={6}
-            title={"Non attended"}
-            // tooltip={formatMessage(messages.clinicStatsBookings)}
-            content={`${parseInt(non_attended ?? 0, 10)}`}
-            styleTitle={title}
-            icon={<MdShowChart color="#ffffff" size="40" />}
-            noTooltip
-          />
-          <OverviewCard
-            span={6}
-            title={"Reschedules"}
-            // tooltip={formatMessage(messages.clinicStatsBookings)}
-            content={`${parseInt(reschedule ?? 0, 10)}`}
-            styleTitle={title}
-            icon={<MdShowChart color="#ffffff" size="40" />}
-            noTooltip
-          />
-          <OverviewCard
-            span={6}
-            title={"Cancelled"}
-            // tooltip={formatMessage(messages.clinicStatsBookings)}
-            content={`${parseInt(cancelled ?? 0, 10)}`}
-            styleTitle={title}
-            icon={<MdShowChart color="#ffffff" size="40" />}
-            noTooltip
-          />
+        <OverviewCard
+          span={6}
+          title={"Human intervention needed"}
+          // tooltip={formatMessage(messages.clinicStatsAlreadyScreened)}
+          content={`${parseInt(human_intervention ?? 0, 10)}`}
+          styleTitle={title}
+          icon={<MdShowChart color="#ffffff" size="40" />}
+          noTooltip
+        />
+      </GroupRow>
 
-        </GroupRow>
+      <GroupRow>
+        <OverviewCard
+          span={6}
+          title={"Attended"}
+          // tooltip={formatMessage(messages.clinicStatsBookings)}
+          content={`${parseInt(attended ?? 0, 10)}`}
+          styleTitle={title}
+          icon={<MdShowChart color="#ffffff" size="40" />}
+          noTooltip
+        />
+        <OverviewCard
+          span={6}
+          title={"Non attended"}
+          // tooltip={formatMessage(messages.clinicStatsBookings)}
+          content={`${parseInt(non_attended ?? 0, 10)}`}
+          styleTitle={title}
+          icon={<MdShowChart color="#ffffff" size="40" />}
+          noTooltip
+        />
+        <OverviewCard
+          span={6}
+          title={"Reschedules"}
+          // tooltip={formatMessage(messages.clinicStatsBookings)}
+          content={`${parseInt(reschedule ?? 0, 10)}`}
+          styleTitle={title}
+          icon={<MdShowChart color="#ffffff" size="40" />}
+          noTooltip
+        />
+        <OverviewCard
+          span={6}
+          title={"Cancelled"}
+          // tooltip={formatMessage(messages.clinicStatsBookings)}
+          content={`${parseInt(cancelled ?? 0, 10)}`}
+          styleTitle={title}
+          icon={<MdShowChart color="#ffffff" size="40" />}
+          noTooltip
+        />
 
-
-
+      </GroupRow>
+      <GroupRow>
         <OverviewCard
           span={6}
           title={"Morning"}
