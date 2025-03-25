@@ -139,19 +139,19 @@ export default defineMessages({
   bookedFilter: {
     id: `${scope}.filters.booked`,
     defaultMessage: 'Scheduled',
-  },  
+  },
   rescheduleFilter: {
     id: `${scope}.filters.reschedule`,
     defaultMessage: 'Rescheduled',
-  },  
+  },
   cancelledFilter: {
     id: `${scope}.filters.cancelled`,
     defaultMessage: 'Cancelled',
-  },  
+  },
   noResponseFilter: {
     id: `${scope}.filters.no_response`,
     defaultMessage: 'No Response',
-  },  
+  },
   askedQuestionFilter: {
     id: `${scope}.filters.asked_question`,
     defaultMessage: 'Asked Question',
