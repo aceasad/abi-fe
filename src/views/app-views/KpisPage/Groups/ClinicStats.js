@@ -57,7 +57,6 @@ const ClinicStats = ({ title }) => {
         />
 
       </GroupRow>
-
       <GroupRow>
         <OverviewCard
           span={6}
@@ -68,8 +67,6 @@ const ClinicStats = ({ title }) => {
           icon={<MdShowChart color="#ffffff" size="40" />}
           noTooltip
         />
-
-
         <OverviewCard
           span={6}
           title={"Booking rate"}
@@ -79,7 +76,6 @@ const ClinicStats = ({ title }) => {
           icon={<MdShowChart color="#ffffff" size="40" />}
           noTooltip
         />
-
         <OverviewCard
           span={6}
           title={formatMessage(messages.clinicStatsDecline)}
@@ -104,7 +100,7 @@ const ClinicStats = ({ title }) => {
           span={6}
           title={"Opt-out"}
           // tooltip={formatMessage(messages.clinicStatsBookings)}
-          content={`${parseInt(1 ?? 0, 10)}`}
+          content={`${parseInt(opt_out ?? 0, 10)}`}
           styleTitle={title}
           icon={<MdShowChart color="#ffffff" size="40" />}
           noTooltip
@@ -142,7 +138,45 @@ const ClinicStats = ({ title }) => {
           noTooltip
         />
       </GroupRow>
+      {/* <GroupRow> */}
+      {/* <OverviewCard
+          span={6}
+          title={"Attended"}
+          // tooltip={formatMessage(messages.clinicStatsBookings)}
+          content={`${parseInt(attended ?? 0, 10)}`}
+          styleTitle={title}
+          icon={<MdShowChart color="#ffffff" size="40" />}
+          noTooltip
+        />
+        <OverviewCard
+          span={6}
+          title={"Non attended"}
+          // tooltip={formatMessage(messages.clinicStatsBookings)}
+          content={`${parseInt(non_attended ?? 0, 10)}`}
+          styleTitle={title}
+          icon={<MdShowChart color="#ffffff" size="40" />}
+          noTooltip
+        />
+        <OverviewCard
+          span={6}
+          title={"Reschedules"}
+          // tooltip={formatMessage(messages.clinicStatsBookings)}
+          content={`${parseInt(reschedule ?? 0, 10)}`}
+          styleTitle={title}
+          icon={<MdShowChart color="#ffffff" size="40" />}
+          noTooltip
+        />
+        <OverviewCard
+          span={6}
+          title={"Cancelled"}
+          // tooltip={formatMessage(messages.clinicStatsBookings)}
+          content={`${parseInt(cancelled ?? 0, 10)}`}
+          styleTitle={title}
+          icon={<MdShowChart color="#ffffff" size="40" />}
+          noTooltip
+        /> */}
 
+      {/* </GroupRow> */}
       <GroupRow>
         <OverviewCard
           span={6}

@@ -109,11 +109,7 @@ const KpisPage = () => {
               </Row>
               <Row gutter={48}>
                 <Col span={24} className="mt-4">
-                  <GroupCollapse
-                    startOpen
-                    // title={formatMessage(messages.clinicStatsTitle)}
-                    group={<ClinicStats title={formatMessage(messages.bookingTitle)} />}
-                  />
+                  <ClinicStats title={formatMessage(messages.bookingTitle)} />
 
 
                   {/* <GroupCollapse

@@ -21,7 +21,7 @@ const makeSelectClinicStatsData = createSelector(
     not_on_whatsapp: substate.not_on_whatsapp,
     booking_time_distribution: substate.booking_time_distribution,
     declines: substate.declines,
-    opt_oui: substate.opt_oui,
+    opt_out: substate.opt_out,
     snoozed: substate.snoozed,
     emergency_situation: substate.emergency_situation,
     human_intervention: substate.human_intervention,

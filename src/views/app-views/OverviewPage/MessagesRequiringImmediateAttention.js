@@ -98,7 +98,16 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
       dataIndex: ['patient', 'full_name'],
       sorter: true,
       render: (_, row) => ({
-        children: _,
+        children: (
+          <Typography.Link
+            onClick={(e) => {
+              e.stopPropagation();
+              goToPatientShowMessages({ id: row.patient.id });
+            }}
+          >
+            {row.patient.full_name}
+          </Typography.Link>
+        ),
         props: {
           'data-label': formatMessage(overviewPageMessages.columnTitlePatient),
         },
