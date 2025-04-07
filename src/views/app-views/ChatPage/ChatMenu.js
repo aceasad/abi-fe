@@ -57,10 +57,10 @@ const ChatMenu = (props) => {
       label: formatMessage(messages.inEmergencySituationFilter),
       value: CHAT_FILTERS.IN_EMERGENCY_SITUATION,
     },
-    // {
-    //   label: formatMessage(messages.likelyToMissNextAppointmentFilter),
-    //   value: CHAT_FILTERS.LIKELY_TO_MISS_NEXT_APPOINTMENT,
-    // },
+    {
+      label: formatMessage(messages.inDeclinedFilter),
+      value: CHAT_FILTERS.DECLINED,
+    },
     {
       label: formatMessage(messages.bookedFilter),
       value: CHAT_FILTERS.BOOKED,
@@ -81,6 +81,26 @@ const ChatMenu = (props) => {
       label: formatMessage(messages.askedQuestionFilter),
       value: CHAT_FILTERS.ASKED_QUESTION,
     },
+    {
+      label: formatMessage(messages.inSnoozedFilter),
+      value: CHAT_FILTERS.SNOOZED,
+    },
+    {
+      label: formatMessage(messages.inRemindedFilter),
+      value: CHAT_FILTERS.REMINDED,
+    },
+    {
+      label: formatMessage(messages.inInvitedFilter),
+      value: CHAT_FILTERS.INVITED,
+    },
+    {
+      label: formatMessage(messages.inIncompleteFilter),
+      value: CHAT_FILTERS.INCOMPLETE,
+    },
+    {
+      label: formatMessage(messages.inScreenedElsewhereFilter),
+      value: CHAT_FILTERS.SCREENED_ELSEWHERE,
+    }
 
   ];
 
