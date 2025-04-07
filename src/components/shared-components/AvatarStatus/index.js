@@ -16,7 +16,7 @@ const getStatusColor = (status) => {
     return '#18D9C5'; // Green
   } else if (status === 'ASKED_QUESTION' || status === 'RESCHEDULING' || status === 'CANCELLING' || status === 'BOOKING' || status === 'INVITED' || status === 'INCOMPLETE' || status === 'SCREENED_ELSEWHERE') {
     return '#FFBF00'; // Yellow
-  } else if (status === 'CANCELLED' || status === 'NO_RESPONSE' || status === 'INACTIVE') {
+  } else if (status === 'CANCELLED' || status === 'NO_RESPONSE' || status === 'INACTIVE' || status === 'INCOMPLETE' || status === 'OPT_OUT' || status === 'DECLINED' || status === 'EMERGENCY_SITUATION' || status === 'HUMAN_INTERVENTION' || status === 'SNOOZED' || status === 'SCREENED_ELSEWHERE') {
     return '#FF474C'; // Red
   } else {
     return '#E880FF'; // Default color

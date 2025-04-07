@@ -29,7 +29,7 @@ const PatientProgressTable = ({
       return '#18D9C5'; // Green
     } else if (status === 'Asked Question' || status === 'Rescheduling' || status === 'Cancelling' || status === 'Booking' || status === 'Invited' || status === 'Incomplete' || status === 'Screened Elsewhere') {
       return '#FFBF00'; // Yellow
-    } else if (status === 'Cancelled' || status === 'No Response' || status === 'Inactive') {
+    } else if (status === 'Cancelled' || status === 'No Response' || status === 'Inactive' || status === 'Opt-out' || status === 'Declined' || status === 'Emergency Situation' || status === 'Human Intervention' || status === 'Snoozed') {
       return '#FF474C'; // Red
     } else {
       return '#E880FF'; // Default color
@@ -50,6 +50,11 @@ const PatientProgressTable = ({
     REMINDED: { status: 'Reminded', progressbar: 100 },
     SCREENED_ELSEWHERE: { status: 'Screened Elsewhere', progressbar: 100 },
     INACTIVE: { status: 'Inactive', progressbar: 100 },
+    SNOOZED: { status: 'Snoozed', progressbar: 100 },
+    HUMAN_INTERVENTION: { status: 'Human Intervention', progressbar: 100 },
+    EMERGENCY_SITUATION: { status: 'Emergency Situation', progressbar: 100 },
+    OPT_OUT: { status: 'Opt-out', progressbar: 100 },
+    DECLINED: { status: 'Declined', progressbar: 100 },
   };
 
   const statusOptions = [
