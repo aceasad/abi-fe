@@ -125,8 +125,12 @@ export default defineMessages({
     defaultMessage: 'Declined',
   },
   inScreenedElsewhereFilter: {
-    id: `${scope}.filters.declined`,
+    id: `${scope}.filters.screenedelsewhere`,
     defaultMessage: 'Screened Elsewhere',
+  },
+  inFailedFilter: {
+    id: `${scope}.filters.failed`,
+    defaultMessage: 'Failed',
   },
   inIncompleteFilter: {
     id: `${scope}.filters.declined`,

@@ -100,6 +100,10 @@ const ChatMenu = (props) => {
     {
       label: formatMessage(messages.inScreenedElsewhereFilter),
       value: CHAT_FILTERS.SCREENED_ELSEWHERE,
+    },
+    {
+      label: formatMessage(messages.inFailedFilter),
+      value: CHAT_FILTERS.FAILED,
     }
 
   ];

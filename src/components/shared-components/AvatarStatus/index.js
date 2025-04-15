@@ -18,7 +18,10 @@ const getStatusColor = (status) => {
     return '#FFBF00'; // Yellow
   } else if (status === 'CANCELLED' || status === 'NO_RESPONSE' || status === 'INACTIVE' || status === 'INCOMPLETE' || status === 'OPT_OUT' || status === 'DECLINED' || status === 'EMERGENCY_SITUATION') {
     return '#FF474C'; // Red
-  } else {
+  } else if (status === 'FAILED') {
+    return '#100101'; // Default color
+  }
+  else {
     return '#E880FF'; // Default color
   }
 };
