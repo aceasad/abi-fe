@@ -79,7 +79,7 @@ const PatientOverviewHistoryCard = ({ patient, showAppointment }) => {
               showAppointment({ id: record.id, type: APPOINTMENT_HISTORY }),
           })}
           columns={columnsHistory}
-          dataSource={items}
+          dataSource={items.map((item) => ({ ...item, key: item.id || item.key }))}
           loading={loading}
           pagination={{
             defaultPageSize: DEFAULT_SMALL_PAGINATION_LIMIT,

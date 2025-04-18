@@ -246,6 +246,7 @@ const AppointmentsReminders = ({ title, startOpen }) => {
     //   dataIndex: ['appointment', 'id'],
     //   sorter: true,
     // },
+    // (${row.doctor.seniority} ${row.doctor.specialization})
     {
       title: formatMessage(overviewPageMessages.tableColumnPatient),
       dataIndex: ['patient', 'full_name'],
@@ -257,7 +258,7 @@ const AppointmentsReminders = ({ title, startOpen }) => {
       sorter: true,
       render: (_, row) => (
         <div className="text-left">
-          {`${row.doctor.full_name} (${row.doctor.seniority} ${row.doctor.specialization})`}
+          {`${row.doctor.full_name} `}
         </div>
       ),
     },

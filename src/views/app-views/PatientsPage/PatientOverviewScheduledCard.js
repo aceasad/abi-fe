@@ -107,7 +107,7 @@ const PatientOverviewScheduledCard = ({ patient, showAppointment }) => {
               showAppointment({ id: record.id, type: SCHEDULED_APPOINTMENT }),
           })}
           columns={columnsScheduled}
-          dataSource={items}
+          dataSource={items.map((item) => ({ ...item, key: item.id || item.key }))}
           onChange={handleChange}
           pagination={{
             defaultPageSize: DEFAULT_SMALL_PAGINATION_LIMIT,

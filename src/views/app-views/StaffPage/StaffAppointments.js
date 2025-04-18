@@ -92,12 +92,12 @@ const StaffAppointments = ({ staffId, showList }) => {
               dataIndex: ['appointment_type', 'name'],
               sorter: true,
             },
-            {
-              title: formatMessage(messages.columnTitlePrediction),
-              dataIndex: 'no_show_score',
-              sorter: true,
-              render: RenderPredictionText,
-            },
+            // {
+            //   title: formatMessage(messages.columnTitlePrediction),
+            //   dataIndex: 'no_show_score',
+            //   sorter: true,
+            //   render: RenderPredictionText,
+            // },
             {
               title: formatMessage(messages.columnTitleStatus),
               dataIndex: ['status', 'name'],
@@ -142,12 +142,12 @@ const StaffAppointments = ({ staffId, showList }) => {
               dataIndex: ['appointment_type', 'name'],
               sorter: true,
             },
-            {
-              title: formatMessage(messages.columnTitlePrediction),
-              dataIndex: 'no_show_score',
-              sorter: true,
-              render: RenderPredictionText,
-            },
+            // {
+            //   title: formatMessage(messages.columnTitlePrediction),
+            //   dataIndex: 'no_show_score',
+            //   sorter: true,
+            //   render: RenderPredictionText,
+            // },
             {
               title: formatMessage(messages.columnTitleStatus),
               dataIndex: ['status', 'name'],

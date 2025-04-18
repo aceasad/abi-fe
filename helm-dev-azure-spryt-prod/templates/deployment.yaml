@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: abi-fe
-        image: sprytacrproduction.azurecr.io/abi-fe:latest
+        image: europe-west2-docker.pkg.dev/spryt-nhs/sprytacrproduction/abi-fe:latest
         ports:
         - containerPort: 80
         imagePullPolicy: Always

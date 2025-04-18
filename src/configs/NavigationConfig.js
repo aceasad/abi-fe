@@ -19,6 +19,14 @@ const pagesNavTree = [
     submenu: [],
   },
   {
+    key: 'kpis',
+    path: `${APP_PAGES_PREFIX_PATH}/kpis`,
+    title: 'sidenav.pages.kpis',
+    icon: PieChartOutlined,
+    breadcrumb: false,
+    submenu: [],
+  },
+  {
     key: 'appointments',
     path: `${APP_PAGES_PREFIX_PATH}/appointments`,
     title: 'sidenav.pages.appointments',

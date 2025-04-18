@@ -19,6 +19,10 @@ export default defineMessages({
     id: `${scope}.button.new`,
     defaultMessage: 'New patient',
   },
+  notonwhatsappPatient: {
+    id: `${scope}.button.notonwhatsappPatient`,
+    defaultMessage: 'Unsuccessful Invites',
+  },
   newBulkPatientUpload: {
     id: `${scope}.button.upload`,
     defaultMessage: 'Upload CSV',

@@ -139,6 +139,7 @@ const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
     //   dataIndex: 'id',
     //   sorter: true,
     // },
+    // (${row.doctor.seniority} ${row.doctor.specialization})
     {
       title: formatMessage(patientPageMessages.columnTitlePatient),
       dataIndex: ['patient', 'full_name'],
@@ -150,7 +151,7 @@ const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
       dataIndex: ['doctor', 'full_name'],
       render: (_, row) => (
         <div className="text-left">
-          {`${row.doctor.full_name} (${row.doctor.seniority} ${row.doctor.specialization})`}
+          {`${row.doctor.full_name} `}
         </div>
       ),
     },

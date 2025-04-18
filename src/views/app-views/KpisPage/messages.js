@@ -48,12 +48,20 @@ export default defineMessages({
     defaultMessage: 'Bookings made after sending invite',
   },
   clinicStatsPatientEnrolled: {
-    id: `${scope}.clinicstats.patientsenrolled`,
+    id: `${scope}.clinicstats.total_patients_added`,
     defaultMessage: 'Patient Invited',
+  },
+  clinicStatsInvitesRecieved: {
+    id: `${scope}.clinicstats.patients_invite_recieved`,
+    defaultMessage: 'Invites recieved by patients',
   },
   clinicStatsAlreadyScreened: {
     id: `${scope}.clinicstats.AlreadyScreened`,
     defaultMessage: ' Screened elsewhere',
+  },
+  clinicStatsSnoozed: {
+    id: `${scope}.clinicstats.clinicStatsSnoozed`,
+    defaultMessage: 'Snoozed',
   },
   clinicStatsOpenConversation: {
     id: `${scope}.clinicstats.openconversation`,
@@ -62,6 +70,10 @@ export default defineMessages({
   clinicStatsBookings: {
     id: `${scope}.clinicstats.bookings`,
     defaultMessage: 'Bookings',
+  },
+  clnincStatsInvitationRate: {
+    id: `${scope}.clinicstats.invitationrate`,
+    defaultMessage: 'Engagement Rate',
   },
   clinicStatsDecline: {
     id: `${scope}.clinicstats.decline`,

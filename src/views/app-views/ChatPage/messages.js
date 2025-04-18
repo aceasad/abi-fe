@@ -120,6 +120,34 @@ export default defineMessages({
     id: `${scope}.filters.in_emergency_situation`,
     defaultMessage: 'In emergency situation',
   },
+  inDeclinedFilter: {
+    id: `${scope}.filters.declined`,
+    defaultMessage: 'Declined',
+  },
+  inScreenedElsewhereFilter: {
+    id: `${scope}.filters.screenedelsewhere`,
+    defaultMessage: 'Screened Elsewhere',
+  },
+  inFailedFilter: {
+    id: `${scope}.filters.failed`,
+    defaultMessage: 'Failed',
+  },
+  inIncompleteFilter: {
+    id: `${scope}.filters.declined`,
+    defaultMessage: 'Incomplete',
+  },
+  inInvitedFilter: {
+    id: `${scope}.filters.invited`,
+    defaultMessage: 'Invited',
+  },
+  inRemindedFilter: {
+    id: `${scope}.filters.reminded`,
+    defaultMessage: 'Reminded',
+  },
+  inSnoozedFilter: {
+    id: `${scope}.filters.snoozed`,
+    defaultMessage: 'Snoozed',
+  },
   likelyToMissNextAppointmentFilter: {
     id: `${scope}.filters.likely_to_miss_next_appointment`,
     defaultMessage: 'Likely to miss their next appointment',
@@ -139,19 +167,19 @@ export default defineMessages({
   bookedFilter: {
     id: `${scope}.filters.booked`,
     defaultMessage: 'Scheduled',
-  },  
+  },
   rescheduleFilter: {
     id: `${scope}.filters.reschedule`,
-    defaultMessage: 'Reschedulled',
-  },  
+    defaultMessage: 'Rescheduled',
+  },
   cancelledFilter: {
     id: `${scope}.filters.cancelled`,
     defaultMessage: 'Cancelled',
-  },  
+  },
   noResponseFilter: {
     id: `${scope}.filters.no_response`,
     defaultMessage: 'No Response',
-  },  
+  },
   askedQuestionFilter: {
     id: `${scope}.filters.asked_question`,
     defaultMessage: 'Asked Question',

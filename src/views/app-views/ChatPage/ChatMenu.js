@@ -58,8 +58,8 @@ const ChatMenu = (props) => {
       value: CHAT_FILTERS.IN_EMERGENCY_SITUATION,
     },
     {
-      label: formatMessage(messages.likelyToMissNextAppointmentFilter),
-      value: CHAT_FILTERS.LIKELY_TO_MISS_NEXT_APPOINTMENT,
+      label: formatMessage(messages.inDeclinedFilter),
+      value: CHAT_FILTERS.DECLINED,
     },
     {
       label: formatMessage(messages.bookedFilter),
@@ -81,6 +81,30 @@ const ChatMenu = (props) => {
       label: formatMessage(messages.askedQuestionFilter),
       value: CHAT_FILTERS.ASKED_QUESTION,
     },
+    {
+      label: formatMessage(messages.inSnoozedFilter),
+      value: CHAT_FILTERS.SNOOZED,
+    },
+    {
+      label: formatMessage(messages.inRemindedFilter),
+      value: CHAT_FILTERS.REMINDED,
+    },
+    {
+      label: formatMessage(messages.inInvitedFilter),
+      value: CHAT_FILTERS.INVITED,
+    },
+    {
+      label: formatMessage(messages.inIncompleteFilter),
+      value: CHAT_FILTERS.INCOMPLETE,
+    },
+    {
+      label: formatMessage(messages.inScreenedElsewhereFilter),
+      value: CHAT_FILTERS.SCREENED_ELSEWHERE,
+    },
+    {
+      label: formatMessage(messages.inFailedFilter),
+      value: CHAT_FILTERS.FAILED,
+    }
 
   ];
 
@@ -194,6 +218,7 @@ const ChatMenu = (props) => {
                 is_in_opt_out_situation={
                   item.patient.is_in_opt_out_situation
                 }
+                communication_status={item.patient.conversation_status}
               />
               <div className="text-right">
                 <div className="chat-menu-list-item-time">
@@ -202,7 +227,7 @@ const ChatMenu = (props) => {
                   )}
                 </div>
                 {item?.last_message.status === MESSAGE_STATUS.SENT &&
-                !item?.last_message.is_answer ? (
+                  !item?.last_message.is_answer ? (
                   <Badge count={1} style={{ backgroundColor: COLOR_1 }} />
                 ) : (
                   <span></span>

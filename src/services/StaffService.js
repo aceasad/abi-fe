@@ -93,7 +93,7 @@ class StaffService extends ApiService {
     this.apiClient.get(
       !id
         ? `${ENDPOINTS.GET_MESSAGES_REQUIRING_IMMEDIATE_ATTENTION[state_field]}`
-        : `${ENDPOINTS.GET_MESSAGES_REQUIRING_IMMEDIATE_ATTENTION[state_field]}${id}/`,
+        : `${ENDPOINTS.GET_MESSAGES_REQUIRING_IMMEDIATE_ATTENTION[state_field]}`,
       {
         params: {
           ordering: field
@@ -128,10 +128,14 @@ class StaffService extends ApiService {
           }
     );
 
-  updateMessageRequiringImmediateAttention = (payload) =>
-    this.apiClient.post(
-      `${ENDPOINTS.UPDATE_MESSAGE_REQUIRING_IMMEDIATE_ATTENTION}${payload}/`
+  updateMessageRequiringImmediateAttention = (payload) =>{
+    const { id, ...updatedPayload } = payload;
+    this.apiClient.patch(
+      `${ENDPOINTS.UPDATE_MESSAGE_REQUIRING_IMMEDIATE_ATTENTION}${id}/`,
+      updatedPayload
     );
+
+  }
 }
 
 const staffService = new StaffService();

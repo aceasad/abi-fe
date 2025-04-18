@@ -16,15 +16,17 @@ import FormField from 'components/custom-components/Form/FormField';
 import { makeSelectLoginDetails } from 'redux/selectors/Auth';
 import { ReCaptcha } from 'components/reCaptcha'
 import axios from 'axios'
-
+import {
+  CAPTCHA_CLIENT_KEY_V2
+} from 'configs/AppConfig';
 /*
 Access to this computer/Solution and any information it contains is limited to authorised users only.  Legal action can be taken against unauthorised use of, or unauthorised access to, this computer/Solution and/or any information it contains, including pursuant to the Computer Misuse Act 1990.  If you are an authorised user, by proceeding to access and use this computer/Solution and/or the information it contains, you are accepting any terms of use, notices and policies which are contained or referenced within it or which have otherwise been drawn to your attention as an authorised user.
 */
 export const LoginForm = () => {
   let history = useHistory();
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [reToken,setreToken] = useState('')
-  const [submitEnable,setSubmitEnable] = useState(false)
+  const [reToken, setreToken] = useState('')
+  const [submitEnable, setSubmitEnable] = useState(false)
 
   const handleReToken = (t) => {
     setreToken(t)
@@ -41,38 +43,38 @@ export const LoginForm = () => {
   const onLogin = (values) => {
     values.retoken = reToken
     // EVALUATE GOOGLE RECAPCHA HERE
-    axios.post(process.env.REACT_APP_API_URL+'/googleverify/recapture/', {'retoken': reToken})
-    .then(response => {
-      // Handle success
-      console.log('Success:', response.data);
-      setIsModalVisible(true);
-      setTimeout(() => {
+    axios.post(process.env.REACT_APP_API_URL + '/googleverify/recapture/', { 'retoken': reToken })
+      .then(response => {
+        // Handle success
+        console.log('Success:', response.data);
+        setIsModalVisible(true);
+        setTimeout(() => {
           dispatch(signIn(values));
           setIsModalVisible(false);
-      }, 3000);
-      // Perform actions based on response
-    })
-    .catch(error => {
-      // Handle failure
-      console.error('Error:', error);
-      // Perform actions based on error
-    });
-    
+        }, 3000);
+        // Perform actions based on response
+      })
+      .catch(error => {
+        // Handle failure
+        console.error('Error:', error);
+        // Perform actions based on error
+      });
+
 
   };
 
   useEffect(() => {
-    if(reToken.length){
+    if (reToken.length) {
       setSubmitEnable(true)
       if (token) {
         history.push(ROUTES.DASHBOARD);
       }
-      else{
+      else {
         setIsModalVisible(false);
       }
-   }
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token,reToken]);
+  }, [token, reToken]);
 
   const PasswordLabel = ({ email }) => (
     <div className={'d-flex justify-content-between w-100 align-items-center'}>
@@ -149,8 +151,8 @@ export const LoginForm = () => {
               }}
               labelBlock={true}
             />
-            <Form.Item className = 'mt-sm-5 ml-sm-4'>
-              <ReCaptcha siteKey={'6LeQH5EqAAAAABQNFhLE68MJ2SJOUSITwhNqBn8h'} callback={handleReToken} />
+            <Form.Item className='mt-sm-5 ml-sm-4'>
+              <ReCaptcha siteKey={CAPTCHA_CLIENT_KEY_V2} callback={handleReToken} />
             </Form.Item>
 
             <Form.Item className="mt-sm-5">
@@ -169,20 +171,20 @@ export const LoginForm = () => {
         )}
       </Formik>
 
-      {isModalVisible ? (      
-      <Modal
+      {isModalVisible ? (
+        <Modal
           title={"Warning"}
           visible
           destroyOnClose
           footer={[]}
         >
-              <Row gutter={16} className="d-flex">
+          <Row gutter={16} className="d-flex">
 
-                  <Typography align="center">
-                     Access to this computer/Solution and any information it contains is limited to authorised users only.  Legal action can be taken against unauthorised use of, or unauthorised access to, this computer/Solution and/or any information it contains, including pursuant to the Computer Misuse Act 1990.  If you are an authorised user, by proceeding to access and use this computer/Solution and/or the information it contains, you are accepting any terms of use, notices and policies which are contained or referenced within it or which have otherwise been drawn to your attention as an authorised user.
-                  </Typography>
-              </Row>
-        </Modal>): (<></>)}
+            <Typography align="center">
+              Access to this computer/Solution and any information it contains is limited to authorised users only.  Legal action can be taken against unauthorised use of, or unauthorised access to, this computer/Solution and/or any information it contains, including pursuant to the Computer Misuse Act 1990.  If you are an authorised user, by proceeding to access and use this computer/Solution and/or the information it contains, you are accepting any terms of use, notices and policies which are contained or referenced within it or which have otherwise been drawn to your attention as an authorised user.
+            </Typography>
+          </Row>
+        </Modal>) : (<></>)}
     </>
   );
 };
