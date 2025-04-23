@@ -31,7 +31,10 @@ const PatientProgressTable = ({
       return '#FFBF00'; // Yellow
     } else if (status === 'Cancelled' || status === 'No Response' || status === 'Inactive' || status === 'Opt-out' || status === 'Declined' || status === 'Emergency Situation' || status === 'Human Intervention' || status === 'Snoozed') {
       return '#FF474C'; // Red
-    } else {
+    } else if (status === 'Failed') {
+      return '#100101'; // Default color
+    }
+    else {
       return '#E880FF'; // Default color
     }
   };
@@ -55,6 +58,7 @@ const PatientProgressTable = ({
     EMERGENCY_SITUATION: { status: 'Emergency Situation', progressbar: 100 },
     OPT_OUT: { status: 'Opt-out', progressbar: 100 },
     DECLINED: { status: 'Declined', progressbar: 100 },
+    FAILED: { status: 'Failed', progressbar: 100 },
   };
 
   const statusOptions = [

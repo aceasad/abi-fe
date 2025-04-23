@@ -48,6 +48,7 @@ export const CHAT_FILTERS = {
   INVITED: 'INVITED',
   REMINDED: 'REMINDED',
   SNOOZED: 'SNOOZED',
+  FAILED: 'FAILED',
   // LIKELY_TO_MISS_NEXT_APPOINTMENT: 'likely_to_miss_next_appointment',
   ALL: 'all',
 };
