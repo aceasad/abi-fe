@@ -7,10 +7,14 @@ import navigationConfig from 'configs/NavigationConfig';
 import { connect } from 'react-redux';
 import { SIDE_NAV_LIGHT, NAV_TYPE_SIDE } from 'constants/ThemeConstant';
 import utils from 'utils';
-import { onMobileNavToggle } from 'redux/actions/Theme';
+import { onMobileNavToggle, toggleCollapsedNav } from 'redux/actions/Theme';
 import { useHistory } from 'react-router-dom';
 import { beforeRoute, BeforeRouteContext } from 'utils/context';
 import { generateKey } from 'utils/helpers';
+import { MenuFoldOutlined, MenuUnfoldOutlined, LogoutOutlined } from '@ant-design/icons';
+import { useDispatch } from 'react-redux';
+import { useIntl } from 'react-intl';
+import { signOut } from 'redux/actions/Auth';
 
 const { SubMenu } = Menu;
 const { useBreakpoint } = Grid;
@@ -38,8 +42,12 @@ const SideNavContent = ({
   hideGroupTitle,
   localization,
   onMobileNavToggle,
+  navCollapsed,
+  isMobile,
+  toggleCollapsedNav,
 }) => {
-  const isMobile = !utils.getBreakPoint(useBreakpoint()).includes('lg');
+  const dispatch = useDispatch();
+  const { formatMessage } = useIntl();
 
   const history = useHistory();
   const [route, setRoute] = useState({});
@@ -62,6 +70,86 @@ const SideNavContent = ({
     } else if (route) action();
   }, [proceed, route.key]);
 
+  const onToggle = () => {
+    if (!isMobile) {
+      toggleCollapsedNav(!navCollapsed);
+    } else {
+      onMobileNavToggle(!isMobile);
+    }
+  };
+
+  const menuItems = [
+    <Menu.Item
+      key="collapse"
+      icon={navCollapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+      onClick={onToggle}
+      style={{ height: '60px', lineHeight: '60px' }}
+    >
+      {formatMessage({ id: 'menu.collapse' })}
+    </Menu.Item>,
+    <Menu.Divider key="divider" />,
+    ...navigationConfig.map((menu) =>
+      menu.submenu.length > 0 ? (
+        <Menu.ItemGroup
+          key={menu.key}
+          title={setLocale(localization, menu.title)}
+        >
+          {menu.submenu.map((subMenuFirst) =>
+            subMenuFirst.submenu.length > 0 ? (
+              <SubMenu
+                icon={
+                  subMenuFirst.icon ? (
+                    <Icon type={subMenuFirst?.icon} />
+                  ) : null
+                }
+                key={subMenuFirst.key}
+                title={setLocale(localization, subMenuFirst.title)}
+              >
+                {subMenuFirst.submenu.map((subMenuSecond) => (
+                  <Menu.Item key={subMenuSecond.key}>
+                    {subMenuSecond.icon ? (
+                      <Icon type={subMenuSecond?.icon} />
+                    ) : null}
+                    <span>
+                      {setLocale(localization, subMenuSecond.title)}
+                    </span>
+                    <Link onClick={closeMobileNav} to={subMenuSecond.path} />
+                  </Menu.Item>
+                ))}
+              </SubMenu>
+            ) : (
+              <Menu.Item key={subMenuFirst.key}>
+                {subMenuFirst.icon ? <Icon type={subMenuFirst.icon} /> : null}
+                <span>{setLocale(localization, subMenuFirst.title)}</span>
+                <Link onClick={closeMobileNav} to={subMenuFirst.path} />
+              </Menu.Item>
+            )
+          )}
+        </Menu.ItemGroup>
+      ) : (
+        <Menu.Item
+          key={menu.key}
+          style={{ height: '60px', lineHeight: '60px' }}
+        >
+          {menu.icon ? <Icon type={menu?.icon} /> : null}
+          <span>{setLocale(localization, menu?.title)}</span>
+          {menu.path ? (
+            <Link onClick={closeMobileNav} to={menu.path} />
+          ) : null}
+        </Menu.Item>
+      )
+    ),
+    <Menu.Divider key="divider2" />,
+    <Menu.Item
+      key="logout"
+      icon={<LogoutOutlined />}
+      onClick={() => dispatch(signOut())}
+      style={{ height: '60px', lineHeight: '60px' }}
+    >
+      {formatMessage({ id: 'login_page.text.log_out' })}
+    </Menu.Item>
+  ];
+
   return (
     <Menu
       theme={sideNavTheme === SIDE_NAV_LIGHT ? 'light' : 'dark'}
@@ -72,57 +160,7 @@ const SideNavContent = ({
       selectedKeys={[routeInfo?.key]}
       className={hideGroupTitle ? 'hide-group-title' : ''}
     >
-      {navigationConfig.map((menu) =>
-        menu.submenu.length > 0 ? (
-          <Menu.ItemGroup
-            key={menu.key}
-            title={setLocale(localization, menu.title)}
-          >
-            {menu.submenu.map((subMenuFirst) =>
-              subMenuFirst.submenu.length > 0 ? (
-                <SubMenu
-                  icon={
-                    subMenuFirst.icon ? (
-                      <Icon type={subMenuFirst?.icon} />
-                    ) : null
-                  }
-                  key={subMenuFirst.key}
-                  title={setLocale(localization, subMenuFirst.title)}
-                >
-                  {subMenuFirst.submenu.map((subMenuSecond) => (
-                    <Menu.Item key={subMenuSecond.key}>
-                      {subMenuSecond.icon ? (
-                        <Icon type={subMenuSecond?.icon} />
-                      ) : null}
-                      <span>
-                        {setLocale(localization, subMenuSecond.title)}
-                      </span>
-                      <Link onClick={closeMobileNav} to={subMenuSecond.path} />
-                    </Menu.Item>
-                  ))}
-                </SubMenu>
-              ) : (
-                <Menu.Item key={subMenuFirst.key}>
-                  {subMenuFirst.icon ? <Icon type={subMenuFirst.icon} /> : null}
-                  <span>{setLocale(localization, subMenuFirst.title)}</span>
-                  <Link onClick={closeMobileNav} to={subMenuFirst.path} />
-                </Menu.Item>
-              )
-            )}
-          </Menu.ItemGroup>
-        ) : (
-          <Menu.Item
-            key={menu.key}
-            style={{ height: '60px', lineHeight: '60px' }}
-          >
-            {menu.icon ? <Icon type={menu?.icon} /> : null}
-            <span>{setLocale(localization, menu?.title)}</span>
-            {menu.path ? (
-              <Link onClick={closeMobileNav} to={menu.path} />
-            ) : null}
-          </Menu.Item>
-        )
-      )}
+      {menuItems}
     </Menu>
   );
 };
@@ -195,10 +233,10 @@ const MenuContent = (props) => {
 };
 
 const mapStateToProps = ({ theme }) => {
-  const { sideNavTheme, topNavColor } = theme;
-  return { sideNavTheme, topNavColor };
+  const { sideNavTheme, topNavColor, navCollapsed, isMobile } = theme;
+  return { sideNavTheme, topNavColor, navCollapsed, isMobile };
 };
 
 export default withRouter(
-  connect(mapStateToProps, { onMobileNavToggle })(MenuContent)
+  connect(mapStateToProps, { onMobileNavToggle, toggleCollapsedNav })(MenuContent)
 );

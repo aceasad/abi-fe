@@ -9,6 +9,8 @@ import { connect } from 'react-redux';
 import utils from 'utils';
 import { Grid } from 'antd';
 import { URL_PREFIX_PATH } from 'configs/AppConfig';
+import { makeSelectClinic } from 'redux/selectors/Clinic';
+import { useSelector } from 'react-redux';
 
 const { useBreakpoint } = Grid;
 
@@ -29,18 +31,11 @@ const getLogoWidthGutter = (props, isMobile) => {
 };
 
 const getLogo = (props) => {
-  const { navCollapsed, logoType } = props;
+  const { logoType } = props;
   if (logoType === 'light') {
-    if (navCollapsed) {
-      return `${URL_PREFIX_PATH}/img/logo-sm-white.png`;
-    }
-    return `${URL_PREFIX_PATH}/img/logo-white.png`;
+    return `${URL_PREFIX_PATH}/img/logo-sm-white.png`;
   }
-
-  if (navCollapsed) {
-    return `${URL_PREFIX_PATH}/img/logo-sm.png`;
-  }
-  return `${URL_PREFIX_PATH}/img/logo.png`;
+  return `${URL_PREFIX_PATH}/img/logo-sm.png`;
 };
 
 const getLogoDisplay = (isMobile, mobileLogo) => {
@@ -53,16 +48,34 @@ const getLogoDisplay = (isMobile, mobileLogo) => {
 
 export const Logo = (props) => {
   const isMobile = !utils.getBreakPoint(useBreakpoint()).includes('lg');
+  const clinic = useSelector(makeSelectClinic());
+  const organizationName = clinic?.name || '';
+
   return (
     <div
       className={getLogoDisplay(isMobile, props.mobileLogo)}
       style={{ width: `${getLogoWidthGutter(props, isMobile)}` }}
     >
-      <img
-        src={getLogo(props)}
-        alt={`${APP_NAME} logo`}
-        style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-      />
+      <div style={{ display: 'flex', alignItems: 'center', padding: '0 16px' }}>
+        <img
+          src={getLogo(props)}
+          alt={`${APP_NAME} logo`}
+          style={{ width: '32px', height: '32px', objectFit: 'contain' }}
+        />
+        {!props.navCollapsed && (
+          <span
+            style={{
+              marginLeft: '12px',
+              color: props.logoType === 'light' ? '#fff' : '#000',
+              fontSize: '16px',
+              fontWeight: '500',
+              letterSpacing: '0.5px'
+            }}
+          >
+            {organizationName}
+          </span>
+        )}
+      </div>
     </div>
   );
 };

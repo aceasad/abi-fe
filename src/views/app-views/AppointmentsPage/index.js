@@ -1,4 +1,4 @@
-import { Button, PageHeader, Space, Typography, Grid, Modal , Row, Col} from 'antd';
+import { Button, PageHeader, Space, Typography, Grid, Modal, Row, Col } from 'antd';
 import React, { useState } from 'react';
 import CalendarPage from '../CalendarPage';
 import { useIntl } from 'react-intl';
@@ -19,8 +19,8 @@ const AppointmentsPage = () => {
   const screens = utils.getBreakPoint(useBreakpoint());
   const isMobile = !screens.includes('lg');
   const { isPasIntegrated } = useSelector(state => state.auth.user);
-  const [syncStatus,setsyncStatus] = useState(false)
-  const {mutate} = useSyncPasService(setsyncStatus);
+  const [syncStatus, setsyncStatus] = useState(false)
+  const { mutate } = useSyncPasService(setsyncStatus);
 
   const closeModal = () => {
     setIsModalVisible(false);
@@ -32,7 +32,16 @@ const AppointmentsPage = () => {
 
   const StartSyncProcess = () => {
     console.log("Sync Process initiated from ASA Clinic dashboard!")
-    mutate();
+    mutate(undefined, {
+      onSuccess: (data) => {
+        console.log("Sync API Response:", data);
+        setPASIsModalVisible(false);
+      },
+      onError: (error) => {
+        console.error("Sync API Error:", error);
+        setPASIsModalVisible(false);
+      }
+    });
     setsyncStatus(true);
   }
   return (
@@ -55,13 +64,13 @@ const AppointmentsPage = () => {
                 id: 'appointments_page.button.new_appointment',
               })}
             </Button> */}
-            {isPasIntegrated? (
-            <Button type="primary" onClick={() => setPASIsModalVisible(true)}>
-              {formatMessage({
-                id: 'appointments_page.button.sync_process',
-              })}
-            </Button>):(<></>)}
- 
+            {isPasIntegrated ? (
+              <Button type="primary" onClick={() => setPASIsModalVisible(true)}>
+                {formatMessage({
+                  id: 'appointments_page.button.sync_process',
+                })}
+              </Button>) : (<></>)}
+
           </Space>,
         ]}
       />
@@ -79,38 +88,29 @@ const AppointmentsPage = () => {
           visible
           destroyOnClose
           closable={true}
+          onCancel={closePasModel}
+          width={400}
           footer={[
-          <Button
-            key="back"
-            onClick={closePasModel}
-            onMouseDown={(event) => {
-              event.preventDefault();
-            }}
-          >
-            {formatMessage(messages.cancelButton)}
-          </Button>,
-          <Button
-            key="submit"
-            type="primary"
-            disabled={syncStatus}
-            onClick={StartSyncProcess}
-          >
-            Apply Sync
-          </Button>,
+            <Button
+              key="submit"
+              type="primary"
+              disabled={syncStatus}
+              onClick={StartSyncProcess}
+              style={{ margin: '0 auto', display: 'block' }}
+            >
+              Apply Sync
+            </Button>,
           ]}
         >
-        
-          <Row gutter={16} className="d-flex">
-            <Col xs={20}>
+          <Row gutter={16} className="d-flex justify-content-center">
+            <Col xs={20} style={{ textAlign: 'center' }}>
               {syncStatus ? (<Typography>
-                Pas-Connected System is updating, please refresh browser to see new updates shortly! 
-              </Typography>):(<Typography>
-                Please note that the background-sync process will update your clinic's patients from the connected PAS System. 
+                Pas-Connected System is updating, please refresh browser to see new updates shortly!
+              </Typography>) : (<Typography>
+                Please note that the background-sync process will update your clinic's patients from the connected PAS System.
               </Typography>)}
-              
             </Col>
           </Row>
-        
         </Modal>
       )}
 
