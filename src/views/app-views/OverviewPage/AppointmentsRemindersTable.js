@@ -8,6 +8,7 @@ import {
 } from 'redux/actions/Staff';
 import { makeSelectAppointmentsRemindersRequestData } from 'redux/selectors/Staff';
 import { DEFAULT_LIMIT } from 'services/StaffService';
+import { DEFAULT_PAGINATION_LIMIT, SET_DEFAULT_PAGINATION_LIMIT } from 'constants/ApiConstant';
 
 const AppointmentsRemindersTable = ({
   columns,
@@ -20,34 +21,47 @@ const AppointmentsRemindersTable = ({
   page,
   loading,
   title,
-}) => (
-  <Card>
-    <Typography.Title level={4}>{title}</Typography.Title>
-    <div className="table-responsive ant-table-row-pointer">
-      <Table
-        columns={columns}
-        dataSource={items.map((item) => ({ ...item, key: item.id || item.key }))}
-        onRow={onRow}
-        onChange={handleChange}
-        pagination={{
-          defaultPageSize: pageSize,
-          total: count,
-          onChange: handlePaginationChange,
-          hideOnSinglePage: true,
-          current: page,
-        }}
-        loading={loading}
-      />
-    </div>
-  </Card>
-);
+  reminderType,
+}) => {
+
+  const handlePaginationSizeChange = (current, size) => {
+    SET_DEFAULT_PAGINATION_LIMIT(size);
+  };
+  return (
+    <Card>
+      <Typography.Title level={4}>{title}</Typography.Title>
+      <div className="table-responsive ant-table-row-pointer">
+        <Table
+          columns={columns}
+          dataSource={(items || []).map((item) => ({
+            ...item,
+            key: item.id || item.key
+          }))}
+          onRow={onRow}
+          onChange={handleChange}
+          pagination={{
+            defaultPageSize: DEFAULT_PAGINATION_LIMIT,
+            total: count, // Use the count from API
+            onChange: handlePaginationChange,
+            onShowSizeChange: (current, size) => handlePaginationSizeChange(current, size),
+            hideOnSinglePage: true,
+            current: page,
+            showSizeChanger: true,
+            pageSizeOptions: ['10', '20', '50', '100'],
+          }}
+          loading={loading}
+        />
+      </div>
+    </Card>
+  );
+};
 
 AppointmentsRemindersTable.defaultProps = {
   onRow: () => ({}),
-  handleChange: () => {},
+  handleChange: () => { },
 };
 
-const AppointmentsReminders = ({ id, field, children, columnMap }) => {
+const AppointmentsReminders = ({ id, field, children, columnMap, reminderType }) => {
   if (!children) throw new Error('Component must have children');
 
   const { items, loading, page, count } = useSelector(
@@ -57,11 +71,11 @@ const AppointmentsReminders = ({ id, field, children, columnMap }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getAppointmentsReminders({ id, field }));
-  }, [dispatch, id, field]);
+    dispatch(getAppointmentsReminders({ id, field, reminderType }));
+  }, [dispatch, id, field, reminderType]);
 
   const handlePaginationChange = (page) => {
-    dispatch(setAppointmentsRemindersPage({ page, field, id }));
+    dispatch(setAppointmentsRemindersPage({ page, field, id, reminderType }));
   };
 
   const handleChange = (_, __, sortField, e) => {
@@ -71,13 +85,14 @@ const AppointmentsReminders = ({ id, field, children, columnMap }) => {
           ...sortField,
           sort_field: columnMap
             ? columnMap[
-                Array.isArray(sortField.field)
-                  ? sortField.field.join('_')
-                  : sortField.field
-              ]
+            Array.isArray(sortField.field)
+              ? sortField.field.join('_')
+              : sortField.field
+            ]
             : sortField.field,
           field,
           id,
+          reminderType,  // Add this parameter
         })
       );
   };
@@ -95,6 +110,7 @@ const AppointmentsReminders = ({ id, field, children, columnMap }) => {
         count,
         handlePaginationChange,
         handleChange,
+        reminderType,  // Add this prop
       });
     }
     return child;

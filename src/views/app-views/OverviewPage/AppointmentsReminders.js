@@ -8,6 +8,7 @@ import {
   Tooltip,
   Menu,
   Dropdown,
+  Select
 } from 'antd';
 import { WhatsAppOutlined } from '@ant-design/icons';
 import { useIntl } from 'react-intl';
@@ -56,6 +57,11 @@ const AppointmentsReminders = ({ title, startOpen }) => {
   const dispatch = useDispatch();
 
   const [activeAppointment, setActiveAppointment] = useState(null);
+  const [reminderType, setReminderType] = useState('appointment');
+  const handleReminderTypeChange = (value) => {
+    setReminderType(value);
+  };
+
   useEffect(() => {
     if (activeAppointment) {
       dispatch(getSingleAppointment(activeAppointment.id));
@@ -240,106 +246,132 @@ const AppointmentsReminders = ({ title, startOpen }) => {
     );
   };
 
-  const tableColumns = [
-    // {
-    //   title: 'ID',
-    //   dataIndex: ['appointment', 'id'],
-    //   sorter: true,
-    // },
-    // (${row.doctor.seniority} ${row.doctor.specialization})
-    {
-      title: formatMessage(overviewPageMessages.tableColumnPatient),
-      dataIndex: ['patient', 'full_name'],
-      sorter: true,
-    },
-    {
-      title: formatMessage(overviewPageMessages.tableColumnDoctor),
-      dataIndex: ['doctor', 'full_name'],
-      sorter: true,
-      render: (_, row) => (
-        <div className="text-left">
-          {`${row.doctor.full_name} `}
-        </div>
-      ),
-    },
-    {
-      title: formatMessage(overviewPageMessages.tableColumnAppointmentDatetime),
-      dataIndex: ['appointment', 'date'],
-      sorter: true,
-      render: (_, row) => (
-        <div className="text-left text-uppercase">{`${
-          row.appointment.date
-        } ${removeLeadingZeroFromTime(
-          moment(row.appointment.time, ['h:mm A']).format('hh:mm A')
-        )}`}</div>
-      ),
-    },
-    {
-      title: formatMessage(overviewPageMessages.tableColumnReminderTemplate),
-      dataIndex: ['reminder', 'message_template'],
-      sorter: true,
-    },
-    {
-      title: formatMessage(overviewPageMessages.tableColumnReminderDatetime),
-      dataIndex: ['reminder', 'date'],
-      sorter: true,
-      render: (_, row) => (
-        <div className="text-left text-uppercase">{`${
-          row.reminder.date
-        } ${removeLeadingZeroFromTime(
-          moment(row.reminder.time, ['h:mm A']).format('hh:mm A')
-        )}`}</div>
-      ),
-    },
-    {
-      title: formatMessage(overviewPageMessages.tableColumnReminderStatus),
-      dataIndex: ['reminder', 'status'],
-      sorter: true,
-      render: (_, row) => (
-        <div className="text-left">{row.reminder.status}</div>
-      ),
-    },
-    {
-      key: 'action',
-      render: (_, row) => (
-        <div className="text-right">
-          <Dropdown
-            overlay={() => menu(row)}
-            trigger={['click']}
-            placement="bottomRight"
-          >
-            <Button type="primary" ghost>
-              {formatMessage(overviewPageMessages.tableDropdownTitleActions)}
-              <DownOutlined />
-            </Button>
-          </Dropdown>
-        </div>
-      ),
-    },
-  ];
+  const getTableColumns = () => {
+    const baseColumns = [
+      {
+        title: formatMessage(overviewPageMessages.tableColumnPatient),
+        dataIndex: ['patient', 'full_name'],
+        sorter: true,
+      },
+      {
+        title: formatMessage(overviewPageMessages.tableColumnReminderTemplate),
+        dataIndex: ['reminder', 'message_template'],
+        sorter: true,
+      },
+      {
+        title: formatMessage(overviewPageMessages.tableColumnReminderDatetime),
+        dataIndex: ['reminder', 'date'],
+        sorter: true,
+        render: (_, row) => (
+          <div className="text-left text-uppercase">{`${row.reminder.date} ${removeLeadingZeroFromTime(
+            moment(row.reminder.time, ['h:mm A']).format('hh:mm A')
+          )}`}</div>
+        ),
+      },
+      {
+        title: formatMessage(overviewPageMessages.tableColumnReminderStatus),
+        dataIndex: ['reminder', 'status'],
+        sorter: true,
+        render: (_, row) => (
+          <div className="text-left">{row.reminder.status}</div>
+        ),
+      },
+      {
+        key: 'action',
+        render: (_, row) => (
+          <div className="text-right">
+            <Dropdown
+              overlay={() => menu(row)}
+              trigger={['click']}
+              placement="bottomRight"
+            >
+              <Button type="primary" ghost>
+                {formatMessage(overviewPageMessages.tableDropdownTitleActions)}
+                <DownOutlined />
+              </Button>
+            </Dropdown>
+          </div>
+        ),
+      },
+    ];
 
+    if (reminderType === 'appointment') {
+      // Insert doctor and appointment columns after patient column
+      baseColumns.splice(1, 0,
+        {
+          title: formatMessage(overviewPageMessages.tableColumnDoctor),
+          dataIndex: ['doctor', 'full_name'],
+          sorter: true,
+          render: (_, row) => (
+            <div className="text-left">
+              {`${row.doctor.full_name} `}
+            </div>
+          ),
+        },
+        {
+          title: formatMessage(overviewPageMessages.tableColumnAppointmentDatetime),
+          dataIndex: ['appointment', 'date'],
+          sorter: true,
+          render: (_, row) => {
+            if (!row.appointment?.date || !row.appointment?.time) {
+              return <div className="text-left text-uppercase"></div>;
+            }
+            return (
+              <div className="text-left text-uppercase">{`${row.appointment.date} ${removeLeadingZeroFromTime(
+                moment(row.appointment.time, ['h:mm A']).format('hh:mm A')
+              )}`}</div>
+            );
+          },
+        }
+      );
+    }
+
+    return baseColumns;
+  };
+
+  const tableColumns = getTableColumns();
   return (
     <>
+      <div className="mb-3">
+        <Select
+          value={reminderType}
+          onChange={handleReminderTypeChange}
+          style={{ width: 200 }}
+        >
+          <Select.Option value="appointment">Appointment Reminders</Select.Option>
+          <Select.Option value="system">System Reminders</Select.Option>
+        </Select>
+      </div>
       <AppointmentsRemindersTable
+        field={UPCOMING_REMINDERS}
+        id={''}
+        columnMap={columnMap}
+        reminderType={reminderType}  // Add this prop
+      >
+        <AppointmentsRemindersTable.Table
+          columns={tableColumns}
+        />
+      </AppointmentsRemindersTable>
+      {/* <AppointmentsRemindersTable
         field={UPCOMING_REMINDERS}
         id={''}
         columnMap={columnMap}
       >
         <AppointmentsRemindersTable.Table
           columns={tableColumns}
-          // onRow={(record) => {
-          //   return {
-          //     onClick: () => {
-          //       setActiveAppointment({
-          //         id: record.id,
-          //         type: SCHEDULED,
-          //         patientId: record.patient.id,
-          //       });
-          //     },
-          //   };
-          // }}
+        // onRow={(record) => {
+        //   return {
+        //     onClick: () => {
+        //       setActiveAppointment({
+        //         id: record.id,
+        //         type: SCHEDULED,
+        //         patientId: record.patient.id,
+        //       });
+        //     },
+        //   };
+        // }}
         />
-      </AppointmentsRemindersTable>
+      </AppointmentsRemindersTable> */}
       {activeAppointment && (
         <AppointmentPreview
           handleClose={() => setActiveAppointment(null)}

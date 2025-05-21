@@ -68,7 +68,7 @@ class StaffService extends ApiService {
       }
     );
 
-  getAppointmentsReminders = (id, { order, field, page }, state_field) =>
+  getAppointmentsReminders = (id, { order, field, page }, params, state_field) =>
     this.apiClient.get(
       !id
         ? `${ENDPOINTS.GET_APPOINTMENTS_REMINDERS[state_field]}`
@@ -81,6 +81,7 @@ class StaffService extends ApiService {
             .join(),
           limit: DEFAULT_LIMIT,
           offset: (page - 1) * DEFAULT_LIMIT,
+          ...params
         },
       }
     );
@@ -121,14 +122,14 @@ class StaffService extends ApiService {
       `${ENDPOINTS.APPOINTMENTS_REMINDERS}${payload.id}/reschedule/`,
       payload.send_now
         ? {
-            send_now: true,
-          }
+          send_now: true,
+        }
         : {
-            new_reminder_datetime: payload.new_reminder_datetime,
-          }
+          new_reminder_datetime: payload.new_reminder_datetime,
+        }
     );
 
-  updateMessageRequiringImmediateAttention = (payload) =>{
+  updateMessageRequiringImmediateAttention = (payload) => {
     const { id, ...updatedPayload } = payload;
     this.apiClient.patch(
       `${ENDPOINTS.UPDATE_MESSAGE_REQUIRING_IMMEDIATE_ATTENTION}${id}/`,
