@@ -76,6 +76,7 @@ const AppointmentsReminders = ({ title, startOpen }) => {
           id: '',
           cancelReminderId,
           field: UPCOMING_REMINDERS,
+          reminderType,
         })
       );
     }
@@ -102,6 +103,7 @@ const AppointmentsReminders = ({ title, startOpen }) => {
           id: '',
           reverseReminderCancellationId,
           field: UPCOMING_REMINDERS,
+          reminderType
         })
       );
     }
