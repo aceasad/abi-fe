@@ -76,22 +76,6 @@ const Conversation = ({
       WebSocketClient.sendMessage(formatMessageForSocketSend(newMessage, id));
   };
 
-  const chatContentBody = (messages, next, patientPicture) =>
-    messages ? (
-      <ChatContentBody
-        messages={addDividers(messages, next)}
-        patientPicture={patientPicture}
-      />
-    ) : null;
-
-  useLazyLoad(
-    '#single-chat-scroll div',
-    handleGetMoreSingleMessages,
-    [],
-    () => !!nextRef.current,
-    false
-  );
-
   const handleOnClickMarkHumanRequiredResolved = async (patient_id) => {
     await dispatch(markConversationHumanNotRequired(patient_id));
     dispatch(triggerSearchConversations());
@@ -104,6 +88,26 @@ const Conversation = ({
     getConversation(patient_id);
   };
 
+  // Updated chatContentBody function to pass all required props
+  const chatContentBody = (messages, next, patientPicture) =>
+    messages ? (
+      <ChatContentBody
+        messages={addDividers(messages, next)}
+        patientPicture={patientPicture}
+        onClickMarkHumanRequiredResolved={handleOnClickMarkHumanRequiredResolved}
+        onClickMarkInEmergencySituationResolved={handleOnClickMarkInEmergencySituationResolved}
+        chatLoading={loading}
+      />
+    ) : null;
+
+  useLazyLoad(
+    '#single-chat-scroll div',
+    handleGetMoreSingleMessages,
+    [],
+    () => !!nextRef.current,
+    false
+  );
+
   return (
     <div className="chat-content">
       <ChatContentHeader
@@ -111,12 +115,9 @@ const Conversation = ({
         chatLoading={loading}
         isMenuVisible={isMenuVisible}
         BackAction={BackAction}
-        onClickMarkHumanRequiredResolved={
-          handleOnClickMarkHumanRequiredResolved
-        }
-        onClickMarkInEmergencySituationResolved={
-          handleOnClickMarkInEmergencySituationResolved
-        }
+      // Remove these props since they're now handled in ChatContentBody
+      // onClickMarkHumanRequiredResolved={handleOnClickMarkHumanRequiredResolved}
+      // onClickMarkInEmergencySituationResolved={handleOnClickMarkInEmergencySituationResolved}
       />
       <div className="chat-content-body">
         <Scrollbars

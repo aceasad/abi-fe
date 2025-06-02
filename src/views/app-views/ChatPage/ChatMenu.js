@@ -185,6 +185,7 @@ const ChatMenu = (props) => {
     scrollHeightRef.current = menuRef.current.getScrollHeight();
   }, [items]);
 
+
   return (
     <div className="chat-menu">
       <div className="chat-menu-toolbar">
@@ -243,54 +244,59 @@ const ChatMenu = (props) => {
                   }}
                 />
 
-                {/* Wrapper for patient info/message and date */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', flex: 1 }}>
-                  {/* Patient info and message */}
-                  <div style={{ flex: 1, paddingRight: '12px' }}>
-                    <div style={{
-                      fontWeight: 'bold',
-                      fontSize: '14px',
-                      marginBottom: '2px'
-                    }}>
-                      {item.patient.full_name}
-                      {item.patient.is_in_emergency_situation &&
-                        <span style={{ marginLeft: '6px', color: '#FF474C' }}>⚠</span>}
-                      {item.patient.is_human_required &&
-                        <span style={{ marginLeft: '6px', color: '#18D9C5' }}>👤</span>}
-                    </div>
-                    <div
-                      className="text-muted"
-                      style={{
-                        fontSize: '13px',
-                        whiteSpace: 'nowrap',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis'
-                      }}
-                    >
-                      {(() => {
-                        const text = item.last_message.text || "";
-                        const words = text.split(" ");
-                        return words.slice(0, 8).join(" ");
-                      })()}
-                    </div>
-                  </div>
-
-                  {/* Date */}
+                {/* Patient info and message - with max-width to prevent overflow */}
+                <div style={{
+                  flex: 1,
+                  minWidth: 0, // Important: allows flex item to shrink below content size
+                  paddingRight: '12px'
+                }}>
                   <div style={{
-                    flexShrink: 0,
-                    textAlign: 'right',
-                    fontSize: '12px',
-                    color: '#888'
+                    fontWeight: 'bold',
+                    fontSize: '14px',
+                    marginBottom: '2px',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis'
                   }}>
-                    {item.last_message.created_at ?
-                      new Date(item.last_message.created_at)
-                        .toLocaleDateString('en-GB', {
-                          day: '2-digit',
-                          month: '2-digit',
-                          year: '2-digit'
-                        }).replace(/\//g, '/') :
-                      ''}
+                    {item.patient.full_name}
+                    {item.patient.is_in_emergency_situation &&
+                      <span style={{ marginLeft: '6px', color: '#FF474C' }}>⚠</span>}
+                    {item.patient.is_human_required &&
+                      <span style={{ marginLeft: '6px', color: '#18D9C5' }}>👤</span>}
                   </div>
+                  <div
+                    className="text-muted"
+                    style={{
+                      fontSize: '13px',
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis'
+                    }}
+                  >
+                    {(() => {
+                      const text = item.last_message.text || "";
+                      const words = text.split(" ");
+                      return words.slice(0, 8).join(" ");
+                    })()}
+                  </div>
+                </div>
+
+                {/* Date - fixed width to ensure alignment */}
+                <div style={{
+                  width: '60px', // Fixed width for consistent alignment
+                  flexShrink: 0,
+                  textAlign: 'right',
+                  fontSize: '12px',
+                  color: '#888'
+                }}>
+                  {item.last_message.created_at ?
+                    new Date(item.last_message.created_at)
+                      .toLocaleDateString('en-GB', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: '2-digit'
+                      }).replace(/\//g, '/') :
+                    ''}
                 </div>
               </div>
             );
