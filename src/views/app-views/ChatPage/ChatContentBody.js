@@ -1,4 +1,4 @@
-import { Avatar, Divider, Checkbox } from 'antd';
+import { Avatar, Divider, Button } from 'antd';
 import { MESSAGE_TYPE } from 'constants/ChatConstants';
 import React, { useState, useRef, useEffect } from 'react';
 import { useIntl } from 'react-intl';
@@ -30,9 +30,10 @@ const ChatContentBody = ({
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
+  // This will only run once when the component mounts
   useEffect(() => {
     scrollToBottom();
-  }, [chatMessages]);
+  }, []); // Empty dependency array means it runs only once
 
   const onClickMarkHumanRequiredResolvedWrapper = (patient_id) => {
     setResolveClicked(true);
@@ -116,16 +117,16 @@ const ChatContentBody = ({
             }}>
               Patient has requested to speak to a human
             </span>
-            <Checkbox
-              defaultChecked={false}
+            <Button
+              type="primary"
               disabled={isLoading || resolveClicked}
-              onChange={() =>
+              onClick={() =>
                 onClickMarkHumanRequiredResolvedWrapper(chatInfo.patient.id)
               }
               style={{ marginLeft: '12px' }}
             >
-              Request resolved
-            </Checkbox>
+              Mark as Resolved
+            </Button>
           </div>
         )}
 
@@ -152,20 +153,21 @@ const ChatContentBody = ({
               color: '#d32f2f',
               fontWeight: '500'
             }}>
-              Asa has detected an emergency for this user
+              Asa has detected an emergency for this patient
             </span>
-            <Checkbox
-              defaultChecked={false}
+            <Button
+              type="primary"
+              danger
               disabled={isLoading || resolveClicked}
-              onChange={() =>
+              onClick={() =>
                 onClickMarkInEmergencySituationResolvedWrapper(
                   chatInfo.patient.id
                 )
               }
               style={{ marginLeft: '12px' }}
             >
-              Emergency resolved
-            </Checkbox>
+              Mark as Resolved
+            </Button>
           </div>
         )}
 
@@ -194,16 +196,16 @@ const ChatContentBody = ({
             }}>
               Patient is in opt-out situation
             </span>
-            <Checkbox
-              defaultChecked={false}
+            <Button
+              type="primary"
               disabled={isLoading || resolveClicked}
-              onChange={() =>
+              onClick={() =>
                 onClickMarkInOptOutWrapper(chatInfo.patient.id)
               }
               style={{ marginLeft: '12px' }}
             >
               {formatMessage(messages.optOut)}
-            </Checkbox>
+            </Button>
           </div>
         )}
 
@@ -233,10 +235,10 @@ const ChatContentBody = ({
               : 'Asa is active and will respond to the patient'
             }
           </span>
-          <Checkbox
-            defaultChecked={chatInfo?.patient?.is_rasa_paused}
+          <Button
+            type={chatInfo?.patient?.is_rasa_paused ? "primary" : "default"}
             disabled={isLoading}
-            onChange={() =>
+            onClick={() =>
               mutate(chatInfo.patient.id, {
                 onSuccess: () =>
                   dispatch(toggleRasaActivity(chatInfo.patient.id)),
@@ -244,8 +246,8 @@ const ChatContentBody = ({
             }
             style={{ marginLeft: '12px' }}
           >
-            {chatInfo?.patient?.is_rasa_paused ? 'Pause Asa' : 'Unpause Asa'}
-          </Checkbox>
+            {chatInfo?.patient?.is_rasa_paused ? 'Unpause Asa' : 'Pause Asa'}
+          </Button>
         </div>
       </div>
     );
