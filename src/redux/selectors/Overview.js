@@ -28,6 +28,7 @@ const makeSelectClinicStatsData = createSelector(
     already_screened: substate.already_screened,
     booking_rate: substate.booking_rate,
     engagement_rate: substate.engagement_rate,
+    percentage_changes: substate.percentage_changes,
     loading: substate.loading,
   })
 );
