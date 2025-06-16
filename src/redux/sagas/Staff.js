@@ -59,7 +59,7 @@ function* staffDetailsGet() {
   try {
     const { data } = yield call(StaffService.getStaffDetails);
     yield put(setStaffDetails(data));
-  } catch (error) {}
+  } catch (error) { }
 }
 
 function* createStaff({ payload }) {
@@ -101,7 +101,7 @@ function* deleteStaff({ payload }) {
     yield call(StaffService.deleteStaff, payload.id);
     yield payload.afterDelete();
     yield getPaginatedStaff();
-  } catch (error) {}
+  } catch (error) { }
 }
 
 export function* getStaffAppointments({ payload }) {
@@ -135,6 +135,7 @@ export function* getAppointmentsReminders({ payload }) {
       staffService.getAppointmentsReminders,
       payload.id,
       requestData,
+      { reminderType: payload.reminderType },
       payload.field
     );
     yield put(setAppointmentsReminders({ ...data, field: payload.field }));
@@ -153,7 +154,7 @@ export function* cancelAppointmentReminder({ payload }) {
       payload.cancelReminderId
     );
     yield call(getAppointmentsReminders, { payload });
-  } catch (err) {}
+  } catch (err) { }
 }
 
 export function* reverseAppointmentReminderCancellation({ payload }) {
@@ -163,7 +164,7 @@ export function* reverseAppointmentReminderCancellation({ payload }) {
       payload.reverseReminderCancellationId
     );
     yield call(getAppointmentsReminders, { payload });
-  } catch (err) {}
+  } catch (err) { }
 }
 
 export function* rescheduleAppointmentReminder({ payload }) {
@@ -174,7 +175,7 @@ export function* rescheduleAppointmentReminder({ payload }) {
       payload.rescheduleReminderData
     );
     yield call(getAppointmentsReminders, { payload });
-  } catch (err) {}
+  } catch (err) { }
 }
 
 export function* getMessagesRequiringImmediateAttention({ payload }) {
@@ -212,7 +213,7 @@ export function* updateMessageRequiringImmediateAttentionStatus({ payload }) {
   try {
     yield call(staffService.updateMessageRequiringImmediateAttention, payload);
     yield call(getMessagesRequiringImmediateAttention, { payload });
-  } catch (err) {}
+  } catch (err) { }
 }
 
 export function* getStaff() {

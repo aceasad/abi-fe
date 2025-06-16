@@ -6,6 +6,7 @@ import {
   WhatsAppOutlined,
   SettingOutlined,
   PaperClipOutlined,
+  LineChartOutlined
 } from '@ant-design/icons';
 import { APP_PAGES_PREFIX_PATH } from 'configs/AppConfig';
 
@@ -22,7 +23,7 @@ const pagesNavTree = [
     key: 'kpis',
     path: `${APP_PAGES_PREFIX_PATH}/kpis`,
     title: 'sidenav.pages.kpis',
-    icon: PieChartOutlined,
+    icon: LineChartOutlined,
     breadcrumb: false,
     submenu: [],
   },
