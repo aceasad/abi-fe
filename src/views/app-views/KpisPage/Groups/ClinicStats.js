@@ -188,7 +188,7 @@ const ClinicStats = ({ title, previousPeriod }) => {
         <Col xs={12} sm={8} md={4} lg={4}>
           <StatCard
             title="Patients invited"
-            value={displayValue(total_patients_invited)}
+            value={displayValue(total_patients_added)}
           />
         </Col>
         <Col xs={12} sm={8} md={4} lg={4}>
