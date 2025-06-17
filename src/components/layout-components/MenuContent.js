@@ -79,14 +79,6 @@ const SideNavContent = ({
   };
 
   const menuItems = [
-    <Menu.Item
-      key="collapse"
-      icon={navCollapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-      onClick={onToggle}
-      style={{ height: '60px', lineHeight: '60px' }}
-    >
-      {formatMessage({ id: 'menu.collapse' })}
-    </Menu.Item>,
     <Menu.Divider key="divider" />,
     ...navigationConfig.map((menu) =>
       menu.submenu.length > 0 ? (

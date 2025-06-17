@@ -136,9 +136,16 @@ const PatientProgressTable = ({
       render: (_, record) => {
         const buttonColor = getProgressColor(record.Status); // Get the color based on progress
         return (
-          <Button type="primary" style={{ backgroundColor: buttonColor, borderColor: buttonColor }}>
+          <div
+            className="ant-tag text-left"
+            style={{
+              backgroundColor: `${buttonColor}33`, // Adding 33 for 20% opacity
+              borderColor: buttonColor,
+              color: buttonColor // This will make the text color match the border
+            }}
+          >
             {record.Status}
-          </Button>
+          </div>
         );
       },
     },
