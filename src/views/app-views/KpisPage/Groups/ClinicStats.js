@@ -166,7 +166,7 @@ const ClinicStats = ({ title, previousPeriod }) => {
 
   // Communication flow data - only use API data
   const communicationFlowData = [
-    { name: 'Invited', value: total_patients_invited ?? -1 },
+    { name: 'Invited', value: total_patients_added ?? -1 },
     { name: 'Delivered', value: total_patients_sent_message_status ?? -1 },
     { name: 'Engaged', value: total_patients_engaged ?? -1 },
     { name: 'Booked', value: bookings ?? -1 }
