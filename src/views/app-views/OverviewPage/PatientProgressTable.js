@@ -139,9 +139,12 @@ const PatientProgressTable = ({
           <div
             className="ant-tag text-left"
             style={{
-              backgroundColor: `${buttonColor}33`, // Adding 33 for 20% opacity
-              borderColor: buttonColor,
-              color: buttonColor // This will make the text color match the border
+              backgroundColor: `${buttonColor}1A`, // Changed to 1A for 10% opacity
+              border: 'none',
+              color: buttonColor,
+              fontWeight: 400,
+              padding: '0px 10px',
+              borderRadius: "25px"
             }}
           >
             {record.Status}
