@@ -2,16 +2,18 @@ import React, { useState } from 'react';
 import { Button, Modal } from 'antd';
 import patientsService from 'services/PatientService';
 import Dropzone from '../DocumentsPage/Dropzone';
-import FormField from 'components/custom-components/Form/FormField';
-import FormSelect from 'components/custom-components/Form/FormSelect';
-import Form from 'antd/lib/form/Form';
-import { Field, Formik } from 'formik';
+import { Formik } from 'formik';
+import appointmentService from 'services/AppointmentService';
 
 const UploaderPatient = ({ onUploadComplete }) => {
   const [open, setOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [fileListToUpload, setFileListToUpload] = useState([]);
   const [showLargeFileWarning, setShowLargeFileWarning] = useState(false);
+  const [fileRows, setFileRows] = useState(0);
+  const [monthlyDays, setmonthlyDays] = useState(0);
+  const [monthlyTimeslots, setmonthlyTimeslots] = useState(0);
+  const [appointmentDaysCountLoading, setAppointmentDaysCountLoading] = useState(false);
 
   const showModal = () => {
     setOpen(true);
@@ -50,8 +52,22 @@ const UploaderPatient = ({ onUploadComplete }) => {
     if (fileListToUpload.length === 0) return;
 
     const rowCount = await countCSVRows(fileListToUpload[0]);
+    setFileRows(rowCount);
 
-    if (rowCount > 300 && !showLargeFileWarning) {
+    // Fetch appointment days count before showing the warning
+    if (!showLargeFileWarning) {
+      setAppointmentDaysCountLoading(true);
+      try {
+        const response = await appointmentService.getTotalAppointmentDaysCount();
+        // Assuming response.data has the structure { days: X, timeslots: Y }
+        setmonthlyDays(response.data?.available_days ?? 0);
+        setmonthlyTimeslots(response.data?.total_slots ?? 0);
+      } catch (err) {
+        setmonthlyDays(0);
+        setmonthlyTimeslots(0);
+      } finally {
+        setAppointmentDaysCountLoading(false);
+      }
       setShowLargeFileWarning(true);
       return;
     }
@@ -109,7 +125,7 @@ const UploaderPatient = ({ onUploadComplete }) => {
         {({ values, handleSubmit }) => (
           <Modal
             title={showLargeFileWarning
-              ? "Large Batch Upload Warning"
+              ? "Are you sure you want to proceed with the upload?"
               : "Bulk Upload of Patients from EMIS exported CSV"}
             visible={open}
             destroyOnClose
@@ -130,16 +146,23 @@ const UploaderPatient = ({ onUploadComplete }) => {
                 type="primary"
                 onClick={handleSubmit}
                 htmlType="submit"
-                disabled={confirmLoading}
+                disabled={confirmLoading || appointmentDaysCountLoading}
                 loading={confirmLoading}
               >
                 {showLargeFileWarning ? 'Proceed with Upload' : 'Upload'}
               </Button>,
             ]}
           >
-            {showLargeFileWarning ? (
+            {appointmentDaysCountLoading ? (
+              <div style={{ textAlign: 'center', padding: '2em 0' }}>
+                <span className="ant-spin ant-spin-spinning" style={{ fontSize: 24, marginBottom: 16, display: 'inline-block' }} />
+                <p>Loading available appointment days...</p>
+              </div>
+            ) : showLargeFileWarning ? (
               <div>
-                <p>You are uploading a large batch of patients (more than 300 rows).</p>
+                <p>
+                  You are about to upload <strong>{fileRows}  patients </strong>. In the next 30 days, there are <strong>{monthlyDays ?? 0} days with available appointments </strong>, offering a total of <strong>{monthlyTimeslots} available timeslots</strong>.
+                </p>
                 <p>Would you like to proceed with the upload?</p>
               </div>
             ) : (

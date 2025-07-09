@@ -16,6 +16,7 @@ const ENDPOINTS = {
   GET_APPOINTMENT_CANCELLATION_REASONS: '/cancellation-reasons/',
   GET_MESSAGE_REQUIRING_IMMEDIATE_ATTENTION_STATUSES:
     '/messages-requiring-immediate-attention/all_status/',
+  GET_APPOINTMENT_AVAILABLE_DAYS_COUNT: '/appointments/timeslots/days/count/',
 };
 
 class AppointmentService extends ApiService {
@@ -78,6 +79,8 @@ class AppointmentService extends ApiService {
     );
 
   getClinicDoctors = () => this.apiClient.get(ENDPOINTS.GET_CLINIC_DOCTORS);
+
+  getTotalAppointmentDaysCount = () => this.apiClient.get(ENDPOINTS.GET_APPOINTMENT_AVAILABLE_DAYS_COUNT);
 
   getAppointmentTypes = () =>
     this.apiClient.get(ENDPOINTS.GET_APPOINTMENT_TYPES);
