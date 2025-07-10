@@ -165,11 +165,11 @@ const ClinicStats = ({ title, previousPeriod }) => {
           </Text>
         )}
 
-        <Row gutter={[24, 24]}>
+        <Row gutter={16}>
           {/* LEFT COLUMN */}
           <Col xs={24} md={18}>
             {/* Top 4 StatCards */}
-            <Row gutter={[16, 0]} justify="space-between">
+            <Row gutter={16} justify="space-between">
               <Col xs={12} sm={8} md={4} lg={5}>
                 <StatCard title="Patients invited" value={displayValue(total_patients_added)} style={{ width: 218, height: 80 }} />
               </Col>
@@ -185,17 +185,17 @@ const ClinicStats = ({ title, previousPeriod }) => {
             </Row>
 
             {/* Graph + Engagement/AfterHours inside same Card */}
-            <Card style={{ marginTop: '24px', borderRadius: 8, }}>
+            <Card style={{ borderRadius: 8, }}>
               <div style={{
                 display: 'flex',
                 flexDirection: 'row',
                 flexWrap: 'nowrap',
                 alignItems: 'flex-start',
-                height: '200px',
+                height: '175px',
               }}>
                 {/* Bar Chart */}
                 <div style={{ flex: 2 }}>
-                  <ResponsiveContainer width="100%" height={200}>
+                  <ResponsiveContainer width="100%" height={175}>
                     <BarChart data={communicationFlowData} margin={{ top: 20, right: 30, left: 20, bottom: 0 }}>
                       <Bar dataKey="value" fill="#5B4CDB" radius={[4, 4, 0, 0]}>
                         <LabelList dataKey="name" position="top" style={{ fill: '#000000', fontSize: '14px' }} />
@@ -212,8 +212,6 @@ const ClinicStats = ({ title, previousPeriod }) => {
                   height: '100%',
                   minWidth: '218px'
                 }}>
-
-
                   <div style={{ width: '218px', height: '80px' }}>
                     <StatCard
                       title="Engagement"
@@ -235,7 +233,6 @@ const ClinicStats = ({ title, previousPeriod }) => {
                 </div>
               </div>
             </Card>
-
           </Col>
 
           {/* RIGHT COLUMN */}
@@ -262,77 +259,75 @@ const ClinicStats = ({ title, previousPeriod }) => {
               style={{ width: 218, height: 80 }}
             />
           </Col>
-
         </Row>
-
-        <Row gutter={[16]}>
-          {/* Appointment Outcomes Pie Chart */}
-          <Col xs={24} sm={24} md={12} lg={12}>
-            <Card title="Appointment Outcomes" style={{ height: 'auto', minHeight: '400px' }}>
-              <div style={{ display: 'flex', flexDirection: window.innerWidth < 768 ? 'column' : 'row' }}>
-                <ResponsiveContainer height={350}>
-                  <PieChart>
-                    <Pie
-                      data={appointmentOutcomes}
-                      cx="50%"
-                      cy="50%"
-                      dataKey="value"
-                      label={({ name, value }) => value > 0 ? `${name}: ${value}` : ''}
-                      labelLine={{ stroke: '#666', strokeWidth: 1 }}
-                      labelPosition="outside"
-                    >
-                      {appointmentOutcomes.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
-                    </Pie>
-                  </PieChart>
-                </ResponsiveContainer>
-                <div style={{
-                  width: window.innerWidth < 768 ? '100%' : '120px',
-                  display: 'flex',
-                  flexDirection: window.innerWidth < 768 ? 'row' : 'column',
-                  flexWrap: 'wrap',
-                  justifyContent: window.innerWidth < 768 ? 'center' : 'center',
-                  gap: window.innerWidth < 768 ? '16px' : '12px'
-                }}>
-                  {appointmentOutcomes.map((item, index) => (
-                    <div key={index} style={{ display: 'flex', alignItems: 'center' }}>
-                      <div style={{
-                        width: '8px',
-                        height: '8px',
-                        backgroundColor: item.color,
-                        borderRadius: '50%',
-                        marginRight: '8px',
-                        flexShrink: 0
-                      }} />
-                      <Text style={{ display: 'flex', alignItems: 'center' }}>{item.name}</Text>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </Card>
-          </Col>
-
-          {/* Intervention & Special Cases */}
-          <Col xs={24} sm={24} md={12} lg={12}>
-            <Card title="Intervention & Special Cases">
-              <Row gutter={[16]}>
-                {interventionData.map((item, index) => {
-                  const comparison = compareValues(item.value, item.previousValue);
-                  return (
-                    <Col key={index} xs={12} sm={12} md={12} lg={12}>
-                      <StatCard
-                        title={item.title}
-                        value={item.value}
-                        change={comparison?.value}
-                        changeType={comparison?.type} />
-                    </Col>
-                  );
-                })}
-              </Row>
-            </Card>
-          </Col>
-        </Row>
-
       </Card>
+
+      <Row gutter={16}>
+        {/* Appointment Outcomes Pie Chart */}
+        <Col xs={24} sm={24} md={12} lg={12}>
+          <Card title="Appointment Outcomes" style={{ height: 425 }}>
+            <div style={{ display: 'flex', flexDirection: window.innerWidth < 768 ? 'column' : 'row' }}>
+              <ResponsiveContainer height={350}>
+                <PieChart>
+                  <Pie
+                    data={appointmentOutcomes}
+                    cx="50%"
+                    cy="50%"
+                    dataKey="value"
+                    label={({ name, value }) => value > 0 ? `${name}: ${value}` : ''}
+                    labelLine={{ stroke: '#666', strokeWidth: 1 }}
+                    labelPosition="outside"
+                  >
+                    {appointmentOutcomes.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
+                  </Pie>
+                </PieChart>
+              </ResponsiveContainer>
+              <div style={{
+                width: window.innerWidth < 768 ? '100%' : '120px',
+                display: 'flex',
+                flexDirection: window.innerWidth < 768 ? 'row' : 'column',
+                flexWrap: 'wrap',
+                justifyContent: window.innerWidth < 768 ? 'center' : 'center',
+                gap: window.innerWidth < 768 ? '16px' : '12px'
+              }}>
+                {appointmentOutcomes.map((item, index) => (
+                  <div key={index} style={{ display: 'flex', alignItems: 'center' }}>
+                    <div style={{
+                      width: '8px',
+                      height: '8px',
+                      backgroundColor: item.color,
+                      borderRadius: '50%',
+                      marginRight: '8px',
+                      flexShrink: 0
+                    }} />
+                    <Text style={{ display: 'flex', alignItems: 'center' }}>{item.name}</Text>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </Card>
+        </Col>
+
+        {/* Intervention & Special Cases */}
+        <Col xs={24} sm={24} md={12} lg={12}>
+          <Card title="Intervention & Special Cases" style={{ height: 425 }}>
+            <Row gutter={16}>
+              {interventionData.map((item, index) => {
+                const comparison = compareValues(item.value, item.previousValue);
+                return (
+                  <Col key={index} xs={12} sm={12} md={12} lg={12}>
+                    <StatCard
+                      title={item.title}
+                      value={item.value}
+                      change={comparison?.value}
+                      changeType={comparison?.type} />
+                  </Col>
+                );
+              })}
+            </Row>
+          </Card>
+        </Col>
+      </Row>
     </>
   );
 };
