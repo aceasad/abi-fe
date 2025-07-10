@@ -2,12 +2,62 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { makeSelectClinicStatsData } from 'redux/selectors/Overview';
 import { Card, Row, Col, Typography } from 'antd';
-import { ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons';
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, LabelList } from 'recharts';
 
+const { Text } = Typography;
 
-const { Title, Text } = Typography;
+const displayValue = (value, isPercentage = false) => {
+  if (value === null || value === undefined || value === '') return '-1';
+  if (isPercentage) return `${Number(value).toFixed(1)}%`;
+  return value;
+};
+// Helper function to compare current and previous values
+const compareValues = (current, previous) => {
+  if (previous === undefined || previous === null || current === -1 || previous === 0) return null;
+  if (current > previous) return { type: 'increase', value: previous };
+  if (current < previous) return { type: 'decrease', value: previous };
+  return null;
+};
+// Helper function to display percentage change with proper formatting
+const displayPercentageChange = (value) => {
+  console.log('Display Percentage Change Input:', value);
+  if (value === null || value === undefined) return null;
+  const result = Number(value).toFixed(1);
+  console.log('Display Percentage Change Result:', result);
+  return result;
+};
 
+// Helper function to format percentage change display with + for positive values
+const formatPercentageChangeDisplay = (value) => {
+  if (value === null || value === undefined) return null;
+  const formattedValue = Number(value).toFixed(1);
+  return value > 0 ? `+${formattedValue}%` : `-${formattedValue}%`;
+};
+
+const StatCard = ({ title, value, subtitle, color = '#000000', percentageChange }) => (
+  <Card size="small" style={{ height: '120px', display: 'flex', alignItems: 'center' }}>
+    <div style={{ textAlign: 'center', width: '100%' }}>
+      <Text type="secondary" style={{ display: 'block', marginBottom: '8px' }}>{title}</Text>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+        <div style={{ fontSize: '24px', fontWeight: 'bold', color, margin: '8px 0' }}>
+          {value}
+        </div>
+        {percentageChange != null && (
+          <div style={{
+            color: percentageChange > 0 ? '#10B981' : percentageChange < 0 ? '#EF4444' : '#6B7280',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '4px'
+          }}>
+            {formatPercentageChangeDisplay(percentageChange)}
+          </div>
+        )}
+      </div>
+      {subtitle && <Text type="secondary">{subtitle}</Text>}
+    </div>
+  </Card>
+);
 
 const ClinicStats = ({ title, previousPeriod }) => {
   const {
@@ -35,62 +85,11 @@ const ClinicStats = ({ title, previousPeriod }) => {
     percentage_changes
   } = useSelector(makeSelectClinicStatsData);
 
-
-  const displayValue = (value, isPercentage = false) => {
-    if (value === null || value === undefined || value === '') {
-      return '-1';
-    }
-    if (isPercentage) {
-      return `${Number(value).toFixed(1)}%`;
-    }
-    return value;
-  };
-  const displayPreviousMonthValue = (value) => {
-    if (value === null || value === undefined) {
-      return null;
-    }
-    return value;
-  };
-  // Helper function to compare current and previous values
-  const compareValues = (current, previous) => {
-    if (previous === undefined || previous === null || current === -1 || previous === 0) return null;
-    if (current > previous) return { type: 'increase', value: previous };
-    if (current < previous) return { type: 'decrease', value: previous };
-    return null;
-  };
-  // Helper function to display percentage change with proper formatting
-  const displayPercentageChange = (value) => {
-    console.log('Display Percentage Change Input:', value);
-    if (value === null || value === undefined) {
-      return null;
-    }
-    const result = Number(value).toFixed(1);
-    console.log('Display Percentage Change Result:', result);
-    return result;
-  };
-
-  // Helper function to format percentage change display with + for positive values
-  const formatPercentageChangeDisplay = (value) => {
-    if (value === null || value === undefined) {
-      return null;
-    }
-    const formattedValue = Number(value).toFixed(1);
-    return value > 0 ? `+${formattedValue}` : formattedValue;
-  };
-
   // Calculate after hours bookings (evening + night)
   const calculateAfterHoursBookings = () => {
     if (!booking_time_distribution) return -1;
     const evening = booking_time_distribution.evening ?? 0;
     const night = booking_time_distribution.night ?? 0;
-    return evening + night;
-  };
-
-  // Calculate after hours bookings percentage change
-  const calculateAfterHoursBookingsPercentageChange = () => {
-    if (!percentage_changes?.pc_booking_time_distribution) return null;
-    const evening = percentage_changes.pc_booking_time_distribution.evening ?? 0;
-    const night = percentage_changes.pc_booking_time_distribution.night ?? 0;
     return evening + night;
   };
 
@@ -135,30 +134,6 @@ const ClinicStats = ({ title, previousPeriod }) => {
       previousValue: percentage_changes?.pc_snoozed
     }
   ];
-
-  const StatCard = ({ title, value, subtitle, color = '#000000', percentageChange }) => (
-    <Card size="small" style={{ height: '120px', display: 'flex', alignItems: 'center' }}>
-      <div style={{ textAlign: 'center', width: '100%' }}>
-        <Text type="secondary" style={{ display: 'block', marginBottom: '8px' }}>{title}</Text>
-        <div style={{ fontSize: '24px', fontWeight: 'bold', color, margin: '8px 0' }}>
-          {value}
-        </div>
-        {(percentageChange !== null && percentageChange !== undefined) && (
-          <div style={{
-            color: percentageChange > 0 ? '#10B981' : percentageChange < 0 ? '#EF4444' : '#6B7280',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '4px'
-          }}>
-            {percentageChange > 0 ? <ArrowUpOutlined /> : percentageChange < 0 ? <ArrowDownOutlined /> : null}
-            {formatPercentageChangeDisplay(percentageChange)}%
-          </div>
-        )}
-        {subtitle && <Text type="secondary">{subtitle}</Text>}
-      </div>
-    </Card>
-  );
 
   // Communication flow data - only use API data
   const communicationFlowData = [
@@ -211,7 +186,7 @@ const ClinicStats = ({ title, previousPeriod }) => {
         </Col>
       </Row>
 
-      <Row justify='space-between' >
+      <Row justify='space-between'>
         {/* Communication Flow Bar Chart */}
         <Col xs={24} sm={24} md={13} lg={13}>
           <Card title=" " style={{ height: 'auto', minHeight: '400px' }}>
@@ -226,7 +201,7 @@ const ClinicStats = ({ title, previousPeriod }) => {
         </Col>
 
         {/* Failed Messages and Engagement Rate - Updated to 2x2 grid */}
-        <Col xs={24} sm={24} md={12} lg={10}>
+        <Col xs={24} sm={24} md={10} lg={10}>
           <div style={{ height: 'auto', minHeight: '400px' }}>
             <Row gutter={[16, 16]} style={{ height: '100%' }}>
               <Col xs={12} sm={12} md={12} lg={12}>
@@ -282,9 +257,7 @@ const ClinicStats = ({ title, previousPeriod }) => {
                       labelLine={{ stroke: '#666', strokeWidth: 1 }}
                       labelPosition="outside"
                     >
-                      {appointmentOutcomes.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
+                      {appointmentOutcomes.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
                     </Pie>
                   </PieChart>
                 </ResponsiveContainer>
@@ -328,266 +301,20 @@ const ClinicStats = ({ title, previousPeriod }) => {
                 const comparison = compareValues(item.value, item.previousValue);
                 return (
                   <Col xs={12} sm={12} md={12} lg={12} key={index} style={{ marginBottom: '16px' }}>
-                    <Card size="small" style={{
-                      textAlign: 'center',
-                      height: '120px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center'
-                    }}>
-                      <div>
-                        <Text style={{ display: 'block', marginBottom: '8px', color: '#000000' }}>
-                          {item.title}
-                        </Text>
-                        <div style={{
-                          fontSize: '20px',
-                          fontWeight: 'bold',
-                          color: '#000000',
-                          margin: '8px 0',
-                        }}>
-                          {item.value}
-                        </div>
-                        {comparison && (
-                          <div style={{
-                            fontSize: '10px',
-                            color: comparison.type === 'increase' ? '#10B981' : '#EF4444',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: '4px'
-                          }}>
-                            {comparison.type === 'increase' ? <ArrowUpOutlined /> : <ArrowDownOutlined />}
-                            {comparison.value}
-                          </div>
-                        )}
-                      </div>
-                    </Card>
+                    <StatCard
+                      title={item.title}
+                      value={item.value}
+                      percentageChange={comparison?.value}
+                    />
                   </Col>
                 );
               })}
             </Row>
           </Card>
         </Col>
-
-
       </Row>
-
     </Card>
   );
 };
 
 export default ClinicStats;
-
-// const ClinicStats = ({ title }) => {
-//   const { formatMessage } = useIntl();
-
-//   const { engagement_rate, booking_rate, total_patients_added, total_patients_invited, total_patients_failed_message_status, total_patients_sent_message_status,
-//     total_patients_engaged, total_patients_read_but_no_response, open_conversations, bookings,
-//     reschedule, cancelled, attended, non_attended, booking_time_distribution,
-//     declines, opt_out, snoozed, emergency_situation, human_intervention, already_screened } = useSelector(
-//       makeSelectClinicStatsData
-//     );
-//   return (
-//     <div className="mb-4">
-//       <GroupRow>
-//         <OverviewCard
-//           span={6}
-//           title={formatMessage(messages.clinicStatsPatientEnrolled)}
-//           // tooltip={formatMessage(messages.clinicStatsPatientEnrolled)}
-//           content={`${parseInt((total_patients_added) ?? 0, 10)}`}
-//           styleTitle={title}
-//           icon={<MdAssignmentTurnedIn color="#ffffff" size="40" />}
-//           noTooltip
-//         />
-//         <OverviewCard
-//           span={6}
-//           title={formatMessage(messages.clinicStatsInvitesRecieved)}
-//           content={`${parseInt((total_patients_invited) ?? 0, 10)}`}
-//           styleTitle={title}
-//           icon={<MdAssignmentTurnedIn color="#ffffff" size="40" />}
-//           noTooltip
-//         />
-//         <OverviewCard
-//           span={6}
-//           title={formatMessage(messages.clinicStatsOpenConversation)}
-//           // tooltip={formatMessage(messages.clinicStatsOpenConversation)}
-//           content={`${parseInt(total_patients_engaged ?? 0, 10)}`}
-//           styleTitle={title}
-//           icon={<MdShowChart color="#ffffff" size="40" />}
-//           noTooltip
-//         />
-//         <OverviewCard
-//           span={6}
-//           title={formatMessage(messages.clnincStatsInvitationRate)}
-//           // tooltip={formatMessage(messages.clinicStatsBookings)}
-//           content={`${parseInt(((engagement_rate)) ?? 0, 10)}%`}
-//           styleTitle={title}
-//           icon={<MdShowChart color="#ffffff" size="40" />}
-//           noTooltip
-//         />
-
-//       </GroupRow>
-//       <GroupRow>
-//         <OverviewCard
-//           span={6}
-//           title={formatMessage(messages.clinicStatsBookings)}
-//           // tooltip={formatMessage(messages.clinicStatsBookings)}
-//           content={`${parseInt(bookings ?? 0, 10)}`}
-//           styleTitle={title}
-//           icon={<MdShowChart color="#ffffff" size="40" />}
-//           noTooltip
-//         />
-//         <OverviewCard
-//           span={6}
-//           title={"Booking rate"}
-//           // tooltip={formatMessage(messages.clinicStatsBookings)}
-//           content={`${parseInt(((booking_rate)) ?? 0, 10)}%`}
-//           styleTitle={title}
-//           icon={<MdShowChart color="#ffffff" size="40" />}
-//           noTooltip
-//         />
-//         <OverviewCard
-//           span={6}
-//           title={formatMessage(messages.clinicStatsDecline)}
-//           // tooltip={formatMessage(messages.clinicStatsDecline)}
-//           content={`${parseInt(declines ?? 0, 10)}`}
-//           styleTitle={title}
-//           icon={<MdShowChart color="#ffffff" size="40" />}
-//           noTooltip
-//         />
-//         <OverviewCard
-//           span={6}
-//           title={formatMessage(messages.clinicStatsAlreadyScreened)}
-//           // tooltip={formatMessage(messages.clinicStatsAlreadyScreened)}
-//           content={`${parseInt(already_screened ?? 0, 10)}`}
-//           styleTitle={title}
-//           icon={<MdShowChart color="#ffffff" size="40" />}
-//           noTooltip
-//         />
-//       </GroupRow>
-//       <GroupRow>
-//         <OverviewCard
-//           span={6}
-//           title={"Opt-out"}
-//           // tooltip={formatMessage(messages.clinicStatsBookings)}
-//           content={`${parseInt(opt_out ?? 0, 10)}`}
-//           styleTitle={title}
-//           icon={<MdShowChart color="#ffffff" size="40" />}
-//           noTooltip
-//         />
-
-
-//         <OverviewCard
-//           span={6}
-//           title={formatMessage(messages.clinicStatsSnoozed)}
-//           // tooltip={formatMessage(messages.clinicStatsAlreadyScreened)}
-//           content={`${parseInt(snoozed ?? 0, 10)}`}
-//           styleTitle={title}
-//           icon={<MdShowChart color="#ffffff" size="40" />}
-//           noTooltip
-//         />
-
-//         <OverviewCard
-//           span={6}
-//           title={"Emergency situation"}
-//           // tooltip={formatMessage(messages.clinicStatsAlreadyScreened)}
-//           content={`${parseInt(emergency_situation ?? 0, 10)}`}
-//           styleTitle={title}
-//           icon={<MdShowChart color="#ffffff" size="40" />}
-//           noTooltip
-//         />
-
-
-//         <OverviewCard
-//           span={6}
-//           title={"Human intervention needed"}
-//           // tooltip={formatMessage(messages.clinicStatsAlreadyScreened)}
-//           content={`${parseInt(human_intervention ?? 0, 10)}`}
-//           styleTitle={title}
-//           icon={<MdShowChart color="#ffffff" size="40" />}
-//           noTooltip
-//         />
-//       </GroupRow>
-//       <GroupRow>
-//         <OverviewCard
-//           span={6}
-//           title={"Attended"}
-//           // tooltip={formatMessage(messages.clinicStatsBookings)}
-//           content={`${parseInt(attended ?? 0, 10)}`}
-//           styleTitle={title}
-//           icon={<MdShowChart color="#ffffff" size="40" />}
-//           noTooltip
-//         />
-//         <OverviewCard
-//           span={6}
-//           title={"Non attended"}
-//           // tooltip={formatMessage(messages.clinicStatsBookings)}
-//           content={`${parseInt(non_attended ?? 0, 10)}`}
-//           styleTitle={title}
-//           icon={<MdShowChart color="#ffffff" size="40" />}
-//           noTooltip
-//         />
-//         <OverviewCard
-//           span={6}
-//           title={"Reschedules"}
-//           // tooltip={formatMessage(messages.clinicStatsBookings)}
-//           content={`${parseInt(reschedule ?? 0, 10)}`}
-//           styleTitle={title}
-//           icon={<MdShowChart color="#ffffff" size="40" />}
-//           noTooltip
-//         />
-//         <OverviewCard
-//           span={6}
-//           title={"Cancelled"}
-//           // tooltip={formatMessage(messages.clinicStatsBookings)}
-//           content={`${parseInt(cancelled ?? 0, 10)}`}
-//           styleTitle={title}
-//           icon={<MdShowChart color="#ffffff" size="40" />}
-//           noTooltip
-//         />
-
-//       </GroupRow>
-//       <GroupRow>
-//         <OverviewCard
-//           span={6}
-//           title={"Morning"}
-//           // tooltip={formatMessage(messages.clinicStatsAlreadyScreened)}
-//           content={`${parseInt(booking_time_distribution['morning'] ?? 0, 10)}`}
-//           styleTitle={title}
-//           icon={<MdShowChart color="#ffffff" size="40" />}
-//           noTooltip
-//         />
-//         <OverviewCard
-//           span={6}
-//           title={"Afternoon"}
-//           // tooltip={formatMessage(messages.clinicStatsAlreadyScreened)}
-//           content={`${parseInt(booking_time_distribution['afternoon'] ?? 0, 10)}`}
-//           styleTitle={title}
-//           icon={<MdShowChart color="#ffffff" size="40" />}
-//           noTooltip
-//         />
-//         <OverviewCard
-//           span={6}
-//           title={"Evening"}
-//           // tooltip={formatMessage(messages.clinicStatsAlreadyScreened)}
-//           content={`${parseInt(booking_time_distribution['evening'] ?? 0, 10)}`}
-//           styleTitle={title}
-//           icon={<MdShowChart color="#ffffff" size="40" />}
-//           noTooltip
-//         />
-//         <OverviewCard
-//           span={6}
-//           title={"Night"}
-//           // tooltip={formatMessage(messages.clinicStatsAlreadyScreened)}
-//           content={`${parseInt(booking_time_distribution['night'] ?? 0, 10)}`}
-//           styleTitle={title}
-//           icon={<MdShowChart color="#ffffff" size="40" />}
-//           noTooltip
-//         />
-//       </GroupRow>
-
-//     </div>
-//   );
-// };
-
-// export default ClinicStats;
