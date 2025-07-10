@@ -1,19 +1,15 @@
 import React from 'react';
-import { useIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
 import { makeSelectClinicStatsData } from 'redux/selectors/Overview';
-import { Card, Row, Col, Statistic, Progress, Typography } from 'antd';
+import { Card, Row, Col, Typography } from 'antd';
 import { ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons';
-import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, LabelList } from 'recharts';
 
-import messages from '../messages';
 
 const { Title, Text } = Typography;
 
 
 const ClinicStats = ({ title, previousPeriod }) => {
-  const { formatMessage } = useIntl();
-
   const {
     engagement_rate,
     booking_rate,
@@ -173,18 +169,15 @@ const ClinicStats = ({ title, previousPeriod }) => {
   ];
 
   return (
-    <div style={{ padding: window.innerWidth < 768 ? '12px' : '20px', backgroundColor: '#f5f5f5' }}>
-      <Title level={4} style={{ marginBottom: '20px', color: '#1F2937' }}>
-        Patient Communication Flow
-      </Title>
+    <Card title="Patient Communication Flow" style={{ padding: window.innerWidth < 768 ? '12px' : '20px' }}>
       {previousPeriod && (
-        <Text type="secondary" style={{ marginBottom: '20px', display: 'block' }}>
+        <Text type="secondary" style={{ position: "absolute", top: 39, left: 280 }}>
           Previous period {previousPeriod[0].format('MMMM D, YYYY')} - {previousPeriod[1].format('MMMM D, YYYY')}
         </Text>
       )}
 
       {/* Top Stats Row */}
-      <Row gutter={[16, 16]} style={{ marginBottom: '24px' }}>
+      <Row style={{ marginBottom: '24px' }} justify="space-between">
         <Col xs={12} sm={8} md={4} lg={4}>
           <StatCard
             title="Patients invited"
@@ -218,93 +211,51 @@ const ClinicStats = ({ title, previousPeriod }) => {
         </Col>
       </Row>
 
-      <Row gutter={[24, 24]}>
+      <Row justify='space-between' >
         {/* Communication Flow Bar Chart */}
-        <Col xs={24} sm={24} md={12} lg={12}>
-          <Card title="Communication Flow" style={{ height: 'auto', minHeight: '400px' }}>
+        <Col xs={24} sm={24} md={13} lg={13}>
+          <Card title=" " style={{ height: 'auto', minHeight: '400px' }}>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={communicationFlowData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis
-                  dataKey="name"
-                  axisLine={false}
-                  tickLine={false}
-                />
-                <YAxis
-                  axisLine={false}
-                  tickLine={false}
-                />
-                <Bar dataKey="value" fill="#5B4CDB" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="value" fill="#5B4CDB" radius={[4, 4, 0, 0]} >
+                  <LabelList dataKey="name" position="top" style={{ fill: '#000000', fontSize: '14px' }} />
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
           </Card>
         </Col>
 
         {/* Failed Messages and Engagement Rate - Updated to 2x2 grid */}
-        <Col xs={24} sm={24} md={12} lg={12}>
+        <Col xs={24} sm={24} md={12} lg={10}>
           <div style={{ height: 'auto', minHeight: '400px' }}>
             <Row gutter={[16, 16]} style={{ height: '100%' }}>
               <Col xs={12} sm={12} md={12} lg={12}>
-                <Card style={{ height: '180px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <div style={{ textAlign: 'center' }}>
-                    <Text type="secondary" style={{ display: 'block', marginBottom: '12px' }}>Failed - Message failed</Text>
-                    <div style={{ fontSize: '28px', fontWeight: 'bold', color: '#000000' }}>
-                      {displayValue(total_patients_failed_message_status)}
-                    </div>
-                    {percentage_changes?.pc_failed_messages !== undefined && (
-                      <Text type="secondary" style={{ fontSize: '10px' }}>
-                        Previous: {percentage_changes.pc_failed_messages}
-                      </Text>
-                    )}
-                  </div>
-                </Card>
+                <StatCard
+                  title="Engagement"
+                  value={displayValue(engagement_rate, true)}
+                  percentageChange={displayPercentageChange(percentage_changes?.pc_engagement_rate)}
+                />
               </Col>
               <Col xs={12} sm={12} md={12} lg={12}>
-                <Card style={{ height: '180px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <div style={{ textAlign: 'center' }}>
-                    <Text type="secondary" style={{ display: 'block', marginBottom: '12px' }}>Engagement Rate</Text>
-                    <div style={{ fontSize: '28px', fontWeight: 'bold', color: '#000000' }}>
-                      {displayValue(engagement_rate, true)}
-                    </div>
-                    {(displayPercentageChange(percentage_changes?.pc_engagement_rate) !== null) && (
-                      <div style={{
-                        color: percentage_changes.pc_engagement_rate > 0 ? '#10B981' : percentage_changes.pc_engagement_rate < 0 ? '#EF4444' : '#6B7280',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '4px'
-                      }}>
-                        {percentage_changes.pc_engagement_rate > 0 ? <ArrowUpOutlined /> : percentage_changes.pc_engagement_rate < 0 ? <ArrowDownOutlined /> : null}
-                        {formatPercentageChangeDisplay(percentage_changes.pc_engagement_rate)}%
-                      </div>
-                    )}
-                  </div>
-                </Card>
+                <StatCard
+                  title={<Text type="secondary" style={{ display: 'block', marginBottom: '12px' }}><span style={{ color: "#EF4444" }}>Failed</span> - Message failed</Text>}
+                  value={displayValue(total_patients_failed_message_status)}
+                  percentageChange={displayPercentageChange(percentage_changes?.pc_failed_messages)}
+                />
               </Col>
               <Col xs={12} sm={12} md={12} lg={12}>
-                <Card style={{ height: '180px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <div style={{ textAlign: 'center' }}>
-                    <Text type="secondary" style={{ display: 'block', marginBottom: '12px' }}>Failed - Unengaged</Text>
-                    <div style={{ fontSize: '28px', fontWeight: 'bold', color: '#000000' }}>
-                      {displayValue(total_patients_read_but_no_response)}
-                    </div>
-                  </div>
-                </Card>
+                <StatCard
+                  title="Bookings made after hours"
+                  value={displayValue(calculateAfterHoursBookings())}
+                  percentageChange={displayPercentageChange(percentage_changes?.pc_booking_time_distribution)}
+                />
               </Col>
               <Col xs={12} sm={12} md={12} lg={12}>
-                <Card style={{ height: '180px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <div style={{ textAlign: 'center' }}>
-                    <Text type="secondary" style={{ display: 'block', marginBottom: '12px' }}>Bookings after hours</Text>
-                    <div style={{ fontSize: '28px', fontWeight: 'bold', color: '#000000' }}>
-                      {displayValue(calculateAfterHoursBookings())}
-                    </div>
-                    {percentage_changes?.pc_booking_time_distribution && (
-                      <Text type="secondary" style={{ fontSize: '10px' }}>
-                        Previous: {percentage_changes.pc_booking_time_distribution.evening + percentage_changes.pc_booking_time_distribution.night}
-                      </Text>
-                    )}
-                  </div>
-                </Card>
+                <StatCard
+                  title={<Text type="secondary" style={{ display: 'block', marginBottom: '12px' }}><span style={{ color: "#EF4444" }}>Failed</span> - Unengaged</Text>}
+                  value={displayValue(total_patients_read_but_no_response)}
+                  percentageChange={displayPercentageChange(percentage_changes?.pc_failed_messages)}
+                />
               </Col>
             </Row>
           </div>
@@ -421,7 +372,7 @@ const ClinicStats = ({ title, previousPeriod }) => {
 
       </Row>
 
-    </div>
+    </Card>
   );
 };
 
