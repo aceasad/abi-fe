@@ -29,10 +29,7 @@ const formatPercentageChangeDisplay = (value) => {
 };
 
 const StatCard = ({ title, value, subtitle, color = '#000000', change = "12", changeType = "percentage" }) => (
-  <Card title={<Text style={{ fontWeight: "normal" }}>{title}</Text>}
-    size="small"
-    style={{ height: '120px' }}
-  >
+  <Card title={<Text style={{ fontWeight: "normal" }}>{title}</Text>} size="small">
     <div style={{ display: 'flex', alignItems: "center", gap: '8px' }}>
       <div style={{ fontSize: '24px', fontWeight: 'bold', color }}>
         {value}
@@ -176,7 +173,7 @@ const ClinicStats = ({ title, previousPeriod }) => {
           </Col>
         </Row>
 
-        <Row justify='space-between' gutter={[16, 16]}>
+        <Row gutter={16}>
           {/* Communication Flow Bar Chart */}
           <Col xs={24} sm={24} md={13} lg={13}>
             <Card title=" ">
@@ -192,7 +189,7 @@ const ClinicStats = ({ title, previousPeriod }) => {
 
           {/* Failed Messages and Engagement Rate - Updated to 2x2 grid */}
           <Col xs={24} sm={24} md={10} lg={11}>
-            <Row gutter={[16, 16]}>
+            <Row gutter={16}>
               <Col xs={12} sm={12} md={12} lg={12}>
                 <StatCard
                   title="Engagement"
@@ -226,7 +223,7 @@ const ClinicStats = ({ title, previousPeriod }) => {
         </Row>
       </Card>
 
-      <Row gutter={[16, 16]}>
+      <Row gutter={16}>
         {/* Appointment Outcomes Pie Chart */}
         <Col xs={24} sm={24} md={12} lg={12}>
           <Card title="Appointment Outcomes" style={{ height: 'auto', minHeight: '400px' }}>
@@ -275,7 +272,7 @@ const ClinicStats = ({ title, previousPeriod }) => {
         {/* Intervention & Special Cases */}
         <Col xs={24} sm={24} md={12} lg={12}>
           <Card title="Intervention & Special Cases">
-            <Row gutter={[16, 16]}>
+            <Row gutter={16}>
               {interventionData.map((item, index) => {
                 const comparison = compareValues(item.value, item.previousValue);
                 return (
