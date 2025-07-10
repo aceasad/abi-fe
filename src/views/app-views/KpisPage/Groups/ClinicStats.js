@@ -58,24 +58,14 @@ const ClinicStats = ({ title, previousPeriod }) => {
     if (current < previous) return { type: 'decrease', value: previous };
     return null;
   };
-  // Helper function to display percentage change with proper formatting
-  const displayPercentageChange = (value) => {
-    console.log('Display Percentage Change Input:', value);
-    if (value === null || value === undefined) {
-      return null;
-    }
-    const result = Number(value).toFixed(1);
-    console.log('Display Percentage Change Result:', result);
-    return result;
-  };
 
   // Helper function to format percentage change display with + for positive values
   const formatPercentageChangeDisplay = (value) => {
-    if (value === null || value === undefined) {
-      return null;
-    }
+    console.log('Display Percentage Change Input:', value);
+    if (value == null || isNaN(value)) return null;
     const formattedValue = Number(value).toFixed(1);
-    return value > 0 ? `+${formattedValue}` : formattedValue;
+    console.log('Display Percentage Change Result:', formattedValue);
+    return value < 0 ? `-${formattedValue}%` : `+${formattedValue}%`;
   };
 
   // Calculate after hours bookings (evening + night)
@@ -136,37 +126,47 @@ const ClinicStats = ({ title, previousPeriod }) => {
     }
   ];
 
-  const StatCard = ({ title, value, subtitle, color = '#000000', percentageChange, style = {}, bare = false }) => {
+  const StatCard = ({ title, value, subtitle, color = '#000000', change = "12", changeType = "percentage", style = {}, bare = false }) => {
 
     const content = (
-      <div style={{ textAlign: 'left', width: '100%' }}>
-        <Text type="secondary" style={{ display: 'block', marginBottom: '8px' }}>{title}</Text>
-        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'end' }}>
-          <div style={{ fontSize: '24px', fontWeight: 'bold', color, margin: '8px 0' }}>
-            {value}
-          </div>
-          {(percentageChange !== null && percentageChange !== undefined) && (
-            <div style={{
-              color: percentageChange > 0 ? '#10B981' : percentageChange < 0 ? '#EF4444' : '#6B7280',
-              display: 'flex',
-              alignItems: 'left',
-              justifyContent: 'left',
-              gap: '4px'
-            }}>
-              {percentageChange > 0 ? <ArrowUpOutlined /> : percentageChange < 0 ? <ArrowDownOutlined /> : null}
-              {formatPercentageChangeDisplay(percentageChange)}%
-            </div>
-          )}
+      <div style={{ display: 'flex', alignItems: "center", gap: '8px' }}>
+        <div style={{ fontSize: '24px', fontWeight: 'bold', color }}>
+          {value}
         </div>
-        {subtitle && <Text type="secondary">{subtitle}</Text>}
+        {change != null && (
+          <Text
+            type="secondary"
+            style={{
+              color: (changeType !== "decrease" && change > 0) ? '#10B981' : (changeType !== "increase" && change < 0) ? '#EF4444' : '#6B7280',
+              justifyContent: 'center',
+            }}>
+            {changeType === "percentage" ? formatPercentageChangeDisplay(change) : change}
+          </Text>
+        )}
       </div>
     );
     if (bare) {
-      return <div style={{ height: '80px', ...style }}>{content}</div>
+      return (
+        <div style={{ height: '80px', textAlign: 'left', ...style }}>
+          <Text
+            style={{
+              display: 'block',
+              fontSize: '14px',
+              fontWeight: 300,
+              lineHeight: '22px',
+              marginBottom: '4px'
+            }}
+          >
+            {title}
+          </Text>
+          {content}
+        </div>
+      );
     }
 
+
     return (
-      <Card size="small" style={{ height: '120px', display: 'flex', alignItems: 'center' }}>
+      <Card title={<Text style={{ fontWeight: "normal" }}>{title}</Text>} size="small">
         {content}
       </Card>
     );
@@ -181,435 +181,184 @@ const ClinicStats = ({ title, previousPeriod }) => {
   ];
 
   return (
-    <Card title="Patient Communication Flow" style={{ padding: window.innerWidth < 768 ? '12px' : '20px' }}>
-      {previousPeriod && (
-        <Text type="secondary" style={{ position: "absolute", top: 39, left: 280 }}>
-          Previous period {previousPeriod[0].format('MMMM D, YYYY')} - {previousPeriod[1].format('MMMM D, YYYY')}
-        </Text>
-      )}
+    <>
+      <Card title="Patient Communication Flow">
+        {previousPeriod && (
+          <Text type="secondary" style={{ position: "absolute", top: 20, left: 276 }}>
+            Previous period {previousPeriod[0].format('MMMM D, YYYY')} - {previousPeriod[1].format('MMMM D, YYYY')}
+          </Text>
+        )}
 
-      <Row gutter={[24, 24]}>
-        {/* LEFT COLUMN */}
-        <Col xs={24} md={16}>
-          {/* Top 4 StatCards */}
-          <Row gutter={[16, 0]} justify="space-between">
-            <Col xs={12} sm={8} md={4} lg={4}>
-              <StatCard title="Patients invited" value={displayValue(total_patients_added)} style={{ width: 218, height: 80 }} />
-            </Col>
-            <Col xs={12} sm={8} md={4} lg={4}>
-              <StatCard title="Invites delivered" value={displayValue(total_patients_sent_message_status)} style={{ width: 218, height: 80 }} />
-            </Col>
-            <Col xs={12} sm={8} md={4} lg={4}>
-              <StatCard title="Patients engaged" value={displayValue(total_patients_engaged)} style={{ width: 218, height: 80 }} />
-            </Col>
-            <Col xs={12} sm={8} md={4} lg={4}>
-              <StatCard title="Bookings made" value={displayValue(bookings)} style={{ width: 218, height: 80 }} />
-            </Col>
-          </Row>
+        <Row gutter={[24, 24]}>
+          {/* LEFT COLUMN */}
+          <Col xs={24} md={18}>
+            {/* Top 4 StatCards */}
+            <Row gutter={[16, 0]} justify="space-between">
+              <Col xs={12} sm={8} md={4} lg={5}>
+                <StatCard title="Patients invited" value={displayValue(total_patients_added)} style={{ width: 218, height: 80 }} />
+              </Col>
+              <Col xs={12} sm={8} md={4} lg={5}>
+                <StatCard title="Invites delivered" value={displayValue(total_patients_sent_message_status)} style={{ width: 218, height: 80 }} />
+              </Col>
+              <Col xs={12} sm={8} md={4} lg={5}>
+                <StatCard title="Patients engaged" value={displayValue(total_patients_engaged)} style={{ width: 218, height: 80 }} />
+              </Col>
+              <Col xs={12} sm={8} md={4} lg={5}>
+                <StatCard title="Bookings made" value={displayValue(bookings)} style={{ width: 218, height: 80 }} />
+              </Col>
+            </Row>
 
-          {/* Graph + Engagement/AfterHours inside same Card */}
-          <Card style={{ marginTop: '24px', borderRadius: 8, }}>
-            <div style={{
-              display: 'flex',
-              flexDirection: 'row',
-              flexWrap: 'nowrap',
-              alignItems: 'flex-start',
-              height: '250px',
-            }}>
-              {/* Bar Chart */}
-              <div style={{ flex: 2 }}>
-                <ResponsiveContainer width="100%" height={250}>
-                  <BarChart data={communicationFlowData} margin={{ top: 20, right: 30, left: 20, bottom: 0 }}>
-                    <Bar dataKey="value" fill="#5B4CDB" radius={[4, 4, 0, 0]} >
-                      <LabelList dataKey="name" position="top" style={{ fill: '#000000', fontSize: '14px' }} />
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-
-              {/* Inline Engagement & After Hours (no card borders) */}
+            {/* Graph + Engagement/AfterHours inside same Card */}
+            <Card style={{ marginTop: '24px', borderRadius: 8, }}>
               <div style={{
                 display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                height: '100%',
-                minWidth: '218px'
+                flexDirection: 'row',
+                flexWrap: 'nowrap',
+                alignItems: 'flex-start',
+                height: '200px',
               }}>
-
-
-                <div style={{ width: '218px', height: '80px' }}>
-                  <StatCard
-                    title="Engagement"
-                    value={displayValue(engagement_rate, true)}
-                    percentageChange={displayPercentageChange(percentage_changes?.pc_engagement_rate)}
-                    bare
-                  />
+                {/* Bar Chart */}
+                <div style={{ flex: 2 }}>
+                  <ResponsiveContainer width="100%" height={200}>
+                    <BarChart data={communicationFlowData} margin={{ top: 20, right: 30, left: 20, bottom: 0 }}>
+                      <Bar dataKey="value" fill="#5B4CDB" radius={[4, 4, 0, 0]}>
+                        <LabelList dataKey="name" position="top" style={{ fill: '#000000', fontSize: '14px' }} />
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
                 </div>
-                <div style={{ width: '218px', height: '80px' }}>
-                  <StatCard
-                    title="Bookings made after hours"
-                    value={displayValue(calculateAfterHoursBookings())}
-                    percentageChange={displayPercentageChange(percentage_changes?.pc_booking_time_distribution)}
-                    bare
-                  />
+
+                {/* Inline Engagement & After Hours (no card borders) */}
+                <div style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  height: '100%',
+                  minWidth: '218px'
+                }}>
+
+
+                  <div style={{ width: '218px', height: '80px' }}>
+                    <StatCard
+                      title="Engagement"
+                      value={displayValue(engagement_rate, true)}
+                      change={percentage_changes?.pc_engagement_rate}
+                      changeType="percentage"
+                      bare
+                    />
+                  </div>
+                  <div style={{ width: '218px', height: '80px' }}>
+                    <StatCard
+                      title="Bookings made after hours"
+                      value={displayValue(calculateAfterHoursBookings())}
+                      change={percentage_changes?.pc_booking_time_distribution}
+                      changeType="percentage"
+                      bare
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-          </Card>
+            </Card>
 
-        </Col>
+          </Col>
 
-        {/* RIGHT COLUMN */}
-        <Col xs={24} md={8} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-          <StatCard
-            title="Booking rate"
-            value={displayValue(booking_rate, true)}
-            percentageChange={displayPercentageChange(percentage_changes?.pc_booking_rate)}
-            style={{ width: 218, height: 80 }}
-          />
-          <StatCard
-            title={<Text type="secondary"><span style={{ color: "#EF4444" }}>Failed</span> - Message failed</Text>}
-            value={displayValue(total_patients_failed_message_status)}
-            percentageChange={displayPercentageChange(percentage_changes?.pc_failed_messages)}
-            style={{ width: 218, height: 80 }}
-          />
-          <StatCard
-            title={<Text type="secondary"><span style={{ color: "#EF4444" }}>Failed</span> - Unengaged</Text>}
-            value={displayValue(total_patients_read_but_no_response)}
-            percentageChange={displayPercentageChange(percentage_changes?.pc_failed_messages)}
-            style={{ width: 218, height: 80 }}
-          />
-        </Col>
+          {/* RIGHT COLUMN */}
+          <Col xs={24} md={5} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+            <StatCard
+              title="Booking rate"
+              value={displayValue(booking_rate, true)}
+              change={percentage_changes?.pc_booking_rate}
+              changeType="percentage"
+              style={{ width: 218, height: 80 }}
+            />
+            <StatCard
+              title={<><span style={{ color: "#EF4444" }}>Failed</span> - Message failed</>}
+              value={displayValue(total_patients_failed_message_status)}
+              change={percentage_changes?.pc_failed_messages}
+              changeType="percentage"
+              style={{ width: 218, height: 80 }}
+            />
+            <StatCard
+              title={<><span style={{ color: "#EF4444" }}>Failed</span> - Unengaged</>}
+              value={displayValue(total_patients_read_but_no_response)}
+              change={percentage_changes?.pc_failed_messages}
+              changeType="percentage"
+              style={{ width: 218, height: 80 }}
+            />
+          </Col>
 
-      </Row>
+        </Row>
 
-
-      <Row gutter={[24, 24]} style={{ marginTop: '24px' }}>
-        {/* Appointment Outcomes Pie Chart */}
-        <Col xs={24} sm={24} md={12} lg={12}>
-          <Card title="Appointment Outcomes" style={{ height: 'auto', minHeight: '400px' }}>
-            <div style={{ display: 'flex', flexDirection: window.innerWidth < 768 ? 'column' : 'row', height: 'auto', minHeight: '300px' }}>
-              <div style={{ flex: 1, minHeight: '200px' }}>
-                <ResponsiveContainer width="100%" height={200}>
+        <Row gutter={[16]}>
+          {/* Appointment Outcomes Pie Chart */}
+          <Col xs={24} sm={24} md={12} lg={12}>
+            <Card title="Appointment Outcomes" style={{ height: 'auto', minHeight: '400px' }}>
+              <div style={{ display: 'flex', flexDirection: window.innerWidth < 768 ? 'column' : 'row' }}>
+                <ResponsiveContainer height={350}>
                   <PieChart>
                     <Pie
                       data={appointmentOutcomes}
                       cx="50%"
                       cy="50%"
-                      innerRadius={40}
-                      outerRadius={80}
-                      paddingAngle={2}
                       dataKey="value"
                       label={({ name, value }) => value > 0 ? `${name}: ${value}` : ''}
                       labelLine={{ stroke: '#666', strokeWidth: 1 }}
                       labelPosition="outside"
                     >
-                      {appointmentOutcomes.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
+                      {appointmentOutcomes.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
                     </Pie>
                   </PieChart>
                 </ResponsiveContainer>
+                <div style={{
+                  width: window.innerWidth < 768 ? '100%' : '120px',
+                  display: 'flex',
+                  flexDirection: window.innerWidth < 768 ? 'row' : 'column',
+                  flexWrap: 'wrap',
+                  justifyContent: window.innerWidth < 768 ? 'center' : 'center',
+                  gap: window.innerWidth < 768 ? '16px' : '12px'
+                }}>
+                  {appointmentOutcomes.map((item, index) => (
+                    <div key={index} style={{ display: 'flex', alignItems: 'center' }}>
+                      <div style={{
+                        width: '8px',
+                        height: '8px',
+                        backgroundColor: item.color,
+                        borderRadius: '50%',
+                        marginRight: '8px',
+                        flexShrink: 0
+                      }} />
+                      <Text style={{ display: 'flex', alignItems: 'center' }}>{item.name}</Text>
+                    </div>
+                  ))}
+                </div>
               </div>
-              <div style={{
-                width: window.innerWidth < 768 ? '100%' : '120px',
-                paddingLeft: window.innerWidth < 768 ? '0' : '16px',
-                paddingTop: window.innerWidth < 768 ? '16px' : '0',
-                display: 'flex',
-                flexDirection: window.innerWidth < 768 ? 'row' : 'column',
-                flexWrap: 'wrap',
-                justifyContent: window.innerWidth < 768 ? 'center' : 'center',
-                gap: window.innerWidth < 768 ? '16px' : '12px'
-              }}>
-                {appointmentOutcomes.map((item, index) => (
-                  <div key={index} style={{
-                    display: 'flex',
-                    alignItems: 'center'
-                  }}>
-                    <div style={{
-                      width: '8px',
-                      height: '8px',
-                      backgroundColor: item.color,
-                      borderRadius: '50%',
-                      marginRight: '8px',
-                      flexShrink: 0
-                    }} />
-                    <Text style={{ display: 'flex', alignItems: 'center' }}>{item.name}</Text>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </Card>
-        </Col>
+            </Card>
+          </Col>
 
-        {/* Intervention & Special Cases */}
-        <Col xs={24} sm={24} md={12} lg={12}>
-          <Card title="Intervention & Special Cases" style={{ height: 'auto', minHeight: '400px' }}>
-            <Row gutter={[16, 16]} style={{ height: 'auto' }}>
-              {interventionData.map((item, index) => {
-                const comparison = compareValues(item.value, item.previousValue);
-                return (
-                  <Col xs={12} sm={12} md={12} lg={12} key={index} style={{ marginBottom: '16px' }}>
-                    <Card size="small" style={{
-                      textAlign: 'center',
-                      height: '120px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center'
-                    }}>
-                      <div>
-                        <Text style={{ display: 'block', marginBottom: '8px', color: '#000000' }}>
-                          {item.title}
-                        </Text>
-                        <div style={{
-                          fontSize: '20px',
-                          fontWeight: 'bold',
-                          color: '#000000',
-                          margin: '8px 0',
-                        }}>
-                          {item.value}
-                        </div>
-                        {comparison && (
-                          <div style={{
-                            fontSize: '10px',
-                            color: comparison.type === 'increase' ? '#10B981' : '#EF4444',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: '4px'
-                          }}>
-                            {comparison.type === 'increase' ? <ArrowUpOutlined /> : <ArrowDownOutlined />}
-                            {comparison.value}
-                          </div>
-                        )}
-                      </div>
-                    </Card>
-                  </Col>
-                );
-              })}
-            </Row>
-          </Card>
-        </Col>
+          {/* Intervention & Special Cases */}
+          <Col xs={24} sm={24} md={12} lg={12}>
+            <Card title="Intervention & Special Cases">
+              <Row gutter={[16]}>
+                {interventionData.map((item, index) => {
+                  const comparison = compareValues(item.value, item.previousValue);
+                  return (
+                    <Col key={index} xs={12} sm={12} md={12} lg={12}>
+                      <StatCard
+                        title={item.title}
+                        value={item.value}
+                        change={comparison?.value}
+                        changeType={comparison?.type} />
+                    </Col>
+                  );
+                })}
+              </Row>
+            </Card>
+          </Col>
+        </Row>
 
-
-      </Row>
-
-    </Card>
+      </Card>
+    </>
   );
 };
 
 export default ClinicStats;
-
-// const ClinicStats = ({ title }) => {
-//   const { formatMessage } = useIntl();
-
-//   const { engagement_rate, booking_rate, total_patients_added, total_patients_invited, total_patients_failed_message_status, total_patients_sent_message_status,
-//     total_patients_engaged, total_patients_read_but_no_response, open_conversations, bookings,
-//     reschedule, cancelled, attended, non_attended, booking_time_distribution,
-//     declines, opt_out, snoozed, emergency_situation, human_intervention, already_screened } = useSelector(
-//       makeSelectClinicStatsData
-//     );
-//   return (
-//     <div className="mb-4">
-//       <GroupRow>
-//         <OverviewCard
-//           span={6}
-//           title={formatMessage(messages.clinicStatsPatientEnrolled)}
-//           // tooltip={formatMessage(messages.clinicStatsPatientEnrolled)}
-//           content={`${parseInt((total_patients_added) ?? 0, 10)}`}
-//           styleTitle={title}
-//           icon={<MdAssignmentTurnedIn color="#ffffff" size="40" />}
-//           noTooltip
-//         />
-//         <OverviewCard
-//           span={6}
-//           title={formatMessage(messages.clinicStatsInvitesRecieved)}
-//           content={`${parseInt((total_patients_invited) ?? 0, 10)}`}
-//           styleTitle={title}
-//           icon={<MdAssignmentTurnedIn color="#ffffff" size="40" />}
-//           noTooltip
-//         />
-//         <OverviewCard
-//           span={6}
-//           title={formatMessage(messages.clinicStatsOpenConversation)}
-//           // tooltip={formatMessage(messages.clinicStatsOpenConversation)}
-//           content={`${parseInt(total_patients_engaged ?? 0, 10)}`}
-//           styleTitle={title}
-//           icon={<MdShowChart color="#ffffff" size="40" />}
-//           noTooltip
-//         />
-//         <OverviewCard
-//           span={6}
-//           title={formatMessage(messages.clnincStatsInvitationRate)}
-//           // tooltip={formatMessage(messages.clinicStatsBookings)}
-//           content={`${parseInt(((engagement_rate)) ?? 0, 10)}%`}
-//           styleTitle={title}
-//           icon={<MdShowChart color="#ffffff" size="40" />}
-//           noTooltip
-//         />
-
-//       </GroupRow>
-//       <GroupRow>
-//         <OverviewCard
-//           span={6}
-//           title={formatMessage(messages.clinicStatsBookings)}
-//           // tooltip={formatMessage(messages.clinicStatsBookings)}
-//           content={`${parseInt(bookings ?? 0, 10)}`}
-//           styleTitle={title}
-//           icon={<MdShowChart color="#ffffff" size="40" />}
-//           noTooltip
-//         />
-//         <OverviewCard
-//           span={6}
-//           title={"Booking rate"}
-//           // tooltip={formatMessage(messages.clinicStatsBookings)}
-//           content={`${parseInt(((booking_rate)) ?? 0, 10)}%`}
-//           styleTitle={title}
-//           icon={<MdShowChart color="#ffffff" size="40" />}
-//           noTooltip
-//         />
-//         <OverviewCard
-//           span={6}
-//           title={formatMessage(messages.clinicStatsDecline)}
-//           // tooltip={formatMessage(messages.clinicStatsDecline)}
-//           content={`${parseInt(declines ?? 0, 10)}`}
-//           styleTitle={title}
-//           icon={<MdShowChart color="#ffffff" size="40" />}
-//           noTooltip
-//         />
-//         <OverviewCard
-//           span={6}
-//           title={formatMessage(messages.clinicStatsAlreadyScreened)}
-//           // tooltip={formatMessage(messages.clinicStatsAlreadyScreened)}
-//           content={`${parseInt(already_screened ?? 0, 10)}`}
-//           styleTitle={title}
-//           icon={<MdShowChart color="#ffffff" size="40" />}
-//           noTooltip
-//         />
-//       </GroupRow>
-//       <GroupRow>
-//         <OverviewCard
-//           span={6}
-//           title={"Opt-out"}
-//           // tooltip={formatMessage(messages.clinicStatsBookings)}
-//           content={`${parseInt(opt_out ?? 0, 10)}`}
-//           styleTitle={title}
-//           icon={<MdShowChart color="#ffffff" size="40" />}
-//           noTooltip
-//         />
-
-
-//         <OverviewCard
-//           span={6}
-//           title={formatMessage(messages.clinicStatsSnoozed)}
-//           // tooltip={formatMessage(messages.clinicStatsAlreadyScreened)}
-//           content={`${parseInt(snoozed ?? 0, 10)}`}
-//           styleTitle={title}
-//           icon={<MdShowChart color="#ffffff" size="40" />}
-//           noTooltip
-//         />
-
-//         <OverviewCard
-//           span={6}
-//           title={"Emergency situation"}
-//           // tooltip={formatMessage(messages.clinicStatsAlreadyScreened)}
-//           content={`${parseInt(emergency_situation ?? 0, 10)}`}
-//           styleTitle={title}
-//           icon={<MdShowChart color="#ffffff" size="40" />}
-//           noTooltip
-//         />
-
-
-//         <OverviewCard
-//           span={6}
-//           title={"Human intervention needed"}
-//           // tooltip={formatMessage(messages.clinicStatsAlreadyScreened)}
-//           content={`${parseInt(human_intervention ?? 0, 10)}`}
-//           styleTitle={title}
-//           icon={<MdShowChart color="#ffffff" size="40" />}
-//           noTooltip
-//         />
-//       </GroupRow>
-//       <GroupRow>
-//         <OverviewCard
-//           span={6}
-//           title={"Attended"}
-//           // tooltip={formatMessage(messages.clinicStatsBookings)}
-//           content={`${parseInt(attended ?? 0, 10)}`}
-//           styleTitle={title}
-//           icon={<MdShowChart color="#ffffff" size="40" />}
-//           noTooltip
-//         />
-//         <OverviewCard
-//           span={6}
-//           title={"Non attended"}
-//           // tooltip={formatMessage(messages.clinicStatsBookings)}
-//           content={`${parseInt(non_attended ?? 0, 10)}`}
-//           styleTitle={title}
-//           icon={<MdShowChart color="#ffffff" size="40" />}
-//           noTooltip
-//         />
-//         <OverviewCard
-//           span={6}
-//           title={"Reschedules"}
-//           // tooltip={formatMessage(messages.clinicStatsBookings)}
-//           content={`${parseInt(reschedule ?? 0, 10)}`}
-//           styleTitle={title}
-//           icon={<MdShowChart color="#ffffff" size="40" />}
-//           noTooltip
-//         />
-//         <OverviewCard
-//           span={6}
-//           title={"Cancelled"}
-//           // tooltip={formatMessage(messages.clinicStatsBookings)}
-//           content={`${parseInt(cancelled ?? 0, 10)}`}
-//           styleTitle={title}
-//           icon={<MdShowChart color="#ffffff" size="40" />}
-//           noTooltip
-//         />
-
-//       </GroupRow>
-//       <GroupRow>
-//         <OverviewCard
-//           span={6}
-//           title={"Morning"}
-//           // tooltip={formatMessage(messages.clinicStatsAlreadyScreened)}
-//           content={`${parseInt(booking_time_distribution['morning'] ?? 0, 10)}`}
-//           styleTitle={title}
-//           icon={<MdShowChart color="#ffffff" size="40" />}
-//           noTooltip
-//         />
-//         <OverviewCard
-//           span={6}
-//           title={"Afternoon"}
-//           // tooltip={formatMessage(messages.clinicStatsAlreadyScreened)}
-//           content={`${parseInt(booking_time_distribution['afternoon'] ?? 0, 10)}`}
-//           styleTitle={title}
-//           icon={<MdShowChart color="#ffffff" size="40" />}
-//           noTooltip
-//         />
-//         <OverviewCard
-//           span={6}
-//           title={"Evening"}
-//           // tooltip={formatMessage(messages.clinicStatsAlreadyScreened)}
-//           content={`${parseInt(booking_time_distribution['evening'] ?? 0, 10)}`}
-//           styleTitle={title}
-//           icon={<MdShowChart color="#ffffff" size="40" />}
-//           noTooltip
-//         />
-//         <OverviewCard
-//           span={6}
-//           title={"Night"}
-//           // tooltip={formatMessage(messages.clinicStatsAlreadyScreened)}
-//           content={`${parseInt(booking_time_distribution['night'] ?? 0, 10)}`}
-//           styleTitle={title}
-//           icon={<MdShowChart color="#ffffff" size="40" />}
-//           noTooltip
-//         />
-//       </GroupRow>
-
-//     </div>
-//   );
-// };
-
-// export default ClinicStats;
