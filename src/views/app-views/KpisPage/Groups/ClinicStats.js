@@ -179,8 +179,8 @@ const ClinicStats = ({ title, previousPeriod }) => {
         <Row justify='space-between'>
           {/* Communication Flow Bar Chart */}
           <Col xs={24} sm={24} md={13} lg={13}>
-            <Card title=" " style={{ height: 'auto', minHeight: '400px' }}>
-              <ResponsiveContainer width="100%" height={300}>
+            <Card title=" ">
+              <ResponsiveContainer height={200}>
                 <BarChart data={communicationFlowData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                   <Bar dataKey="value" fill="#5B4CDB" radius={[4, 4, 0, 0]}>
                     <LabelList dataKey="name" position="top" style={{ fill: '#000000', fontSize: '14px' }} />
@@ -226,35 +226,30 @@ const ClinicStats = ({ title, previousPeriod }) => {
             </div>
           </Col>
         </Row>
-      </Card><Row gutter={[24, 24]} style={{ marginTop: '24px' }}>
+      </Card>
+
+      <Row gutter={[24, 24]} style={{ marginTop: '24px' }}>
         {/* Appointment Outcomes Pie Chart */}
         <Col xs={24} sm={24} md={12} lg={12}>
           <Card title="Appointment Outcomes" style={{ height: 'auto', minHeight: '400px' }}>
-            <div style={{ display: 'flex', flexDirection: window.innerWidth < 768 ? 'column' : 'row', height: 'auto', minHeight: '300px' }}>
-              <div style={{ flex: 1, minHeight: '200px' }}>
-                <ResponsiveContainer width="100%" height={200}>
-                  <PieChart>
-                    <Pie
-                      data={appointmentOutcomes}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={40}
-                      outerRadius={80}
-                      paddingAngle={2}
-                      dataKey="value"
-                      label={({ name, value }) => value > 0 ? `${name}: ${value}` : ''}
-                      labelLine={{ stroke: '#666', strokeWidth: 1 }}
-                      labelPosition="outside"
-                    >
-                      {appointmentOutcomes.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
-                    </Pie>
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
+            <div style={{ display: 'flex', flexDirection: window.innerWidth < 768 ? 'column' : 'row' }}>
+              <ResponsiveContainer height={350}>
+                <PieChart>
+                  <Pie
+                    data={appointmentOutcomes}
+                    cx="50%"
+                    cy="50%"
+                    dataKey="value"
+                    label={({ name, value }) => value > 0 ? `${name}: ${value}` : ''}
+                    labelLine={{ stroke: '#666', strokeWidth: 1 }}
+                    labelPosition="outside"
+                  >
+                    {appointmentOutcomes.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
+                  </Pie>
+                </PieChart>
+              </ResponsiveContainer>
               <div style={{
                 width: window.innerWidth < 768 ? '100%' : '120px',
-                paddingLeft: window.innerWidth < 768 ? '0' : '16px',
-                paddingTop: window.innerWidth < 768 ? '16px' : '0',
                 display: 'flex',
                 flexDirection: window.innerWidth < 768 ? 'row' : 'column',
                 flexWrap: 'wrap',
@@ -262,10 +257,7 @@ const ClinicStats = ({ title, previousPeriod }) => {
                 gap: window.innerWidth < 768 ? '16px' : '12px'
               }}>
                 {appointmentOutcomes.map((item, index) => (
-                  <div key={index} style={{
-                    display: 'flex',
-                    alignItems: 'center'
-                  }}>
+                  <div key={index} style={{ display: 'flex', alignItems: 'center' }}>
                     <div style={{
                       width: '8px',
                       height: '8px',
@@ -284,12 +276,12 @@ const ClinicStats = ({ title, previousPeriod }) => {
 
         {/* Intervention & Special Cases */}
         <Col xs={24} sm={24} md={12} lg={12}>
-          <Card title="Intervention & Special Cases" style={{ height: 'auto', minHeight: '400px' }}>
-            <Row gutter={[16, 16]} style={{ height: 'auto' }}>
+          <Card title="Intervention & Special Cases">
+            <Row gutter={[16, 16]}>
               {interventionData.map((item, index) => {
                 const comparison = compareValues(item.value, item.previousValue);
                 return (
-                  <Col xs={12} sm={12} md={12} lg={12} key={index} style={{ marginBottom: '16px' }}>
+                  <Col key={index} xs={12} sm={12} md={12} lg={12}>
                     <StatCard
                       title={item.title}
                       value={item.value}
