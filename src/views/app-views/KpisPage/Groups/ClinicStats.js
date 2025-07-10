@@ -28,8 +28,8 @@ const formatPercentageChangeDisplay = (value) => {
   return value < 0 ? `-${formattedValue}%` : `+${formattedValue}%`;
 };
 
-const StatCard = ({ title, value, subtitle, color = '#000000', change = "12", changeType = "percentage" }) => (
-  <Card title={<Text style={{ fontWeight: "normal" }}>{title}</Text>} size="small">
+const StatCard = ({ title, value, subtitle, color = '#000000', change = "12", changeType = "percentage", style = {}, bare = false }) => {
+  const content = (
     <div style={{ display: 'flex', alignItems: "center", gap: '8px' }}>
       <div style={{ fontSize: '24px', fontWeight: 'bold', color }}>
         {value}
@@ -45,9 +45,32 @@ const StatCard = ({ title, value, subtitle, color = '#000000', change = "12", ch
         </Text>
       )}
     </div>
-    {subtitle && <Text type="secondary">{subtitle}</Text>}
-  </Card>
-);
+  );
+  if (bare) {
+    return (
+      <div style={{ height: '80px', textAlign: 'left', ...style }}>
+        <Text
+          style={{
+            display: 'block',
+            fontSize: '14px',
+            fontWeight: 300,
+            lineHeight: '22px',
+            marginBottom: '4px'
+          }}
+        >
+          {title}
+        </Text>
+        {content}
+      </div>
+    );
+  }
+
+  return (
+    <Card title={<Text style={{ fontWeight: "normal" }}>{title}</Text>} size="small">
+      {content}
+    </Card>
+  );
+};
 
 const ClinicStats = ({ title, previousPeriod }) => {
   const {
@@ -142,153 +165,174 @@ const ClinicStats = ({ title, previousPeriod }) => {
           </Text>
         )}
 
-        {/* Top Stats Row */}
-        <Row justify="space-between">
-          <Col xs={12} sm={8} md={4} lg={4}>
-            <StatCard
-              title="Patients invited"
-              value={displayValue(total_patients_added)} />
+        <Row gutter={[24, 24]}>
+          {/* LEFT COLUMN */}
+          <Col xs={24} md={18}>
+            {/* Top 4 StatCards */}
+            <Row gutter={[16, 0]} justify="space-between">
+              <Col xs={12} sm={8} md={4} lg={5}>
+                <StatCard title="Patients invited" value={displayValue(total_patients_added)} style={{ width: 218, height: 80 }} />
+              </Col>
+              <Col xs={12} sm={8} md={4} lg={5}>
+                <StatCard title="Invites delivered" value={displayValue(total_patients_sent_message_status)} style={{ width: 218, height: 80 }} />
+              </Col>
+              <Col xs={12} sm={8} md={4} lg={5}>
+                <StatCard title="Patients engaged" value={displayValue(total_patients_engaged)} style={{ width: 218, height: 80 }} />
+              </Col>
+              <Col xs={12} sm={8} md={4} lg={5}>
+                <StatCard title="Bookings made" value={displayValue(bookings)} style={{ width: 218, height: 80 }} />
+              </Col>
+            </Row>
+
+            {/* Graph + Engagement/AfterHours inside same Card */}
+            <Card style={{ marginTop: '24px', borderRadius: 8, }}>
+              <div style={{
+                display: 'flex',
+                flexDirection: 'row',
+                flexWrap: 'nowrap',
+                alignItems: 'flex-start',
+                height: '200px',
+              }}>
+                {/* Bar Chart */}
+                <div style={{ flex: 2 }}>
+                  <ResponsiveContainer width="100%" height={200}>
+                    <BarChart data={communicationFlowData} margin={{ top: 20, right: 30, left: 20, bottom: 0 }}>
+                      <Bar dataKey="value" fill="#5B4CDB" radius={[4, 4, 0, 0]}>
+                        <LabelList dataKey="name" position="top" style={{ fill: '#000000', fontSize: '14px' }} />
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+
+                {/* Inline Engagement & After Hours (no card borders) */}
+                <div style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  height: '100%',
+                  minWidth: '218px'
+                }}>
+
+
+                  <div style={{ width: '218px', height: '80px' }}>
+                    <StatCard
+                      title="Engagement"
+                      value={displayValue(engagement_rate, true)}
+                      change={percentage_changes?.pc_engagement_rate}
+                      changeType="percentage"
+                      bare
+                    />
+                  </div>
+                  <div style={{ width: '218px', height: '80px' }}>
+                    <StatCard
+                      title="Bookings made after hours"
+                      value={displayValue(calculateAfterHoursBookings())}
+                      change={percentage_changes?.pc_booking_time_distribution}
+                      changeType="percentage"
+                      bare
+                    />
+                  </div>
+                </div>
+              </div>
+            </Card>
+
           </Col>
-          <Col xs={12} sm={8} md={4} lg={4}>
-            <StatCard
-              title="Invites delivered"
-              value={displayValue(total_patients_sent_message_status)} />
-          </Col>
-          <Col xs={12} sm={8} md={4} lg={4}>
-            <StatCard
-              title="Patients engaged"
-              value={displayValue(total_patients_engaged)} />
-          </Col>
-          <Col xs={12} sm={8} md={4} lg={4}>
-            <StatCard
-              title="Bookings made"
-              value={displayValue(bookings)} />
-          </Col>
-          <Col xs={12} sm={8} md={4} lg={4}>
+
+          {/* RIGHT COLUMN */}
+          <Col xs={24} md={5} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
             <StatCard
               title="Booking rate"
               value={displayValue(booking_rate, true)}
               change={percentage_changes?.pc_booking_rate}
-              changeType="percentage" />
+              changeType="percentage"
+              style={{ width: 218, height: 80 }}
+            />
+            <StatCard
+              title={<><span style={{ color: "#EF4444" }}>Failed</span> - Message failed</>}
+              value={displayValue(total_patients_failed_message_status)}
+              change={percentage_changes?.pc_failed_messages}
+              changeType="percentage"
+              style={{ width: 218, height: 80 }}
+            />
+            <StatCard
+              title={<><span style={{ color: "#EF4444" }}>Failed</span> - Unengaged</>}
+              value={displayValue(total_patients_read_but_no_response)}
+              change={percentage_changes?.pc_failed_messages}
+              changeType="percentage"
+              style={{ width: 218, height: 80 }}
+            />
           </Col>
+
         </Row>
 
-        <Row gutter={16}>
-          {/* Communication Flow Bar Chart */}
-          <Col xs={24} sm={24} md={13} lg={13}>
-            <Card title=" ">
-              <ResponsiveContainer height={200}>
-                <BarChart data={communicationFlowData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                  <Bar dataKey="value" fill="#5B4CDB" radius={[4, 4, 0, 0]}>
-                    <LabelList dataKey="name" position="top" style={{ fill: '#000000', fontSize: '14px' }} />
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
+        <Row gutter={[16]}>
+          {/* Appointment Outcomes Pie Chart */}
+          <Col xs={24} sm={24} md={12} lg={12}>
+            <Card title="Appointment Outcomes" style={{ height: 'auto', minHeight: '400px' }}>
+              <div style={{ display: 'flex', flexDirection: window.innerWidth < 768 ? 'column' : 'row' }}>
+                <ResponsiveContainer height={350}>
+                  <PieChart>
+                    <Pie
+                      data={appointmentOutcomes}
+                      cx="50%"
+                      cy="50%"
+                      dataKey="value"
+                      label={({ name, value }) => value > 0 ? `${name}: ${value}` : ''}
+                      labelLine={{ stroke: '#666', strokeWidth: 1 }}
+                      labelPosition="outside"
+                    >
+                      {appointmentOutcomes.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
+                    </Pie>
+                  </PieChart>
+                </ResponsiveContainer>
+                <div style={{
+                  width: window.innerWidth < 768 ? '100%' : '120px',
+                  display: 'flex',
+                  flexDirection: window.innerWidth < 768 ? 'row' : 'column',
+                  flexWrap: 'wrap',
+                  justifyContent: window.innerWidth < 768 ? 'center' : 'center',
+                  gap: window.innerWidth < 768 ? '16px' : '12px'
+                }}>
+                  {appointmentOutcomes.map((item, index) => (
+                    <div key={index} style={{ display: 'flex', alignItems: 'center' }}>
+                      <div style={{
+                        width: '8px',
+                        height: '8px',
+                        backgroundColor: item.color,
+                        borderRadius: '50%',
+                        marginRight: '8px',
+                        flexShrink: 0
+                      }} />
+                      <Text style={{ display: 'flex', alignItems: 'center' }}>{item.name}</Text>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </Card>
           </Col>
 
-          {/* Failed Messages and Engagement Rate - Updated to 2x2 grid */}
-          <Col xs={24} sm={24} md={10} lg={11}>
-            <Row gutter={16}>
-              <Col xs={12} sm={12} md={12} lg={12}>
-                <StatCard
-                  title="Engagement"
-                  value={displayValue(engagement_rate, true)}
-                  change={percentage_changes?.pc_engagement_rate}
-                  changeType="percentage" />
-              </Col>
-              <Col xs={12} sm={12} md={12} lg={12}>
-                <StatCard
-                  title={<><span style={{ color: "#EF4444" }}>Failed</span> - Message failed</>}
-                  value={displayValue(total_patients_failed_message_status)}
-                  change={percentage_changes?.pc_failed_messages}
-                  changeType="percentage" />
-              </Col>
-              <Col xs={12} sm={12} md={12} lg={12}>
-                <StatCard
-                  title="Bookings made after hours"
-                  value={displayValue(calculateAfterHoursBookings())}
-                  change={percentage_changes?.pc_booking_time_distribution}
-                  changeType="percentage" />
-              </Col>
-              <Col xs={12} sm={12} md={12} lg={12}>
-                <StatCard
-                  title={<><span style={{ color: "#EF4444" }}>Failed</span> - Unengaged</>}
-                  value={displayValue(total_patients_read_but_no_response)}
-                  change={percentage_changes?.pc_failed_messages}
-                  changeType="percentage" />
-              </Col>
-            </Row>
+          {/* Intervention & Special Cases */}
+          <Col xs={24} sm={24} md={12} lg={12}>
+            <Card title="Intervention & Special Cases">
+              <Row gutter={[16]}>
+                {interventionData.map((item, index) => {
+                  const comparison = compareValues(item.value, item.previousValue);
+                  return (
+                    <Col key={index} xs={12} sm={12} md={12} lg={12}>
+                      <StatCard
+                        title={item.title}
+                        value={item.value}
+                        change={comparison?.value}
+                        changeType={comparison?.type} />
+                    </Col>
+                  );
+                })}
+              </Row>
+            </Card>
           </Col>
         </Row>
+
       </Card>
-
-      <Row gutter={16}>
-        {/* Appointment Outcomes Pie Chart */}
-        <Col xs={24} sm={24} md={12} lg={12}>
-          <Card title="Appointment Outcomes">
-            <div style={{ display: 'flex', flexDirection: window.innerWidth < 768 ? 'column' : 'row' }}>
-              <ResponsiveContainer height={350}>
-                <PieChart>
-                  <Pie
-                    data={appointmentOutcomes}
-                    cx="50%"
-                    cy="50%"
-                    dataKey="value"
-                    label={({ name, value }) => value > 0 ? `${name}: ${value}` : ''}
-                    labelLine={{ stroke: '#666', strokeWidth: 1 }}
-                    labelPosition="outside"
-                  >
-                    {appointmentOutcomes.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
-                  </Pie>
-                </PieChart>
-              </ResponsiveContainer>
-              <div style={{
-                width: window.innerWidth < 768 ? '100%' : '120px',
-                display: 'flex',
-                flexDirection: window.innerWidth < 768 ? 'row' : 'column',
-                flexWrap: 'wrap',
-                justifyContent: window.innerWidth < 768 ? 'center' : 'center',
-                gap: window.innerWidth < 768 ? '16px' : '12px'
-              }}>
-                {appointmentOutcomes.map((item, index) => (
-                  <div key={index} style={{ display: 'flex', alignItems: 'center' }}>
-                    <div style={{
-                      width: '8px',
-                      height: '8px',
-                      backgroundColor: item.color,
-                      borderRadius: '50%',
-                      marginRight: '8px',
-                      flexShrink: 0
-                    }} />
-                    <Text style={{ display: 'flex', alignItems: 'center' }}>{item.name}</Text>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </Card>
-        </Col>
-
-        {/* Intervention & Special Cases */}
-        <Col xs={24} sm={24} md={12} lg={12}>
-          <Card title="Intervention & Special Cases">
-            <Row gutter={16}>
-              {interventionData.map((item, index) => {
-                const comparison = compareValues(item.value, item.previousValue);
-                return (
-                  <Col key={index} xs={12} sm={12} md={12} lg={12}>
-                    <StatCard
-                      title={item.title}
-                      value={item.value}
-                      change={comparison?.value}
-                      changeType={comparison?.type} />
-                  </Col>
-                );
-              })}
-            </Row>
-          </Card>
-        </Col>
-      </Row>
     </>
   );
 };
