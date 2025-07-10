@@ -138,15 +138,15 @@ const ClinicStats = ({ title, previousPeriod }) => {
 
   return (
     <>
-      <Card title="Patient Communication Flow" style={{ padding: window.innerWidth < 768 ? '12px' : '20px' }}>
+      <Card title="Patient Communication Flow">
         {previousPeriod && (
-          <Text type="secondary" style={{ position: "absolute", top: 39, left: 280 }}>
+          <Text type="secondary" style={{ position: "absolute", top: 20, left: 276 }}>
             Previous period {previousPeriod[0].format('MMMM D, YYYY')} - {previousPeriod[1].format('MMMM D, YYYY')}
           </Text>
         )}
 
         {/* Top Stats Row */}
-        <Row style={{ marginBottom: '24px' }} justify="space-between">
+        <Row justify="space-between">
           <Col xs={12} sm={8} md={4} lg={4}>
             <StatCard
               title="Patients invited"
@@ -176,7 +176,7 @@ const ClinicStats = ({ title, previousPeriod }) => {
           </Col>
         </Row>
 
-        <Row justify='space-between'>
+        <Row justify='space-between' gutter={[16, 16]}>
           {/* Communication Flow Bar Chart */}
           <Col xs={24} sm={24} md={13} lg={13}>
             <Card title=" ">
@@ -191,44 +191,42 @@ const ClinicStats = ({ title, previousPeriod }) => {
           </Col>
 
           {/* Failed Messages and Engagement Rate - Updated to 2x2 grid */}
-          <Col xs={24} sm={24} md={10} lg={10}>
-            <div style={{ height: 'auto', minHeight: '400px' }}>
-              <Row gutter={[16, 16]} style={{ height: '100%' }}>
-                <Col xs={12} sm={12} md={12} lg={12}>
-                  <StatCard
-                    title="Engagement"
-                    value={displayValue(engagement_rate, true)}
-                    change={percentage_changes?.pc_engagement_rate}
-                    changeType="percentage" />
-                </Col>
-                <Col xs={12} sm={12} md={12} lg={12}>
-                  <StatCard
-                    title={<><span style={{ color: "#EF4444" }}>Failed</span> - Message failed</>}
-                    value={displayValue(total_patients_failed_message_status)}
-                    change={percentage_changes?.pc_failed_messages}
-                    changeType="percentage" />
-                </Col>
-                <Col xs={12} sm={12} md={12} lg={12}>
-                  <StatCard
-                    title="Bookings made after hours"
-                    value={displayValue(calculateAfterHoursBookings())}
-                    change={percentage_changes?.pc_booking_time_distribution}
-                    changeType="percentage" />
-                </Col>
-                <Col xs={12} sm={12} md={12} lg={12}>
-                  <StatCard
-                    title={<><span style={{ color: "#EF4444" }}>Failed</span> - Unengaged</>}
-                    value={displayValue(total_patients_read_but_no_response)}
-                    change={percentage_changes?.pc_failed_messages}
-                    changeType="percentage" />
-                </Col>
-              </Row>
-            </div>
+          <Col xs={24} sm={24} md={10} lg={11}>
+            <Row gutter={[16, 16]}>
+              <Col xs={12} sm={12} md={12} lg={12}>
+                <StatCard
+                  title="Engagement"
+                  value={displayValue(engagement_rate, true)}
+                  change={percentage_changes?.pc_engagement_rate}
+                  changeType="percentage" />
+              </Col>
+              <Col xs={12} sm={12} md={12} lg={12}>
+                <StatCard
+                  title={<><span style={{ color: "#EF4444" }}>Failed</span> - Message failed</>}
+                  value={displayValue(total_patients_failed_message_status)}
+                  change={percentage_changes?.pc_failed_messages}
+                  changeType="percentage" />
+              </Col>
+              <Col xs={12} sm={12} md={12} lg={12}>
+                <StatCard
+                  title="Bookings made after hours"
+                  value={displayValue(calculateAfterHoursBookings())}
+                  change={percentage_changes?.pc_booking_time_distribution}
+                  changeType="percentage" />
+              </Col>
+              <Col xs={12} sm={12} md={12} lg={12}>
+                <StatCard
+                  title={<><span style={{ color: "#EF4444" }}>Failed</span> - Unengaged</>}
+                  value={displayValue(total_patients_read_but_no_response)}
+                  change={percentage_changes?.pc_failed_messages}
+                  changeType="percentage" />
+              </Col>
+            </Row>
           </Col>
         </Row>
       </Card>
 
-      <Row gutter={[24, 24]} style={{ marginTop: '24px' }}>
+      <Row gutter={[16, 16]}>
         {/* Appointment Outcomes Pie Chart */}
         <Col xs={24} sm={24} md={12} lg={12}>
           <Card title="Appointment Outcomes" style={{ height: 'auto', minHeight: '400px' }}>
