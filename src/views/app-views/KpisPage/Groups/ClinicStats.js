@@ -34,7 +34,7 @@ const formatPercentageChangeDisplay = (value) => {
   return value > 0 ? `+${formattedValue}%` : `-${formattedValue}%`;
 };
 
-const StatCard = ({ title, value, subtitle, color = '#000000', percentageChange }) => (
+const StatCard = ({ title, value, subtitle, color = '#000000', change, changeType }) => (
   <Card size="small" style={{ height: '120px', display: 'flex', alignItems: 'center' }}>
     <div style={{ textAlign: 'center', width: '100%' }}>
       <Text type="secondary" style={{ display: 'block', marginBottom: '8px' }}>{title}</Text>
@@ -42,15 +42,15 @@ const StatCard = ({ title, value, subtitle, color = '#000000', percentageChange 
         <div style={{ fontSize: '24px', fontWeight: 'bold', color, margin: '8px 0' }}>
           {value}
         </div>
-        {percentageChange != null && (
+        {change != null && (
           <div style={{
-            color: percentageChange > 0 ? '#10B981' : percentageChange < 0 ? '#EF4444' : '#6B7280',
+            color: (changeType !== "decrease" && change > 0) ? '#10B981' : (changeType !== "increase" && change < 0) ? '#EF4444' : '#6B7280',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             gap: '4px'
           }}>
-            {formatPercentageChangeDisplay(percentageChange)}
+            {changeType === "percentage" ? formatPercentageChangeDisplay(change) : change}
           </div>
         )}
       </div>
@@ -181,7 +181,8 @@ const ClinicStats = ({ title, previousPeriod }) => {
           <StatCard
             title="Booking rate"
             value={displayValue(booking_rate, true)}
-            percentageChange={displayPercentageChange(percentage_changes?.pc_booking_rate)}
+            change={displayPercentageChange(percentage_changes?.pc_booking_rate)}
+            changeType="percentage"
           />
         </Col>
       </Row>
@@ -208,28 +209,32 @@ const ClinicStats = ({ title, previousPeriod }) => {
                 <StatCard
                   title="Engagement"
                   value={displayValue(engagement_rate, true)}
-                  percentageChange={displayPercentageChange(percentage_changes?.pc_engagement_rate)}
+                  change={displayPercentageChange(percentage_changes?.pc_engagement_rate)}
+                  changeType="percentage"
                 />
               </Col>
               <Col xs={12} sm={12} md={12} lg={12}>
                 <StatCard
                   title={<Text type="secondary" style={{ display: 'block', marginBottom: '12px' }}><span style={{ color: "#EF4444" }}>Failed</span> - Message failed</Text>}
                   value={displayValue(total_patients_failed_message_status)}
-                  percentageChange={displayPercentageChange(percentage_changes?.pc_failed_messages)}
+                  change={displayPercentageChange(percentage_changes?.pc_failed_messages)}
+                  changeType="percentage"
                 />
               </Col>
               <Col xs={12} sm={12} md={12} lg={12}>
                 <StatCard
                   title="Bookings made after hours"
                   value={displayValue(calculateAfterHoursBookings())}
-                  percentageChange={displayPercentageChange(percentage_changes?.pc_booking_time_distribution)}
+                  change={displayPercentageChange(percentage_changes?.pc_booking_time_distribution)}
+                  changeType="percentage"
                 />
               </Col>
               <Col xs={12} sm={12} md={12} lg={12}>
                 <StatCard
                   title={<Text type="secondary" style={{ display: 'block', marginBottom: '12px' }}><span style={{ color: "#EF4444" }}>Failed</span> - Unengaged</Text>}
                   value={displayValue(total_patients_read_but_no_response)}
-                  percentageChange={displayPercentageChange(percentage_changes?.pc_failed_messages)}
+                  change={displayPercentageChange(percentage_changes?.pc_failed_messages)}
+                  changeType="percentage"
                 />
               </Col>
             </Row>
@@ -304,7 +309,8 @@ const ClinicStats = ({ title, previousPeriod }) => {
                     <StatCard
                       title={item.title}
                       value={item.value}
-                      percentageChange={comparison?.value}
+                      change={comparison?.value}
+                      changeType={comparison?.type}
                     />
                   </Col>
                 );
