@@ -109,35 +109,33 @@ const KpisPage = () => {
         }
       />
       <Layout>
-        <Card>
-          {SHOW_KPIS && (
-            <>
-              <Row justify="space-between" align="middle">
-                <Col>
-                  <RangePicker
-                    onChange={handleDateRangeChange}
-                    value={dateRange}
-                    disabledDate={(current) => current && current > moment().endOf('day')}
-                  />
-                </Col>
-                <Col>
-                  <Button
-                    type="primary"
-                    icon={<DownloadOutlined />}
-                    onClick={handleDownload}
-                  >
-                    Export Data
-                  </Button>
-                </Col>
-              </Row>
-              <Row gutter={48}>
-                <Col span={24} className="mt-4">
-                  <ClinicStats title={formatMessage(messages.bookingTitle)} previousPeriod={previousPeriod} />
-                </Col>
-              </Row>
-            </>
-          )}
-        </Card>
+        {SHOW_KPIS && (
+          <>
+            <Row justify="space-between" align="middle">
+              <Col>
+                <RangePicker
+                  onChange={handleDateRangeChange}
+                  value={dateRange}
+                  disabledDate={(current) => current && current > moment().endOf('day')}
+                />
+              </Col>
+              <Col>
+                <Button
+                  type="primary"
+                  icon={<DownloadOutlined />}
+                  onClick={handleDownload}
+                >
+                  Export Data
+                </Button>
+              </Col>
+            </Row>
+            <Row gutter={48}>
+              <Col span={24} className="mt-4">
+                <ClinicStats title={formatMessage(messages.bookingTitle)} previousPeriod={previousPeriod} />
+              </Col>
+            </Row>
+          </>
+        )}
       </Layout>
     </>
   );
