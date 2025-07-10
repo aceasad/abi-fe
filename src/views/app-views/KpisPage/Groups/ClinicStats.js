@@ -226,7 +226,7 @@ const ClinicStats = ({ title, previousPeriod }) => {
       <Row gutter={16}>
         {/* Appointment Outcomes Pie Chart */}
         <Col xs={24} sm={24} md={12} lg={12}>
-          <Card title="Appointment Outcomes" style={{ height: 'auto', minHeight: '400px' }}>
+          <Card title="Appointment Outcomes">
             <div style={{ display: 'flex', flexDirection: window.innerWidth < 768 ? 'column' : 'row' }}>
               <ResponsiveContainer height={350}>
                 <PieChart>
