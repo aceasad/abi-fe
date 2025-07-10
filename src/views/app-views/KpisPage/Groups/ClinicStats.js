@@ -136,29 +136,41 @@ const ClinicStats = ({ title, previousPeriod }) => {
     }
   ];
 
-  const StatCard = ({ title, value, subtitle, color = '#000000', percentageChange }) => (
-    <Card size="small" style={{ height: '120px', display: 'flex', alignItems: 'center' }}>
-      <div style={{ textAlign: 'center', width: '100%' }}>
+  const StatCard = ({ title, value, subtitle, color = '#000000', percentageChange, style = {}, bare = false }) => {
+
+    const content = (
+      <div style={{ textAlign: 'left', width: '100%' }}>
         <Text type="secondary" style={{ display: 'block', marginBottom: '8px' }}>{title}</Text>
-        <div style={{ fontSize: '24px', fontWeight: 'bold', color, margin: '8px 0' }}>
-          {value}
-        </div>
-        {(percentageChange !== null && percentageChange !== undefined) && (
-          <div style={{
-            color: percentageChange > 0 ? '#10B981' : percentageChange < 0 ? '#EF4444' : '#6B7280',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '4px'
-          }}>
-            {percentageChange > 0 ? <ArrowUpOutlined /> : percentageChange < 0 ? <ArrowDownOutlined /> : null}
-            {formatPercentageChangeDisplay(percentageChange)}%
+        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'end' }}>
+          <div style={{ fontSize: '24px', fontWeight: 'bold', color, margin: '8px 0' }}>
+            {value}
           </div>
-        )}
+          {(percentageChange !== null && percentageChange !== undefined) && (
+            <div style={{
+              color: percentageChange > 0 ? '#10B981' : percentageChange < 0 ? '#EF4444' : '#6B7280',
+              display: 'flex',
+              alignItems: 'left',
+              justifyContent: 'left',
+              gap: '4px'
+            }}>
+              {percentageChange > 0 ? <ArrowUpOutlined /> : percentageChange < 0 ? <ArrowDownOutlined /> : null}
+              {formatPercentageChangeDisplay(percentageChange)}%
+            </div>
+          )}
+        </div>
         {subtitle && <Text type="secondary">{subtitle}</Text>}
       </div>
-    </Card>
-  );
+    );
+    if (bare) {
+      return <div style={{ height: '80px', ...style }}>{content}</div>
+    }
+
+    return (
+      <Card size="small" style={{ height: '120px', display: 'flex', alignItems: 'center' }}>
+        {content}
+      </Card>
+    );
+  };
 
   // Communication flow data - only use API data
   const communicationFlowData = [
@@ -176,91 +188,101 @@ const ClinicStats = ({ title, previousPeriod }) => {
         </Text>
       )}
 
-      {/* Top Stats Row */}
-      <Row style={{ marginBottom: '24px' }} justify="space-between">
-        <Col xs={12} sm={8} md={4} lg={4}>
-          <StatCard
-            title="Patients invited"
-            value={displayValue(total_patients_added)}
-          />
+      <Row gutter={[24, 24]}>
+        {/* LEFT COLUMN */}
+        <Col xs={24} md={16}>
+          {/* Top 4 StatCards */}
+          <Row gutter={[16, 0]} justify="space-between">
+            <Col xs={12} sm={8} md={4} lg={4}>
+              <StatCard title="Patients invited" value={displayValue(total_patients_added)} style={{ width: 218, height: 80 }} />
+            </Col>
+            <Col xs={12} sm={8} md={4} lg={4}>
+              <StatCard title="Invites delivered" value={displayValue(total_patients_sent_message_status)} style={{ width: 218, height: 80 }} />
+            </Col>
+            <Col xs={12} sm={8} md={4} lg={4}>
+              <StatCard title="Patients engaged" value={displayValue(total_patients_engaged)} style={{ width: 218, height: 80 }} />
+            </Col>
+            <Col xs={12} sm={8} md={4} lg={4}>
+              <StatCard title="Bookings made" value={displayValue(bookings)} style={{ width: 218, height: 80 }} />
+            </Col>
+          </Row>
+
+          {/* Graph + Engagement/AfterHours inside same Card */}
+          <Card style={{ marginTop: '24px', borderRadius: 8, }}>
+            <div style={{
+              display: 'flex',
+              flexDirection: 'row',
+              flexWrap: 'nowrap',
+              alignItems: 'flex-start',
+              height: '250px',
+            }}>
+              {/* Bar Chart */}
+              <div style={{ flex: 2 }}>
+                <ResponsiveContainer width="100%" height={250}>
+                  <BarChart data={communicationFlowData} margin={{ top: 20, right: 30, left: 20, bottom: 0 }}>
+                    <Bar dataKey="value" fill="#5B4CDB" radius={[4, 4, 0, 0]} >
+                      <LabelList dataKey="name" position="top" style={{ fill: '#000000', fontSize: '14px' }} />
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+
+              {/* Inline Engagement & After Hours (no card borders) */}
+              <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                height: '100%',
+                minWidth: '218px'
+              }}>
+
+
+                <div style={{ width: '218px', height: '80px' }}>
+                  <StatCard
+                    title="Engagement"
+                    value={displayValue(engagement_rate, true)}
+                    percentageChange={displayPercentageChange(percentage_changes?.pc_engagement_rate)}
+                    bare
+                  />
+                </div>
+                <div style={{ width: '218px', height: '80px' }}>
+                  <StatCard
+                    title="Bookings made after hours"
+                    value={displayValue(calculateAfterHoursBookings())}
+                    percentageChange={displayPercentageChange(percentage_changes?.pc_booking_time_distribution)}
+                    bare
+                  />
+                </div>
+              </div>
+            </div>
+          </Card>
+
         </Col>
-        <Col xs={12} sm={8} md={4} lg={4}>
-          <StatCard
-            title="Invites delivered"
-            value={displayValue(total_patients_sent_message_status)}
-          />
-        </Col>
-        <Col xs={12} sm={8} md={4} lg={4}>
-          <StatCard
-            title="Patients engaged"
-            value={displayValue(total_patients_engaged)}
-          />
-        </Col>
-        <Col xs={12} sm={8} md={4} lg={4}>
-          <StatCard
-            title="Bookings made"
-            value={displayValue(bookings)}
-          />
-        </Col>
-        <Col xs={12} sm={8} md={4} lg={4}>
+
+        {/* RIGHT COLUMN */}
+        <Col xs={24} md={8} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
           <StatCard
             title="Booking rate"
             value={displayValue(booking_rate, true)}
             percentageChange={displayPercentageChange(percentage_changes?.pc_booking_rate)}
+            style={{ width: 218, height: 80 }}
+          />
+          <StatCard
+            title={<Text type="secondary"><span style={{ color: "#EF4444" }}>Failed</span> - Message failed</Text>}
+            value={displayValue(total_patients_failed_message_status)}
+            percentageChange={displayPercentageChange(percentage_changes?.pc_failed_messages)}
+            style={{ width: 218, height: 80 }}
+          />
+          <StatCard
+            title={<Text type="secondary"><span style={{ color: "#EF4444" }}>Failed</span> - Unengaged</Text>}
+            value={displayValue(total_patients_read_but_no_response)}
+            percentageChange={displayPercentageChange(percentage_changes?.pc_failed_messages)}
+            style={{ width: 218, height: 80 }}
           />
         </Col>
+
       </Row>
 
-      <Row justify='space-between' >
-        {/* Communication Flow Bar Chart */}
-        <Col xs={24} sm={24} md={13} lg={13}>
-          <Card title=" " style={{ height: 'auto', minHeight: '400px' }}>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={communicationFlowData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                <Bar dataKey="value" fill="#5B4CDB" radius={[4, 4, 0, 0]} >
-                  <LabelList dataKey="name" position="top" style={{ fill: '#000000', fontSize: '14px' }} />
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </Card>
-        </Col>
-
-        {/* Failed Messages and Engagement Rate - Updated to 2x2 grid */}
-        <Col xs={24} sm={24} md={12} lg={10}>
-          <div style={{ height: 'auto', minHeight: '400px' }}>
-            <Row gutter={[16, 16]} style={{ height: '100%' }}>
-              <Col xs={12} sm={12} md={12} lg={12}>
-                <StatCard
-                  title="Engagement"
-                  value={displayValue(engagement_rate, true)}
-                  percentageChange={displayPercentageChange(percentage_changes?.pc_engagement_rate)}
-                />
-              </Col>
-              <Col xs={12} sm={12} md={12} lg={12}>
-                <StatCard
-                  title={<Text type="secondary" style={{ display: 'block', marginBottom: '12px' }}><span style={{ color: "#EF4444" }}>Failed</span> - Message failed</Text>}
-                  value={displayValue(total_patients_failed_message_status)}
-                  percentageChange={displayPercentageChange(percentage_changes?.pc_failed_messages)}
-                />
-              </Col>
-              <Col xs={12} sm={12} md={12} lg={12}>
-                <StatCard
-                  title="Bookings made after hours"
-                  value={displayValue(calculateAfterHoursBookings())}
-                  percentageChange={displayPercentageChange(percentage_changes?.pc_booking_time_distribution)}
-                />
-              </Col>
-              <Col xs={12} sm={12} md={12} lg={12}>
-                <StatCard
-                  title={<Text type="secondary" style={{ display: 'block', marginBottom: '12px' }}><span style={{ color: "#EF4444" }}>Failed</span> - Unengaged</Text>}
-                  value={displayValue(total_patients_read_but_no_response)}
-                  percentageChange={displayPercentageChange(percentage_changes?.pc_failed_messages)}
-                />
-              </Col>
-            </Row>
-          </div>
-        </Col>
-      </Row>
 
       <Row gutter={[24, 24]} style={{ marginTop: '24px' }}>
         {/* Appointment Outcomes Pie Chart */}
