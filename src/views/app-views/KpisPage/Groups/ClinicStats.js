@@ -50,12 +50,14 @@ const StatCard = ({ title, value, subtitle, color = '#000000', change = "12", ch
     return (
       <div style={{ height: '80px', textAlign: 'left', ...style }}>
         <Text
+          type='secondary'
           style={{
             display: 'block',
             fontSize: '14px',
-            fontWeight: 300,
+            fontWeight: 'strong',
             lineHeight: '22px',
             marginBottom: '4px'
+
           }}
         >
           {title}
@@ -66,7 +68,7 @@ const StatCard = ({ title, value, subtitle, color = '#000000', change = "12", ch
   }
 
   return (
-    <Card title={<Text style={{ fontWeight: "normal" }}>{title}</Text>} size="small">
+    <Card title={<Text type='secondary' style={{ fontWeight: 'strong', }}>{title}</Text>} size="small">
       {content}
     </Card>
   );
@@ -170,16 +172,16 @@ const ClinicStats = ({ title, previousPeriod }) => {
           <Col xs={24} md={18}>
             {/* Top 4 StatCards */}
             <Row gutter={16} justify="space-between">
-              <Col xs={12} sm={8} md={4} lg={5}>
+              <Col xs={12} sm={8} md={4} lg={6}>
                 <StatCard title="Patients invited" value={displayValue(total_patients_added)} style={{ width: 218, height: 80 }} />
               </Col>
-              <Col xs={12} sm={8} md={4} lg={5}>
+              <Col xs={12} sm={8} md={4} lg={6}>
                 <StatCard title="Invites delivered" value={displayValue(total_patients_sent_message_status)} style={{ width: 218, height: 80 }} />
               </Col>
-              <Col xs={12} sm={8} md={4} lg={5}>
+              <Col xs={12} sm={8} md={4} lg={6}>
                 <StatCard title="Patients engaged" value={displayValue(total_patients_engaged)} style={{ width: 218, height: 80 }} />
               </Col>
-              <Col xs={12} sm={8} md={4} lg={5}>
+              <Col xs={12} sm={8} md={4} lg={6}>
                 <StatCard title="Bookings made" value={displayValue(bookings)} style={{ width: 218, height: 80 }} />
               </Col>
             </Row>
