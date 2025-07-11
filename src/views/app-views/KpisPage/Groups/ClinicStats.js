@@ -6,6 +6,8 @@ import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, LabelList } fr
 
 const { Text } = Typography;
 
+const pieChartColors = ['#5D4EBF', '#E880FF', '#FFBFB0', '#18D9C5', '#121E38', '#8C3B87', '#e8fbf9'];
+
 const displayValue = (value, isPercentage = false) => {
   if (value === null || value === undefined || value === '') return '-1';
   if (isPercentage) return `${Number(value).toFixed(1)}%`;
@@ -277,8 +279,9 @@ const ClinicStats = ({ title, previousPeriod }) => {
                     label={({ name, value }) => value > 0 ? `${name}: ${value}` : ''}
                     labelLine={{ stroke: '#666', strokeWidth: 1 }}
                     labelPosition="outside"
+                    style={{ fontWeight: 'bold' }}
                   >
-                    {appointmentOutcomes.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
+                    {appointmentOutcomes.map((_entry, index) => <Cell key={`cell-${index}`} fill={pieChartColors[index]} />)}
                   </Pie>
                 </PieChart>
               </ResponsiveContainer>
@@ -300,7 +303,7 @@ const ClinicStats = ({ title, previousPeriod }) => {
                       marginRight: '8px',
                       flexShrink: 0
                     }} />
-                    <Text style={{ display: 'flex', alignItems: 'center' }}>{item.name}</Text>
+                    <Text strong>{item.name}</Text>
                   </div>
                 ))}
               </div>
