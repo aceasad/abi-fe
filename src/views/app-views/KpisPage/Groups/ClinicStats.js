@@ -6,6 +6,8 @@ import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, LabelList } fr
 
 const { Text } = Typography;
 
+const pieChartColors = ['#5D4EBF', '#E880FF', '#FFBFB0', '#18D9C5', '#121E38', '#8C3B87', '#e8fbf9'];
+
 const displayValue = (value, isPercentage = false) => {
   if (value === null || value === undefined || value === '') return '-1';
   if (isPercentage) return `${Number(value).toFixed(1)}%`;
@@ -50,12 +52,14 @@ const StatCard = ({ title, value, subtitle, color = '#000000', change = "12", ch
     return (
       <div style={{ height: '80px', textAlign: 'left', ...style }}>
         <Text
+          type='secondary'
           style={{
             display: 'block',
             fontSize: '14px',
-            fontWeight: 300,
+            fontWeight: 'strong',
             lineHeight: '22px',
             marginBottom: '4px'
+
           }}
         >
           {title}
@@ -66,7 +70,7 @@ const StatCard = ({ title, value, subtitle, color = '#000000', change = "12", ch
   }
 
   return (
-    <Card title={<Text style={{ fontWeight: "normal" }}>{title}</Text>} size="small">
+    <Card title={<Text type='secondary' style={{ fontWeight: 'strong', }}>{title}</Text>} size="small">
       {content}
     </Card>
   );
@@ -151,7 +155,7 @@ const ClinicStats = ({ title, previousPeriod }) => {
   // Communication flow data - only use API data
   const communicationFlowData = [
     { name: 'Invited', value: total_patients_added ?? -1 },
-    { name: 'Delivered', value: total_patients_sent_message_status ?? -1 },
+    { name: 'Delivered', value: total_patients_invited ?? -1 },
     { name: 'Engaged', value: total_patients_engaged ?? -1 },
     { name: 'Booked', value: bookings ?? -1 }
   ];
@@ -170,16 +174,16 @@ const ClinicStats = ({ title, previousPeriod }) => {
           <Col xs={24} md={18}>
             {/* Top 4 StatCards */}
             <Row gutter={16} justify="space-between">
-              <Col xs={12} sm={8} md={4} lg={5}>
+              <Col xs={12} sm={8} md={4} lg={6}>
                 <StatCard title="Patients invited" value={displayValue(total_patients_added)} style={{ width: 218, height: 80 }} />
               </Col>
-              <Col xs={12} sm={8} md={4} lg={5}>
-                <StatCard title="Invites delivered" value={displayValue(total_patients_sent_message_status)} style={{ width: 218, height: 80 }} />
+              <Col xs={12} sm={8} md={4} lg={6}>
+                <StatCard title="Invites delivered" value={displayValue(total_patients_invited)} style={{ width: 218, height: 80 }} />
               </Col>
-              <Col xs={12} sm={8} md={4} lg={5}>
+              <Col xs={12} sm={8} md={4} lg={6}>
                 <StatCard title="Patients engaged" value={displayValue(total_patients_engaged)} style={{ width: 218, height: 80 }} />
               </Col>
-              <Col xs={12} sm={8} md={4} lg={5}>
+              <Col xs={12} sm={8} md={4} lg={6}>
                 <StatCard title="Bookings made" value={displayValue(bookings)} style={{ width: 218, height: 80 }} />
               </Col>
             </Row>
@@ -277,8 +281,9 @@ const ClinicStats = ({ title, previousPeriod }) => {
                     label={({ name, value }) => value > 0 ? `${name}: ${value}` : ''}
                     labelLine={{ stroke: '#666', strokeWidth: 1 }}
                     labelPosition="outside"
+                    style={{ fontWeight: 'bold' }}
                   >
-                    {appointmentOutcomes.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
+                    {appointmentOutcomes.map((_entry, index) => <Cell key={`cell-${index}`} fill={pieChartColors[index]} />)}
                   </Pie>
                 </PieChart>
               </ResponsiveContainer>
@@ -300,7 +305,7 @@ const ClinicStats = ({ title, previousPeriod }) => {
                       marginRight: '8px',
                       flexShrink: 0
                     }} />
-                    <Text style={{ display: 'flex', alignItems: 'center' }}>{item.name}</Text>
+                    <Text strong>{item.name}</Text>
                   </div>
                 ))}
               </div>
