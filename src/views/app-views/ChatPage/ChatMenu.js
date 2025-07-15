@@ -26,6 +26,20 @@ import { CHAT_FILTERS, MESSAGE_STATUS } from 'constants/ChatConstants';
 import { Option } from 'antd/lib/mentions';
 
 const ChatMenu = (props) => {
+
+  const getStatusColor = (status) => {
+    if (status === 'RESCHEDULED' || status === 'BOOKED' || status === 'REMINDED') {
+      return '#18D9C5'; // Green
+    } else if (status === 'ASKED_QUESTION' || status === 'RESCHEDULING' || status === 'CANCELLING' || status === 'BOOKING' || status === 'INVITED' || status === 'INCOMPLETE' || status === 'SCREENED_ELSEWHERE' || status === 'HUMAN_INTERVENTION' || status === 'SNOOZED') {
+      return '#FFBF00'; // Yellow
+    } else if (status === 'CANCELLED' || status === 'NO_RESPONSE' || status === 'INACTIVE' || status === 'INCOMPLETE' || status === 'OPT_OUT' || status === 'DECLINED' || status === 'EMERGENCY_SITUATION') {
+      return '#FF474C'; // Red
+    } else if (status === 'FAILED') {
+      return '#100101'; // Black
+    } else {
+      return '#E880FF'; // Default color
+    }
+  };
   const history = useHistory();
   const location = useLocation();
   const match = useRouteMatch();
@@ -171,6 +185,7 @@ const ChatMenu = (props) => {
     scrollHeightRef.current = menuRef.current.getScrollHeight();
   }, [items]);
 
+
   return (
     <div className="chat-menu">
       <div className="chat-menu-toolbar">
@@ -196,45 +211,96 @@ const ChatMenu = (props) => {
       </div>
       <div className="chat-menu-list">
         <Scrollbars id="chat-menu-scroll" ref={menuRef} autoHide={false}>
-          {items.map((item, index) => (
-            <div
-              key={`chat-item-${item.patient.id}${index}`}
-              onClick={() => openChat(item.patient.id)}
-              className={chatListItemStyle(
-                items.length,
-                item.patient.id,
-                index,
-                currentChatID
-              )}
-            >
-              <AvatarStatus
-                src={item.patient.picture}
-                name={item.patient.full_name}
-                subTitle={item.last_message.text}
-                is_human_required={item.patient.is_human_required}
-                is_in_emergency_situation={
-                  item.patient.is_in_emergency_situation
-                }
-                is_in_opt_out_situation={
-                  item.patient.is_in_opt_out_situation
-                }
-                communication_status={item.patient.conversation_status}
-              />
-              <div className="text-right">
-                <div className="chat-menu-list-item-time">
-                  {removeLeadingZeroFromTime(
-                    formatMessageTimestamp(item.last_message.created_at)
-                  )}
-                </div>
-                {item?.last_message.status === MESSAGE_STATUS.SENT &&
-                  !item?.last_message.is_answer ? (
-                  <Badge count={1} style={{ backgroundColor: COLOR_1 }} />
-                ) : (
-                  <span></span>
+          {items.map((item, index) => {
+            const statusColor = getStatusColor(item.patient.conversation_status);
+
+            return (
+              <div
+                key={`chat-item-${item.patient.id}${index}`}
+                onClick={() => openChat(item.patient.id)}
+                className={chatListItemStyle(
+                  items.length,
+                  item.patient.id,
+                  index,
+                  currentChatID
                 )}
+                style={{
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  padding: '12px 16px'
+                }}
+              >
+                {/* Status indicator dot - larger and more prominent */}
+                <div
+                  className="status-indicator"
+                  style={{
+                    width: '14px',
+                    height: '14px',
+                    borderRadius: '50%',
+                    backgroundColor: statusColor,
+                    marginRight: '14px',
+                    marginTop: '4px',
+                    flexShrink: 0
+                  }}
+                />
+
+                {/* Patient info and message - with max-width to prevent overflow */}
+                <div style={{
+                  flex: 1,
+                  minWidth: 0, // Important: allows flex item to shrink below content size
+                  paddingRight: '12px'
+                }}>
+                  <div style={{
+                    fontWeight: 'bold',
+                    fontSize: '14px',
+                    marginBottom: '2px',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis'
+                  }}>
+                    {item.patient.full_name}
+                    {item.patient.is_in_emergency_situation &&
+                      <span style={{ marginLeft: '6px', color: '#FF474C' }}>⚠</span>}
+                    {item.patient.is_human_required &&
+                      <span style={{ marginLeft: '6px', color: '#18D9C5' }}>👤</span>}
+                  </div>
+                  <div
+                    className="text-muted"
+                    style={{
+                      fontSize: '13px',
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis'
+                    }}
+                  >
+                    {(() => {
+                      const text = item.last_message.text || "";
+                      const words = text.split(" ");
+                      return words.slice(0, 8).join(" ");
+                    })()}
+                  </div>
+                </div>
+
+                {/* Date - fixed width to ensure alignment */}
+                <div style={{
+                  width: '60px', // Fixed width for consistent alignment
+                  flexShrink: 0,
+                  textAlign: 'right',
+                  fontSize: '12px',
+                  color: '#888'
+                }}>
+                  {item.last_message.created_at ?
+                    new Date(item.last_message.created_at)
+                      .toLocaleDateString('en-GB', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: '2-digit'
+                      }).replace(/\//g, '/') :
+                    ''}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </Scrollbars>
       </div>
     </div>

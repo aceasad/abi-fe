@@ -67,30 +67,34 @@ const Conversation = ({
     scrollHeightRef.current = chatBodyRef.current.getScrollHeight();
   }, [items]);
 
+
+
+  // Let's modify this to handle the scroll position before updating the ref
   useEffect(() => {
+    if (!chatBodyRef.current) return;
+
+    const currentScrollTop = chatBodyRef.current.getScrollTop();
+    const currentScrollHeight = chatBodyRef.current.getScrollHeight();
+
+    // Update the ref
     nextRef.current = next;
+
+    // Maintain scroll position after ref update
+    requestAnimationFrame(() => {
+      if (chatBodyRef.current) {
+        const newScrollHeight = chatBodyRef.current.getScrollHeight();
+        const heightDifference = newScrollHeight - currentScrollHeight;
+        if (heightDifference > 0) {
+          chatBodyRef.current.scrollTop(currentScrollTop + heightDifference);
+        }
+      }
+    });
   }, [next]);
 
   const onSend = ({ newMessage }) => {
     newMessage &&
       WebSocketClient.sendMessage(formatMessageForSocketSend(newMessage, id));
   };
-
-  const chatContentBody = (messages, next, patientPicture) =>
-    messages ? (
-      <ChatContentBody
-        messages={addDividers(messages, next)}
-        patientPicture={patientPicture}
-      />
-    ) : null;
-
-  useLazyLoad(
-    '#single-chat-scroll div',
-    handleGetMoreSingleMessages,
-    [],
-    () => !!nextRef.current,
-    false
-  );
 
   const handleOnClickMarkHumanRequiredResolved = async (patient_id) => {
     await dispatch(markConversationHumanNotRequired(patient_id));
@@ -104,6 +108,26 @@ const Conversation = ({
     getConversation(patient_id);
   };
 
+  // Updated chatContentBody function to pass all required props
+  const chatContentBody = (messages, next, patientPicture) =>
+    messages ? (
+      <ChatContentBody
+        messages={addDividers(messages, next)}
+        patientPicture={patientPicture}
+        onClickMarkHumanRequiredResolved={handleOnClickMarkHumanRequiredResolved}
+        onClickMarkInEmergencySituationResolved={handleOnClickMarkInEmergencySituationResolved}
+        chatLoading={loading}
+      />
+    ) : null;
+
+  useLazyLoad(
+    '#single-chat-scroll div',
+    handleGetMoreSingleMessages,
+    [],
+    () => !!nextRef.current,
+    false
+  );
+
   return (
     <div className="chat-content">
       <ChatContentHeader
@@ -111,12 +135,10 @@ const Conversation = ({
         chatLoading={loading}
         isMenuVisible={isMenuVisible}
         BackAction={BackAction}
-        onClickMarkHumanRequiredResolved={
-          handleOnClickMarkHumanRequiredResolved
-        }
-        onClickMarkInEmergencySituationResolved={
-          handleOnClickMarkInEmergencySituationResolved
-        }
+
+      // Remove these props since they're now handled in ChatContentBody
+      // onClickMarkHumanRequiredResolved={handleOnClickMarkHumanRequiredResolved}
+      // onClickMarkInEmergencySituationResolved={handleOnClickMarkInEmergencySituationResolved}
       />
       <div className="chat-content-body">
         <Scrollbars
@@ -124,6 +146,31 @@ const Conversation = ({
           ref={chatBodyRef}
           autoHide={false}
           id="single-chat-scroll"
+          renderThumbVertical={({ style, ...props }) => (
+            <div
+              {...props}
+              style={{
+                ...style,
+                backgroundColor: 'rgba(0, 0, 0, 0.2)',
+                borderRadius: '4px',
+                width: '6px',
+              }}
+            />
+          )}
+          renderTrackVertical={({ style, ...props }) => (
+            <div
+              {...props}
+              style={{
+                ...style,
+                backgroundColor: 'rgba(0, 0, 0, 0.05)',
+                width: '6px',
+                right: 0,
+                bottom: 2,
+                top: 2,
+                borderRadius: '4px',
+              }}
+            />
+          )}
         >
           {chatInfo?.patient &&
             chatContentBody(items, next, chatInfo.patient.picture)}

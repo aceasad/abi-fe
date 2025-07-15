@@ -51,6 +51,8 @@ const initialState = {
   human_intervention: 0,
   already_screened: 0,
 
+  percentage_changes: {},
+
 
   preferences: {
     byDay: {
@@ -116,6 +118,7 @@ const chats = (state = initialState, action) =>
         draft.already_screened = action.payload.already_screened;
         draft.engagement_rate = action.payload.engagement_rate;
         draft.booking_rate = action.payload.booking_rate;
+        draft.percentage_changes = action.payload.percentage_changes;
         break;
       case SET_OVERVIEW_SUMMARY_DATA_LOADING:
         draft.loading = action.payload;

@@ -24,10 +24,12 @@ import {
 import { push } from 'connected-react-router';
 
 import AuthService from 'services/AuthService';
+import clinicService from 'services/ClinicService';
 import { ROUTES } from 'routes';
 import messages from 'containers/Forms/LoginForm/messages';
 import { clearLocalStorage } from 'utils/localStorage';
 import changePasswordMessages from 'views/app-views/SettingsPage/messages';
+import { setClinic } from '../actions/Clinic';
 
 export function* signIn() {
   yield takeEvery(SIGNIN, function* ({ payload }) {
@@ -45,6 +47,9 @@ export function* userFetch() {
     try {
       const { data } = yield call(AuthService.fetchUser);
       yield put(setUser(data));
+      // Fetch clinic data after user data is set
+      const clinicData = yield call(clinicService.getClinic);
+      yield put(setClinic(clinicData.data));
     } catch (error) {
       yield put(showAuthMessage(error));
     }

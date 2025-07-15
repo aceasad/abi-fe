@@ -57,7 +57,7 @@ const Chat = () => {
   useEffect(() => {
     const socketUrl = createWebsocketUrl(token);
     if (token) {
-      WebSocketClient.connect(socketUrl, () => {}, handleReceiveMessage);
+      WebSocketClient.connect(socketUrl, () => { }, handleReceiveMessage);
       WebSocketClient.waitForConnection();
     }
   }, [token]);
@@ -77,11 +77,10 @@ const Chat = () => {
         title={
           isMobile ? (
             <Typography.Title level={2} className="mb-0">
-              {`${formatMessage(messages.conversationsTitle)}${
-                !rasaHealthy
-                  ? ': Communication with Asa AI is down for maintenance'
-                  : ''
-              }`}
+              {`${formatMessage(messages.conversationsTitle)}${!rasaHealthy
+                ? ': Communication with Asa AI is down for maintenance'
+                : ''
+                }`}
             </Typography.Title>
           ) : (
             ''
@@ -97,7 +96,6 @@ const Chat = () => {
           </Button>,
         ]}
       />
-
       <div className="chat">
         <InnerAppLayout
           sideContent={

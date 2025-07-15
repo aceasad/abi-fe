@@ -1,6 +1,6 @@
 {
   "home": "Home",
-
+  "menu.collapse":"Close Sidebar",
   "sidenav.dashboard": "Dashboard",
   "sidenav.dashboard.default": "Default",
   "sidenav.dashboard.analytic": "Analytic",

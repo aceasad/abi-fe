@@ -25,7 +25,7 @@ import overviewService from 'services/OverviewService';
 import {
   SHOW_KPIS,
 } from 'configs/AppConfig';
-
+import moment from 'moment';
 const { RangePicker } = DatePicker;
 
 const downloadKpiData = async (start_time, end_time) => {
@@ -41,7 +41,29 @@ const KpisPage = () => {
   const { formatMessage } = useIntl();
   const dispatch = useDispatch();
 
-  const [dateRange, setDateRange] = useState([null, null]);
+  const [dateRange, setDateRange] = useState([
+    moment().subtract(1, 'month').startOf('day'),
+    moment().endOf('day')
+  ]);
+
+  const [previousPeriod, setPreviousPeriod] = useState([
+    moment().subtract(2, 'month').startOf('day'),
+    moment().subtract(1, 'month').startOf('day')
+  ]);
+
+
+  const handleDateRangeChange = (dates) => {
+    if (dates) {
+      setDateRange(dates);
+      const startDate = dates[0];
+      const previousStart = moment(startDate).subtract(30, 'days');
+      const previousEnd = moment(startDate).subtract(1, 'days');
+      setPreviousPeriod([previousStart, previousEnd]);
+    } else {
+      setDateRange(null);
+      setPreviousPeriod(null);
+    }
+  };
 
   const handleDownload = async () => {
     try {
@@ -87,60 +109,33 @@ const KpisPage = () => {
         }
       />
       <Layout>
-        <Card>
-          {SHOW_KPIS && (
-            <>
-              <Row justify="space-between" align="middle">
-                <Col>
-                  <RangePicker
-                    onChange={(dates) => setDateRange(dates)}
-                    value={dateRange}
-                  />
-                </Col>
-                <Col>
-                  <Button
-                    type="primary"
-                    icon={<DownloadOutlined />}
-                    onClick={handleDownload}
-                  >
-                    Export Data
-                  </Button>
-                </Col>
-              </Row>
-              <Row gutter={48}>
-                <Col span={24} className="mt-4">
-                  <ClinicStats title={formatMessage(messages.bookingTitle)} />
-
-
-                  {/* <GroupCollapse
-              startOpen
-              title={formatMessage(messages.bookingTitle)}
-              group={<Booking title={formatMessage(messages.bookingTitle)} />}
-            />
-            <GroupCollapse
-              startOpen
-              title={formatMessage(messages.asaDataTitle)}
-              group={<AbiData title={formatMessage(messages.asaDataTitle)} />}
-            />
-            <GroupCollapse
-              title={formatMessage(messages.uptakeTitle)}
-              group={<Uptake title={formatMessage(messages.uptakeTitle)} />}
-            />
-            <GroupCollapse
-              startOpen
-              title={formatMessage(messages.appointmentsTitle)}
-              group={
-                <Appointments
-                  title={formatMessage(messages.appointmentsTitle)}
+        {SHOW_KPIS && (
+          <>
+            <Row justify="space-between" align="middle">
+              <Col>
+                <RangePicker
+                  onChange={handleDateRangeChange}
+                  value={dateRange}
+                  disabledDate={(current) => current && current > moment().endOf('day')}
                 />
-              }
-            />
-           */}
-                </Col>
-              </Row>
-            </>
-          )}
-        </Card>
+              </Col>
+              <Col>
+                <Button
+                  type="primary"
+                  icon={<DownloadOutlined />}
+                  onClick={handleDownload}
+                >
+                  Export Data
+                </Button>
+              </Col>
+            </Row>
+            <Row gutter={48}>
+              <Col span={24} className="mt-4">
+                <ClinicStats title={formatMessage(messages.bookingTitle)} previousPeriod={previousPeriod} />
+              </Col>
+            </Row>
+          </>
+        )}
       </Layout>
     </>
   );
