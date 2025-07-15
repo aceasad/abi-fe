@@ -155,7 +155,7 @@ const ClinicStats = ({ title, previousPeriod }) => {
   // Communication flow data - only use API data
   const communicationFlowData = [
     { name: 'Invited', value: total_patients_added ?? -1 },
-    { name: 'Delivered', value: total_patients_sent_message_status ?? -1 },
+    { name: 'Delivered', value: total_patients_invited ?? -1 },
     { name: 'Engaged', value: total_patients_engaged ?? -1 },
     { name: 'Booked', value: bookings ?? -1 }
   ];
@@ -178,7 +178,7 @@ const ClinicStats = ({ title, previousPeriod }) => {
                 <StatCard title="Patients invited" value={displayValue(total_patients_added)} style={{ width: 218, height: 80 }} />
               </Col>
               <Col xs={12} sm={8} md={4} lg={6}>
-                <StatCard title="Invites delivered" value={displayValue(total_patients_sent_message_status)} style={{ width: 218, height: 80 }} />
+                <StatCard title="Invites delivered" value={displayValue(total_patients_invited)} style={{ width: 218, height: 80 }} />
               </Col>
               <Col xs={12} sm={8} md={4} lg={6}>
                 <StatCard title="Patients engaged" value={displayValue(total_patients_engaged)} style={{ width: 218, height: 80 }} />
