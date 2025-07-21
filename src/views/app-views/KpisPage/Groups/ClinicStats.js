@@ -165,7 +165,7 @@ const ClinicStats = ({ title, previousPeriod }) => {
       <Card title="Patient Communication Flow">
         {previousPeriod && (
           <Text type="secondary" style={{ position: "absolute", top: 20, left: 276 }}>
-            Previous period {previousPeriod[0].format('MMMM D, YYYY')} - {previousPeriod[1].format('MMMM D, YYYY')}
+            Previous period {previousPeriod[0].format('D MMMM YYYY')} - {previousPeriod[1].format('D MMMM YYYY')}
           </Text>
         )}
 
