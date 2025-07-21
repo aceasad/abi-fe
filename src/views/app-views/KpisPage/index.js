@@ -41,14 +41,16 @@ const KpisPage = () => {
   const { formatMessage } = useIntl();
   const dispatch = useDispatch();
 
+  const startDate = moment('2024-05-01');
+
   const [dateRange, setDateRange] = useState([
-    moment().subtract(1, 'month').startOf('day'),
+    startDate.clone().startOf('day'),
     moment().endOf('day')
   ]);
 
   const [previousPeriod, setPreviousPeriod] = useState([
-    moment().subtract(2, 'month').startOf('day'),
-    moment().subtract(1, 'month').startOf('day')
+    startDate.clone().subtract(30, 'days').startOf('day'),
+    startDate.clone().subtract(1, 'days').endOf('day')
   ]);
 
 
