@@ -9,7 +9,7 @@ import {
   SWITCH_THEME,
 } from '../constants/Theme';
 import { THEME_CONFIG } from 'configs/AppConfig';
-import produce from 'immer';
+import { produce } from 'immer';
 
 const initTheme = {
   ...THEME_CONFIG,

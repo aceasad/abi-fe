@@ -17,7 +17,7 @@ import {
   RESET_PASSWORD_SUCCESS,
 } from '../constants/Auth';
 import { getLocalStorageItem } from 'utils/localStorage';
-import produce from 'immer';
+import { produce } from 'immer';
 import { PASSWORD_STATUSES } from 'constants/UserConstants';
 import { URL_PREFIX_PATH } from 'configs/AppConfig';
 
