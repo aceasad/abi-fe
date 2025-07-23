@@ -48,7 +48,6 @@
     "yup": "0.32.8"
   },
   "scripts": {
-    "start": "vite",
     "dev": "vite",
     "build": "tsc && vite build",
     "serve": "vite preview",
