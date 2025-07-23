@@ -1,11 +1,11 @@
 import {
-  PageHeader,
   Select,
   Typography,
   Tabs,
   Card,
   Layout,
 } from 'antd';
+import { PageHeader } from '@ant-design/pro-components';
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import messages from './messages';

@@ -1,4 +1,5 @@
-import { Button, PageHeader, Typography, Grid } from 'antd';
+import { Button, Typography, Grid } from 'antd';
+import { PageHeader } from '@ant-design/pro-components';
 import React from 'react';
 import { useIntl } from 'react-intl';
 import messages from './messages';
