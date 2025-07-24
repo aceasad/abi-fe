@@ -1,6 +1,5 @@
 import {
   Col,
-  PageHeader,
   Row,
   DatePicker,
   Typography,
@@ -9,6 +8,7 @@ import {
   Layout,
   Button,
 } from 'antd';
+import { PageHeader } from '@ant-design/pro-components';
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import messages from './messages';

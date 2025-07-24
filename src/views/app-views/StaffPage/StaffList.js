@@ -11,7 +11,8 @@ import { makeSelectStaff, makeSelectPagination } from 'redux/selectors/Staff';
 import Loading from 'components/shared-components/Loading';
 import Modal from 'components/shared-components/Modal';
 import { deleteStaff } from 'redux/actions/Staff';
-import { message, List, Button, PageHeader, Typography, Grid } from 'antd';
+import { message, List, Button, Typography, Grid } from 'antd';
+import { PageHeader } from '@ant-design/pro-components';
 import utils from 'utils';
 
 const { useBreakpoint } = Grid;

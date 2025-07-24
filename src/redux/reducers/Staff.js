@@ -17,7 +17,7 @@ import {
   SET_MESSAGES_REQUIRING_IMMEDIATE_ATTENTION_LOADING,
   SET_MESSAGES_REQUIRING_IMMEDIATE_ATTENTION_ORDER,
 } from '../constants/Staff';
-import produce from 'immer';
+import { produce } from 'immer';
 import { baseState } from 'constants/ClinicConstants';
 
 export const SCHEDULED = 'scheduled_appointments';

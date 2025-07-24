@@ -1,19 +1,13 @@
-FROM node:14.16.1-alpine as builder
+FROM node:24-alpine AS builder
 
 WORKDIR /app
 
-COPY package.json yarn.lock /app/
-RUN set -ex && \
-	yarn
-
-ARG NODE_ENV=production
+COPY package.json package-lock.json /app/
+RUN npm ci --legacy-peer-deps
 COPY . /app/
-RUN set -ex && \
-	yarn build
-
+RUN npm run build
 
 FROM nginx:1-alpine
 
 COPY docker/default.conf /etc/nginx/conf.d/default.conf
-COPY --from=builder /app/build /app/
-
+COPY --from=builder /app/dist /app/

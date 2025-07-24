@@ -1,4 +1,5 @@
-import { Button, Card, PageHeader, Typography } from 'antd';
+import { Button, Card, Typography } from 'antd';
+import { PageHeader } from '@ant-design/pro-components';
 import ClinicForm from 'containers/Forms/ClinicForm/ClinicForm';
 import React from 'react';
 import { useIntl } from 'react-intl';
