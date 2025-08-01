@@ -22,9 +22,10 @@ function configureStore(preloadedState) {
 
   sagaMiddleware.run(rootSaga);
 
-  if (import.meta.hot) {
-    import.meta.hot.accept('../reducers', (newRootReducer) => {
-      store.replaceReducer(newRootReducer.default(history));
+  if (module.hot) {
+    module.hot.accept('../reducers/index', () => {
+      const nextRootReducer = require('../reducers/index');
+      store.replaceReducer(nextRootReducer);
     });
   }
 

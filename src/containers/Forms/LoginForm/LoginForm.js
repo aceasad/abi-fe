@@ -43,7 +43,7 @@ export const LoginForm = () => {
   const onLogin = (values) => {
     values.retoken = reToken
     // EVALUATE GOOGLE RECAPCHA HERE
-    axios.post(import.meta.env.VITE_APP_API_URL + '/googleverify/recapture/', { 'retoken': reToken })
+    axios.post(process.env.REACT_APP_API_URL + '/googleverify/recapture/', { 'retoken': reToken })
       .then(response => {
         // Handle success
         console.log('Success:', response.data);
@@ -190,4 +190,3 @@ export const LoginForm = () => {
 };
 
 export default LoginForm;
-

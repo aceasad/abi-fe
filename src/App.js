@@ -11,8 +11,8 @@ import { URL_PREFIX_PATH } from 'configs/AppConfig';
 
 const cssPath = !URL_PREFIX_PATH ? 'css' : 'css-dev';
 const themes = {
-  dark: `${cssPath}/dark-theme.css`,
-  light: `${cssPath}/light-theme.css`,
+  dark: `${process.env.PUBLIC_URL}/${cssPath}/dark-theme.css`,
+  light: `${process.env.PUBLIC_URL}/${cssPath}/light-theme.css`,
 };
 
 function App() {

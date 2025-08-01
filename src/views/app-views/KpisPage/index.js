@@ -1,5 +1,6 @@
 import {
   Col,
+  PageHeader,
   Row,
   DatePicker,
   Typography,
@@ -8,7 +9,6 @@ import {
   Layout,
   Button,
 } from 'antd';
-import { PageHeader } from '@ant-design/pro-components';
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import messages from './messages';
@@ -118,6 +118,7 @@ const KpisPage = () => {
                 <RangePicker
                   onChange={handleDateRangeChange}
                   value={dateRange}
+                  format="DD/MM/YYYY"
                   disabledDate={(current) => current && current > moment().endOf('day')}
                 />
               </Col>

@@ -8,7 +8,7 @@ import {
   CREATED_INDUSTRY_AVERAGE_ERROR,
   UPDATE_IS_UPDATED,
 } from '../constants/IndustryAverage';
-import { produce } from 'immer';
+import produce from 'immer';
 
 const initialState = {
   isUpdated: false,

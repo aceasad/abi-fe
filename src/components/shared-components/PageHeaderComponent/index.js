@@ -1,6 +1,5 @@
 import React from 'react';
-import { Button, Typography } from 'antd';
-import { PageHeader } from '@ant-design/pro-components';
+import { Button, PageHeader, Typography } from 'antd';
 
 const PageHeaderComponent = ({
   title,

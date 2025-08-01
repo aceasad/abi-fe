@@ -30,7 +30,7 @@ import {
   SET_APPOINTMENTS_REMINDERS_PAGE,
   SET_APPOINTMENTS_REMINDERS_PAGE_LOADING,
 } from '../constants/Appointment';
-import { produce } from 'immer';
+import produce from 'immer';
 
 const initialState = {
   doctorAppointments: [],
