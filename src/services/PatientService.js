@@ -102,6 +102,10 @@ class PatientService extends ApiService {
     const formData = new FormData();
     formData.append('file', payload.file);
 
+    if (payload.campaignName) {
+      formData.append('campaign_name', payload.campaignName);
+    }
+
     return this.apiClient.post(ENDPOINTS.UPLOADPATIENTSCSV, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',

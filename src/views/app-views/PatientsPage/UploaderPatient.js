@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Modal } from 'antd';
+import { Button, Modal, Input } from 'antd';
 import patientsService from 'services/PatientService';
 import Dropzone from '../DocumentsPage/Dropzone';
 import { Formik } from 'formik';
@@ -14,11 +14,13 @@ const UploaderPatient = ({ onUploadComplete }) => {
   const [monthlyDays, setmonthlyDays] = useState(0);
   const [monthlyTimeslots, setmonthlyTimeslots] = useState(0);
   const [appointmentDaysCountLoading, setAppointmentDaysCountLoading] = useState(false);
+  const [campaignName, setCampaignName] = useState('');
 
   const showModal = () => {
     setOpen(true);
     setFileListToUpload([]);
     setShowLargeFileWarning(false);
+    setCampaignName('');
   };
 
   const countCSVRows = (file) => {
@@ -77,6 +79,7 @@ const UploaderPatient = ({ onUploadComplete }) => {
     try {
       await createPatient({
         file: fileListToUpload[0],
+        campaignName: campaignName,
       });
 
       // Add minimum delay of 1 second before completing
@@ -166,10 +169,24 @@ const UploaderPatient = ({ onUploadComplete }) => {
                 <p>Would you like to proceed with the upload?</p>
               </div>
             ) : (
-              <Dropzone
-                onChange={setFileListToUpload}
-                fileListToUpload={fileListToUpload}
-              />
+              <div>
+                <div style={{ marginBottom: 16 }}>
+                  <label style={{ display: 'block', marginBottom: 8, fontWeight: 500 }}>
+                    Campaign Name
+                  </label>
+                  <Input
+                    placeholder="Enter campaign name"
+                    value={campaignName}
+                    onChange={(e) => setCampaignName(e.target.value)}
+                    style={{ width: '100%' }}
+                    required
+                  />
+                </div>
+                <Dropzone
+                  onChange={setFileListToUpload}
+                  fileListToUpload={fileListToUpload}
+                />
+              </div>
             )}
           </Modal>
         )}
