@@ -1,4 +1,4 @@
-import { produce } from 'immer';
+import produce from 'immer';
 import { SET_CLINIC_ERROR } from 'redux/constants/Error';
 
 const initState = {

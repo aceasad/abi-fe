@@ -1,4 +1,4 @@
-import { produce } from 'immer';
+import produce from 'immer';
 import { chatBaseState } from 'constants/ChatConstants';
 import {
   ADD_MORE_TO_ALL_CHATS_INFO,

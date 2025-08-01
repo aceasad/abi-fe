@@ -11,7 +11,7 @@ import { passwordMinLength } from 'constants/Validation';
 import { makeIsResetPassword } from 'redux/selectors/Auth';
 import { success } from 'components/shared-components/MessagesAlerts/index';
 import { ROUTES } from 'routes';
-const { resetPasswordSchema } = import('utils/validations');
+const { resetPasswordSchema } = require('utils/validations');
 
 export const ValidPasswordFormat = () => {
   const { formatMessage } = useIntl();

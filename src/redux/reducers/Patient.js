@@ -1,5 +1,5 @@
 import { baseState } from 'constants/ClinicConstants';
-import { produce } from 'immer';
+import produce from 'immer';
 import {
   SET_PATIENTS,
   SET_PATIENT_LOADING,

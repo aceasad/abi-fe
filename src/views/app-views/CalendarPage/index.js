@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Calendar, Card, Row, Col, Typography, Badge } from 'antd';
-import dayjs from 'dayjs'
+import moment from 'moment';
 import {
+  DATE_FORMAT_DD_MMM_YYYY,
   DATE_FORMAT_LONG_DATE,
   DATE_FORMAT_YYYY_MM_DD,
 } from 'constants/DateConstant';
@@ -25,7 +26,7 @@ const CalendarPage = () => {
   );
 
   const [selectedDate, setSelectedDate] = useState(
-    () => dayjs(new Date())
+    moment(new Date(), DATE_FORMAT_DD_MMM_YYYY)
   );
 
   const onPanelChange = (value) => {
