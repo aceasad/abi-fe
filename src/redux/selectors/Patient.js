@@ -85,7 +85,7 @@ const makeSelectLastScheduledAppointmentOnThePage = () =>
     isLast:
       scheduledAppointments.page !== 1 &&
       scheduledAppointments.count - 1 <=
-        (scheduledAppointments.page - 1) * DEFAULT_SMALL_PAGINATION_LIMIT,
+      (scheduledAppointments.page - 1) * DEFAULT_SMALL_PAGINATION_LIMIT,
     page: scheduledAppointments.page,
   }));
 
@@ -94,8 +94,14 @@ const makeSelectLastAppointmentHistoryOnThePage = () =>
     isLast:
       appointmentHistory.page !== 1 &&
       appointmentHistory.count - 1 <=
-        (appointmentHistory.page - 1) * DEFAULT_SMALL_PAGINATION_LIMIT,
+      (appointmentHistory.page - 1) * DEFAULT_SMALL_PAGINATION_LIMIT,
     page: appointmentHistory.page,
+  }));
+
+const makeSelectCampaigns = () =>
+  createSelector(selectPatientsDomain, ({ campaigns }) => ({
+    campaigns: campaigns.items,
+    loading: campaigns.loading,
   }));
 
 export {
@@ -112,4 +118,5 @@ export {
   makeSelectScheduledData,
   makeSelectHistory,
   makeSelectHistoryPage,
+  makeSelectCampaigns,
 };

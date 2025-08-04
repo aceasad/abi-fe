@@ -20,6 +20,8 @@ import {
   TOGGLE_PATIENT_WHITELIST,
   SET_PATIENT_SHOW_MESSAGES,
   CLEAR_PATIENT_SHOW_MESSAGES,
+  SET_CAMPAIGNS,
+  SET_CAMPAIGNS_LOADING,
 } from 'redux/constants/Patient';
 
 const initialState = {
@@ -30,6 +32,7 @@ const initialState = {
   ethnicities: [],
   scheduledAppointments: { ...baseState },
   appointmentHistory: { ...baseState },
+  campaigns: { ...baseState },
 };
 
 /* eslint-disable default-case */
@@ -154,6 +157,21 @@ const patient = (state = initialState, action) =>
         draft.patients = {
           ...state.patients,
           patient_show_messages: null,
+        };
+        break;
+      }
+      case SET_CAMPAIGNS: {
+        draft.campaigns = {
+          ...state.campaigns,
+          items: action.payload,
+          loading: false,
+        };
+        break;
+      }
+      case SET_CAMPAIGNS_LOADING: {
+        draft.campaigns = {
+          ...state.campaigns,
+          loading: action.payload,
         };
         break;
       }

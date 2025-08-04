@@ -8,7 +8,7 @@ export const MAX_PAGINATION_LIMIT = 500;
 export const ALL_CHATS_PAGINATION_LIMIT = 12;
 export const CHAT_MESSAGES_PAGINATION_LIMIT = 15;
 export const SET_DEFAULT_PAGINATION_LIMIT = (size) => {
-    DEFAULT_PAGINATION_LIMIT=size;
+  DEFAULT_PAGINATION_LIMIT = size;
 }
 export const ORDERING = {
   DESC: 'descend',
@@ -16,3 +16,5 @@ export const ORDERING = {
 };
 
 export const WS_CHAT_URL = env.SOCKETS_DOMAIN;
+
+export const WS_NOTIFICATION_URL = env.SOCKETS_NOTIFICATION_DOMAIN;

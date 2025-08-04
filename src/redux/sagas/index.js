@@ -10,6 +10,7 @@ import Appointment from './Appointment';
 import Anamnesis from './Anemnesis';
 import Chats from './Chats';
 import Overview from './Overview';
+import Notifications from './Notifications';
 
 export default function* rootSaga(getState) {
   yield all([
@@ -23,5 +24,6 @@ export default function* rootSaga(getState) {
     Anamnesis(),
     Chats(),
     Overview(),
+    Notifications(),
   ]);
 }

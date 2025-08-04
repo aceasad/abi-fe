@@ -30,6 +30,7 @@ import messages from 'containers/Forms/LoginForm/messages';
 import { clearLocalStorage } from 'utils/localStorage';
 import changePasswordMessages from 'views/app-views/SettingsPage/messages';
 import { setClinic } from '../actions/Clinic';
+import { getMessageRequiringImmediateAttentionStatuses } from '../actions/Appointment';
 
 export function* signIn() {
   yield takeEvery(SIGNIN, function* ({ payload }) {
@@ -50,6 +51,8 @@ export function* userFetch() {
       // Fetch clinic data after user data is set
       const clinicData = yield call(clinicService.getClinic);
       yield put(setClinic(clinicData.data));
+      // Fetch message requiring immediate attention statuses after login
+      yield put(getMessageRequiringImmediateAttentionStatuses());
     } catch (error) {
       yield put(showAuthMessage(error));
     }

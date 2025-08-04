@@ -1,4 +1,4 @@
-import { takeEvery, put, call, all, fork, select } from 'redux-saga/effects';
+import { takeEvery, takeLatest, put, call, all, fork, select } from 'redux-saga/effects';
 import appointmentService from 'services/AppointmentService';
 import staffService from 'services/StaffService';
 import patientService from 'services/PatientService';
@@ -42,6 +42,7 @@ import {
   setAppointmentCancellationReasons,
   setMessageRequiringImmediateAttentionStatusesLoading,
   setMessageRequiringImmediateAttentionStatuses,
+  setMessageRequiringImmediateAttentionStatusesFetched,
   getSingleAppointment,
   filterDeletedAppointment,
   setAppointmentsLoading,
@@ -103,7 +104,7 @@ export function* getDateAppointments({ payload }) {
       payload
     );
     yield put(setDateAppointments(data));
-  } catch {}
+  } catch { }
 }
 
 export function* getSingleAppointmentWrapper({ payload }) {
@@ -383,15 +384,28 @@ export function* getAppointmentCancellationReasonsSaga() {
 }
 
 export function* getMessageRequiringImmediateAttentionStatusesSaga() {
-  yield takeEvery(
+  yield takeLatest(
     GET_MESSAGE_REQUIRING_IMMEDIATE_ATTENTION_STATUSES,
     function* () {
+      // Get current state to check if data has already been fetched
+      const state = yield select();
+      const hasBeenFetched = state.appointment.messageRequiringImmediateAttentionStatusesFetched;
+
+      // If data has already been fetched, skip the API call
+      if (hasBeenFetched) {
+        console.log('Message requiring immediate attention statuses already fetched, skipping API call');
+        return;
+      }
+
+
+
       try {
         yield put(setMessageRequiringImmediateAttentionStatusesLoading(true));
         const { data } = yield call(
           appointmentService.getMessageRequiringImmediateAttentionStatuses
         );
         yield put(setMessageRequiringImmediateAttentionStatuses(data));
+        yield put(setMessageRequiringImmediateAttentionStatusesFetched(true));
       } catch {
       } finally {
         yield put(setMessageRequiringImmediateAttentionStatusesLoading(false));

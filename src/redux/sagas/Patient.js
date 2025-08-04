@@ -20,6 +20,7 @@ import {
   GET_SCHEDULED_APPOINTMENTS,
   MARK_CONVERSATION_HUMAN_NOT_REQUIRED,
   MARK_CONVERSATION_NOT_IN_EMERGENCY_SITUATION,
+  GET_CAMPAIGNS,
 } from 'redux/constants/Patient';
 import {
   setPatientDetails,
@@ -34,6 +35,8 @@ import {
   setScheduledAppointments,
   setAppointmentHistory,
   togglePatientWhitelist,
+  setCampaigns,
+  setCampaignsLoading,
 } from 'redux/actions/Patient';
 import {
   makeSelectPatientRequestData,
@@ -44,6 +47,7 @@ import {
 import { getPreviousOperations } from './Anemnesis';
 import { getMedicalConditions } from './Anemnesis';
 import messages from 'views/app-views/PatientsPage/messages';
+import moment from 'moment';
 
 function* getPatients() {
   try {
@@ -75,14 +79,14 @@ function* getPatientDetails({ payload }) {
   try {
     const { data } = yield call(patientService.getPatientDetails);
     yield put(setPatientDetails(data));
-  } catch (err) {}
+  } catch (err) { }
 }
 
 function* getPatientDetailsNewPatientFormData() {
   try {
     const { data } = yield call(patientService.getPatientDetailsNewPatientForm);
     yield put(setPatientDetailsNewPatientForm(data));
-  } catch (error) {}
+  } catch (error) { }
 }
 
 function* createPatient({ payload }) {
@@ -95,13 +99,13 @@ function* createPatient({ payload }) {
   } catch (err) {
     if (err?.response?.status === 400) {
       var error_data = err?.response?.data
-      if (error_data['ExternalIdentificationNumber'] == 'NHS number is incorrect!'){
+      if (error_data['ExternalIdentificationNumber'] == 'NHS number is incorrect!') {
         yield payload.setErrors({ ExternalIdentificationNumber: messages.nhsNumberIncorrect });
       }
-      else if(error_data['phone_number'] == 'patient with this phone number already exists.'){
+      else if (error_data['phone_number'] == 'patient with this phone number already exists.') {
         yield payload.setErrors({ phone_number: messages.phoneNumberAlreadyExists });
       }
-      else{
+      else {
         yield payload.setErrors({ email: messages.emailAlreadyTaken });
       }
     }
@@ -176,26 +180,42 @@ function* getPatientOverview({ payload }) {
       getScheduledAppointments({ payload }),
       getAppointmentHistory({ payload }),
     ]);
-  } catch (err) {}
+  } catch (err) { }
 }
 
 function* changePatient({ payload }) {
   try {
     yield call(patientService.updatePatientPart, payload.id, payload.data);
     yield put(togglePatientWhitelist());
-  } catch (err) {}
+  } catch (err) { }
 }
 
 function* markConversationHumanNotRequired({ payload }) {
   try {
     yield call(patientService.markConversationHumanNotRequired, payload);
-  } catch (err) {}
+  } catch (err) { }
 }
 
 function* markConversationNotInEmergencySituation({ payload }) {
   try {
     yield call(patientService.markConversationNotInEmergencySituation, payload);
-  } catch (err) {}
+  } catch (err) { }
+}
+
+function* getCampaigns() {
+  try {
+    yield put(setCampaignsLoading(true));
+    const { data } = yield call(patientService.getOrganizationCampaigns);
+    // Sort campaigns by created_at in ascending order for proper date range selection
+    const sortedCampaigns = data.sort((a, b) =>
+      moment(a.created_at).valueOf() - moment(b.created_at).valueOf()
+    );
+    yield put(setCampaigns(sortedCampaigns));
+  } catch (err) {
+    console.error('Failed to fetch campaigns:', err);
+  } finally {
+    yield put(setCampaignsLoading(false));
+  }
 }
 
 export function* patientSaga() {
@@ -233,6 +253,7 @@ export function* patientSaga() {
     MARK_CONVERSATION_NOT_IN_EMERGENCY_SITUATION,
     markConversationNotInEmergencySituation
   );
+  yield takeEvery(GET_CAMPAIGNS, getCampaigns);
 }
 
 export default function* rootSaga() {
