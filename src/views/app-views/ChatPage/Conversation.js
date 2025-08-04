@@ -37,7 +37,10 @@ const Conversation = ({
   const dispatch = useDispatch();
 
   useEffect(() => {
-    getConversation(id);
+    // Only make the API call if id is a valid number (not NaN)
+    if (!isNaN(id) && id > 0) {
+      getConversation(id);
+    }
   }, [params.id]);
 
   const handleGetMoreSingleMessages = () => {
@@ -92,17 +95,31 @@ const Conversation = ({
   }, [next]);
 
   const onSend = ({ newMessage }) => {
-    newMessage &&
+    // Only send message if id is valid and newMessage exists
+    if (newMessage && !isNaN(id) && id > 0) {
       WebSocketClient.sendMessage(formatMessageForSocketSend(newMessage, id));
+    }
   };
 
   const handleOnClickMarkHumanRequiredResolved = async (patient_id) => {
+    // Validate patient_id before making API calls
+    if (!patient_id || isNaN(patient_id) || patient_id <= 0) {
+      console.warn('Invalid patient_id provided to handleOnClickMarkHumanRequiredResolved:', patient_id);
+      return;
+    }
+    
     await dispatch(markConversationHumanNotRequired(patient_id));
     dispatch(triggerSearchConversations());
     getConversation(patient_id);
   };
 
   const handleOnClickMarkInEmergencySituationResolved = async (patient_id) => {
+    // Validate patient_id before making API calls
+    if (!patient_id || isNaN(patient_id) || patient_id <= 0) {
+      console.warn('Invalid patient_id provided to handleOnClickMarkInEmergencySituationResolved:', patient_id);
+      return;
+    }
+    
     await dispatch(markConversationNotInEmergencySituation(patient_id));
     dispatch(triggerSearchConversations());
     getConversation(patient_id);

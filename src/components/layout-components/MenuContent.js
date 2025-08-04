@@ -15,6 +15,9 @@ import { MenuFoldOutlined, MenuUnfoldOutlined, LogoutOutlined } from '@ant-desig
 import { useDispatch } from 'react-redux';
 import { useIntl } from 'react-intl';
 import { signOut } from 'redux/actions/Auth';
+import { useSelector } from 'react-redux';
+import { makeSelectUnreadCount } from 'redux/selectors/Notifications';
+import { Badge } from 'antd';
 
 const { SubMenu } = Menu;
 const { useBreakpoint } = Grid;
@@ -48,6 +51,7 @@ const SideNavContent = ({
 }) => {
   const dispatch = useDispatch();
   const { formatMessage } = useIntl();
+  const unreadCount = useSelector(makeSelectUnreadCount());
 
   const history = useHistory();
   const [route, setRoute] = useState({});
@@ -124,7 +128,12 @@ const SideNavContent = ({
           style={{ height: '60px', lineHeight: '60px' }}
         >
           {menu.icon ? <Icon type={menu?.icon} /> : null}
-          <span>{setLocale(localization, menu?.title)}</span>
+          <span>
+            {setLocale(localization, menu?.title)}
+            {menu.key === 'notifications' && unreadCount > 0 && (
+              <Badge count={unreadCount} size="small" style={{ marginLeft: '8px' }} />
+            )}
+          </span>
           {menu.path ? (
             <Link onClick={closeMobileNav} to={menu.path} />
           ) : null}

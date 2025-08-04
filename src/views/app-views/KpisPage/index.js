@@ -8,9 +8,11 @@ import {
   Card,
   Layout,
   Button,
+  Select,
 } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
+import { useDispatch, useSelector } from 'react-redux';
 import messages from './messages';
 import GroupCollapse from './Groups/GroupCollapse';
 import Booking from './Groups/Booking';
@@ -18,8 +20,9 @@ import Appointments from './Groups/Appointments';
 import AbiData from './Groups/AbiData';
 import Uptake from './Groups/Uptake';
 import ClinicStats from './Groups/ClinicStats';
-import { useDispatch } from 'react-redux';
 import { getOverviewClinicStatsData } from 'redux/actions/Overview';
+import { getCampaigns } from 'redux/actions/Patient';
+import { makeSelectCampaigns } from 'redux/selectors/Patient';
 import { DownloadOutlined } from '@ant-design/icons';
 import overviewService from 'services/OverviewService';
 import {
@@ -27,6 +30,7 @@ import {
 } from 'configs/AppConfig';
 import moment from 'moment';
 const { RangePicker } = DatePicker;
+const { Option } = Select;
 
 const downloadKpiData = async (start_time, end_time) => {
   try {
@@ -40,6 +44,8 @@ const downloadKpiData = async (start_time, end_time) => {
 const KpisPage = () => {
   const { formatMessage } = useIntl();
   const dispatch = useDispatch();
+  const campaignsSelector = useSelector(makeSelectCampaigns());
+  const { campaigns, loading: campaignsLoading } = campaignsSelector;
 
   const startDate = moment('2024-05-01');
 
@@ -53,6 +59,12 @@ const KpisPage = () => {
     startDate.clone().subtract(1, 'days').endOf('day')
   ]);
 
+  const [selectedCampaign, setSelectedCampaign] = useState(null);
+
+  // Fetch campaigns on component mount
+  useEffect(() => {
+    dispatch(getCampaigns());
+  }, [dispatch]);
 
   const handleDateRangeChange = (dates) => {
     if (dates) {
@@ -64,6 +76,36 @@ const KpisPage = () => {
     } else {
       setDateRange(null);
       setPreviousPeriod(null);
+    }
+  };
+
+  const handleCampaignChange = (value) => {
+    setSelectedCampaign(value);
+
+    if (value && campaigns) {
+      const selectedCampaignData = campaigns.find(campaign => campaign.id === value);
+      if (selectedCampaignData) {
+        const campaignIndex = campaigns.findIndex(campaign => campaign.id === value);
+        const nextCampaign = campaigns[campaignIndex + 1];
+
+        // Set start date to selected campaign's created_at
+        const startDate = moment(selectedCampaignData.created_at);
+
+        // Set end date to next campaign's created_at or current date if it's the last campaign
+        let endDate;
+        if (nextCampaign) {
+          endDate = moment(nextCampaign.created_at);
+        } else {
+          endDate = moment().endOf('day');
+        }
+
+        setDateRange([startDate, endDate]);
+
+        // Update previous period
+        const previousStart = moment(startDate).subtract(30, 'days');
+        const previousEnd = moment(startDate).subtract(1, 'days');
+        setPreviousPeriod([previousStart, previousEnd]);
+      }
     }
   };
 
@@ -115,12 +157,32 @@ const KpisPage = () => {
           <>
             <Row justify="space-between" align="middle">
               <Col>
-                <RangePicker
-                  onChange={handleDateRangeChange}
-                  value={dateRange}
-                  format="DD/MM/YYYY"
-                  disabledDate={(current) => current && current > moment().endOf('day')}
-                />
+                <Row gutter={16} align="middle">
+                  <Col>
+                    <RangePicker
+                      onChange={handleDateRangeChange}
+                      value={dateRange}
+                      format="DD/MM/YYYY"
+                      disabledDate={(current) => current && current > moment().endOf('day')}
+                    />
+                  </Col>
+                  <Col>
+                    <Select
+                      placeholder="Select Campaign"
+                      style={{ width: 200 }}
+                      value={selectedCampaign}
+                      onChange={handleCampaignChange}
+                      loading={campaignsLoading}
+                      allowClear
+                    >
+                      {campaigns && campaigns.map((campaign) => (
+                        <Option key={campaign.id} value={campaign.id}>
+                          {campaign.campaign_name}
+                        </Option>
+                      ))}
+                    </Select>
+                  </Col>
+                </Row>
               </Col>
               <Col>
                 <Button

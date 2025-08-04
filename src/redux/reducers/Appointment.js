@@ -21,6 +21,7 @@ import {
   SET_APPOINTMENT_CANCELLATION_REASONS,
   SET_MESSAGE_REQUIRING_IMMEDIATE_ATTENTION_STATUSES_LOADING,
   SET_MESSAGE_REQUIRING_IMMEDIATE_ATTENTION_STATUSES,
+  SET_MESSAGE_REQUIRING_IMMEDIATE_ATTENTION_STATUSES_FETCHED,
   SAVE_APPOINTMENT_STATUS_LOADING,
   FILTER_DELETED_APPOINTMENT,
   SET_PATIENTS_AUTOCOMPLETE,
@@ -62,6 +63,7 @@ const initialState = {
   appointmentCancellationReasonsLoading: false,
   messageRequiringImmediateAttentionStatuses: [],
   messageRequiringImmediateAttentionStatusesLoading: false,
+  messageRequiringImmediateAttentionStatusesFetched: false,
   saveAppointmentStatusLoading: false,
   appointmentsReminders: { ...baseState },
 };
@@ -150,6 +152,10 @@ const appointment = (state = initialState, action) =>
         break;
       case SET_MESSAGE_REQUIRING_IMMEDIATE_ATTENTION_STATUSES:
         draft.messageRequiringImmediateAttentionStatuses =
+          action.payload;
+        break;
+      case SET_MESSAGE_REQUIRING_IMMEDIATE_ATTENTION_STATUSES_FETCHED:
+        draft.messageRequiringImmediateAttentionStatusesFetched =
           action.payload;
         break;
 

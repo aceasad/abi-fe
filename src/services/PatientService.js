@@ -18,7 +18,8 @@ const ENDPOINTS = {
   GET_PATIENTS_DETAILS_NEW_PATIENT_FORM: '/patients/patient-details/',
   UPLOADPATIENTSCSV: '/patients/uploadcsv/',
   PATIENTPROGRESS: '/patients/get-all-communication-status-for-patient/',
-  DOWNLOADPATIENTSNOTONWHATSAPP: '/patients/download_not_on_whatsapp_patients_text_file/'
+  DOWNLOADPATIENTSNOTONWHATSAPP: '/patients/download_not_on_whatsapp_patients_text_file/',
+  GET_CAMPAIGNS: '/patients/campaigns/'
 };
 
 class PatientService extends ApiService {
@@ -102,6 +103,10 @@ class PatientService extends ApiService {
     const formData = new FormData();
     formData.append('file', payload.file);
 
+    if (payload.campaignName) {
+      formData.append('campaign_name', payload.campaignName);
+    }
+
     return this.apiClient.post(ENDPOINTS.UPLOADPATIENTSCSV, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -113,6 +118,10 @@ class PatientService extends ApiService {
   }
   postDownloadPatientsNotOnWhatsapp = (formData) => {
     return this.apiClient.post(ENDPOINTS.DOWNLOADPATIENTSNOTONWHATSAPP, formData)
+  }
+
+  getOrganizationCampaigns = () => {
+    return this.apiClient.get(ENDPOINTS.GET_CAMPAIGNS);
   }
 }
 

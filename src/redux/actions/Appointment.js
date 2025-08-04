@@ -40,6 +40,7 @@ import {
   GET_MESSAGE_REQUIRING_IMMEDIATE_ATTENTION_STATUSES,
   SET_MESSAGE_REQUIRING_IMMEDIATE_ATTENTION_STATUSES_LOADING,
   SET_MESSAGE_REQUIRING_IMMEDIATE_ATTENTION_STATUSES,
+  SET_MESSAGE_REQUIRING_IMMEDIATE_ATTENTION_STATUSES_FETCHED,
   UPDATE_MESSAGE_REQUIRING_IMMEDIATE_ATTENTION_STATUS,
   SAVE_APPOINTMENT_STATUS,
   SAVE_APPOINTMENT_STATUS_LOADING,
@@ -268,7 +269,7 @@ export const setAppointmentCancellationReasons = (payload) => ({
 });
 
 // message requiring immediate attention statuses
-export const  getMessageRequiringImmediateAttentionStatuses = (payload) => ({
+export const getMessageRequiringImmediateAttentionStatuses = (payload) => ({
   type: GET_MESSAGE_REQUIRING_IMMEDIATE_ATTENTION_STATUSES,
   payload,
 });
@@ -282,6 +283,11 @@ export const setMessageRequiringImmediateAttentionStatusesLoading = (
 
 export const setMessageRequiringImmediateAttentionStatuses = (payload) => ({
   type: SET_MESSAGE_REQUIRING_IMMEDIATE_ATTENTION_STATUSES,
+  payload,
+});
+
+export const setMessageRequiringImmediateAttentionStatusesFetched = (payload) => ({
+  type: SET_MESSAGE_REQUIRING_IMMEDIATE_ATTENTION_STATUSES_FETCHED,
   payload,
 });
 

@@ -6,7 +6,8 @@ import {
   WhatsAppOutlined,
   SettingOutlined,
   PaperClipOutlined,
-  LineChartOutlined
+  LineChartOutlined,
+  NotificationOutlined,
 } from '@ant-design/icons';
 import { APP_PAGES_PREFIX_PATH } from 'configs/AppConfig';
 
@@ -32,6 +33,14 @@ const pagesNavTree = [
     path: `${APP_PAGES_PREFIX_PATH}/conversation`,
     title: 'sidenav.pages.conversation',
     icon: WhatsAppOutlined,
+    breadcrumb: false,
+    submenu: [],
+  },
+  {
+    key: 'notifications',
+    path: `${APP_PAGES_PREFIX_PATH}/notifications`,
+    title: 'sidenav.pages.notifications',
+    icon: NotificationOutlined,
     breadcrumb: false,
     submenu: [],
   },

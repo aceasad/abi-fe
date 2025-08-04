@@ -20,7 +20,6 @@ import {
   SCHEDULED,
 } from 'redux/reducers/Staff';
 import {
-  getMessageRequiringImmediateAttentionStatuses,
   getSingleAppointment,
   getSinglePreAppointmentQuestionnaire,
 } from 'redux/actions/Appointment';
@@ -68,9 +67,7 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
     }
   }, [activeAppointment, dispatch]);
 
-  useEffect(() => {
-    dispatch(getMessageRequiringImmediateAttentionStatuses());
-  }, [dispatch]);
+  // Removed duplicate dispatch - this is now handled by the parent OverviewPage component
 
   let tableColumns = [
     {

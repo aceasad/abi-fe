@@ -31,6 +31,9 @@ import {
   MARK_CONVERSATION_NOT_IN_EMERGENCY_SITUATION,
   SET_PATIENT_SHOW_MESSAGES,
   CLEAR_PATIENT_SHOW_MESSAGES,
+  GET_CAMPAIGNS,
+  SET_CAMPAIGNS,
+  SET_CAMPAIGNS_LOADING,
 } from '../constants/Patient';
 
 export const getPatients = () => ({
@@ -186,4 +189,18 @@ export const setPatientShowMessages = (payload) => ({
 
 export const clearPatientShowMessages = () => ({
   type: CLEAR_PATIENT_SHOW_MESSAGES,
+});
+
+export const getCampaigns = () => ({
+  type: GET_CAMPAIGNS,
+});
+
+export const setCampaigns = (payload) => ({
+  type: SET_CAMPAIGNS,
+  payload,
+});
+
+export const setCampaignsLoading = (payload) => ({
+  type: SET_CAMPAIGNS_LOADING,
+  payload,
 });
