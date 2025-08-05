@@ -176,11 +176,17 @@ export const addDividers = (messages, hasMoreMessages) => {
 };
 
 export const createWebsocketUrl = (token) => {
-  return `${WS_CHAT_URL}?token=${token.access}`;
+  const url = `${WS_CHAT_URL}?token=${token.access}`;
+  console.log('Creating WebSocket chat URL:', url);
+  console.log('WS_CHAT_URL from env:', WS_CHAT_URL);
+  return url;
 };
 
 export const createWebsocketNotificationUrl = (token) => {
-  return `${WS_NOTIFICATION_URL}?token=${token.access}`;
+  const url = `${WS_NOTIFICATION_URL}?token=${token.access}`;
+  console.log('Creating WebSocket notification URL:', url);
+  console.log('WS_NOTIFICATION_URL from env:', WS_NOTIFICATION_URL);
+  return url;
 }
 
 export const formatMessageForSocketSend = (text, patientId) =>

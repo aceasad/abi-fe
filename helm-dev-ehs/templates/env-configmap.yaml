@@ -6,6 +6,7 @@ metadata:
 data:
   REACT_APP_API_URL: https://ehl010.ehs.developer.gehealthcare.com/abi-be/api/v1
   REACT_APP_SOCKETS_DOMAIN: wss://ehl010.ehs.developer.gehealthcare.com/abi-be/ws/chat
+  REACT_APP_SOCKETS_NOTIFICATION_DOMAIN: wss://ehl010.ehs.developer.gehealthcare.com/abi-be/ws/notifications
   REACT_APP_URL_PREFIX_PATH: abi-fe
   REACT_APP_API_CDN: ""
   REACT_APP_FACEBOOK_APP_ID: ""
