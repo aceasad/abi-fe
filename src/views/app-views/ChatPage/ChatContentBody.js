@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
 import { useToggleRasaActivity } from 'queries/shared';
-import { toggleRasaActivity } from 'redux/actions/Chats';
+import { toggleRasaActivity, getSingleChat } from 'redux/actions/Chats';
 import { makeSelectSingleChatInfo } from 'redux/selectors/Chats';
 import {
   formatMessagesTimestampMinutes,
@@ -23,7 +23,9 @@ const ChatContentBody = ({
   const dispatch = useDispatch();
   const { mutate, isLoading } = useToggleRasaActivity();
   const { chatInfo } = useSelector(makeSelectSingleChatInfo);
-  const [resolveClicked, setResolveClicked] = useState(false);
+  const [humanRequiredLoading, setHumanRequiredLoading] = useState(false);
+  const [emergencyLoading, setEmergencyLoading] = useState(false);
+  const [optOutLoading, setOptOutLoading] = useState(false);
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -35,18 +37,27 @@ const ChatContentBody = ({
     scrollToBottom();
   }, []); // Empty dependency array means it runs only once
 
+  // Reset loading states when chat data changes (indicating action completion)
+  useEffect(() => {
+    if (!chatLoading) {
+      setHumanRequiredLoading(false);
+      setEmergencyLoading(false);
+      setOptOutLoading(false);
+    }
+  }, [chatLoading, chatInfo]);
+
   const onClickMarkHumanRequiredResolvedWrapper = (patient_id) => {
-    setResolveClicked(true);
+    setHumanRequiredLoading(true);
     onClickMarkHumanRequiredResolved(patient_id);
   };
 
   const onClickMarkInEmergencySituationResolvedWrapper = (patient_id) => {
-    setResolveClicked(true);
+    setEmergencyLoading(true);
     onClickMarkInEmergencySituationResolved(patient_id);
   };
 
   const onClickMarkInOptOutWrapper = (patient_id) => {
-    setResolveClicked(true);
+    setOptOutLoading(true);
     // onClickMarkInOptOutResolved(patient_id);
   };
 
@@ -74,7 +85,130 @@ const ChatContentBody = ({
   };
 
   const renderStatusIndicators = () => {
-    if (chatLoading || !chatInfo?.patient) return null;
+    // Show loading placeholders when chat is loading
+    if (chatLoading) {
+      return (
+        <div className="chat-status-indicators" style={{
+          padding: '16px',
+          backgroundColor: '#f8f9fa',
+          borderRadius: '8px',
+          marginBottom: '16px',
+          border: '1px solid #e9ecef'
+        }}>
+          {/* Loading placeholder for Human Required Status */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            marginBottom: '12px',
+            padding: '12px',
+            backgroundColor: '#f5f5f5',
+            borderRadius: '6px',
+            border: '1px solid #e0e0e0'
+          }}>
+            <div style={{
+              width: '16px',
+              height: '16px',
+              borderRadius: '50%',
+              backgroundColor: '#e0e0e0',
+              marginRight: '8px',
+              animation: 'pulse 1.5s ease-in-out infinite'
+            }} />
+            <div style={{
+              flex: 1,
+              color: '#999',
+              fontSize: '14px',
+              fontWeight: '500',
+              animation: 'pulse 1.5s ease-in-out infinite'
+            }}>
+              Loading patient status...
+            </div>
+            <div style={{
+              width: '120px',
+              height: '32px',
+              backgroundColor: '#e0e0e0',
+              borderRadius: '4px',
+              marginLeft: '12px',
+              animation: 'pulse 1.5s ease-in-out infinite'
+            }} />
+          </div>
+
+          {/* Loading placeholder for Emergency Status */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            marginBottom: '12px',
+            padding: '12px',
+            backgroundColor: '#f5f5f5',
+            borderRadius: '6px',
+            border: '1px solid #e0e0e0'
+          }}>
+            <div style={{
+              width: '16px',
+              height: '16px',
+              borderRadius: '50%',
+              backgroundColor: '#e0e0e0',
+              marginRight: '8px',
+              animation: 'pulse 1.5s ease-in-out infinite'
+            }} />
+            <div style={{
+              flex: 1,
+              color: '#999',
+              fontSize: '14px',
+              fontWeight: '500',
+              animation: 'pulse 1.5s ease-in-out infinite'
+            }}>
+              Loading emergency status...
+            </div>
+            <div style={{
+              width: '120px',
+              height: '32px',
+              backgroundColor: '#e0e0e0',
+              borderRadius: '4px',
+              marginLeft: '12px',
+              animation: 'pulse 1.5s ease-in-out infinite'
+            }} />
+          </div>
+
+          {/* Loading placeholder for ASA status */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            padding: '12px',
+            backgroundColor: '#f5f5f5',
+            borderRadius: '6px',
+            border: '1px solid #e0e0e0'
+          }}>
+            <div style={{
+              width: '16px',
+              height: '16px',
+              borderRadius: '50%',
+              backgroundColor: '#e0e0e0',
+              marginRight: '8px',
+              animation: 'pulse 1.5s ease-in-out infinite'
+            }} />
+            <div style={{
+              flex: 1,
+              color: '#999',
+              fontSize: '14px',
+              fontWeight: '500',
+              animation: 'pulse 1.5s ease-in-out infinite'
+            }}>
+              Loading ASA status...
+            </div>
+            <div style={{
+              width: '100px',
+              height: '32px',
+              backgroundColor: '#e0e0e0',
+              borderRadius: '4px',
+              marginLeft: '12px',
+              animation: 'pulse 1.5s ease-in-out infinite'
+            }} />
+          </div>
+        </div>
+      );
+    }
+
+    if (!chatInfo?.patient) return null;
 
     const hasAnyStatus =
       chatInfo.patient.is_human_required ||
@@ -119,13 +253,14 @@ const ChatContentBody = ({
             </span>
             <Button
               type="primary"
-              disabled={isLoading || resolveClicked}
+              disabled={isLoading || humanRequiredLoading}
+              loading={humanRequiredLoading}
               onClick={() =>
                 onClickMarkHumanRequiredResolvedWrapper(chatInfo.patient.id)
               }
               style={{ marginLeft: '12px' }}
             >
-              Mark as Resolved
+              {humanRequiredLoading ? 'Updating...' : 'Mark as Resolved'}
             </Button>
           </div>
         )}
@@ -158,7 +293,8 @@ const ChatContentBody = ({
             <Button
               type="primary"
               danger
-              disabled={isLoading || resolveClicked}
+              disabled={isLoading || emergencyLoading}
+              loading={emergencyLoading}
               onClick={() =>
                 onClickMarkInEmergencySituationResolvedWrapper(
                   chatInfo.patient.id
@@ -166,7 +302,7 @@ const ChatContentBody = ({
               }
               style={{ marginLeft: '12px' }}
             >
-              Mark as Resolved
+              {emergencyLoading ? 'Updating...' : 'Mark as Resolved'}
             </Button>
           </div>
         )}
@@ -198,13 +334,14 @@ const ChatContentBody = ({
             </span>
             <Button
               type="primary"
-              disabled={isLoading || resolveClicked}
+              disabled={isLoading || optOutLoading}
+              loading={optOutLoading}
               onClick={() =>
                 onClickMarkInOptOutWrapper(chatInfo.patient.id)
               }
               style={{ marginLeft: '12px' }}
             >
-              {formatMessage(messages.optOut)}
+              {optOutLoading ? 'Updating...' : formatMessage(messages.optOut)}
             </Button>
           </div>
         )}
@@ -238,15 +375,19 @@ const ChatContentBody = ({
           <Button
             type={chatInfo?.patient?.is_rasa_paused ? "primary" : "default"}
             disabled={isLoading}
+            loading={isLoading}
             onClick={() =>
               mutate(chatInfo.patient.id, {
-                onSuccess: () =>
-                  dispatch(toggleRasaActivity(chatInfo.patient.id)),
+                onSuccess: () => {
+                  dispatch(toggleRasaActivity(chatInfo.patient.id));
+                  // Refresh the conversation data to get updated ASA status from server
+                  dispatch(getSingleChat({ patientId: chatInfo.patient.id }));
+                },
               })
             }
             style={{ marginLeft: '12px' }}
           >
-            {chatInfo?.patient?.is_rasa_paused ? 'Unpause Asa' : 'Pause Asa'}
+            {isLoading ? 'Updating...' : (chatInfo?.patient?.is_rasa_paused ? 'Unpause Asa' : 'Pause Asa')}
           </Button>
         </div>
       </div>
@@ -255,6 +396,15 @@ const ChatContentBody = ({
 
   return (
     <div>
+      <style>
+        {`
+          @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+          }
+        `}
+      </style>
       {chatMessages.map((message, index) => (
         <div
           key={`msg-${message.id}-${index}`}

@@ -124,17 +124,31 @@ const ChatMenu = (props) => {
 
   const [filter, setFilter] = useState(CONVERSATION_FILTERS[0].value);
 
+  // Initial load of all conversations
   useEffect(() => {
-    // this will trigger initial data load
+    dispatch(getAllChatsInfo(filter));
+  }, [dispatch, filter]);
+
+  useEffect(() => {
+    // this will trigger search when query changes
     if (query === debouncedSearch) {
-      dispatch(searchConversations({ query, filter }));
+      if (query.trim()) {
+        dispatch(searchConversations({ query: query.trim(), filter }));
+      } else {
+        // If query is empty, load all conversations
+        dispatch(getAllChatsInfo(filter));
+      }
     }
   }, [dispatch, query, filter, debouncedSearch]);
 
   useEffect(() => {
     // this will trigger triggered data load
     if (props.triggerSearchConversations) {
-      dispatch(searchConversations({ query, filter }));
+      if (query.trim()) {
+        dispatch(searchConversations({ query: query.trim(), filter }));
+      } else {
+        dispatch(getAllChatsInfo(filter));
+      }
       dispatch(clearTriggerSearchConversations());
     }
   }, [dispatch, query, filter, props.triggerSearchConversations]);

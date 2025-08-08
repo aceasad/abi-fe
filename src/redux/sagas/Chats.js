@@ -30,7 +30,7 @@ export function* getSingleChat({ payload }) {
       console.warn('Invalid patientId provided to getSingleChat:', payload.patientId);
       return;
     }
-    
+
     yield put(setSingleChatLoading(true));
     const { data } = yield call(chatService.getSingleChat, payload.patientId);
     yield put(setSingleChat(data));
@@ -45,13 +45,13 @@ export function* getMoreSingleChatMessages() {
     yield put(setSingleChatLoading(true));
     const { offset } = yield select(makeSelectSingleChatRequestData);
     const { chatInfo } = yield select(makeSelectSingleChatInfo);
-    
+
     // Validate that patient.id is a valid number before making the API call
     if (!chatInfo?.patient?.id || isNaN(chatInfo.patient.id) || chatInfo.patient.id <= 0) {
       console.warn('Invalid patient.id provided to getMoreSingleChatMessages:', chatInfo?.patient?.id);
       return;
     }
-    
+
     const { data } = yield call(
       chatService.getSingleChat,
       chatInfo.patient.id,
@@ -96,7 +96,7 @@ export function* searchConversations({ payload }) {
   try {
     yield put(setAllChatsInfoLoading(true));
     const { data } = yield call(
-      payload
+      payload && payload.query && payload.query.trim()
         ? chatService.searchConversations
         : chatService.getAllChatInformation,
       payload

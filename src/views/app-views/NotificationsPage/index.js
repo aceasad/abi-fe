@@ -21,8 +21,7 @@ import {
     makeSelectMarkReadLoading,
     makeSelectMarkAllReadLoading,
     makeSelectBookingNotifications,
-    makeSelectOffTopicNotifications,
-    makeSelectHumanInterventionNotifications
+    makeSelectOffTopicNotifications
 } from 'redux/selectors/Notifications';
 import { createWebsocketNotificationUrl, parseReceivedEvent } from 'utils/helpers';
 import { addOneMessage, resetChats } from 'redux/actions/Chats';
@@ -32,8 +31,7 @@ import {
     markAllNotificationsAsRead,
     fetchNotifications,
     fetchBookingNotifications,
-    fetchOffTopicNotifications,
-    fetchHumanInterventionNotifications
+    fetchOffTopicNotifications
 } from 'redux/actions/Notifications';
 import WebSocketClient from 'services/WebSocketClient';
 import { API_BASE_URL } from 'configs/AppConfig';
@@ -60,7 +58,6 @@ const Notification = () => {
     const markAllReadLoading = useSelector(makeSelectMarkAllReadLoading()) || false;
     const bookingNotifications = useSelector(makeSelectBookingNotifications()) || [];
     const offTopicNotifications = useSelector(makeSelectOffTopicNotifications()) || [];
-    const humanInterventionNotifications = useSelector(makeSelectHumanInterventionNotifications()) || [];
     const dispatch = useDispatch();
 
     const screens = utils.getBreakPoint(useBreakpoint());
@@ -78,7 +75,6 @@ const Notification = () => {
         dispatch(fetchNotifications());
         dispatch(fetchBookingNotifications());
         dispatch(fetchOffTopicNotifications());
-        dispatch(fetchHumanInterventionNotifications());
     };
 
     // Your original WebSocket setup
@@ -103,7 +99,6 @@ const Notification = () => {
         dispatch(fetchNotifications());
         dispatch(fetchBookingNotifications());
         dispatch(fetchOffTopicNotifications());
-        dispatch(fetchHumanInterventionNotifications());
     }, [dispatch]);
 
     // Your original RASA health check
@@ -140,18 +135,31 @@ const Notification = () => {
         return date.toLocaleDateString();
     };
 
+    // Define human intervention notification types
+    const humanInterventionTypes = [
+        'Emergency Situation',
+        'Human Intervention',
+        'Opt out',
+        'Screened Elsewhere',
+        'Decline',
+        'Snoozed'
+    ];
+
     // Use categorized notifications from Redux state - filter to show only unread notifications
     const categorizedNotifications = {
         bookingNotes: bookingNotifications.filter(n => !n.is_read),
         offTopic: offTopicNotifications.filter(n => !n.is_read),
-        humanIntervention: humanInterventionNotifications.filter(n => !n.is_read)
+        humanIntervention: notifications.filter(n =>
+            !n.is_read &&
+            humanInterventionTypes.includes(n.notification_type)
+        )
     };
 
     // Debug logging
     console.log('Notification state:', {
         bookingNotifications,
         offTopicNotifications,
-        humanInterventionNotifications,
+        notifications,
         categorizedNotifications
     });
 
@@ -283,7 +291,7 @@ const Notification = () => {
                 <Col xs={24} lg={8}>
                     <NotificationCard
                         title="Booking notes queries"
-                        description="Operational requests regarding the patient's booking"
+                        description="Patient requests about their appointment"
                         notifications={categorizedNotifications.bookingNotes}
                     />
                 </Col>
@@ -291,7 +299,7 @@ const Notification = () => {
                 <Col xs={24} lg={8}>
                     <NotificationCard
                         title="Off-topic queries"
-                        description="Other clinical matters not related to the booking"
+                        description="Non-appointment questions"
                         notifications={categorizedNotifications.offTopic}
                         showEmpty={true}
                     />
@@ -300,7 +308,7 @@ const Notification = () => {
                 <Col xs={24} lg={8}>
                     <NotificationCard
                         title="Human intervention required"
-                        description="Matters requiring admin contact with the patients"
+                        description="Admin-patient contact"
                         notifications={categorizedNotifications.humanIntervention}
                     />
                 </Col>
