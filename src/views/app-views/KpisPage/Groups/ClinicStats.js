@@ -93,6 +93,11 @@ const ClinicStats = ({ title, previousPeriod }) => {
     attended,
     non_attended,
     booking_time_distribution,
+    walked_out,
+    quiet_sent_in,
+    sent_in,
+    arrived,
+    not_updated,
     declines,
     opt_out,
     snoozed,
@@ -110,13 +115,18 @@ const ClinicStats = ({ title, previousPeriod }) => {
     return evening + night;
   };
 
-  // Appointment outcomes - only use API data, show -1 for missing
+  // Appointment outcomes - only use API data, show -1 for missing, filter out zero values
   const appointmentOutcomes = [
-    { name: 'Scheduled', value: bookings ?? -1, color: '#6366F1' },
+    { name: 'Bookings', value: bookings ?? -1, color: '#6366F1' },
     { name: 'Attended', value: attended ?? -1, color: '#10B981' },
     { name: 'Not attended', value: non_attended ?? -1, color: '#F59E0B' },
     { name: 'Cancelled', value: cancelled ?? -1, color: '#EF4444' },
-    { name: 'Rescheduled', value: reschedule ?? -1, color: '#6B7280' }
+    { name: 'Rescheduled', value: reschedule ?? -1, color: '#6B7280' },
+    { name: 'Arrived', value: arrived ?? -1, color: '#8B5CF6' },
+    { name: 'Sent in', value: sent_in ?? -1, color: '#06B6D4' },
+    { name: 'Quiet sent in', value: quiet_sent_in ?? -1, color: '#84CC16' },
+    { name: 'Walked out', value: walked_out ?? -1, color: '#F97316' },
+    { name: 'Not updated', value: not_updated ?? -1, color: '#64748B' }
   ].filter(item => item.value > 0);
   // Intervention data with proper percentage change mapping
   const interventionData = [

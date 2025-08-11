@@ -37,6 +37,11 @@ const initialState = {
   cancelled: 0,
   attended: 0,
   non_attended: 0,
+  walked_out: 0,
+  quiet_sent_in: 0,
+  sent_in: 0,
+  arrived: 0,
+  not_updated: 0,
   booking_time_distribution: {
     morning: 0,
     afternook: 0,
@@ -111,6 +116,11 @@ const chats = (state = initialState, action) =>
         draft.attended = action.payload.attended;
         draft.non_attended = action.payload.non_attended;
         draft.booking_time_distribution = action.payload.booking_time_distribution;
+        draft.walked_out = action.payload.walked_out;
+        draft.quiet_sent_in = action.payload.quiet_sent_in;
+        draft.sent_in = action.payload.sent_in;
+        draft.arrived = action.payload.arrived;
+        draft.not_updated = action.payload.not_updated;
         draft.declines = action.payload.declines;
         draft.opt_out = action.payload.opt_out;
         draft.emergency_situation = action.payload.emergency_situation;
