@@ -11,6 +11,7 @@ import {
     Grid,
     Spin
 } from 'antd';
+import { Link } from 'react-router-dom';
 import { useIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
 import { makeSelectLoginDetails } from 'redux/selectors/Auth';
@@ -42,7 +43,8 @@ import {
     UserOutlined,
     ExclamationOutlined,
     QuestionCircleOutlined,
-    InfoCircleOutlined
+    InfoCircleOutlined,
+    CloseOutlined
 } from '@ant-design/icons';
 
 const { useBreakpoint } = Grid;
@@ -212,35 +214,52 @@ const Notification = () => {
                                 <List.Item
                                     style={{
                                         padding: '8px 12px',
-                                        border: (notification.priority === 'high' || ['error', 'emergency', 'Emergency Situation'].includes(notification.notification_type)) ? '1px solid #ff4d4f' : 'none',
-                                        cursor: notification.is_read ? 'default' : 'pointer',
+                                        border: notification.notification_type === 'Emergency Situation' ? '1px solid #ff4d4f' : 'none',
+                                        cursor: 'default',
                                         backgroundColor: notification.is_read ? 'white' : '#f9f9f9',
                                         borderRadius: '4px',
                                         marginBottom: '8px',
-                                        opacity: notification.is_read ? 0.6 : 1
-                                    }}
-                                    onClick={() => {
-                                        if (!notification.is_read && !markReadLoading) {
-                                            console.log('Clicking notification:', notification.id, notification.title);
-                                            markAsRead(notification.id);
-                                        }
+                                        opacity: notification.is_read ? 0.6 : 1,
+                                        position: 'relative'
                                     }}
                                 >
                                     <Space direction="vertical" size={4} style={{ width: '100%' }}>
-                                        <Space>
-                                            {(notification.priority === 'high' || ['error', 'emergency', 'Emergency Situation'].includes(notification.notification_type)) && (
-                                                <ExclamationOutlined style={{ color: '#ff4d4f' }} />
+                                        <Space style={{ width: '100%', justifyContent: 'space-between' }}>
+                                            <Space>
+                                                <Link
+                                                    to={`/pages/conversation/${notification.patient_id}`}
+                                                    style={{
+                                                        color: notification.notification_type === 'Emergency Situation' ? '#ff4d4f' : '#000000',
+                                                        fontWeight: notification.is_read ? 'normal' : 'bold',
+                                                        textDecoration: 'none'
+                                                    }}
+                                                    onClick={(e) => e.stopPropagation()}
+                                                >
+                                                    {notification.title}
+                                                </Link>
+                                                {!notification.is_read && <Badge dot />}
+                                            </Space>
+                                            {!notification.is_read && (
+                                                <Button
+                                                    type="text"
+                                                    size="small"
+                                                    icon={<CloseOutlined />}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        if (!markReadLoading) {
+                                                            console.log('Marking notification as read via cross button:', notification.id, notification.title);
+                                                            markAsRead(notification.id);
+                                                        }
+                                                    }}
+                                                    style={{
+                                                        padding: '2px 4px',
+                                                        minWidth: 'auto',
+                                                        color: '#8c8c8c',
+                                                        border: 'none',
+                                                        boxShadow: 'none'
+                                                    }}
+                                                />
                                             )}
-                                            <Text
-                                                strong={!notification.is_read}
-                                                style={{
-                                                    color: (notification.priority === 'high' || ['error', 'emergency', 'Emergency Situation'].includes(notification.notification_type)) ? '#ff4d4f' : '#000000',
-                                                    fontWeight: notification.is_read ? 'normal' : 'bold'
-                                                }}
-                                            >
-                                                {notification.title}
-                                            </Text>
-                                            {!notification.is_read && <Badge dot />}
                                         </Space>
                                         <Text
                                             style={{
