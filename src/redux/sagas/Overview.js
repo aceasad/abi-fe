@@ -23,7 +23,8 @@ export function* getOverviewClinicStatsData({ payload }) {
     const { data } = yield call(
       overviewService.getClinicStatsData,
       payload.start_time,
-      payload.end_time
+      payload.end_time,
+      payload.campaign_id
     );
     yield put(setOverviewClinicStatsData(data));
   } catch (err) {

@@ -32,9 +32,9 @@ import moment from 'moment';
 const { RangePicker } = DatePicker;
 const { Option } = Select;
 
-const downloadKpiData = async (start_time, end_time) => {
+const downloadKpiData = async (start_time, end_time, campaign_id) => {
   try {
-    const response = await overviewService.downloadClinicStatsData(start_time, end_time);
+    const response = await overviewService.downloadClinicStatsData(start_time, end_time, campaign_id);
     return response;
   } catch (error) {
     throw error;
@@ -115,10 +115,10 @@ const KpisPage = () => {
       const end_time = dateRange[1] ? dateRange[1].format('YYYY-MM-DD') : undefined;
 
       const filename = dateRange[0] && dateRange[1]
-        ? `kpi-data-${start_time}-to-${end_time}.zip`
+        ? `kpi-data-${start_time}-to-${end_time}${selectedCampaign ? `-campaign-${selectedCampaign}` : ''}.zip`
         : 'kpi-data-all-time.zip';
 
-      const response = await downloadKpiData(start_time, end_time);
+      const response = await downloadKpiData(start_time, end_time, selectedCampaign);
       const blob = new Blob([response.data], { type: 'application/zip' });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -138,9 +138,9 @@ const KpisPage = () => {
       const start_time = dateRange[0] ? dateRange[0].format('YYYY-MM-DD') : null;
       const end_time = dateRange[1] ? dateRange[1].format('YYYY-MM-DD') : null;
 
-      dispatch(getOverviewClinicStatsData({ start_time, end_time }));
+      dispatch(getOverviewClinicStatsData({ start_time, end_time, campaign_id: selectedCampaign }));
     }
-  }, [dispatch, dateRange]);
+  }, [dispatch, dateRange, selectedCampaign]);
 
   return (
     <>
