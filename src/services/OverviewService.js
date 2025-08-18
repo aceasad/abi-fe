@@ -12,13 +12,13 @@ class OverviewService extends ApiService {
     this.apiClient.get(ENDPOINTS.GET_OVERVIEW_SUMMARY_DATA, {
       params: { interval },
     });
-  getClinicStatsData = (start_time, end_time) =>
+  getClinicStatsData = (start_time, end_time, campaign_id) =>
     this.apiClient.get(ENDPOINTS.GET_OVERVIEW_CLINICSTATS_DATA, {
-      params: { start_time, end_time },
+      params: { start_time, end_time, campaign_id },
     });
-  downloadClinicStatsData = (start_time, end_time) =>
+  downloadClinicStatsData = (start_time, end_time, campaign_id) =>
     this.apiClient.get(ENDPOINTS.DOWNLOAD_CLINICSTATS_DATA, {
-      params: { start_time, end_time },
+      params: { start_time, end_time, campaign_id },
       responseType: 'blob'
     });
 

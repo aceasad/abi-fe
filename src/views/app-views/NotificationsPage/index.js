@@ -320,7 +320,6 @@ const Notification = () => {
                         title="Off-topic queries"
                         description="Non-appointment questions"
                         notifications={categorizedNotifications.offTopic}
-                        showEmpty={true}
                     />
                 </Col>
 
