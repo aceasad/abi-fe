@@ -32,7 +32,7 @@ import { DownOutlined } from '@ant-design/icons';
 import { setPatientShowMessages } from 'redux/actions/Patient';
 import { ROUTES } from 'routes';
 import { useHistory } from 'react-router-dom';
-import { getSafe, convertDateTimeStringToUtcString } from 'utils/helpers';
+import { getSafe } from 'utils/helpers';
 import UpdateMessageRequiringImmediateAttentionStatus from './UpdateMessageRequiringImmediateAttentionStatus';
 import PreAppointmentQuestionnairePreviewModal from './PreAppointmentQuestionnairePreviewModal';
 import patient from 'redux/reducers/Patient';
@@ -78,9 +78,7 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
         return {
           children: (
             <div>
-              {
-                moment(row.created_datetime, 'DD/MM/YYYY HH:mm:ss A').format('DD/MM/YYYY, h:mm A')
-              }
+              {row.created_datetime}
             </div>
           ),
           props: {

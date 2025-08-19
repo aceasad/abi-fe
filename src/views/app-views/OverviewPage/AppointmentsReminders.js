@@ -264,11 +264,16 @@ const AppointmentsReminders = ({ title, startOpen }) => {
         title: formatMessage(overviewPageMessages.tableColumnReminderDatetime),
         dataIndex: ['reminder', 'date'],
         sorter: true,
-        render: (_, row) => (
-          <div className="text-left text-uppercase">{`${row.reminder.date} ${removeLeadingZeroFromTime(
-            moment(row.reminder.time, ['h:mm A']).format('hh:mm A')
-          )}`}</div>
-        ),
+        render: (_, row) => {
+          if (!row.reminder?.date || !row.reminder?.time) {
+            return <div className="text-left text-uppercase"></div>;
+          }
+          return (
+            <div className="text-left text-uppercase">{`${row.reminder.date} ${removeLeadingZeroFromTime(
+              moment(row.reminder.time, ['h:mm A']).format('hh:mm A')
+            )}`}</div>
+          );
+        },
       },
       {
         title: formatMessage(overviewPageMessages.tableColumnReminderStatus),
