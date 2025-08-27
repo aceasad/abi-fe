@@ -131,7 +131,13 @@ const SideNavContent = ({
           <span>
             {setLocale(localization, menu?.title)}
             {menu.key === 'notifications' && unreadCount > 0 && (
-              <Badge count={unreadCount} size="small" style={{ marginLeft: '8px' }} />
+              <Badge
+                count={unreadCount}
+                size="default"
+                style={{
+                  marginLeft: '12px',
+                }}
+              />
             )}
           </span>
           {menu.path ? (
