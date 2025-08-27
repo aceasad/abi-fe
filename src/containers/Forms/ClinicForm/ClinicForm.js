@@ -32,7 +32,7 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
   );
   const [isAllDayChecked, setIsAllDayChecked] = useState(
     clinicData?.start_of_work === '00:00:00' &&
-      clinicData?.end_of_work === '00:00:00'
+    clinicData?.end_of_work === '00:00:00'
   );
   const { isPasIntegrated } = useSelector(state => state.auth.user);
 
@@ -52,7 +52,7 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
       formData.append('photo', '');
     }
     formData.delete('isPasIntegrated')
-    formData.append('isPasIntegrated',isPasIntegrated)
+    formData.append('isPasIntegrated', false)
     if (clinicData) {
       dispatch(
         updateClinic({
@@ -72,9 +72,9 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
       style={
         !checkIsInSettingsPage()
           ? {
-              maxWidth: '60rem',
-              margin: 'auto',
-            }
+            maxWidth: '60rem',
+            margin: 'auto',
+          }
           : {}
       }
     >
@@ -146,7 +146,7 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
                     }}
                   />
                 </Row>
-                
+
                 <Row gutter={16}>
                   <ColumnField
                     span={16}
@@ -159,7 +159,7 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
                       minValue: MIN_PHONE_LENGTH,
                       maxValue: MAX_PHONE_LENGTH,
                     }}
-                    disabled
+                  // disabled
                   />
                 </Row>
                 <Row gutter={24}>
@@ -334,7 +334,7 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
                       <Button
                         name="submit"
                         type="primary"
-                        disabled={loading || !dirty || !isValid}
+                        // disabled={loading || !dirty || !isValid}
                         onClick={handleSubmit}
                       >
                         {formatMessage(
@@ -356,8 +356,8 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
 };
 
 ClinicForm.defaultProps = {
-  showSuccess: () => {},
-  showError: () => {},
+  showSuccess: () => { },
+  showError: () => { },
 };
 
 export default ClinicForm;

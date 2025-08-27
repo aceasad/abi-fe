@@ -32,7 +32,8 @@ import {
     markAllNotificationsAsRead,
     fetchNotifications,
     fetchBookingNotifications,
-    fetchOffTopicNotifications
+    fetchOffTopicNotifications,
+    fetchUnreadNotifications
 } from 'redux/actions/Notifications';
 import WebSocketClient from 'services/WebSocketClient';
 import { API_BASE_URL } from 'configs/AppConfig';
@@ -77,6 +78,7 @@ const Notification = () => {
         dispatch(fetchNotifications());
         dispatch(fetchBookingNotifications());
         dispatch(fetchOffTopicNotifications());
+        dispatch(fetchUnreadNotifications());
     };
 
     // Your original WebSocket setup
@@ -191,7 +193,15 @@ const Notification = () => {
     const NotificationCard = ({ title, description, notifications, showEmpty = false }) => (
         <Card
             title={title}
-            extra={notifications.length > 0 && <Badge count={notifications.length} />}
+            extra={notifications.length > 0 && (
+                <Badge
+                    count={notifications.length}
+                    size="default"
+                    style={{
+                        transform: 'translateY(-2px)'
+                    }}
+                />
+            )}
             style={{ height: '100%', backgroundColor: 'white' }}
             bodyStyle={{ padding: notifications.length === 0 ? '40px 24px' : '16px 24px' }}
         >
@@ -289,7 +299,13 @@ const Notification = () => {
                 <Title level={2} style={{ margin: 0, fontWeight: 600 }}>
                     Notifications
                     {unreadCount > 0 && (
-                        <Badge count={unreadCount} size="small" style={{ marginLeft: '12px' }} />
+                        <Badge
+                            count={unreadCount}
+                            size="default"
+                            style={{
+                                marginLeft: '12px',
+                            }}
+                        />
                     )}
                 </Title>
                 <Space>
