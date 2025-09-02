@@ -1,6 +1,5 @@
 import {
   Col,
-  PageHeader,
   Row,
   DatePicker,
   Typography,
@@ -10,6 +9,7 @@ import {
   Button,
   Select,
 } from 'antd';
+import { PageHeader } from '@ant-design/pro-components';
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';

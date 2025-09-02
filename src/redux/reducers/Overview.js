@@ -1,5 +1,5 @@
 import { m } from 'framer-motion';
-import produce from 'immer';
+import { produce } from 'immer';
 import {
   SET_OVERVIEW_SUMMARY_DATA,
   SET_OVERVIEW_CLINICSTATS_DATA,

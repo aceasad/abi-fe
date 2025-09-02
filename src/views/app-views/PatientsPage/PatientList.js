@@ -8,12 +8,12 @@ import {
   Button,
   Menu,
   message,
-  PageHeader,
   Space,
   Typography,
   Tooltip,
   Grid,
 } from 'antd';
+import { PageHeader } from '@ant-design/pro-components';
 import {
   EditFilled,
   DeleteOutlined,

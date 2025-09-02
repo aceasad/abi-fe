@@ -1,7 +1,6 @@
 const dev = {
   API_ENDPOINT_URL: process.env.REACT_APP_API_URL,
   SOCKETS_DOMAIN: process.env.REACT_APP_SOCKETS_DOMAIN,
-  SOCKETS_NOTIFICATION_DOMAIN: process.env.REACT_APP_SOCKETS_NOTIFICATION_DOMAIN,
   URL_PREFIX_PATH: process.env.REACT_APP_URL_PREFIX_PATH,
   SHOW_APPOINTMENTS_LIKELY_TO_BE_MISSED:
     process.env.REACT_APP_SHOW_APPOINTMENTS_LIKELY_TO_BE_MISSED,
@@ -39,7 +38,6 @@ const prod = {
 const test = {
   API_ENDPOINT_URL: process.env.REACT_APP_API_URL,
   SOCKETS_DOMAIN: process.env.REACT_APP_SOCKETS_DOMAIN,
-  SOCKETS_NOTIFICATION_DOMAIN: process.env.REACT_APP_SOCKETS_NOTIFICATION_DOMAIN,
   URL_PREFIX_PATH: process.env.REACT_APP_URL_PREFIX_PATH,
   SHOW_APPOINTMENTS_LIKELY_TO_BE_MISSED:
     process.env.REACT_APP_SHOW_APPOINTMENTS_LIKELY_TO_BE_MISSED,
@@ -56,7 +54,7 @@ const test = {
 };
 
 const getEnv = () => {
-  switch (process.env.NODE_ENV) {
+  switch (import.meta.env.MODE) {
     case 'development':
       return dev;
     case 'production':

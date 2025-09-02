@@ -4,7 +4,7 @@ import {
   SET_CLINIC,
   SET_IS_LOADING,
 } from '../constants/Clinic';
-import produce from 'immer';
+import { produce } from 'immer';
 const initialState = {
   isCreated: false,
   message: null,

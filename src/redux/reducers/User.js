@@ -6,7 +6,7 @@ import {
   SET_SINGLE_USER_LOADING,
   SET_SINGLE_USER,
 } from '../constants/User';
-import produce from 'immer';
+import { produce } from 'immer';
 import { baseState } from 'constants/ClinicConstants';
 
 /* eslint-disable default-case */

@@ -37,7 +37,6 @@ import UpdateMessageRequiringImmediateAttentionStatus from './UpdateMessageRequi
 import PreAppointmentQuestionnairePreviewModal from './PreAppointmentQuestionnairePreviewModal';
 import patient from 'redux/reducers/Patient';
 import { useSelector } from 'react-redux';
-import moment from 'moment';
 const { Panel } = Collapse;
 
 const columnMap = {
@@ -78,7 +77,9 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
         return {
           children: (
             <div>
-              {row.created_datetime}
+              {
+                moment(row.created_datetime, 'DD/MM/YYYY HH:mm:ss A').format('DD/MM/YYYY, h:mm A')
+              }
             </div>
           ),
           props: {
