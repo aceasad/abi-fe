@@ -21,16 +21,16 @@ const SideContent = (props) => {
 const SideContentMobile = (props) => {
   const { sideContent, visible, onSideContentClose } = props;
   return (
-    <Drawer
+    (<Drawer
       width={320}
       placement="left"
       closable={false}
       onClose={onSideContentClose}
-      visible={visible}
+      open={visible}
       bodyStyle={{ paddingLeft: 0, paddingRight: 0 }}
     >
       <div className="h-100">{sideContent}</div>
-    </Drawer>
+    </Drawer>)
   );
 };
 

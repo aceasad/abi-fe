@@ -104,89 +104,85 @@ export const LoginForm = () => {
     </div>
   );
 
-  return (
-    <>
-      <motion.div
-        className="authentication-motion-message"
-        initial={{ opacity: 0, marginBottom: 0 }}
-        animate={{
-          opacity: showMessage ? 1 : 0,
-          marginBottom: showMessage ? 20 : 0,
-        }}
+  return (<>
+    <motion.div
+      className="authentication-motion-message"
+      initial={{ opacity: 0, marginBottom: 0 }}
+      animate={{
+        opacity: showMessage ? 1 : 0,
+        marginBottom: showMessage ? 20 : 0,
+      }}
+    >
+      {showMessage && message && formatMessage(message)}
+    </motion.div>
+    <Formik
+      initialValues={{ username: '', password: '' }}
+      validationSchema={loginSchema}
+      onSubmit={(values) => {
+        onLogin(values);
+      }}
+      validateOnMount={false}
+    >
+      {({ values, handleSubmit, dirty, isValid }) => (
+        <Form layout="vertical" name="login-form">
+          <Field
+            component={FormField}
+            label={formatMessage(messages.emailInputLabel)}
+            name={'username'}
+            prefix={<MailOutlined className="text-primary" />}
+            errorTexts={{
+              label: formatMessage(messages.emailInputLabel),
+            }}
+            autoFocus
+          />
+          <Field
+            component={FormField}
+            labelComponent={() => <PasswordLabel email={values.username} />}
+            tooltipText={ValidPasswordFormat}
+            name={'password'}
+            prefix={<LockOutlined className="text-primary" />}
+            secureField
+            errorTexts={{
+              label: formatMessage(messages.passwordInputLabel),
+              minValue: passwordMinLength,
+              matchesLabel: formatMessage(messages.passwordValidFormat),
+            }}
+            labelBlock={true}
+          />
+          <Form.Item className='mt-sm-5 ml-sm-4'>
+            <ReCaptcha siteKey={CAPTCHA_CLIENT_KEY_V2} callback={handleReToken} />
+          </Form.Item>
+
+          <Form.Item className="mt-sm-5">
+            <Button
+              onClick={() => handleSubmit(values)}
+              type="primary"
+              htmlType="submit"
+              block
+              disabled={!dirty || !isValid || !submitEnable}
+              loading={loading}
+            >
+              {formatMessage(messages.loginButton)}
+            </Button>
+          </Form.Item>
+        </Form>
+      )}
+    </Formik>
+    {isModalVisible ? (
+      <Modal
+        title={"Warning"}
+        open
+        destroyOnClose
+        footer={[]}
       >
-        {showMessage && message && formatMessage(message)}
-      </motion.div>
+        <Row gutter={16} className="d-flex">
 
-      <Formik
-        initialValues={{ username: '', password: '' }}
-        validationSchema={loginSchema}
-        onSubmit={(values) => {
-          onLogin(values);
-        }}
-        validateOnMount={false}
-      >
-        {({ values, handleSubmit, dirty, isValid }) => (
-          <Form layout="vertical" name="login-form">
-            <Field
-              component={FormField}
-              label={formatMessage(messages.emailInputLabel)}
-              name={'username'}
-              prefix={<MailOutlined className="text-primary" />}
-              errorTexts={{
-                label: formatMessage(messages.emailInputLabel),
-              }}
-              autoFocus
-            />
-            <Field
-              component={FormField}
-              labelComponent={() => <PasswordLabel email={values.username} />}
-              tooltipText={ValidPasswordFormat}
-              name={'password'}
-              prefix={<LockOutlined className="text-primary" />}
-              secureField
-              errorTexts={{
-                label: formatMessage(messages.passwordInputLabel),
-                minValue: passwordMinLength,
-                matchesLabel: formatMessage(messages.passwordValidFormat),
-              }}
-              labelBlock={true}
-            />
-            <Form.Item className='mt-sm-5 ml-sm-4'>
-              <ReCaptcha siteKey={CAPTCHA_CLIENT_KEY_V2} callback={handleReToken} />
-            </Form.Item>
-
-            <Form.Item className="mt-sm-5">
-              <Button
-                onClick={() => handleSubmit(values)}
-                type="primary"
-                htmlType="submit"
-                block
-                disabled={!dirty || !isValid || !submitEnable}
-                loading={loading}
-              >
-                {formatMessage(messages.loginButton)}
-              </Button>
-            </Form.Item>
-          </Form>
-        )}
-      </Formik>
-
-      {isModalVisible ? (
-        <Modal
-          title={"Warning"}
-          visible
-          destroyOnClose
-          footer={[]}
-        >
-          <Row gutter={16} className="d-flex">
-
-            <Typography align="center">
-              Access to this computer/Solution and any information it contains is limited to authorised users only.  Legal action can be taken against unauthorised use of, or unauthorised access to, this computer/Solution and/or any information it contains, including pursuant to the Computer Misuse Act 1990.  If you are an authorised user, by proceeding to access and use this computer/Solution and/or the information it contains, you are accepting any terms of use, notices and policies which are contained or referenced within it or which have otherwise been drawn to your attention as an authorised user.
-            </Typography>
-          </Row>
-        </Modal>) : (<></>)}
-    </>
-  );
+          <Typography align="center">
+            Access to this computer/Solution and any information it contains is limited to authorised users only.  Legal action can be taken against unauthorised use of, or unauthorised access to, this computer/Solution and/or any information it contains, including pursuant to the Computer Misuse Act 1990.  If you are an authorised user, by proceeding to access and use this computer/Solution and/or the information it contains, you are accepting any terms of use, notices and policies which are contained or referenced within it or which have otherwise been drawn to your attention as an authorised user.
+          </Typography>
+        </Row>
+      </Modal>) : (<></>)}
+  </>);
 };
 
 export default LoginForm;

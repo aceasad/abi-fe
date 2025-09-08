@@ -94,7 +94,7 @@ export const NavNotification = () => {
       placement="bottomRight"
       overlay={notificationList}
       onVisibleChange={handleVisibleChange}
-      visible={visible}
+      open={visible}
       trigger={['click']}
     >
       <Menu mode="horizontal">

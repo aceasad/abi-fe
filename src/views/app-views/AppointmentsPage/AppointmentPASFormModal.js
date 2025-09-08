@@ -77,8 +77,7 @@ const AppointmentPASFormModal = ({
     );
 
     return (
-
-        <Formik
+        (<Formik
             initialValues={initialState}
             validationSchema={validationSchema}
             onSubmit={handleSubmit}
@@ -89,7 +88,7 @@ const AppointmentPASFormModal = ({
 
                 <Modal
                     title={title}
-                    visible
+                    open
                     destroyOnClose
                     closable={false}
                     footer={[
@@ -301,7 +300,7 @@ const AppointmentPASFormModal = ({
                     )}
                 </Modal>
             )}
-        </Formik>
+        </Formik>)
     );
 };
 

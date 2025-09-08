@@ -81,8 +81,7 @@ const AppointmentFormModal = ({
   );
 
   return (
-
-    <Formik
+    (<Formik
       initialValues={initialState}
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
@@ -93,7 +92,7 @@ const AppointmentFormModal = ({
 
         <Modal
           title={title}
-          visible
+          open
           destroyOnClose
           closable={false}
           footer={[
@@ -339,7 +338,7 @@ const AppointmentFormModal = ({
           )}
         </Modal>
       )}
-    </Formik>
+    </Formik>)
   );
 };
 
