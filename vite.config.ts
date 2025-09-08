@@ -19,6 +19,21 @@ export default defineConfig({
     react(),
     tsconfigPaths(),
   ],
+  css: {
+    preprocessorOptions: {
+      less: {
+        javascriptEnabled: true,
+        modifyVars: {
+          // Add any custom variables here if needed
+        },
+      },
+    },
+    postcss: {
+      plugins: [
+        // PostCSS plugins will be added here if needed
+      ],
+    },
+  },
   optimizeDeps: {
     force: true,
     esbuildOptions: {
