@@ -46,83 +46,51 @@ const OverviewPage = () => {
       />
       <Layout>
         <Card>
-          <Tabs defaultActiveKey="1">
-            {SHOW_MESSAGES_REQUIRING_IMMEDIATE_ATTENTION && (
-              <Tabs.TabPane
-                tab={formatMessage(
+          <Tabs
+            defaultActiveKey="1"
+            items={[
+              ...(SHOW_MESSAGES_REQUIRING_IMMEDIATE_ATTENTION ? [{
+                key: "1",
+                label: formatMessage(
                   messages.tableMessagesRequiringImmediateAttentionTitle
-                )}
-                key="1"
-              >
-                <MessagesRequiringImmediateAttention
-                  startOpen
-                  title={formatMessage(
-                    messages.tableMessagesRequiringImmediateAttentionTitle
-                  )}
-                />
-              </Tabs.TabPane>
-            )}
-
-            {SHOW_PATIENT_PROGRESS && (
-              <Tabs.TabPane
-                tab={formatMessage(
+                ),
+                children: (
+                  <MessagesRequiringImmediateAttention
+                    startOpen
+                    title={formatMessage(
+                      messages.tableMessagesRequiringImmediateAttentionTitle
+                    )}
+                  />
+                ),
+              }] : []),
+              ...(SHOW_PATIENT_PROGRESS ? [{
+                key: "5",
+                label: formatMessage(
                   messages.tablePatientProgressTitle
-                )}
-                key="5"
-              >
-                <PatientProgressTable
-                  startOpen
-                  title={formatMessage(
-                    messages.tablePatientProgressTitle
-                  )}
-                />
-              </Tabs.TabPane>
-            )}
-
-            {/* {SHOW_APPOINTMENTS_LIKELY_TO_BE_MISSED && (
-              <Tabs.TabPane
-                tab={formatMessage(
-                  messages.tableAppointmentsLikelyToBeMissedTitle
-                )}
-                key="2"
-              >
-                <AppointmentsLikelyToBeMissed
-                  startOpen
-                  title={formatMessage(
-                    messages.tableAppointmentsLikelyToBeMissedTitle
-                  )}
-                />
-              </Tabs.TabPane>
-            )} */}
-            {/* {SHOW_PASSED_APPOINTMENTS_REQUIRING_IMMEDIATE_ATTENTION && (
-              <Tabs.TabPane
-                tab={formatMessage(
-                  messages.tablePassedAppointmentsRequiringImmediateStatusUpdateTitle
-                )}
-                key="3"
-              >
-                <PassedAppointmentsRequiringImmediateStatusUpdate
-                  startOpen
-                  title={formatMessage(
-                    messages.tablePassedAppointmentsRequiringImmediateStatusUpdateTitle
-                  )}
-                />
-              </Tabs.TabPane>
-            )} */}
-            {SHOW_APPOINTMENTS_REMINDERS && (
-              <Tabs.TabPane
-                tab={formatMessage(messages.tableAppointmentsRemindersTitle)}
-                key="4"
-              >
-                <AppointmentsReminders
-                  startOpen
-                  title={formatMessage(
-                    messages.tableAppointmentsRemindersTitle
-                  )}
-                />
-              </Tabs.TabPane>
-            )}
-          </Tabs>
+                ),
+                children: (
+                  <PatientProgressTable
+                    startOpen
+                    title={formatMessage(
+                      messages.tablePatientProgressTitle
+                    )}
+                  />
+                ),
+              }] : []),
+              ...(SHOW_APPOINTMENTS_REMINDERS ? [{
+                key: "4",
+                label: formatMessage(messages.tableAppointmentsRemindersTitle),
+                children: (
+                  <AppointmentsReminders
+                    startOpen
+                    title={formatMessage(
+                      messages.tableAppointmentsRemindersTitle
+                    )}
+                  />
+                ),
+              }] : []),
+            ]}
+          />
         </Card>
       </Layout>
     </>

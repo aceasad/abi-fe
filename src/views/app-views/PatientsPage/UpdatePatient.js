@@ -12,7 +12,7 @@ import {
   mapNullObjectFeildsToString,
 } from 'utils/helpers';
 import { message } from 'antd';
-import moment from 'moment';
+import dayjs from 'utils/dayjs';
 import { DATE_FORMAT_DD_MM_YYYY, DATE_FORMAT_DD_MMM_YYYY } from 'constants/DateConstant';
 import { makeSelectExistingMedicalConditions } from 'redux/selectors/Anemnesis';
 import PatientPASForm from './PatientPASForm';
@@ -54,65 +54,65 @@ const UpdatePatient = ({ showList, patientId }) => {
 
   const initialState = patient
     ? {
-        ...mapNullObjectFeildsToString(patient),
-        date_of_birth: patient.date_of_birth,
-        education: patient?.education?.id,
-        ethnicity: patient?.ethnicity?.id,
-        material_status: patient?.material_status?.id,
-        employment: patient?.employment?.id,
-        medicalConditions: items.map((condition) => condition.id),
-        phone_number: patient?.phone_number.substr(patient?.phone_number?.length - 10,patient?.phone_number?.length),
-        country_code:patient?.phone_number.substr(0,patient?.phone_number?.length - 10),
-      }
+      ...mapNullObjectFeildsToString(patient),
+      date_of_birth: patient.date_of_birth,
+      education: patient?.education?.id,
+      ethnicity: patient?.ethnicity?.id,
+      material_status: patient?.material_status?.id,
+      employment: patient?.employment?.id,
+      medicalConditions: items.map((condition) => condition.id),
+      phone_number: patient?.phone_number.substr(patient?.phone_number?.length - 10, patient?.phone_number?.length),
+      country_code: patient?.phone_number.substr(0, patient?.phone_number?.length - 10),
+    }
     : {
-        first_name: '',
-        last_name: '',
-        date_of_birth: '',
-        gender: '',
-        height: '',
-        weight: '',
-        ethnicity: '',
-        phone_number: '',
-        email: '',
-        street_number: '',
-        street_name: '',
-        area_of_living: '',
-        city: '',
-        post_code: '',
-        country: '',
-        material_status: '',
-        number_of_dependants: '',
-        employment: '',
-        education: '',
-        insurance: '',
-        medicalConditions: [],
-      };
+      first_name: '',
+      last_name: '',
+      date_of_birth: '',
+      gender: '',
+      height: '',
+      weight: '',
+      ethnicity: '',
+      phone_number: '',
+      email: '',
+      street_number: '',
+      street_name: '',
+      area_of_living: '',
+      city: '',
+      post_code: '',
+      country: '',
+      material_status: '',
+      number_of_dependants: '',
+      employment: '',
+      education: '',
+      insurance: '',
+      medicalConditions: [],
+    };
 
-  const renderUpdatePatientForm = () =>{
+  const renderUpdatePatientForm = () => {
     if (isPasIntegrated) {
       initialState.date_of_birth = '5/11/1992'
-      return(        
-      <PatientPASForm
-        id={patientId}
-        title={formatMessage(messages.newPASPatient)}
-        showList={showList}
-        handleSubmit={handleSubmit}
-        loading={loading}
-        initialState={initialState}
-        genderChoices={GENDER_CHOICES}
-      />)
+      return (
+        <PatientPASForm
+          id={patientId}
+          title={formatMessage(messages.newPASPatient)}
+          showList={showList}
+          handleSubmit={handleSubmit}
+          loading={loading}
+          initialState={initialState}
+          genderChoices={GENDER_CHOICES}
+        />)
     }
-    else{
-      return(
+    else {
+      return (
         <PatientForm
-        title={formatMessage(messages.editPatient)}
-        showList={showList}
-        handleSubmit={handleSubmit}
-        loading={loading}
-        initialState={initialState}
-        genderChoices={GENDER_CHOICES}
-        id={patientId}
-      />
+          title={formatMessage(messages.editPatient)}
+          showList={showList}
+          handleSubmit={handleSubmit}
+          loading={loading}
+          initialState={initialState}
+          genderChoices={GENDER_CHOICES}
+          id={patientId}
+        />
       )
     }
   }

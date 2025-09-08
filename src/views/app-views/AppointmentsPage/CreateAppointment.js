@@ -13,7 +13,7 @@ import {
   getDoctorAppointments,
 } from 'redux/actions/Appointment';
 import { makeSelectSingleAppointment } from 'redux/selectors/Appointment';
-import moment from 'moment';
+import dayjs from 'utils/dayjs';
 import { DATE_FORMAT_YYYY_MM_DD } from 'constants/DateConstant';
 import { setScheduledPage } from 'redux/actions/Patient';
 
@@ -36,7 +36,7 @@ const CreateAppointment = ({
     if (isCalendar) {
       dispatch(
         getDoctorAppointments(
-          moment(newAppointmentStartDatetime).format(DATE_FORMAT_YYYY_MM_DD)
+          dayjs(newAppointmentStartDatetime).format(DATE_FORMAT_YYYY_MM_DD)
         )
       );
       dispatch(
@@ -62,30 +62,30 @@ const CreateAppointment = ({
   };
 
   const { singleLoading } = useSelector(makeSelectSingleAppointment());
- 
+
   return (
     <AppointmentFormModal
-    title={formatMessage(messages.createAppointmentTitle)}
-    initialState={{
-      patient: patient_id,
-      doctor: '',
-      appointmentType: '',
-      price: 0,
-      date: '',
-      time: '',
-    }}
-    validationSchema={isPasIntegrated ? createPASAppointmentValidationSchema:createAppointmentValidationSchema}
-    isEditForm={false}
-    doctors={doctors}
-    patients={[]}
-    appointmentTypes={appointmentTypes}
-    closeModal={closeModal}
-    handleSubmit={handleSubmit}
-    loadingData={isDataLoading}
-    loading={singleLoading}
-    patientDefault={patient_full_name}
-    patient_id={patient_id}
-  />
+      title={formatMessage(messages.createAppointmentTitle)}
+      initialState={{
+        patient: patient_id,
+        doctor: '',
+        appointmentType: '',
+        price: 0,
+        date: '',
+        time: '',
+      }}
+      validationSchema={isPasIntegrated ? createPASAppointmentValidationSchema : createAppointmentValidationSchema}
+      isEditForm={false}
+      doctors={doctors}
+      patients={[]}
+      appointmentTypes={appointmentTypes}
+      closeModal={closeModal}
+      handleSubmit={handleSubmit}
+      loadingData={isDataLoading}
+      loading={singleLoading}
+      patientDefault={patient_full_name}
+      patient_id={patient_id}
+    />
   )
 };
 

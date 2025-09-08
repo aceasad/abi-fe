@@ -2,7 +2,7 @@ import { Card, Table, Button, Select } from 'antd';
 import React, { useState, useEffect } from 'react';
 import { DEFAULT_LIMIT } from 'services/StaffService';
 import patientService from 'services/PatientService';
-import moment from 'moment';
+import dayjs from 'utils/dayjs';
 import { Link } from 'react-router-dom';
 
 const PatientProgressTable = ({
@@ -90,7 +90,7 @@ const PatientProgressTable = ({
       sortOrder: sortedInfo.columnKey === 'Invitation Sent' && sortedInfo.order,
       render: (_, record) => {
         const invitationSent = record['Invitation Sent']; // or whatever field name contains the datetime
-        const formattedDatetime = moment(invitationSent).format('DD/MM/YYYY hh:mm A');
+        const formattedDatetime = dayjs(invitationSent).format('DD/MM/YYYY hh:mm A');
         return <div className="text-left text-uppercase">{`${formattedDatetime}`}</div>;
       },
     },
@@ -104,7 +104,7 @@ const PatientProgressTable = ({
       render: (_, record) => {
         const lastContacted = record['Last Contact']; // or whatever field name contains the datetime
         if (lastContacted !== null) {
-          const formattedDatetime = moment(lastContacted).format('DD/MM/YYYY hh:mm A');
+          const formattedDatetime = dayjs(lastContacted).format('DD/MM/YYYY hh:mm A');
           return <div className="text-left text-uppercase">{`${formattedDatetime}`}</div>;
         } else {
           return <div className="text-left">{`${''}`}</div>;
@@ -266,8 +266,8 @@ const PatientProgressTable = ({
           if (typeof a[columnKey] === 'string') {
             return a[columnKey].localeCompare(b[columnKey]) * sortOrder;
           }
-          if (moment(a[columnKey]).isValid() && moment(b[columnKey]).isValid()) {
-            return (moment(a[columnKey]).isBefore(moment(b[columnKey])) ? -1 : 1) * sortOrder;
+          if (dayjs(a[columnKey]).isValid() && dayjs(b[columnKey]).isValid()) {
+            return (dayjs(a[columnKey]).isBefore(dayjs(b[columnKey])) ? -1 : 1) * sortOrder;
           }
           return (a[columnKey] - b[columnKey]) * sortOrder;
         });

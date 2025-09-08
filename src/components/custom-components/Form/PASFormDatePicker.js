@@ -1,7 +1,7 @@
 import React from 'react';
 import { useIntl } from 'react-intl';
 import { DatePicker, Form } from 'antd';
-import moment from 'moment';
+import dayjs from 'utils/dayjs';
 import { DATE_FORMAT_DD_MM_YYYY } from 'constants/DateConstant';
 
 const PASFormDatePicker = ({
@@ -30,8 +30,8 @@ const PASFormDatePicker = ({
   const disabledDate = (current) => {
     // Can not select days before today and today
     console.log("Current Date", current)
-    console.log(current && current > moment().endOf('day'))
-    return current && current > moment().endOf('day');
+    console.log(current && current > dayjs().endOf('day'))
+    return current && current > dayjs().endOf('day');
   };
 
   return (

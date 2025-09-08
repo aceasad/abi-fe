@@ -2,7 +2,7 @@ import { useIntl } from 'react-intl';
 import { WS_CHAT_URL, WS_NOTIFICATION_URL } from 'constants/ApiConstant';
 import { MESSAGE_TYPE, MESSAGE_STATUS } from 'constants/ChatConstants';
 import { MONTH_FORMAT_MM, YEAR_FORMAT_YYYY } from 'constants/DateConstant';
-import moment from 'moment';
+import dayjs from './dayjs';
 import { NO_SHOW_SCORE_THRESHOLD } from './constants';
 import { Typography } from 'antd';
 import appointmentsPageMessages from 'views/app-views/AppointmentsPage/messages';
@@ -92,7 +92,7 @@ export const prepareAppointmentData = (values) => {
   let { date, time, patient, price, ...otherValues } = values;
   console.log(date)
   console.log(time)
-  const startDatetime = moment(`${date} ${time}`, 'DD/MM/YYYY HH:mm').format(
+  const startDatetime = dayjs(`${date} ${time}`, 'DD/MM/YYYY HH:mm').format(
     'YYYY-MM-DDTHH:mm'
   );
   console.log(startDatetime)
@@ -110,10 +110,10 @@ export const prepareAppointmentData = (values) => {
 };
 
 export const getYearAndMonth = (date) => {
-  const momentDate = moment(date);
+  const dayjsDate = dayjs(date);
   return {
-    year: momentDate.format(YEAR_FORMAT_YYYY),
-    month: momentDate.format(MONTH_FORMAT_MM),
+    year: dayjsDate.format(YEAR_FORMAT_YYYY),
+    month: dayjsDate.format(MONTH_FORMAT_MM),
   };
 };
 
@@ -121,7 +121,7 @@ export const convertDateTimeStringToUtcString = (
   datetime,
   inputFormat,
   outputFormat
-) => moment(datetime, inputFormat).utc().format(outputFormat);
+) => dayjs(datetime, inputFormat).utc().format(outputFormat);
 
 export const formHasError = (fields, errors) =>
   fields.some((fieldName) => !!errors[fieldName]);
@@ -129,19 +129,19 @@ export const formHasError = (fields, errors) =>
 export const generateKey = () => Math.random().toString(36).substring(7);
 
 export const formatMessageTimestamp = (timestamp) => {
-  const momentDate = moment(timestamp).local();
-  const isSame = moment().local().isSame(momentDate, 'd');
-  return momentDate.format(isSame ? 'h:mm' : 'DD/MM/YYYY');
+  const dayjsDate = dayjs(timestamp).local();
+  const isSame = dayjs().local().isSame(dayjsDate, 'd');
+  return dayjsDate.format(isSame ? 'h:mm' : 'DD/MM/YYYY');
 };
 
 export const formatMessagesTimestampMinutes = (timestamp) =>
-  moment(timestamp).local().format('h:mm a');
+  dayjs(timestamp).local().format('h:mm a');
 
 export const isSameDay = (timestamp1, timestamp2) =>
-  moment(timestamp1).local().isSame(moment(timestamp2).local(), 'd');
+  dayjs(timestamp1).local().isSame(dayjs(timestamp2).local(), 'd');
 
 export const formatMessagesTimestampDate = (timestamp) =>
-  moment(timestamp).local().format('DD/MM/YYYY');
+  dayjs(timestamp).local().format('DD/MM/YYYY');
 
 export const generateDividerMessage = (date) => {
   return {
@@ -195,8 +195,8 @@ export const formatMessageForSocketSend = (text, patientId) =>
 export const parseReceivedEvent = (event) => JSON.parse(event.data);
 
 export const isTimestampInTheLast24Hours = (timestamp) => {
-  const oneDayAgo = moment().local().subtract(24, 'hours');
-  return moment(timestamp).local().isSameOrAfter(oneDayAgo);
+  const oneDayAgo = dayjs().local().subtract(24, 'hours');
+  return dayjs(timestamp).local().isSameOrAfter(oneDayAgo);
 };
 
 export const updateChatMenuItems = (

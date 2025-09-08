@@ -1,5 +1,5 @@
 import ApiService from './ApiService';
-import moment from 'moment';
+import dayjs from 'utils/dayjs';
 
 const ENDPOINTS = {
   AVAILABLE_TIMESLOTS: '/appointments/timeslots/available/',
@@ -51,7 +51,7 @@ class AppointmentService extends ApiService {
         doctor,
         patient,
         appointment_type: appointmentType,
-        date: moment(date).format('YYYY-MM-DD'),
+        date: dayjs(date).format('YYYY-MM-DD'),
       },
     });
 

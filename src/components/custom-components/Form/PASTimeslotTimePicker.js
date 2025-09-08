@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { useIntl } from 'react-intl';
 import { Form, TimePicker } from 'antd';
-import moment from 'moment';
+import dayjs from 'utils/dayjs';
 import { TIME_FORMAT_HH_MM } from 'constants/TimeConstant';
 import { useGetAvailableTimeslots } from 'queries/shared';
 import { TIMESLOTS, TIMESLOT_HOURS } from 'constants/TimeslotConstants';
@@ -73,25 +73,25 @@ const PASTimeslotTimePicker = ({
   );
 
   const getDisabledSlots = ({ data }) => {
-    const nowMoment = moment();
+    const nowMoment = dayjs();
     let [nowHour, nowMinutes] = nowMoment.format('HH:mm').split(':');
     nowHour = parseInt(nowHour);
     nowMinutes = parseInt(nowMinutes);
 
-    const selectedDateMoment = moment(values.date, DATE_FORMAT_DD_MMM_YYYY);
+    const selectedDateMoment = dayjs(values.date, DATE_FORMAT_DD_MMM_YYYY);
 
     // if selected date is today, disable all timslots that are passed
     // if not, return all disabled slots
     return selectedDateMoment.isSame(nowMoment, 'day')
       ? TIMESLOTS.filter((slot) => {
-          const [slotHour, slotMinute] = slot.split(':');
-          return (
-            !data.includes(slot) ||
-            parseInt(slotHour) < nowHour ||
-            (parseInt(slotHour) === nowHour &&
-              parseInt(slotMinute) < nowMinutes)
-          );
-        })
+        const [slotHour, slotMinute] = slot.split(':');
+        return (
+          !data.includes(slot) ||
+          parseInt(slotHour) < nowHour ||
+          (parseInt(slotHour) === nowHour &&
+            parseInt(slotMinute) < nowMinutes)
+        );
+      })
       : TIMESLOTS.filter((slot) => !data.includes(slot));
   };
 
@@ -132,10 +132,10 @@ const PASTimeslotTimePicker = ({
           showNow={showNow}
           defaultValue={
             showDefaultTime
-              ? moment(
-                  field.value ? field.value : defaultTime,
-                  TIME_FORMAT_HH_MM
-                )
+              ? dayjs(
+                field.value ? field.value : defaultTime,
+                TIME_FORMAT_HH_MM
+              )
               : ''
           }
           hideDisabledOptions

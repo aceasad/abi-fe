@@ -28,11 +28,9 @@ export default defineConfig({
         },
       },
     },
-    postcss: {
-      plugins: [
-        // PostCSS plugins will be added here if needed
-      ],
-    },
+  },
+  esbuild: {
+    loader: 'jsx',
   },
   optimizeDeps: {
     force: true,

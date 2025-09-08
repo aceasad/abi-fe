@@ -47,7 +47,7 @@ import {
 import { getPreviousOperations } from './Anemnesis';
 import { getMedicalConditions } from './Anemnesis';
 import messages from 'views/app-views/PatientsPage/messages';
-import moment from 'moment';
+import dayjs from 'utils/dayjs';
 
 function* getPatients() {
   try {
@@ -208,7 +208,7 @@ function* getCampaigns() {
     const { data } = yield call(patientService.getOrganizationCampaigns);
     // Sort campaigns by created_at in ascending order for proper date range selection
     const sortedCampaigns = data.sort((a, b) =>
-      moment(a.created_at).valueOf() - moment(b.created_at).valueOf()
+      dayjs(a.created_at).valueOf() - dayjs(b.created_at).valueOf()
     );
     yield put(setCampaigns(sortedCampaigns));
   } catch (err) {

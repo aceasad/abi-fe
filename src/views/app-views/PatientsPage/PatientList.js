@@ -33,7 +33,7 @@ import messages from './messages';
 import { DEFAULT_PAGINATION_LIMIT, SET_DEFAULT_PAGINATION_LIMIT } from 'constants/ApiConstant';
 import { makeSelectPatients } from 'redux/selectors/Patient';
 import Modal from 'components/shared-components/Modal';
-import moment from 'moment';
+import dayjs from 'utils/dayjs';
 import utils from 'utils';
 import UploaderPatient from './UploaderPatient';
 import patientService from 'services/PatientService';
@@ -111,7 +111,7 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
       dataIndex: 'last_appointment',
       render: (lastAppointment) => (
         <span>
-          {lastAppointment ? moment(lastAppointment).format('D/MM/yyyy') : '-'}
+          {lastAppointment ? dayjs(lastAppointment).format('D/MM/yyyy') : '-'}
         </span>
       ),
       sorter: true,
