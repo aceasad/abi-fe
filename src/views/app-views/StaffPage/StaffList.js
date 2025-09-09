@@ -11,7 +11,8 @@ import { makeSelectStaff, makeSelectPagination } from 'redux/selectors/Staff';
 import Loading from 'components/shared-components/Loading';
 import Modal from 'components/shared-components/Modal';
 import { deleteStaff } from 'redux/actions/Staff';
-import { message, List, Button, PageHeader, Typography, Grid } from 'antd';
+import { message, List, Button, Typography, Grid } from 'antd';
+import { PageHeader } from '@ant-design/pro-components';
 import utils from 'utils';
 
 const { useBreakpoint } = Grid;
@@ -107,38 +108,38 @@ const StaffList = ({ showCreate, editUser, seeAppointments }) => {
             renderItem={(staffItem) => (
               <List.Item key={staffItem.id}>
                 {isPasIntegrated ? (
-                <CardComponent
-                  key={staffItem.id}
-                  title={staffItem.first_name + ' ' + staffItem.last_name}
-                  description={''}
-                  avatar={staffItem.profile_picture}
-                  action={formatMessage(messages.seeAppointments)}
-                  Options={() => (
-                    <StaffCardOptions
-                      handleMenuClick={({ key }) =>
-                        handleOptionClick(staffItem.id, key)
-                      }
-                    />
-                  )}
-                  handleClick={() => seeAppointments(staffItem.id)}
-                />):( <CardComponent
-                  key={staffItem.id}
-                  title={staffItem.first_name + ' ' + staffItem.last_name}
-                  description={
-                staffItem.seniority + ' ' + staffItem.specialization
-                  }
-                  avatar={staffItem.profile_picture}
-                  action={formatMessage(messages.seeAppointments)}
-                  Options={() => (
-                    <StaffCardOptions
-                      handleMenuClick={({ key }) =>
-                        handleOptionClick(staffItem.id, key)
-                      }
-                    />
-                  )}
-                  handleClick={() => seeAppointments(staffItem.id)}
-                />)}
-               
+                  <CardComponent
+                    key={staffItem.id}
+                    title={staffItem.first_name + ' ' + staffItem.last_name}
+                    description={''}
+                    avatar={staffItem.profile_picture}
+                    action={formatMessage(messages.seeAppointments)}
+                    Options={() => (
+                      <StaffCardOptions
+                        handleMenuClick={({ key }) =>
+                          handleOptionClick(staffItem.id, key)
+                        }
+                      />
+                    )}
+                    handleClick={() => seeAppointments(staffItem.id)}
+                  />) : (<CardComponent
+                    key={staffItem.id}
+                    title={staffItem.first_name + ' ' + staffItem.last_name}
+                    description={
+                      staffItem.seniority + ' ' + staffItem.specialization
+                    }
+                    avatar={staffItem.profile_picture}
+                    action={formatMessage(messages.seeAppointments)}
+                    Options={() => (
+                      <StaffCardOptions
+                        handleMenuClick={({ key }) =>
+                          handleOptionClick(staffItem.id, key)
+                        }
+                      />
+                    )}
+                    handleClick={() => seeAppointments(staffItem.id)}
+                  />)}
+
               </List.Item>
             )}
           />
@@ -154,7 +155,7 @@ const StaffList = ({ showCreate, editUser, seeAppointments }) => {
             })}
             primaryAction={formatMessage(messages.delete)}
             secondaryAction={formatMessage(messages.cancel)}
-            visible={staffForDelete}
+            open={staffForDelete}
             handlePrimaryAction={handleDelete}
             handleSecondaryAction={() => setStaffForDelete(null)}
           />

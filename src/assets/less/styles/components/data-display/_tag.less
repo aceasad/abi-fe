@@ -1,23 +1,15 @@
 .ant-tag {
-    border-radius: 10px;
-    background: @component-background;
-    padding: 0 10px;
-    margin-right: 10px;
-    font-size: 14px;
-    line-height: 26px;
+  border-radius: 10px;
+  background: @component-background;
+  padding: 0 10px;
+  margin-right: 10px;
+  font-size: 14px;
+  line-height: 26px;
 }
 
 #color-tag(@parent, @color) {
-	@{parent} {
-        background: @color ;
-        border-color: transparent;
-    }
+  @{parent} {
+    background: @color;
+    border-color: transparent;
+  }
 }
-
-each(@colors-palette, #(@value, @color) {
-    .ant-tag-@{color} { 
-        background: rgba(@value, 0.1);
-        border-color: transparent;
-        font-weight: @font-weight-normal;
-    }
-})

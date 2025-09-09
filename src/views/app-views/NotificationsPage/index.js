@@ -203,7 +203,7 @@ const Notification = () => {
                 />
             )}
             style={{ height: '100%', backgroundColor: 'white' }}
-            bodyStyle={{ padding: notifications.length === 0 ? '40px 24px' : '16px 24px' }}
+            styles={{ body: { padding: notifications.length === 0 ? '40px 24px' : '16px 24px' } }}
         >
             {notifications.length === 0 && showEmpty ? (
                 <div style={{ textAlign: 'center', color: '#8c8c8c' }}>

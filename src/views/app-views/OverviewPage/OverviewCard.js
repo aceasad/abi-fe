@@ -21,7 +21,7 @@ const OverviewCard = ({
     <Col span={span} className="mb-3">
       <Card
         className={`height-100 d-flex flex-column justify-content-between m-0 overview-card--hover-${getClassTitle()}`}
-        bodyStyle={{ height: '100%' }}
+        styles={{ body: { height: '100%' } }}
       >
         <Flex flexDirection="column height-100">
           {/* <div

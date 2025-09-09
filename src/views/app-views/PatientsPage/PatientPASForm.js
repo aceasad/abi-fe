@@ -13,7 +13,7 @@ import ColumnField from 'components/custom-components/Form/ColumnField';
 import messages from './messages';
 import { makeSelectPatientDetails } from 'redux/selectors/Patient';
 import { patientSchema } from 'utils/validations';
-import { MAX,NHS_MAX } from 'constants/ClinicConstants';
+import { MAX, NHS_MAX } from 'constants/ClinicConstants';
 import { filterNumberInput } from 'utils/helpers';
 import PatientFormExistingConditions from './PatientFormExistingConditions';
 import PatientFormPreviousOperationss from './PatientFormPreviousOperations';
@@ -25,7 +25,7 @@ import {
 import { BeforeRouteContext } from 'utils/context';
 import { getPatientDetailsNewPatientForm } from 'redux/actions/Patient';
 import { DATE_FORMAT_DD_MM_YYYY } from 'constants/DateConstant';
-import moment from 'moment';
+import dayjs from 'utils/dayjs';
 import { COUNTRY_CODES } from 'constants/CountryCodesConstants';
 
 const { Title } = Typography;
@@ -58,7 +58,7 @@ const PatientPASForm = ({
   const handleSubmitWrapper = (values, { setErrors }) => {
     const parsedValues = {
       ...values,
-      date_of_birth: moment(values.date_of_birth, 'DD/MM/YYYY').format(
+      date_of_birth: dayjs(values.date_of_birth, 'DD/MM/YYYY').format(
         DATE_FORMAT_DD_MM_YYYY
       ),
       phone_number: values.country_code + values.phone_number,

@@ -128,7 +128,7 @@ export const RegiondataWidget = (props) => {
   const { data, mapSource, mapType, title, content, list } = props;
   const isMobile = !utils.getBreakPoint(useBreakpoint()).includes('lg');
   return (
-    <Card bodyStyle={{ padding: 0 }}>
+    <Card styles={{ body: { padding: 0 } }}>
       <Row>
         <Col xs={24} sm={24} md={24} lg={7} className="border-right">
           <div className="d-flex flex-column p-3 justify-content-between h-100">

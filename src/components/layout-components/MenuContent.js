@@ -82,79 +82,89 @@ const SideNavContent = ({
     }
   };
 
-  const menuItems = [
-    <Menu.Divider key="divider" />,
-    ...navigationConfig.map((menu) =>
-      menu.submenu.length > 0 ? (
-        <Menu.ItemGroup
-          key={menu.key}
-          title={setLocale(localization, menu.title)}
-        >
-          {menu.submenu.map((subMenuFirst) =>
-            subMenuFirst.submenu.length > 0 ? (
-              <SubMenu
-                icon={
-                  subMenuFirst.icon ? (
-                    <Icon type={subMenuFirst?.icon} />
-                  ) : null
-                }
-                key={subMenuFirst.key}
-                title={setLocale(localization, subMenuFirst.title)}
-              >
-                {subMenuFirst.submenu.map((subMenuSecond) => (
-                  <Menu.Item key={subMenuSecond.key}>
-                    {subMenuSecond.icon ? (
-                      <Icon type={subMenuSecond?.icon} />
-                    ) : null}
+  const convertMenuItems = (menus) => {
+    return menus.map((menu) => {
+      if (menu.submenu.length > 0) {
+        return {
+          key: menu.key,
+          label: setLocale(localization, menu.title),
+          type: 'group',
+          children: menu.submenu.map((subMenuFirst) => {
+            if (subMenuFirst.submenu.length > 0) {
+              return {
+                key: subMenuFirst.key,
+                label: setLocale(localization, subMenuFirst.title),
+                icon: subMenuFirst.icon ? <Icon type={subMenuFirst?.icon} /> : null,
+                children: subMenuFirst.submenu.map((subMenuSecond) => ({
+                  key: subMenuSecond.key,
+                  label: (
                     <span>
-                      {setLocale(localization, subMenuSecond.title)}
+                      {subMenuSecond.icon ? (
+                        <Icon type={subMenuSecond?.icon} />
+                      ) : null}
+                      <span>
+                        {setLocale(localization, subMenuSecond.title)}
+                      </span>
+                      <Link onClick={closeMobileNav} to={subMenuSecond.path} />
                     </span>
-                    <Link onClick={closeMobileNav} to={subMenuSecond.path} />
-                  </Menu.Item>
-                ))}
-              </SubMenu>
-            ) : (
-              <Menu.Item key={subMenuFirst.key}>
-                {subMenuFirst.icon ? <Icon type={subMenuFirst.icon} /> : null}
-                <span>{setLocale(localization, subMenuFirst.title)}</span>
-                <Link onClick={closeMobileNav} to={subMenuFirst.path} />
-              </Menu.Item>
-            )
-          )}
-        </Menu.ItemGroup>
-      ) : (
-        <Menu.Item
-          key={menu.key}
-          style={{ height: '60px', lineHeight: '60px' }}
-        >
-          {menu.icon ? <Icon type={menu?.icon} /> : null}
-          <span>
-            {setLocale(localization, menu?.title)}
-            {menu.key === 'notifications' && unreadCount > 0 && (
-              <Badge
-                count={unreadCount}
-                size="default"
-                style={{
-                  marginLeft: '12px',
-                }}
-              />
-            )}
-          </span>
-          {menu.path ? (
-            <Link onClick={closeMobileNav} to={menu.path} />
-          ) : null}
-        </Menu.Item>
-      )
-    ),
-    <Menu.Divider key="divider2" />,
-    <Menu.Item
-      key="logout"
-      icon={<LogoutOutlined />}
-      onClick={() => dispatch(signOut())}
-      style={{ height: '60px', lineHeight: '60px' }}
-    >
-      {formatMessage({ id: 'login_page.text.log_out' })}
-    </Menu.Item>
+                  ),
+                })),
+              };
+            } else {
+              return {
+                key: subMenuFirst.key,
+                label: (
+                  <span>
+                    {subMenuFirst.icon ? <Icon type={subMenuFirst.icon} /> : null}
+                    <span>{setLocale(localization, subMenuFirst.title)}</span>
+                    <Link onClick={closeMobileNav} to={subMenuFirst.path} />
+                  </span>
+                ),
+              };
+            }
+          }),
+        };
+      } else {
+        return {
+          key: menu.key,
+          label: (
+            <span>
+              {menu.icon ? <Icon type={menu?.icon} /> : null}
+              <span>
+                {setLocale(localization, menu?.title)}
+              </span>
+              {menu.key === 'notifications' && unreadCount > 0 && (
+                <Badge
+                  count={unreadCount}
+                  size="default"
+                  color="#ff4d4f"
+                  style={{
+                    marginLeft: '10px',
+                  }}
+                />
+              )}
+              {menu.path ? (
+                <Link onClick={closeMobileNav} to={menu.path} />
+              ) : null}
+            </span>
+          ),
+          style: { height: '60px', lineHeight: '60px' },
+        };
+      }
+    });
+  };
+
+  const menuItems = [
+    { type: 'divider', key: 'divider' },
+    ...convertMenuItems(navigationConfig),
+    { type: 'divider', key: 'divider2' },
+    {
+      key: 'logout',
+      label: formatMessage({ id: 'login_page.text.log_out' }),
+      icon: <LogoutOutlined />,
+      onClick: () => dispatch(signOut()),
+      style: { height: '60px', lineHeight: '60px' },
+    },
   ];
 
   return (
@@ -166,68 +176,83 @@ const SideNavContent = ({
       defaultOpenKeys={setDefaultOpen(routeInfo?.key)}
       selectedKeys={[routeInfo?.key]}
       className={hideGroupTitle ? 'hide-group-title' : ''}
-    >
-      {menuItems}
-    </Menu>
+      items={menuItems}
+    />
   );
 };
 
 const TopNavContent = (props) => {
   const { topNavColor, localization } = props;
-  return (
-    <Menu mode="horizontal" style={{ backgroundColor: topNavColor }}>
-      {navigationConfig.map((menu) =>
-        menu.submenu.length > 0 ? (
-          <SubMenu
-            key={menu.key}
-            popupClassName="top-nav-menu"
-            title={
-              <span>
-                {menu.icon ? <Icon type={menu?.icon} /> : null}
-                <span>{setLocale(localization, menu.title)}</span>
-              </span>
-            }
-          >
-            {menu.submenu.map((subMenuFirst) =>
-              subMenuFirst.submenu.length > 0 ? (
-                <SubMenu
-                  key={subMenuFirst.key}
-                  icon={
-                    subMenuFirst.icon ? (
-                      <Icon type={subMenuFirst?.icon} />
-                    ) : null
-                  }
-                  title={setLocale(localization, subMenuFirst.title)}
-                >
-                  {subMenuFirst.submenu.map((subMenuSecond) => (
-                    <Menu.Item key={subMenuSecond.key}>
-                      <span>
-                        {setLocale(localization, subMenuSecond.title)}
-                      </span>
+
+  const convertTopNavItems = (menus) => {
+    return menus.map((menu) => {
+      if (menu.submenu.length > 0) {
+        return {
+          key: menu.key,
+          label: (
+            <span>
+              {menu.icon ? <Icon type={menu?.icon} /> : null}
+              <span>{setLocale(localization, menu.title)}</span>
+            </span>
+          ),
+          popupClassName: "top-nav-menu",
+          children: menu.submenu.map((subMenuFirst) => {
+            if (subMenuFirst.submenu.length > 0) {
+              return {
+                key: subMenuFirst.key,
+                label: setLocale(localization, subMenuFirst.title),
+                icon: subMenuFirst.icon ? (
+                  <Icon type={subMenuFirst?.icon} />
+                ) : null,
+                children: subMenuFirst.submenu.map((subMenuSecond) => ({
+                  key: subMenuSecond.key,
+                  label: (
+                    <span>
+                      {setLocale(localization, subMenuSecond.title)}
                       <Link to={subMenuSecond.path} />
-                    </Menu.Item>
-                  ))}
-                </SubMenu>
-              ) : (
-                <Menu.Item key={subMenuFirst.key}>
-                  {subMenuFirst.icon ? (
-                    <Icon type={subMenuFirst?.icon} />
-                  ) : null}
-                  <span>{setLocale(localization, subMenuFirst.title)}</span>
-                  <Link to={subMenuFirst.path} />
-                </Menu.Item>
-              )
-            )}
-          </SubMenu>
-        ) : (
-          <Menu.Item key={menu.key}>
-            {menu.icon ? <Icon type={menu?.icon} /> : null}
-            <span>{setLocale(localization, menu?.title)}</span>
-            {menu.path ? <Link to={menu.path} /> : null}
-          </Menu.Item>
-        )
-      )}
-    </Menu>
+                    </span>
+                  ),
+                })),
+              };
+            } else {
+              return {
+                key: subMenuFirst.key,
+                label: (
+                  <span>
+                    {subMenuFirst.icon ? (
+                      <Icon type={subMenuFirst?.icon} />
+                    ) : null}
+                    <span>{setLocale(localization, subMenuFirst.title)}</span>
+                    <Link to={subMenuFirst.path} />
+                  </span>
+                ),
+              };
+            }
+          }),
+        };
+      } else {
+        return {
+          key: menu.key,
+          label: (
+            <span>
+              {menu.icon ? <Icon type={menu?.icon} /> : null}
+              <span>{setLocale(localization, menu?.title)}</span>
+              {menu.path ? <Link to={menu.path} /> : null}
+            </span>
+          ),
+        };
+      }
+    });
+  };
+
+  const topNavItems = convertTopNavItems(navigationConfig);
+
+  return (
+    <Menu
+      mode="horizontal"
+      style={{ backgroundColor: topNavColor }}
+      items={topNavItems}
+    />
   );
 };
 

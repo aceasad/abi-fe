@@ -1,6 +1,5 @@
 import {
   Col,
-  PageHeader,
   Row,
   DatePicker,
   Typography,
@@ -10,6 +9,7 @@ import {
   Button,
   Select,
 } from 'antd';
+import { PageHeader } from '@ant-design/pro-components';
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
@@ -28,7 +28,7 @@ import overviewService from 'services/OverviewService';
 import {
   SHOW_KPIS,
 } from 'configs/AppConfig';
-import moment from 'moment';
+import dayjs from 'utils/dayjs';
 const { RangePicker } = DatePicker;
 const { Option } = Select;
 
@@ -47,11 +47,11 @@ const KpisPage = () => {
   const campaignsSelector = useSelector(makeSelectCampaigns());
   const { campaigns, loading: campaignsLoading } = campaignsSelector;
 
-  const startDate = moment('2024-05-01');
+  const startDate = dayjs('2024-05-01');
 
   const [dateRange, setDateRange] = useState([
     startDate.clone().startOf('day'),
-    moment().endOf('day')
+    dayjs().endOf('day')
   ]);
 
   const [previousPeriod, setPreviousPeriod] = useState([
@@ -70,8 +70,8 @@ const KpisPage = () => {
     if (dates) {
       setDateRange(dates);
       const startDate = dates[0];
-      const previousStart = moment(startDate).subtract(30, 'days');
-      const previousEnd = moment(startDate).subtract(1, 'days');
+      const previousStart = dayjs(startDate).subtract(30, 'days');
+      const previousEnd = dayjs(startDate).subtract(1, 'days');
       setPreviousPeriod([previousStart, previousEnd]);
     } else {
       setDateRange(null);
@@ -89,21 +89,21 @@ const KpisPage = () => {
         const nextCampaign = campaigns[campaignIndex + 1];
 
         // Set start date to selected campaign's created_at
-        const startDate = moment(selectedCampaignData.created_at);
+        const startDate = dayjs(selectedCampaignData.created_at);
 
         // Set end date to next campaign's created_at or current date if it's the last campaign
         let endDate;
         if (nextCampaign) {
-          endDate = moment(nextCampaign.created_at);
+          endDate = dayjs(nextCampaign.created_at);
         } else {
-          endDate = moment().endOf('day');
+          endDate = dayjs().endOf('day');
         }
 
         setDateRange([startDate, endDate]);
 
         // Update previous period
-        const previousStart = moment(startDate).subtract(30, 'days');
-        const previousEnd = moment(startDate).subtract(1, 'days');
+        const previousStart = dayjs(startDate).subtract(30, 'days');
+        const previousEnd = dayjs(startDate).subtract(1, 'days');
         setPreviousPeriod([previousStart, previousEnd]);
       }
     }
@@ -163,7 +163,7 @@ const KpisPage = () => {
                       onChange={handleDateRangeChange}
                       value={dateRange}
                       format="DD/MM/YYYY"
-                      disabledDate={(current) => current && current > moment().endOf('day')}
+                      disabledDate={(current) => current && current > dayjs().endOf('day')}
                     />
                   </Col>
                   <Col>

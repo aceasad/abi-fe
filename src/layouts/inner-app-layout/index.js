@@ -21,16 +21,16 @@ const SideContent = (props) => {
 const SideContentMobile = (props) => {
   const { sideContent, visible, onSideContentClose } = props;
   return (
-    <Drawer
+    (<Drawer
       width={320}
       placement="left"
       closable={false}
       onClose={onSideContentClose}
-      visible={visible}
-      bodyStyle={{ paddingLeft: 0, paddingRight: 0 }}
+      open={visible}
+      styles={{ body: { paddingLeft: 0, paddingRight: 0 } }}
     >
       <div className="h-100">{sideContent}</div>
-    </Drawer>
+    </Drawer>)
   );
 };
 
@@ -51,7 +51,7 @@ export const InnerAppLayout = (props) => {
     <div className={`${border ? 'border' : ''} inner-app-layout`}>
       {isMobile ? (
         <SideContentMobile
-          visible={visible}
+          open={visible}
           onSideContentClose={close}
           {...props}
         />
@@ -59,15 +59,13 @@ export const InnerAppLayout = (props) => {
         <SideContent {...props} />
       )}
       <div
-        className={`main-content ${pageHeader ? 'has-page-header' : ''} ${
-          sideContentGutter ? 'gutter' : 'no-gutter'
-        }`}
+        className={`main-content ${pageHeader ? 'has-page-header' : ''} ${sideContentGutter ? 'gutter' : 'no-gutter'
+          }`}
       >
         {isMobile ? (
           <div
-            className={`font-size-lg mb-3 ${
-              !sideContentGutter ? 'pt-3 px-3' : ''
-            }`}
+            className={`font-size-lg mb-3 ${!sideContentGutter ? 'pt-3 px-3' : ''
+              }`}
           >
             <MenuOutlined onClick={() => openSideContentMobile()} />
           </div>

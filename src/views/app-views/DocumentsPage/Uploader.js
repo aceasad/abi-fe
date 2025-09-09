@@ -27,12 +27,12 @@ const Uploader = ({ handleUpdateDataSource, appointmentTypes }) => {
   const handleOk = (values) => {
     setConfirmLoading(true);
     let appointment_type_name;
-    try{
+    try {
       appointment_type_name = appointmentTypes.find(
         (type) => type.id === values.appointmentType
-      )['name'];  
-  
-    }catch{
+      )['name'];
+
+    } catch {
       appointment_type_name = null;
     }
     console.log(appointment_type_name)
@@ -73,8 +73,8 @@ const Uploader = ({ handleUpdateDataSource, appointmentTypes }) => {
         {({ values, handleSubmit }) => (
           <Modal
             title="Upload Your Document"
-            visible={open}
-            destroyOnClose
+            open={open}
+            destroyOnHidden
             confirmLoading={confirmLoading}
             onCancel={handleCancel}
             footer={[

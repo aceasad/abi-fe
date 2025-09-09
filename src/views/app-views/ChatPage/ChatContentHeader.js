@@ -8,11 +8,11 @@ import EllipsisDropdown from 'components/shared-components/EllipsisDropdown';
 import React, { Fragment } from 'react';
 import { useIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { makeSelectSingleChatInfo } from 'redux/selectors/Chats';
 import messages from './messages';
 import { setPatientShowMessages } from 'redux/actions/Patient';
 import { ROUTES } from 'routes';
-import { useHistory } from 'react-router-dom';
 
 const ChatContentHeader = ({
   showTitle,
@@ -45,26 +45,16 @@ const ChatContentHeader = ({
   ];
 
   const renderMenu = (patient_id) => {
-    return (
-      <Menu>
-        {menuOptions.map((menu, index) => (
-          <Fragment key={index}>
-            <Menu.Item
-              key={index.toString()}
-              onClick={
-                menu.onClick
-                  ? ({ domEvent }) => menu.onClick(domEvent)(patient_id)
-                  : null
-              }
-            >
-              <menu.Icon />
-              <span>{formatMessage(menu.message)}</span>
-            </Menu.Item>
-            {menu.shouldDivide && <Menu.Divider />}
-          </Fragment>
-        ))}
-      </Menu>
-    );
+    const menuItems = menuOptions.map((menu, index) => ({
+      key: index.toString(),
+      icon: <menu.Icon />,
+      label: formatMessage(menu.message),
+      onClick: menu.onClick ? ({ domEvent }) => menu.onClick(domEvent)(patient_id) : null,
+    }));
+
+    return {
+      items: menuItems
+    };
   };
 
   let nameWithSuffix = chatInfo?.patient?.full_name;

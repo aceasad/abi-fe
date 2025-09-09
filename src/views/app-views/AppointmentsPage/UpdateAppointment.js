@@ -8,7 +8,7 @@ import { message } from 'antd';
 import { prepareAppointmentData } from 'utils/helpers';
 import { updateAppointment } from 'redux/actions/Appointment';
 import { makeSelectSingleAppointment } from 'redux/selectors/Appointment';
-import moment from 'moment';
+import dayjs from 'utils/dayjs';
 import { DATE_FORMAT_DD_MMM_YYYY } from 'constants/DateConstant';
 import { TIME_FORMAT_HH_MM } from 'constants/TimeConstant';
 import {
@@ -90,37 +90,37 @@ const UpdateAppointment = ({
 
   const initialState = appointment
     ? {
-        patient: appointment.patient.id,
-        doctor: appointment.doctor.id,
-        appointmentType: appointment.appointment_type.id,
-        price: appointment.price,
-        date: moment(appointment.date, 'DD/MM/YYYY').format(
-          DATE_FORMAT_DD_MMM_YYYY
-        ),
-        time: moment(appointment.time, 'hh:mm a').format(TIME_FORMAT_HH_MM),
-        status: appointment.status.id,
-        communication_status: appointment.communication_status?.id,
-        communication_status_details: appointment.communication_status_details,
-        missing_reason: appointment.missing_reason?.id,
-        missing_reason_details: appointment.missing_reason_details,
-        cancellation_reason: appointment.cancellation_reason?.id,
-        cancellation_reason_details: appointment.cancellation_reason_details,
-      }
+      patient: appointment.patient.id,
+      doctor: appointment.doctor.id,
+      appointmentType: appointment.appointment_type.id,
+      price: appointment.price,
+      date: dayjs(appointment.date, 'DD/MM/YYYY').format(
+        DATE_FORMAT_DD_MMM_YYYY
+      ),
+      time: dayjs(appointment.time, 'hh:mm a').format(TIME_FORMAT_HH_MM),
+      status: appointment.status.id,
+      communication_status: appointment.communication_status?.id,
+      communication_status_details: appointment.communication_status_details,
+      missing_reason: appointment.missing_reason?.id,
+      missing_reason_details: appointment.missing_reason_details,
+      cancellation_reason: appointment.cancellation_reason?.id,
+      cancellation_reason_details: appointment.cancellation_reason_details,
+    }
     : {
-        patient: '',
-        doctor: '',
-        appointmentType: '',
-        price: 0,
-        date: '',
-        time: '',
-        status: '',
-        communication_status: '',
-        communication_status_details: '',
-        missing_reason: '',
-        missing_reason_details: '',
-        cancellation_reason: '',
-        cancellation_reason_details: '',
-      };
+      patient: '',
+      doctor: '',
+      appointmentType: '',
+      price: 0,
+      date: '',
+      time: '',
+      status: '',
+      communication_status: '',
+      communication_status_details: '',
+      missing_reason: '',
+      missing_reason_details: '',
+      cancellation_reason: '',
+      cancellation_reason_details: '',
+    };
 
   return (
     <AppointmentFormModal

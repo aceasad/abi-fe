@@ -52,7 +52,7 @@ const EditModal = ({ initialValues, handleUpdateDataSource }) => {
         {({ handleSubmit, dirty, isValid }) => (
           <Modal
             title="Edit your document"
-            visible={open}
+            open={open}
             confirmLoading={confirmLoading}
             onCancel={handleCancel}
             footer={[

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { Form, TimePicker } from 'antd';
-import moment from 'moment';
+import dayjs from 'utils/dayjs';
 import { TIME_FORMAT_HH_MM } from 'constants/TimeConstant';
 
 const FormTimePicker = ({
@@ -19,7 +19,7 @@ const FormTimePicker = ({
   const { formatMessage } = useIntl();
 
   const [time, setTime] = useState(
-    moment(field.value ? field.value : defaultTime, TIME_FORMAT_HH_MM)
+    dayjs(field.value ? field.value : defaultTime, TIME_FORMAT_HH_MM)
   );
 
   const defaultErrorMessage = () =>
@@ -43,7 +43,7 @@ const FormTimePicker = ({
 
   useEffect(() => {
     if (disabled) {
-      setTime(moment('00:00', TIME_FORMAT_HH_MM));
+      setTime(dayjs('00:00', TIME_FORMAT_HH_MM));
       setFieldValue(field.name, '00:00');
     }
   }, [disabled]);
@@ -58,7 +58,7 @@ const FormTimePicker = ({
       <TimePicker
         value={time}
         popupClassName="picker-time-no-after"
-        defaultValue={moment(
+        defaultValue={dayjs(
           field.value ? field.value : defaultTime,
           TIME_FORMAT_HH_MM
         )}

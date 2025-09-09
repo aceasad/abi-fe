@@ -108,91 +108,89 @@ const UploaderPatient = ({ onUploadComplete }) => {
     setShowLargeFileWarning(false);
   };
 
-  return (
-    <>
-      <div
-        style={{
-          marginLeft: 'auto',
-        }}
-      >
-        <Button type="primary" onClick={showModal}>
-          Bulk Upload
-        </Button>
-      </div>
-      <Formik
-        initialValues={{}}
-        onSubmit={handleOk}
-        enableReinitialize
-        validateOnMount
-      >
-        {({ values, handleSubmit }) => (
-          <Modal
-            title={showLargeFileWarning
-              ? "Are you sure you want to proceed with the upload?"
-              : "Bulk Upload of Patients from EMIS exported CSV"}
-            visible={open}
-            destroyOnClose
-            confirmLoading={confirmLoading}
-            onCancel={handleCancel}
-            footer={[
-              <Button
-                key="back"
-                onClick={handleCancel}
-                onMouseDown={(event) => {
-                  event.preventDefault();
-                }}
-              >
-                Cancel
-              </Button>,
-              <Button
-                key="submit"
-                type="primary"
-                onClick={handleSubmit}
-                htmlType="submit"
-                disabled={confirmLoading || appointmentDaysCountLoading}
-                loading={confirmLoading}
-              >
-                {showLargeFileWarning ? 'Proceed with Upload' : 'Upload'}
-              </Button>,
-            ]}
-          >
-            {appointmentDaysCountLoading ? (
-              <div style={{ textAlign: 'center', padding: '2em 0' }}>
-                <span className="ant-spin ant-spin-spinning" style={{ fontSize: 24, marginBottom: 16, display: 'inline-block' }} />
-                <p>Loading available appointment days...</p>
-              </div>
-            ) : showLargeFileWarning ? (
-              <div>
-                <p>
-                  You are about to upload <strong>{fileRows}  patients </strong>. In the next 30 days, there are <strong>{monthlyDays ?? 0} days with available appointments </strong>, offering a total of <strong>{monthlyTimeslots} available timeslots</strong>.
-                </p>
-                <p>Would you like to proceed with the upload?</p>
-              </div>
-            ) : (
-              <div>
-                <div style={{ marginBottom: 16 }}>
-                  <label style={{ display: 'block', marginBottom: 8, fontWeight: 500 }}>
-                    Campaign Name
-                  </label>
-                  <Input
-                    placeholder="Enter campaign name"
-                    value={campaignName}
-                    onChange={(e) => setCampaignName(e.target.value)}
-                    style={{ width: '100%' }}
-                    required
-                  />
-                </div>
-                <Dropzone
-                  onChange={setFileListToUpload}
-                  fileListToUpload={fileListToUpload}
+  return (<>
+    <div
+      style={{
+        marginLeft: 'auto',
+      }}
+    >
+      <Button type="primary" onClick={showModal}>
+        Bulk Upload
+      </Button>
+    </div>
+    <Formik
+      initialValues={{}}
+      onSubmit={handleOk}
+      enableReinitialize
+      validateOnMount
+    >
+      {({ values, handleSubmit }) => (
+        <Modal
+          title={showLargeFileWarning
+            ? "Are you sure you want to proceed with the upload?"
+            : "Bulk Upload of Patients from EMIS exported CSV"}
+          open={open}
+          destroyOnHidden
+          confirmLoading={confirmLoading}
+          onCancel={handleCancel}
+          footer={[
+            <Button
+              key="back"
+              onClick={handleCancel}
+              onMouseDown={(event) => {
+                event.preventDefault();
+              }}
+            >
+              Cancel
+            </Button>,
+            <Button
+              key="submit"
+              type="primary"
+              onClick={handleSubmit}
+              htmlType="submit"
+              disabled={confirmLoading || appointmentDaysCountLoading}
+              loading={confirmLoading}
+            >
+              {showLargeFileWarning ? 'Proceed with Upload' : 'Upload'}
+            </Button>,
+          ]}
+        >
+          {appointmentDaysCountLoading ? (
+            <div style={{ textAlign: 'center', padding: '2em 0' }}>
+              <span className="ant-spin ant-spin-spinning" style={{ fontSize: 24, marginBottom: 16, display: 'inline-block' }} />
+              <p>Loading available appointment days...</p>
+            </div>
+          ) : showLargeFileWarning ? (
+            <div>
+              <p>
+                You are about to upload <strong>{fileRows}  patients </strong>. In the next 30 days, there are <strong>{monthlyDays ?? 0} days with available appointments </strong>, offering a total of <strong>{monthlyTimeslots} available timeslots</strong>.
+              </p>
+              <p>Would you like to proceed with the upload?</p>
+            </div>
+          ) : (
+            <div>
+              <div style={{ marginBottom: 16 }}>
+                <label style={{ display: 'block', marginBottom: 8, fontWeight: 500 }}>
+                  Campaign Name
+                </label>
+                <Input
+                  placeholder="Enter campaign name"
+                  value={campaignName}
+                  onChange={(e) => setCampaignName(e.target.value)}
+                  style={{ width: '100%' }}
+                  required
                 />
               </div>
-            )}
-          </Modal>
-        )}
-      </Formik>
-    </>
-  );
+              <Dropzone
+                onChange={setFileListToUpload}
+                fileListToUpload={fileListToUpload}
+              />
+            </div>
+          )}
+        </Modal>
+      )}
+    </Formik>
+  </>);
 };
 
 export default UploaderPatient;

@@ -37,13 +37,12 @@ export class CardToolbar extends Component {
     return (
       <div className="code-box-actions">
         <span
-          className={`code-box-icon mr-3 ${
-            copied && copyTooltipVisible ? 'text-success' : ''
-          }`}
+          className={`code-box-icon mr-3 ${copied && copyTooltipVisible ? 'text-success' : ''
+            }`}
         >
           <Tooltip
             title={copied ? 'Copied' : 'Copy code'}
-            visible={copyTooltipVisible}
+            open={copyTooltipVisible}
             onVisibleChange={this.onCopyTooltipVisibleChange}
           >
             <CopyToClipboard text={code} onCopy={() => this.handleCodeCopied()}>

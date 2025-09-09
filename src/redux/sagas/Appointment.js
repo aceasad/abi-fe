@@ -2,7 +2,7 @@ import { takeEvery, takeLatest, put, call, all, fork, select } from 'redux-saga/
 import appointmentService from 'services/AppointmentService';
 import staffService from 'services/StaffService';
 import patientService from 'services/PatientService';
-import moment from 'moment';
+import dayjs from 'utils/dayjs';
 
 import {
   END_APPOINTMENT,
@@ -142,7 +142,7 @@ export function* deleteAppointmentFromCalendarView({ payload }) {
     yield payload.afterDelete();
     yield put(
       filterDeletedAppointment({
-        date: moment(payload.data.date, 'DD/MM/YYYY').format('YYYY-MM-DD'),
+        date: dayjs(payload.data.date, 'DD/MM/YYYY').format('YYYY-MM-DD'),
         id: payload.data.id,
       })
     );
@@ -386,18 +386,20 @@ export function* getAppointmentCancellationReasonsSaga() {
 export function* getMessageRequiringImmediateAttentionStatusesSaga() {
   yield takeLatest(
     GET_MESSAGE_REQUIRING_IMMEDIATE_ATTENTION_STATUSES,
-    function* () {
+    function* (action) {
       // Get current state to check if data has already been fetched
       const state = yield select();
       const hasBeenFetched = state.appointment.messageRequiringImmediateAttentionStatusesFetched;
+      const isLoading = state.appointment.messageRequiringImmediateAttentionStatusesLoading;
 
-      // If data has already been fetched, skip the API call
-      if (hasBeenFetched) {
-        console.log('Message requiring immediate attention statuses already fetched, skipping API call');
+      // Check if this is a forced refresh (payload.force = true)
+      const forceRefresh = action.payload?.force === true;
+
+      // If data has already been fetched or is currently loading, and it's not a forced refresh, skip the API call
+      if ((hasBeenFetched || isLoading) && !forceRefresh) {
+        console.log('Message requiring immediate attention statuses already fetched or loading, skipping API call');
         return;
       }
-
-
 
       try {
         yield put(setMessageRequiringImmediateAttentionStatusesLoading(true));
@@ -406,7 +408,8 @@ export function* getMessageRequiringImmediateAttentionStatusesSaga() {
         );
         yield put(setMessageRequiringImmediateAttentionStatuses(data));
         yield put(setMessageRequiringImmediateAttentionStatusesFetched(true));
-      } catch {
+      } catch (error) {
+        console.error('Error fetching message requiring immediate attention statuses:', error);
       } finally {
         yield put(setMessageRequiringImmediateAttentionStatusesLoading(false));
       }

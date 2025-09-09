@@ -1,0 +1,9 @@
+{
+  "css": {
+    "preprocessorOptions": {
+      "less": {
+        "javascriptEnabled": true
+      }
+    }
+  }
+}

@@ -7,8 +7,8 @@ import { useDispatch } from 'react-redux';
 import { message } from 'antd';
 import { createStaff } from 'redux/actions/Staff';
 import { GENDER } from 'constants/UserConstants';
-import moment from 'moment';
-import { DATE_FORMAT_DD_MM_YYYY,DATE_FORMAT_DD_MMM_YYYY } from 'constants/DateConstant';
+import dayjs from 'utils/dayjs';
+import { DATE_FORMAT_DD_MM_YYYY, DATE_FORMAT_DD_MMM_YYYY } from 'constants/DateConstant';
 
 const CreateStaff = ({ showList }) => {
   const { formatMessage } = useIntl();
@@ -22,8 +22,8 @@ const CreateStaff = ({ showList }) => {
   const handleSubmit = (values) => {
     const parsedValues = {
       ...values,
-      date_of_birth: moment(
-        moment(values.date_of_birth).format('DD-MM-YYYY')
+      date_of_birth: dayjs(
+        dayjs(values.date_of_birth).format('DD-MM-YYYY')
       ).format(DATE_FORMAT_DD_MM_YYYY),
     };
 
@@ -45,7 +45,7 @@ const CreateStaff = ({ showList }) => {
       initialState={{
         first_name: '',
         last_name: '',
-        date_of_birth: moment(new Date()).format(DATE_FORMAT_DD_MMM_YYYY),
+        date_of_birth: dayjs(new Date()).format(DATE_FORMAT_DD_MMM_YYYY),
         ethnicity: '',
         seniority: '',
         phone_number: '',

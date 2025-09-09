@@ -1,5 +1,5 @@
 import Modal from 'antd/lib/modal/Modal';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { useIntl } from 'react-intl';
 import messages from './messages';
 import appointmentsPageMessages from '../AppointmentsPage/messages';
@@ -12,7 +12,7 @@ import { NESTED_MODAL } from 'views/app-views/CalendarPage/AppointmentPreview';
 import Flex from 'components/shared-components/Flex';
 import RowWithMultipleColumns from 'components/util-components/Grid/RowWithMultipleColumns';
 import { RenderPredictionText, removeLeadingZeroFromTime } from 'utils/helpers';
-import moment from 'moment';
+import dayjs from 'utils/dayjs';
 
 function PreviewModal({
   handleClose,
@@ -75,12 +75,12 @@ function PreviewModal({
           <Typography.Text strong>
             {appointment?.doctor?.full_name}{' '}
           </Typography.Text>
-          {isPasIntegrated ? (<></>):(<span className="text-primary">({appointment?.specialization})</span>)}
+          {isPasIntegrated ? (<></>) : (<span className="text-primary">({appointment?.specialization})</span>)}
 
         </>
       ),
     },
-    
+
     {
       label: formatMessage(messages.status),
       value: appointment?.status?.name,
@@ -96,7 +96,7 @@ function PreviewModal({
     {
       label: formatMessage(messages.time),
       value: removeLeadingZeroFromTime(
-        moment(appointment?.time, 'HH:mm a').format('hh:mm A')
+        dayjs(appointment?.time, 'HH:mm a').format('hh:mm A')
       ),
     },
     // {

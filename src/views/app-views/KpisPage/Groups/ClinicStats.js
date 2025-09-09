@@ -310,7 +310,7 @@ const ClinicStats = ({ title, previousPeriod }) => {
                     <div style={{
                       width: '8px',
                       height: '8px',
-                      backgroundColor: item.color,
+                      backgroundColor: pieChartColors[index],
                       borderRadius: '50%',
                       marginRight: '8px',
                       flexShrink: 0

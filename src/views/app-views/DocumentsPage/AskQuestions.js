@@ -55,7 +55,7 @@ const AskQuestions = ({ initialValues }) => {
         {({ handleSubmit }) => (
           <Modal
             title="Question Answering"
-            visible={open}
+            open={open}
             confirmLoading={confirmLoading}
             onCancel={handleCancel}
             footer={[
