@@ -52,7 +52,7 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
       formData.append('photo', '');
     }
     formData.delete('isPasIntegrated')
-    formData.append('isPasIntegrated', false)
+    formData.append('isPasIntegrated', true)
     if (clinicData) {
       dispatch(
         updateClinic({
