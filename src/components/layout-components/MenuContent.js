@@ -132,16 +132,17 @@ const SideNavContent = ({
               {menu.icon ? <Icon type={menu?.icon} /> : null}
               <span>
                 {setLocale(localization, menu?.title)}
-                {menu.key === 'notifications' && unreadCount > 0 && (
-                  <Badge
-                    count={unreadCount}
-                    size="default"
-                    style={{
-                      marginLeft: '12px',
-                    }}
-                  />
-                )}
               </span>
+              {menu.key === 'notifications' && unreadCount > 0 && (
+                <Badge
+                  count={unreadCount}
+                  size="default"
+                  color="#ff4d4f"
+                  style={{
+                    marginLeft: '10px',
+                  }}
+                />
+              )}
               {menu.path ? (
                 <Link onClick={closeMobileNav} to={menu.path} />
               ) : null}

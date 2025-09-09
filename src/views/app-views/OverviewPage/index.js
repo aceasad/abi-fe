@@ -22,17 +22,11 @@ import {
   SHOW_APPOINTMENTS_REMINDERS,
   SHOW_PATIENT_PROGRESS,
 } from 'configs/AppConfig';
-import { getMessageRequiringImmediateAttentionStatuses } from 'redux/actions/Appointment';
 
 const { Option } = Select;
 
 const OverviewPage = () => {
   const { formatMessage } = useIntl();
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(getMessageRequiringImmediateAttentionStatuses());
-  }, []);
 
   return (
     <>

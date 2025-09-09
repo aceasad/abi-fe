@@ -51,7 +51,7 @@ export const InnerAppLayout = (props) => {
     <div className={`${border ? 'border' : ''} inner-app-layout`}>
       {isMobile ? (
         <SideContentMobile
-          visible={visible}
+          open={visible}
           onSideContentClose={close}
           {...props}
         />

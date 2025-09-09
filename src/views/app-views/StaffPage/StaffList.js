@@ -108,38 +108,38 @@ const StaffList = ({ showCreate, editUser, seeAppointments }) => {
             renderItem={(staffItem) => (
               <List.Item key={staffItem.id}>
                 {isPasIntegrated ? (
-                <CardComponent
-                  key={staffItem.id}
-                  title={staffItem.first_name + ' ' + staffItem.last_name}
-                  description={''}
-                  avatar={staffItem.profile_picture}
-                  action={formatMessage(messages.seeAppointments)}
-                  Options={() => (
-                    <StaffCardOptions
-                      handleMenuClick={({ key }) =>
-                        handleOptionClick(staffItem.id, key)
-                      }
-                    />
-                  )}
-                  handleClick={() => seeAppointments(staffItem.id)}
-                />):( <CardComponent
-                  key={staffItem.id}
-                  title={staffItem.first_name + ' ' + staffItem.last_name}
-                  description={
-                staffItem.seniority + ' ' + staffItem.specialization
-                  }
-                  avatar={staffItem.profile_picture}
-                  action={formatMessage(messages.seeAppointments)}
-                  Options={() => (
-                    <StaffCardOptions
-                      handleMenuClick={({ key }) =>
-                        handleOptionClick(staffItem.id, key)
-                      }
-                    />
-                  )}
-                  handleClick={() => seeAppointments(staffItem.id)}
-                />)}
-               
+                  <CardComponent
+                    key={staffItem.id}
+                    title={staffItem.first_name + ' ' + staffItem.last_name}
+                    description={''}
+                    avatar={staffItem.profile_picture}
+                    action={formatMessage(messages.seeAppointments)}
+                    Options={() => (
+                      <StaffCardOptions
+                        handleMenuClick={({ key }) =>
+                          handleOptionClick(staffItem.id, key)
+                        }
+                      />
+                    )}
+                    handleClick={() => seeAppointments(staffItem.id)}
+                  />) : (<CardComponent
+                    key={staffItem.id}
+                    title={staffItem.first_name + ' ' + staffItem.last_name}
+                    description={
+                      staffItem.seniority + ' ' + staffItem.specialization
+                    }
+                    avatar={staffItem.profile_picture}
+                    action={formatMessage(messages.seeAppointments)}
+                    Options={() => (
+                      <StaffCardOptions
+                        handleMenuClick={({ key }) =>
+                          handleOptionClick(staffItem.id, key)
+                        }
+                      />
+                    )}
+                    handleClick={() => seeAppointments(staffItem.id)}
+                  />)}
+
               </List.Item>
             )}
           />
@@ -155,7 +155,7 @@ const StaffList = ({ showCreate, editUser, seeAppointments }) => {
             })}
             primaryAction={formatMessage(messages.delete)}
             secondaryAction={formatMessage(messages.cancel)}
-            visible={staffForDelete}
+            open={staffForDelete}
             handlePrimaryAction={handleDelete}
             handleSecondaryAction={() => setStaffForDelete(null)}
           />

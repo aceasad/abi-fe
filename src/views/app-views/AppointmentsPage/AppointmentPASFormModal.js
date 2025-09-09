@@ -89,7 +89,7 @@ const AppointmentPASFormModal = ({
                 <Modal
                     title={title}
                     open
-                    destroyOnClose
+                    destroyOnHidden
                     closable={false}
                     footer={[
                         <Button

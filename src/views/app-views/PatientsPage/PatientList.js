@@ -245,7 +245,7 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
         })}
         primaryAction={formatMessage(messages.delete)}
         secondaryAction={formatMessage(messages.cancel)}
-        visible={patientForDelete}
+        open={patientForDelete}
         handlePrimaryAction={handleDelete}
         handleSecondaryAction={() => setPatientForDelete(null)}
       />

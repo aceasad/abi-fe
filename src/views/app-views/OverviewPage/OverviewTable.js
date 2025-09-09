@@ -128,10 +128,10 @@ const OverviewTable = () => {
 
   return (
     <>
-      <Typography.Title level={2} className="mb-4">
+      <Typography.Title level={2} className="mb-2">
         {formatMessage(messages.tableTitle)}
       </Typography.Title>
-      <Card>
+      <Card className="mt-0">
         <Table columns={columns} dataSource={dummyData} />
       </Card>
     </>

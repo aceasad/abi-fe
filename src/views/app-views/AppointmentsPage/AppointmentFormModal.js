@@ -93,7 +93,7 @@ const AppointmentFormModal = ({
         <Modal
           title={title}
           open
-          destroyOnClose
+          destroyOnHidden
           closable={false}
           footer={[
             <Button
@@ -162,7 +162,7 @@ const AppointmentFormModal = ({
                   </Button>
                 </Col>
               </Row>
-              {isPasIntegrated?(<></>):(<RowColumnField
+              {isPasIntegrated ? (<></>) : (<RowColumnField
                 span={24}
                 label={formatMessage(messages.doctorLabel)}
                 name="doctor"
@@ -174,32 +174,32 @@ const AppointmentFormModal = ({
               />)}
               <Row gutter={16}>
                 <Col xs={24} lg={12}>
-                  {isPasIntegrated?(
-                      <Field
-                        label={formatMessage(messages.appointmentTypeLabel)}
-                        name="appointmentType"
-                        component={FormSelect}
-                        options={appointmentTypes}
-                        optionField="name"
-                        defaultOption={values.appointmentType}
-                        afterSelectChange={afterAppointmentTypeSelect}
-                        afterSelectChangeFieldName="price"
-                        required
-                      />
-                  ):(
-                  <Field
-                    label={formatMessage(messages.appointmentTypeLabel)}
-                    name="appointmentType"
-                    component={FormSelect}
-                    options={appointmentTypes}
-                    optionField="name"
-                    defaultOption={values.appointmentType}
-                    afterSelectChange={afterAppointmentTypeSelect}
-                    afterSelectChangeFieldName="price"
-                    required
-                  />
-)}                </Col>
-                {isPasIntegrated?(<></>):(   <Col xs={24} lg={12}>
+                  {isPasIntegrated ? (
+                    <Field
+                      label={formatMessage(messages.appointmentTypeLabel)}
+                      name="appointmentType"
+                      component={FormSelect}
+                      options={appointmentTypes}
+                      optionField="name"
+                      defaultOption={values.appointmentType}
+                      afterSelectChange={afterAppointmentTypeSelect}
+                      afterSelectChangeFieldName="price"
+                      required
+                    />
+                  ) : (
+                    <Field
+                      label={formatMessage(messages.appointmentTypeLabel)}
+                      name="appointmentType"
+                      component={FormSelect}
+                      options={appointmentTypes}
+                      optionField="name"
+                      defaultOption={values.appointmentType}
+                      afterSelectChange={afterAppointmentTypeSelect}
+                      afterSelectChangeFieldName="price"
+                      required
+                    />
+                  )}                </Col>
+                {isPasIntegrated ? (<></>) : (<Col xs={24} lg={12}>
                   <DirtyFieldWrapper
                     setFieldDirty={setFieldTouched}
                     name="price"
@@ -215,48 +215,48 @@ const AppointmentFormModal = ({
                     />
                   </DirtyFieldWrapper>
                 </Col>)}
-             
+
               </Row>
               <Row gutter={16}>
-              {isPasIntegrated?(<>
-                <Col xs={24} lg={12}>
-                  <Field
-                    component={PASFormDatePicker}
-                    label={formatMessage(messages.dateLabel)}
-                    name="date"
-                    showDefaultDate={isEditForm}
-                    required
-                  />
-                </Col>
-                <Col xs={24} lg={12}>
-                  <Field
-                    component={PASFormTimePicker}
-                    label={formatMessage(messages.timeLabel)}
-                    name="time"
-                    required
-                    showDefaultTime={isEditForm}
-                  />
-                </Col>
-              </>):(<>
-              <Col xs={24} lg={12}>
-                <Field
-                  component={FormDatePicker}
-                  label={formatMessage(messages.dateLabel)}
-                  name="date"
-                  showDefaultDate={isEditForm}
-                  required
-                />
-                </Col>
-                <Col xs={24} lg={12}>
-                <Field
-                  component={TimeslotTimePicker}
-                  label={formatMessage(messages.timeLabel)}
-                  name="time"
-                  required
-                  showDefaultTime={isEditForm}
-                />
-                </Col>
-              </>)}
+                {isPasIntegrated ? (<>
+                  <Col xs={24} lg={12}>
+                    <Field
+                      component={PASFormDatePicker}
+                      label={formatMessage(messages.dateLabel)}
+                      name="date"
+                      showDefaultDate={isEditForm}
+                      required
+                    />
+                  </Col>
+                  <Col xs={24} lg={12}>
+                    <Field
+                      component={PASFormTimePicker}
+                      label={formatMessage(messages.timeLabel)}
+                      name="time"
+                      required
+                      showDefaultTime={isEditForm}
+                    />
+                  </Col>
+                </>) : (<>
+                  <Col xs={24} lg={12}>
+                    <Field
+                      component={FormDatePicker}
+                      label={formatMessage(messages.dateLabel)}
+                      name="date"
+                      showDefaultDate={isEditForm}
+                      required
+                    />
+                  </Col>
+                  <Col xs={24} lg={12}>
+                    <Field
+                      component={TimeslotTimePicker}
+                      label={formatMessage(messages.timeLabel)}
+                      name="time"
+                      required
+                      showDefaultTime={isEditForm}
+                    />
+                  </Col>
+                </>)}
               </Row>
               {isEditForm && (
                 <RowColumnField

@@ -23,14 +23,12 @@ export default defineConfig({
     preprocessorOptions: {
       less: {
         javascriptEnabled: true,
-        modifyVars: {
-          // Add any custom variables here if needed
-        },
+        modifyVars: {},
       },
     },
-  },
-  esbuild: {
-    loader: 'jsx',
+    postcss: {
+      plugins: [],
+    },
   },
   optimizeDeps: {
     force: true,

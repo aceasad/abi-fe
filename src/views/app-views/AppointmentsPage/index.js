@@ -87,7 +87,7 @@ const AppointmentsPage = () => {
         <Modal
           title={"Pas Sync Process"}
           visible
-          destroyOnClose
+          destroyOnHidden
           closable={true}
           onCancel={closePasModel}
           width={400}

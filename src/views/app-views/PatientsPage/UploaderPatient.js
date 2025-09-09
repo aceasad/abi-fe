@@ -130,7 +130,7 @@ const UploaderPatient = ({ onUploadComplete }) => {
             ? "Are you sure you want to proceed with the upload?"
             : "Bulk Upload of Patients from EMIS exported CSV"}
           open={open}
-          destroyOnClose
+          destroyOnHidden
           confirmLoading={confirmLoading}
           onCancel={handleCancel}
           footer={[

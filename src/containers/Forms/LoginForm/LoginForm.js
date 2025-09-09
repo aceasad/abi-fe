@@ -172,7 +172,7 @@ export const LoginForm = () => {
       <Modal
         title={"Warning"}
         open
-        destroyOnClose
+        destroyOnHidden
         footer={[]}
       >
         <Row gutter={16} className="d-flex">

@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import './index.css';
+import './assets/less/styles/styles.less';
 import LanguageProvider from 'containers/LanguageProvider';
 import { translationMessages } from './i18n';
 import { Provider } from 'react-redux';
