@@ -26,120 +26,15 @@ html {
     'Helvetica Neue', sans-serif !important;
 }
 
-.ant-badge-count[style*='background'],
+.ant-badge-not-a-wrapper:not(.ant-badge-status) {
+  vertical-align: middle;
+}
+
 .ant-badge-count,
-.app-header .ant-menu .ant-badge .ant-badge-count,
-.app-header .ant-badge .ant-badge-count,
-.ant-menu .ant-badge .ant-badge-count,
+.badge-color .ant-badge-count,
 .ant-badge .ant-badge-count {
-  background-color: #ff4d4f !important;
-  background: #ff4d4f !important;
-  color: white !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  min-width: 18px !important;
-  height: 18px !important;
-  line-height: 18px !important;
-  font-size: 12px !important;
-  font-weight: 500 !important;
-  border-radius: 9px !important;
-  box-shadow: none !important;
-  text-align: center !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  position: relative !important;
-}
-
-.ant-badge-count > *,
-.ant-badge-count span,
-.ant-badge-count .ant-badge-count {
-  line-height: 1 !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  height: 100% !important;
-  width: 100% !important;
-}
-
-.ant-badge .ant-badge-count {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  text-align: center !important;
-}
-
-.app-header .ant-badge {
-  margin-left: 10px !important;
-}
-
-.app-header .ant-menu .ant-badge {
-  position: relative !important;
-}
-
-.ant-badge-count[style] {
-  background-color: #ff4d4f !important;
-  background: #ff4d4f !important;
-}
-
-.ant-scroll-number.ant-badge-count {
-  background-color: #ff4d4f !important;
-  background: #ff4d4f !important;
-  color: white !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  min-width: 18px !important;
-  height: 18px !important;
-  line-height: 18px !important;
-  font-size: 12px !important;
-  font-weight: 500 !important;
-  border-radius: 50% !important;
-  box-shadow: none !important;
-  text-align: center !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  position: relative !important;
-  width: 18px !important;
-}
-
-.ant-scroll-number.ant-badge-count > *,
-.ant-scroll-number.ant-badge-count span,
-.ant-scroll-number.ant-badge-count .ant-badge-count {
-  line-height: 1 !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  height: 100% !important;
-  width: 100% !important;
-  text-align: center !important;
-}
-
-.ant-menu-title-content .ant-badge {
-  margin-left: 10px !important;
-}
-
-.ant-menu-title-content .ant-badge-count {
-  background-color: #ff4d4f !important;
-  background: #ff4d4f !important;
-  color: white !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  min-width: 18px !important;
-  height: 18px !important;
-  line-height: 18px !important;
-  font-size: 12px !important;
-  font-weight: 500 !important;
-  border-radius: 9px !important;
-  box-shadow: none !important;
-  text-align: center !important;
-  padding: 0 !important;
-  margin: 0 !important;
+  background-color: #ff6b72 !important;
+  background: #ff6b72 !important;
 }
 
 .ant-table-thead > tr > th {
@@ -267,13 +162,13 @@ html {
 }
 
 .ant-form-item-required .ant-form-item-label > label::before {
-  color: #ff4d4f !important;
+  color: var(--color-red-5) !important;
 }
 
 .ant-form-item-required
   .ant-form-item-label
   > label.ant-form-item-required::before {
-  color: #ff4d4f !important;
+  color: var(--color-red-5) !important;
 }
 
 .clinic-form .ant-form-item-required .ant-form-item-label > label::before,
@@ -282,15 +177,15 @@ html {
   .ant-form-item-required
   .ant-form-item-label
   > label::before {
-  color: #ff4d4f !important;
+  color: var(--color-red-5) !important;
 }
 
 .ant-form-item-required .ant-form-item-label::before {
-  color: #ff4d4f !important;
+  color: var(--color-red-5) !important;
 }
 
 .ant-form-item-label > label::before {
-  color: #ff4d4f !important;
+  color: var(--color-red-5) !important;
 }
 
 .ant-radio-checked .ant-radio-inner {
@@ -431,8 +326,8 @@ html {
 .ant-btn-color-dangerous,
 .ant-btn.ant-btn-dangerous,
 .ant-btn.ant-btn-color-dangerous {
-  background-color: #ff4d4f !important;
-  border-color: #ff4d4f !important;
+  background-color: var(--color-red-5) !important;
+  border-color: var(--color-red-5) !important;
   color: #ffffff !important;
 }
 
@@ -841,7 +736,7 @@ div.logo img,
 .ant-tag-red,
 .ant-tag.ant-tag-red,
 .ant-tag.text-left.ant-tag-red {
-  color: #ff4d4f !important;
+  color: var(--color-red-5) !important;
   background: rgba(253, 67, 50, 0.1) !important;
   border-color: rgba(253, 67, 50, 0.1) !important;
 }
@@ -1028,6 +923,7 @@ button.ant-btn.ant-btn-ghost.ant-btn-primary:active {
   border-color: #5d4ebf !important;
   color: #5d4ebf !important;
 }
+
 .loading.cover-content {
   position: absolute;
   left: 50%;
