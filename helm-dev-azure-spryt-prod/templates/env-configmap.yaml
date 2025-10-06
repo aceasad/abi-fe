@@ -6,6 +6,7 @@ metadata:
 data:
   VITE_APP_API_URL: https://nhs.backend.spryt.com/abi-be/api/v1
   VITE_APP_SOCKETS_DOMAIN: wss://nhs.backend.spryt.com/abi-be/ws/chat
+  VITE_APP_SOCKETS_NOTIFICATION_DOMAIN: wss://nhs.backend.spryt.com/abi-be/ws/notifications
   VITE_APP_URL_PREFIX_PATH: ""
   VITE_APP_API_CDN: ""
   VITE_APP_FACEBOOK_APP_ID: ""
