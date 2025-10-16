@@ -17,10 +17,18 @@ export const MobileNav = ({
   hideGroupTitle,
   localization = true,
 }) => {
-  const props = { sideNavTheme, routeInfo, hideGroupTitle, localization };
-
   const onClose = () => {
     onMobileNavToggle(false);
+  };
+
+  const props = {
+    sideNavTheme,
+    routeInfo,
+    hideGroupTitle,
+    localization,
+    isMobile: true, // Explicitly set isMobile to true for mobile drawer
+    onMobileNavToggle, // Pass the toggle function
+    closeMobileDrawer: onClose, // Pass the close function directly
   };
 
   return (

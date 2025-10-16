@@ -25,24 +25,24 @@ function PreAppointmentQuestionnairePreviewModal({ handleClose, title }) {
     !preAppointmentQuestionnaire || !preAppointmentQuestionnaire.length
       ? []
       : preAppointmentQuestionnaire.map((elem, index) => (
-          <tr key={`pq-answer-${index}`}>
-            <td>
-              {getSafe(() =>
-                Number(
-                  elem?.question?.order_no.toString().split('.')[1].charAt(0)
-                ) === 0
-                  ? parseInt(elem?.question?.order_no)
-                  : elem?.question?.order_no.toString().replaceAll('0', '')
-              )}
-            </td>
-            <td>{elem?.question?.question.replace('Yes/No', '')}</td>
-            <td style={{color: elem?.answer ? '#fd4332' : null}}>{elem?.answer ? 'Yes' : 'No'}</td>
-          </tr>
-        ));
+        <tr key={`pq-answer-${index}`}>
+          <td>
+            {getSafe(() =>
+              Number(
+                elem?.question?.order_no.toString().split('.')[1].charAt(0)
+              ) === 0
+                ? parseInt(elem?.question?.order_no)
+                : elem?.question?.order_no.toString().replaceAll('0', '')
+            )}
+          </td>
+          <td>{elem?.question?.question.replace('Yes/No', '')}</td>
+          <td style={{ color: elem?.answer ? '#fd4332' : null }}>{elem?.answer ? 'Yes' : 'No'}</td>
+        </tr>
+      ));
 
   return (
     <Modal
-      visible
+      open
       closable={false}
       footer={null}
       title={

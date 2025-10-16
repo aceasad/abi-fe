@@ -77,7 +77,7 @@ const Chat = () => {
         className="p-0 mb-4"
         title={
           isMobile ? (
-            <Typography.Title level={2} className="mb-0">
+            <Typography.Title level={2} className="mb-0" style={{ fontSize: '20px' }}>
               {`${formatMessage(messages.conversationsTitle)}${!rasaHealthy
                 ? ': Communication with Asa AI is down for maintenance'
                 : ''
@@ -92,8 +92,9 @@ const Chat = () => {
             type="primary"
             key="mass-invites-button"
             onClick={() => setIsModalVisible(true)}
+            size={isMobile ? 'small' : 'middle'}
           >
-            {formatMessage(messages.conversationsMassInvites)}
+            {isMobile ? 'Invite' : formatMessage(messages.conversationsMassInvites)}
           </Button>,
         ]}
       />

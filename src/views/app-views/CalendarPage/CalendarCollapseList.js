@@ -10,7 +10,6 @@ import Loading from 'components/shared-components/Loading';
 import { getSingleAppointment } from 'redux/actions/Appointment';
 import AppointmentPreview from './AppointmentPreview';
 
-const { Panel } = Collapse;
 const { Text } = Typography;
 
 const CalendarCollapseList = () => {
@@ -31,7 +30,7 @@ const CalendarCollapseList = () => {
           {data.doctor}
         </Text>
         &nbsp;
-        {isPasIntegrated ? (<></>):(<Text className="text-primary">({data.specialization})</Text>)}
+        {isPasIntegrated ? (<></>) : (<Text className="text-primary">({data.specialization})</Text>)}
         {/*  */}
       </div>
       {/* Badge goes here. */}
@@ -51,33 +50,33 @@ const CalendarCollapseList = () => {
   }, [activeAppointment]);
 
   if (loading) return <Loading defaultSpinner />;
+
+  const collapseItems = doctorAppointments.map((item, index) => ({
+    key: index,
+    label: collapseHeader(item),
+    className: "staff-collapse",
+    children: (
+      <List
+        itemLayout="horizontal"
+        dataSource={item.appointments}
+        renderItem={(appointment) => (
+          <List.Item
+            onClick={() => handleClick(appointment)}
+            className="cursor-pointer list-item-hover"
+          >
+            <List.Item.Meta
+              description={<StaffPanelItem data={appointment} />}
+            />
+          </List.Item>
+        )}
+      />
+    ),
+  }));
+
   return (
     <div>
       {doctorAppointments.length ? (
-        <Collapse expandIconPosition="right">
-          {doctorAppointments.map((item, index) => (
-            <Panel
-              className="staff-collapse"
-              header={collapseHeader(item)}
-              key={index}
-            >
-              <List
-                itemLayout="horizontal"
-                dataSource={item.appointments}
-                renderItem={(item) => (
-                  <List.Item
-                    onClick={() => handleClick(item)}
-                    className="cursor-pointer list-item-hover"
-                  >
-                    <List.Item.Meta
-                      description={<StaffPanelItem data={item} />}
-                    />
-                  </List.Item>
-                )}
-              />
-            </Panel>
-          ))}
-        </Collapse>
+        <Collapse expandIconPosition="end" items={collapseItems} />
       ) : (
         <div>{formatMessage(messages.noAppointments)}</div>
       )}

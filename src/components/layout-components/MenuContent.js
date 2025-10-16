@@ -48,6 +48,7 @@ const SideNavContent = ({
   navCollapsed,
   isMobile,
   toggleCollapsedNav,
+  closeMobileDrawer, // New prop for closing mobile drawer
 }) => {
   const dispatch = useDispatch();
   const { formatMessage } = useIntl();
@@ -56,12 +57,42 @@ const SideNavContent = ({
   const history = useHistory();
   const [route, setRoute] = useState({});
   const { proceed, setContext, action } = useContext(BeforeRouteContext);
+
   const closeMobileNav = (e) => {
     e.preventDefault();
-
     setRoute({ path: e.target.pathname, key: generateKey() });
     if (isMobile) {
       onMobileNavToggle(false);
+    }
+  };
+
+  // Handle menu item clicks
+  const handleMenuClick = ({ key, domEvent }) => {
+    // Skip if it's the logout button (handled separately)
+    if (key === 'logout' || key === 'divider' || key === 'divider2') return;
+
+    // Find the menu item path from navigationConfig
+    const findMenuItem = (items, targetKey) => {
+      for (const item of items) {
+        if (item.key === targetKey) return item;
+        if (item.submenu && item.submenu.length > 0) {
+          const found = findMenuItem(item.submenu, targetKey);
+          if (found) return found;
+        }
+      }
+      return null;
+    };
+
+    const menuItem = findMenuItem(navigationConfig, key);
+
+    if (menuItem && menuItem.path) {
+      // Navigate to the path first
+      history.push(menuItem.path);
+
+      // Close mobile drawer if closeMobileDrawer function exists (means we're in mobile nav)
+      if (closeMobileDrawer) {
+        closeMobileDrawer();
+      }
     }
   };
 
@@ -105,7 +136,6 @@ const SideNavContent = ({
                       <span>
                         {setLocale(localization, subMenuSecond.title)}
                       </span>
-                      <Link onClick={closeMobileNav} to={subMenuSecond.path} />
                     </span>
                   ),
                 })),
@@ -117,7 +147,6 @@ const SideNavContent = ({
                   <span>
                     {subMenuFirst.icon ? <Icon type={subMenuFirst.icon} /> : null}
                     <span>{setLocale(localization, subMenuFirst.title)}</span>
-                    <Link onClick={closeMobileNav} to={subMenuFirst.path} />
                   </span>
                 ),
               };
@@ -143,9 +172,6 @@ const SideNavContent = ({
                   }}
                 />
               )}
-              {menu.path ? (
-                <Link onClick={closeMobileNav} to={menu.path} />
-              ) : null}
             </span>
           ),
           style: { height: '60px', lineHeight: '60px' },
@@ -177,6 +203,7 @@ const SideNavContent = ({
       selectedKeys={[routeInfo?.key]}
       className={hideGroupTitle ? 'hide-group-title' : ''}
       items={menuItems}
+      onClick={handleMenuClick}
     />
   );
 };

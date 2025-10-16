@@ -35,7 +35,7 @@ const UserSettingsFormModal = ({
         <Modal
           title={title}
           style={{ maxWidth: '24rem', top: '2rem' }}
-          visible
+          open
           closable={false}
           footer={[
             <Button

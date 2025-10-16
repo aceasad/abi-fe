@@ -172,6 +172,10 @@ const ChatMenu = (props) => {
   const openChat = (id) => {
     dispatch(setConversationToRead(id));
     history.push(`${match.url}/${id}`);
+    // Close mobile drawer if the function is provided
+    if (props.closeMobileDrawer) {
+      props.closeMobileDrawer();
+    }
   };
 
   const searchOnChange = (e) => {

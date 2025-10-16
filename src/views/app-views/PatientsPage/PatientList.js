@@ -12,6 +12,9 @@ import {
   Typography,
   Tooltip,
   Grid,
+  Row,
+  Col,
+  Avatar,
 } from 'antd';
 import { PageHeader } from '@ant-design/pro-components';
 import {
@@ -19,6 +22,12 @@ import {
   DeleteOutlined,
   SearchOutlined,
   FormOutlined,
+  PlusOutlined,
+  UploadOutlined,
+  DownloadOutlined,
+  UserOutlined,
+  PhoneOutlined,
+  CalendarOutlined,
 } from '@ant-design/icons';
 import EllipsisDropdown from 'components/shared-components/EllipsisDropdown';
 import Flex from 'components/shared-components/Flex';
@@ -105,6 +114,7 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
       dataIndex: 'phone_number',
       render: (phoneNumber) => <span>{phoneNumber}</span>,
       sorter: true,
+      responsive: ['md'], // Hide on mobile
     },
     {
       title: formatMessage(messages.lastAppointment),
@@ -115,6 +125,7 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
         </span>
       ),
       sorter: true,
+      responsive: ['lg'], // Hide on mobile and tablet
     },
     // {
     //   title: '',
@@ -182,60 +193,205 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
     dispatch(deletePatient({ data: patientForDelete.id, afterDelete }));
   };
 
+  // Mobile Card View Component
+  const PatientCard = ({ patient }) => (
+    <Card
+      hoverable
+      onClick={() => showPreview(patient.id)}
+      styles={{ body: { padding: '16px' } }}
+      style={{ height: '100%', borderRadius: '8px' }}
+    >
+      <Space direction="vertical" size="small" style={{ width: '100%' }}>
+        <Space align="start" style={{ width: '100%', justifyContent: 'space-between' }}>
+          <Space>
+            <Avatar icon={<UserOutlined />} size="large" />
+            <div>
+              <Typography.Text strong style={{ fontSize: '16px', display: 'block' }}>
+                {patient.first_name} {patient.last_name}
+              </Typography.Text>
+              <Space size="small" style={{ marginTop: '4px' }}>
+                <PhoneOutlined style={{ fontSize: '12px', color: '#8c8c8c' }} />
+                <Typography.Text type="secondary" style={{ fontSize: '12px' }}>
+                  {patient.phone_number}
+                </Typography.Text>
+              </Space>
+            </div>
+          </Space>
+        </Space>
+
+        {patient.last_appointment && (
+          <Space size="small">
+            <CalendarOutlined style={{ fontSize: '12px', color: '#8c8c8c' }} />
+            <Typography.Text type="secondary" style={{ fontSize: '12px' }}>
+              Last: {dayjs(patient.last_appointment).format('D/MM/YYYY')}
+            </Typography.Text>
+          </Space>
+        )}
+
+        <Space style={{ width: '100%', justifyContent: 'flex-end', marginTop: '8px' }}>
+          <Tooltip title={formatMessage(messages.editPatient)}>
+            <Button
+              icon={<FormOutlined />}
+              onClick={(e) => {
+                e.stopPropagation();
+                updatePatient(patient.id);
+              }}
+              size="small"
+            />
+          </Tooltip>
+          <Tooltip title={formatMessage(messages.patientDelete)}>
+            <Button
+              icon={<DeleteOutlined />}
+              onClick={(e) => {
+                e.stopPropagation();
+                setPatientForDelete(patient);
+              }}
+              size="small"
+              danger
+            />
+          </Tooltip>
+        </Space>
+      </Space>
+    </Card>
+  );
+
   return (
-    <>
-      <PageHeader
-        className="p-0 mb-4"
-        title={
-          isMobile ? (
-            <Typography.Title level={2} className="mb-0">
-              {formatMessage(messages.patientsTitle)}
-            </Typography.Title>
-          ) : (
-            ''
-          )
-        }
-        extra={[
-          <Space key="0">
-            <form onSubmit={handleSearch}>
-              <Input
-                placeholder={formatMessage(messages.search)}
-                prefix={<SearchOutlined />}
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            </form>
-            <Button onClick={showCreate} type="primary">
-              {formatMessage(messages.newPatient)}
-            </Button>
+    <div style={{ maxWidth: '100%', overflowX: 'hidden' }}>
+      {isMobile ? (
+        // Mobile Layout
+        <div className="mb-4">
+          <Typography.Title level={2} style={{ fontSize: '20px', marginBottom: '16px' }}>
+            {formatMessage(messages.patientsTitle)}
+          </Typography.Title>
+          <form onSubmit={handleSearch} style={{ marginBottom: '12px', width: '100%' }}>
+            <Input
+              placeholder={formatMessage(messages.search)}
+              prefix={<SearchOutlined />}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              style={{ width: '100%' }}
+            />
+          </form>
+          <Space wrap size="small" style={{ width: '100%', display: 'flex', justifyContent: 'flex-start' }}>
+            <Tooltip title={formatMessage(messages.newPatient)}>
+              <Button
+                onClick={showCreate}
+                type="primary"
+                icon={<PlusOutlined />}
+                size="small"
+              >
+                New
+              </Button>
+            </Tooltip>
             <UploaderPatient onUploadComplete={handleUploadCompletion} />
-            <Button onClick={downloadNotOnWhatsapp} type="primary">
-              {formatMessage(messages.notonwhatsappPatient)}
-            </Button>
-          </Space>,
-        ]}
-      />
-      <Card>
-        <div className="table-responsive ant-table-row-pointer">
-          <Table
-            onRow={(record) => ({
-              onClick: () => showPreview(record.id),
-            })}
-            columns={tableColumns}
-            onChange={handleChange}
-            dataSource={patients.map((pat) => ({ ...pat, key: pat.id }))}
-            pagination={{
-              defaultPageSize: DEFAULT_PAGINATION_LIMIT,
-              total: count,
-              onChange: handlePaginationChange,
-              onShowSizeChange: (current, size) => handlePaginationSizeChange(current, size), // Custom handler for page size change
-              hideOnSinglePage: true,
-              current: page,
-            }}
-            loading={loading}
-          />
+            <Tooltip title={formatMessage(messages.notonwhatsappPatient)}>
+              <Button
+                onClick={downloadNotOnWhatsapp}
+                type="primary"
+                icon={<DownloadOutlined />}
+                size="small"
+              >
+                Export
+              </Button>
+            </Tooltip>
+          </Space>
         </div>
-      </Card>
+      ) : (
+        // Desktop/Tablet Layout
+        <div className="mb-4" style={{ paddingTop: '24px' }}>
+          <Row gutter={16} align="middle" style={{ marginBottom: '16px' }}>
+            <Col flex="auto">
+              <Typography.Title level={2} style={{ margin: 0 }}>
+                {formatMessage(messages.patientsTitle)}
+              </Typography.Title>
+            </Col>
+            <Col>
+              <Space size="middle">
+                <form onSubmit={handleSearch}>
+                  <Input
+                    placeholder={formatMessage(messages.search)}
+                    prefix={<SearchOutlined />}
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    style={{ width: '200px' }}
+                  />
+                </form>
+                <Button onClick={showCreate} type="primary">
+                  {formatMessage(messages.newPatient)}
+                </Button>
+                <UploaderPatient onUploadComplete={handleUploadCompletion} />
+                <Button onClick={downloadNotOnWhatsapp} type="primary">
+                  {formatMessage(messages.notonwhatsappPatient)}
+                </Button>
+              </Space>
+            </Col>
+          </Row>
+        </div>
+      )}
+      {isMobile ? (
+        // Mobile Card Grid View
+        <>
+          {loading ? (
+            <Card loading={loading} />
+          ) : (
+            <>
+              <Row gutter={[12, 12]}>
+                {patients.map((patient) => (
+                  <Col xs={24} sm={12} key={patient.id}>
+                    <PatientCard patient={patient} />
+                  </Col>
+                ))}
+              </Row>
+              {count > DEFAULT_PAGINATION_LIMIT && (
+                <div style={{ marginTop: '16px', textAlign: 'center' }}>
+                  <Space>
+                    <Button
+                      disabled={page === 1}
+                      onClick={() => handlePaginationChange(page - 1)}
+                      size="small"
+                    >
+                      Previous
+                    </Button>
+                    <Typography.Text>
+                      Page {page} of {Math.ceil(count / DEFAULT_PAGINATION_LIMIT)}
+                    </Typography.Text>
+                    <Button
+                      disabled={page >= Math.ceil(count / DEFAULT_PAGINATION_LIMIT)}
+                      onClick={() => handlePaginationChange(page + 1)}
+                      size="small"
+                    >
+                      Next
+                    </Button>
+                  </Space>
+                </div>
+              )}
+            </>
+          )}
+        </>
+      ) : (
+        // Desktop Table View
+        <Card>
+          <div className="table-responsive ant-table-row-pointer">
+            <Table
+              onRow={(record) => ({
+                onClick: () => showPreview(record.id),
+              })}
+              columns={tableColumns}
+              onChange={handleChange}
+              dataSource={patients.map((pat) => ({ ...pat, key: pat.id }))}
+              pagination={{
+                defaultPageSize: DEFAULT_PAGINATION_LIMIT,
+                total: count,
+                onChange: handlePaginationChange,
+                onShowSizeChange: (current, size) => handlePaginationSizeChange(current, size),
+                hideOnSinglePage: true,
+                current: page,
+              }}
+              loading={loading}
+            />
+          </div>
+        </Card>
+      )}
       <Modal
         title={formatMessage(messages.deleteTitle)}
         description={formatMessage(messages.deleteDescription, {
@@ -245,11 +401,11 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
         })}
         primaryAction={formatMessage(messages.delete)}
         secondaryAction={formatMessage(messages.cancel)}
-        open={patientForDelete}
+        visible={!!patientForDelete}
         handlePrimaryAction={handleDelete}
         handleSecondaryAction={() => setPatientForDelete(null)}
       />
-    </>
+    </div>
   );
 };
 

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Grid, Drawer } from 'antd';
+import { Grid, Drawer, Button } from 'antd';
 import utils from 'utils';
-import { MenuOutlined } from '@ant-design/icons';
+import { MenuOutlined, CloseOutlined } from '@ant-design/icons';
 
 const { useBreakpoint } = Grid;
 
@@ -19,18 +19,26 @@ const SideContent = (props) => {
 };
 
 const SideContentMobile = (props) => {
-  const { sideContent, visible, onSideContentClose } = props;
+  const { sideContent, open, onSideContentClose } = props;
   return (
-    (<Drawer
+    <Drawer
       width={320}
       placement="left"
       closable={false}
       onClose={onSideContentClose}
-      open={visible}
+      open={open}
       styles={{ body: { paddingLeft: 0, paddingRight: 0 } }}
+      extra={
+        <Button
+          type="text"
+          icon={<CloseOutlined />}
+          onClick={onSideContentClose}
+          style={{ position: 'absolute', top: 16, right: 16, zIndex: 10 }}
+        />
+      }
     >
       <div className="h-100">{sideContent}</div>
-    </Drawer>)
+    </Drawer>
   );
 };
 
@@ -47,13 +55,18 @@ export const InnerAppLayout = (props) => {
     setVisible(true);
   };
 
+  // Clone sideContent and inject closeMobileDrawer prop if it's a valid React element
+  const sideContentWithProps = isMobile && React.isValidElement(props.sideContent)
+    ? React.cloneElement(props.sideContent, { closeMobileDrawer: close, isMobile: true })
+    : props.sideContent;
+
   return (
     <div className={`${border ? 'border' : ''} inner-app-layout`}>
       {isMobile ? (
         <SideContentMobile
+          sideContent={sideContentWithProps}
           open={visible}
           onSideContentClose={close}
-          {...props}
         />
       ) : (
         <SideContent {...props} />
@@ -64,10 +77,13 @@ export const InnerAppLayout = (props) => {
       >
         {isMobile ? (
           <div
-            className={`font-size-lg mb-3 ${!sideContentGutter ? 'pt-3 px-3' : ''
-              }`}
+            className={`font-size-lg mb-3 ${!sideContentGutter ? 'pt-3 px-3' : ''}`}
+            style={{ cursor: 'pointer' }}
           >
-            <MenuOutlined onClick={() => openSideContentMobile()} />
+            <MenuOutlined
+              onClick={() => openSideContentMobile()}
+              style={{ fontSize: '20px' }}
+            />
           </div>
         ) : null}
         {mainContent}

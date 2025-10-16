@@ -29,8 +29,6 @@ const PASFormDatePicker = ({
 
   const disabledDate = (current) => {
     // Can not select days before today and today
-    console.log("Current Date", current)
-    console.log(current && current > dayjs().endOf('day'))
     return current && current > dayjs().endOf('day');
   };
 

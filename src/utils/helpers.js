@@ -90,12 +90,9 @@ export const prepareAppointmentData = (values) => {
   }
 
   let { date, time, patient, price, ...otherValues } = values;
-  console.log(date)
-  console.log(time)
   const startDatetime = dayjs(`${date} ${time}`, 'DD/MM/YYYY HH:mm').format(
     'YYYY-MM-DDTHH:mm'
   );
-  console.log(startDatetime)
 
   patient = parseInt(patient);
   price = parseFloat(price);
@@ -176,17 +173,11 @@ export const addDividers = (messages, hasMoreMessages) => {
 };
 
 export const createWebsocketUrl = (token) => {
-  const url = `${WS_CHAT_URL}?token=${token.access}`;
-  console.log('Creating WebSocket chat URL:', url);
-  console.log('WS_CHAT_URL from env:', WS_CHAT_URL);
-  return url;
+  return `${WS_CHAT_URL}?token=${token.access}`;
 };
 
 export const createWebsocketNotificationUrl = (token) => {
-  const url = `${WS_NOTIFICATION_URL}?token=${token.access}`;
-  console.log('Creating WebSocket notification URL:', url);
-  console.log('WS_NOTIFICATION_URL from env:', WS_NOTIFICATION_URL);
-  return url;
+  return `${WS_NOTIFICATION_URL}?token=${token.access}`;
 }
 
 export const formatMessageForSocketSend = (text, patientId) =>

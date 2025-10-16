@@ -48,7 +48,7 @@ const FormSelect = ({
       help={showError()}
     >
       <Select
-        value={defaultOption || null}
+        value={field.value || defaultOption || null}
         placeholder={placeholderText}
         onChange={handleSelected}
         onBlur={() => setFieldTouched(field.name, true)}
@@ -66,7 +66,7 @@ const FormSelect = ({
 FormSelect.defaultProps = {
   options: [],
   errorTexts: false,
-  afterSelectChange: () => {},
+  afterSelectChange: () => { },
 };
 
 export default FormSelect;

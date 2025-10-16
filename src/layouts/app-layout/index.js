@@ -8,7 +8,9 @@ import HeaderNav from 'components/layout-components/HeaderNav';
 import PageHeader from 'components/layout-components/PageHeader';
 import Footer from 'components/layout-components/Footer';
 import AppViews from 'views/app-views';
-import { Layout, Grid } from 'antd';
+import { Layout, Grid, Button } from 'antd';
+import { MenuOutlined } from '@ant-design/icons';
+import { onMobileNavToggle } from 'redux/actions/Theme';
 
 import navigationConfig from 'configs/NavigationConfig';
 import {
@@ -22,7 +24,7 @@ import { useThemeSwitcher } from 'react-css-theme-switcher';
 const { Content } = Layout;
 const { useBreakpoint } = Grid;
 
-export const AppLayout = ({ navCollapsed, navType, location }) => {
+export const AppLayout = ({ navCollapsed, navType, location, onMobileNavToggle, mobileNav }) => {
   const currentRouteInfo = utils.getRouteInfo(
     navigationConfig,
     location.pathname
@@ -46,9 +48,32 @@ export const AppLayout = ({ navCollapsed, navType, location }) => {
 
   return (
     <Layout>
-      {/* <HeaderNav isMobile={isMobile} /> */}
       {/* {isNavTop && !isMobile ? <TopNav routeInfo={currentRouteInfo} /> : null} */}
-      <SideNav isMobile={isMobile} routeInfo={currentRouteInfo} />
+      {!isMobile && <SideNav isMobile={isMobile} routeInfo={currentRouteInfo} />}
+
+      {/* Floating hamburger button for mobile/tablet */}
+      {isMobile && (
+        <Button
+          type="text"
+          icon={<MenuOutlined />}
+          onClick={() => onMobileNavToggle(!mobileNav)}
+          style={{
+            position: 'fixed',
+            top: 16,
+            left: 16,
+            zIndex: 1000,
+            width: 40,
+            height: 40,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: 20,
+            background: '#fff',
+            borderRadius: '8px',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+          }}
+        />
+      )}
 
       <Layout className="app-container">
         <Layout
@@ -57,7 +82,10 @@ export const AppLayout = ({ navCollapsed, navType, location }) => {
         >
           <div
             className={`app-content ${isNavTop ? 'layout-top-nav' : ''}`}
-            style={{ background: '#faf9f7' }}
+            style={{
+              background: '#faf9f7',
+              paddingTop: isMobile ? '70px' : '0'
+            }}
           >
             <PageHeader
               display={currentRouteInfo?.breadcrumb}
@@ -76,8 +104,8 @@ export const AppLayout = ({ navCollapsed, navType, location }) => {
 };
 
 const mapStateToProps = ({ theme }) => {
-  const { navCollapsed, navType, locale } = theme;
-  return { navCollapsed, navType, locale };
+  const { navCollapsed, navType, locale, mobileNav } = theme;
+  return { navCollapsed, navType, locale, mobileNav };
 };
 
-export default connect(mapStateToProps)(React.memo(AppLayout));
+export default connect(mapStateToProps, { onMobileNavToggle })(React.memo(AppLayout));

@@ -35,7 +35,6 @@ const Uploader = ({ handleUpdateDataSource, appointmentTypes }) => {
     } catch {
       appointment_type_name = null;
     }
-    console.log(appointment_type_name)
     createDocument({
       file: fileListToUpload[0],
       document_name: values.document_name,
