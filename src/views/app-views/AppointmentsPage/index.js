@@ -32,10 +32,8 @@ const AppointmentsPage = () => {
   }
 
   const StartSyncProcess = () => {
-    console.log("Sync Process initiated from ASA Clinic dashboard!")
     mutate(undefined, {
       onSuccess: (data) => {
-        console.log("Sync API Response:", data);
         setPASIsModalVisible(false);
       },
       onError: (error) => {
@@ -86,7 +84,7 @@ const AppointmentsPage = () => {
       {isPASModalVisible && (
         <Modal
           title={"Pas Sync Process"}
-          visible
+          open
           destroyOnHidden
           closable={true}
           onCancel={closePasModel}

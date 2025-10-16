@@ -1,5 +1,5 @@
 import { LockOutlined } from '@ant-design/icons';
-import { Button, Col, Form, message, Row, Typography } from 'antd';
+import { Button, Col, Form, message, Row, Typography, Grid } from 'antd';
 import FormField from 'components/custom-components/Form/FormField';
 import ValidPasswordFormatTooltip from 'components/custom-components/Tooltips/ValidPasswordFormatTooltip';
 import { passwordMinLength } from 'constants/Validation';
@@ -11,10 +11,16 @@ import { changePassword } from 'redux/actions/Auth';
 import { makeSelectLoading } from 'redux/selectors/Auth';
 import { changePasswordSchema } from 'utils/validations';
 import messages from './messages';
+import utils from 'utils';
+
+const { useBreakpoint } = Grid;
 
 const ChangePassword = () => {
   const dispatch = useDispatch();
   const { formatMessage } = useIntl();
+  const screens = utils.getBreakPoint(useBreakpoint());
+  const isMobile = !screens.includes('lg');
+  const isTablet = screens.includes('md') && !screens.includes('lg');
 
   const loading = useSelector(makeSelectLoading());
 
@@ -51,7 +57,7 @@ const ChangePassword = () => {
         {formatMessage(messages.changePasswordMenuLabel)}
       </Typography.Title>
       <Row>
-        <Col xs={24} sm={24} md={12} lg={10} xl={8}>
+        <Col xs={24} sm={24} md={isTablet ? 16 : 12} lg={10} xl={8}>
           <Formik
             initialValues={{
               oldPassword: '',
@@ -108,7 +114,6 @@ const ChangePassword = () => {
                   <Button
                     type="primary"
                     htmlType="submit"
-                    block
                     disabled={loading || !dirty || !isValid}
                     onClick={handleSubmit}
                   >

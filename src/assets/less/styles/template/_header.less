@@ -72,8 +72,8 @@
     }
 
     &.ant-layout-header {
-        height: @header-height;
-        line-height: @header-height;
+        height: 64px;
+        line-height: 64px;
         padding: 0;
         background-color: @header-bg-base;
     }
@@ -93,6 +93,7 @@
 
     .nav-left {
         display: flex;
+        align-items: center;
     }
 
     .nav-right,
@@ -102,16 +103,36 @@
             .ant-menu-item {
                 padding: 0px 1rem;
                 margin: 0;
-                line-height: @header-height;
+                line-height: 64px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
         }
     }
 
     ul {
         &.ant-menu {
-            line-height: @header-height;
+            line-height: 64px;
             border-bottom: 0;
             background: transparent;
+        }
+    }
+
+    // Mobile and tablet specific styling
+    @media (max-width: 991px) {
+        .nav-left {
+            .ant-menu-item {
+                height: 64px;
+                display: flex;
+                align-items: center;
+                padding: 0 1rem !important;
+            }
+
+            .nav-icon {
+                font-size: 1.5rem;
+                line-height: 1;
+            }
         }
     }
 

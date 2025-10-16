@@ -121,19 +121,19 @@ const UpdateAppointmentCommunicationStatus = ({
 
   const initialState = appointment
     ? {
-        communication_status: appointment.communication_status?.id,
-        communication_status_details: appointment.communication_status_details,
-      }
+      communication_status: appointment.communication_status?.id,
+      communication_status_details: appointment.communication_status_details,
+    }
     : {
-        communication_status: '',
-        communication_status_details: '',
-      };
+      communication_status: '',
+      communication_status_details: '',
+    };
 
   return (
     <Formik initialValues={initialState} onSubmit={handleSubmit}>
       {({ values, handleSubmit, isValid }) => (
         <Modal
-          visible
+          open
           title={formatMessage(messages.updateCommunicationStatus)}
           okText={formatMessage(messages.update)}
           cancelText={formatMessage(messages.cancel)}

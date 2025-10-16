@@ -1,4 +1,4 @@
-import { Button, Col, Form, Row, Typography } from 'antd';
+import { Button, Col, Form, Row, Typography, Grid } from 'antd';
 import FormField from 'components/custom-components/Form/FormField';
 import { Field, Formik } from 'formik';
 import React from 'react';
@@ -10,10 +10,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import { makeSelectCurrentUser, makeSelectLoading } from 'redux/selectors/Auth';
 import { updateCurrentUser } from 'redux/actions/User';
 import { filterEmptyObjectFeilds } from 'utils/helpers';
+import utils from 'utils';
+
+const { useBreakpoint } = Grid;
 
 const PersonalDetailsForm = () => {
   const { formatMessage } = useIntl();
   const dispatch = useDispatch();
+  const screens = utils.getBreakPoint(useBreakpoint());
+  const isMobile = !screens.includes('lg');
+  const isTablet = screens.includes('md') && !screens.includes('lg');
 
   const loading = useSelector(makeSelectLoading());
   const { username, id, name } = useSelector(makeSelectCurrentUser());
@@ -39,7 +45,7 @@ const PersonalDetailsForm = () => {
         {formatMessage(messages.personalDetailsTitle)}
       </Typography.Title>
       <Row>
-        <Col xs={24} sm={24} md={12} lg={10} xl={8}>
+        <Col xs={24} sm={24} md={isTablet ? 16 : 12} lg={10} xl={8}>
           <Formik
             enableReinitialize
             initialValues={{
@@ -66,7 +72,6 @@ const PersonalDetailsForm = () => {
                   <Button
                     type="primary"
                     htmlType="submit"
-                    block
                     disabled={loading || !dirty || !isValid}
                     onClick={handleSubmit}
                   >

@@ -13,7 +13,7 @@ const CalendarHeader = ({ value, onChange }) => {
     <Row justify="start" gutter={8}>
       <Col>
         <Select
-          dropdownMatchSelectWidth={false}
+          popupMatchSelectWidth={false}
           className="my-year-select"
           value={year}
           onChange={(newYear) => onChange(value.clone().year(newYear))}
@@ -28,7 +28,7 @@ const CalendarHeader = ({ value, onChange }) => {
 
       <Col>
         <Select
-          dropdownMatchSelectWidth={false}
+          popupMatchSelectWidth={false}
           value={month}
           onChange={(m) => onChange(value.clone().month(m))}
         >

@@ -1,5 +1,5 @@
 import { MinusOutlined } from '@ant-design/icons';
-import { Button, Col, Form, Radio, Row, Space, Typography } from 'antd';
+import { Button, Col, Form, Radio, Row, Space, Typography, Grid } from 'antd';
 import FormField from 'components/custom-components/Form/FormField';
 import FormImageUpload from 'components/custom-components/Form/FormImageUpload';
 import { Field, Formik } from 'formik';
@@ -22,6 +22,9 @@ import { prepareFormData } from 'utils/helpers';
 import { useLocation } from 'react-router-dom';
 import FormTimePicker from 'components/custom-components/Form/FormTimePicker';
 import Checkbox from 'antd/lib/checkbox/Checkbox';
+import utils from 'utils';
+
+const { useBreakpoint } = Grid;
 
 const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
   const { formatMessage } = useIntl();
@@ -35,6 +38,9 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
     clinicData?.end_of_work === '00:00:00'
   );
   const { isPasIntegrated } = useSelector(state => state.auth.user);
+  const screens = utils.getBreakPoint(useBreakpoint());
+  const isMobile = !screens.includes('lg');
+  const isTablet = screens.includes('md') && !screens.includes('lg');
 
   const location = useLocation();
 
@@ -162,9 +168,9 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
                   // disabled
                   />
                 </Row>
-                <Row gutter={24}>
+                <Row gutter={isMobile ? 16 : 24}>
                   <ColumnField
-                    span={12}
+                    span={isMobile && !isTablet ? 24 : 12}
                     component={FormField}
                     label={formatMessage(messages.streetNumber)}
                     name={'street_number'}
@@ -176,7 +182,7 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
                     }}
                   />
                   <ColumnField
-                    span={12}
+                    span={isMobile && !isTablet ? 24 : 12}
                     component={FormField}
                     label={formatMessage(messages.streetName)}
                     name={'street_name'}
@@ -187,9 +193,9 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
                     required
                   />
                 </Row>
-                <Row gutter={24}>
+                <Row gutter={isMobile ? 16 : 24}>
                   <ColumnField
-                    span={12}
+                    span={isMobile && !isTablet ? 24 : 12}
                     component={FormField}
                     label={formatMessage(messages.area)}
                     name={'area_of_living'}
@@ -199,7 +205,7 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
                     }}
                   />
                   <ColumnField
-                    span={12}
+                    span={isMobile && !isTablet ? 24 : 12}
                     component={FormField}
                     label={formatMessage(messages.city)}
                     name={'city'}
@@ -210,9 +216,9 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
                     required
                   />
                 </Row>
-                <Row gutter={24}>
+                <Row gutter={isMobile ? 16 : 24}>
                   <ColumnField
-                    span={12}
+                    span={isMobile && !isTablet ? 24 : 12}
                     component={FormField}
                     label={formatMessage(messages.postCode)}
                     name={'post_code'}
@@ -223,7 +229,7 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
                     required
                   />
                   <ColumnField
-                    span={12}
+                    span={isMobile && !isTablet ? 24 : 12}
                     component={FormField}
                     label={formatMessage(messages.country)}
                     name={'country'}
@@ -249,7 +255,7 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
                   />
                 </Row>
                 <Row gutter={16}>
-                  <Col>
+                  <Col xs={24} md={12}>
                     <Form.Item
                       name="radio-group"
                       label={formatMessage(messages.parkingAvailability)}
@@ -265,7 +271,7 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
                           );
                         }}
                       >
-                        <Space>
+                        <Space direction={isMobile && !isTablet ? 'vertical' : 'horizontal'}>
                           <Radio value={NO}>
                             {formatMessage(messages.parkingNo)}
                           </Radio>
@@ -279,7 +285,7 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
                       </Radio.Group>
                     </Form.Item>
                   </Col>
-                  <Col>
+                  <Col xs={24} md={12}>
                     {visibilityOfParkinSizeField ? (
                       <Form.Item
                         label={formatMessage(messages.parkingSize)}
@@ -298,7 +304,7 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
                 <Form.Item label={formatMessage(messages.workingHours)}>
                   <Row gutter={8}>
                     <Field
-                      span={6}
+                      span={isMobile && !isTablet ? 24 : 6}
                       component={FormTimePicker}
                       name="start_of_work"
                       errorTexts={{
@@ -306,11 +312,13 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
                       }}
                       disabled={isAllDayChecked}
                     />
-                    <Col span={2} className="text-center">
-                      <MinusOutlined className="mt-3 text-primary" />
-                    </Col>
+                    {!isMobile && (
+                      <Col span={2} className="text-center">
+                        <MinusOutlined className="mt-3 text-primary" />
+                      </Col>
+                    )}
                     <Field
-                      span={6}
+                      span={isMobile && !isTablet ? 24 : 6}
                       component={FormTimePicker}
                       name="end_of_work"
                       errorTexts={{
@@ -318,7 +326,7 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
                       }}
                       disabled={isAllDayChecked}
                     />
-                    <Col span={8} className="mt-2 text-center">
+                    <Col span={isMobile && !isTablet ? 24 : 8} className={isMobile && !isTablet ? 'mt-2' : 'mt-2 text-center'}>
                       <Checkbox
                         onChange={(e) => setIsAllDayChecked(e.target.checked)}
                         checked={isAllDayChecked}

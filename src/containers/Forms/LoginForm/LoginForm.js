@@ -46,7 +46,6 @@ export const LoginForm = () => {
     axios.post(import.meta.env.VITE_APP_API_URL + '/googleverify/recapture/', { 'retoken': reToken })
       .then(response => {
         // Handle success
-        console.log('Success:', response.data);
         setIsModalVisible(true);
         setTimeout(() => {
           dispatch(signIn(values));

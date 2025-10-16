@@ -98,7 +98,7 @@ const CalendarPage = () => {
             onSelect={onSelect}
             value={selectedDate}
             className="abi-calendar"
-            dateCellRender={dateCellRender}
+            cellRender={dateCellRender}
             headerRender={CalendarHeader}
           />
         </Col>

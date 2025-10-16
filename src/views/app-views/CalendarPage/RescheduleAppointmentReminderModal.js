@@ -113,7 +113,7 @@ const RescheduleAppointmentReminderModal = ({
     >
       {({ values, handleSubmit, isValid }) => (
         <Modal
-          visible
+          open
           title={formatMessage(messages.RescheduleAppointmentReminderModal)}
           okText={formatMessage(messages.confirm)}
           cancelText={formatMessage(messages.cancel)}

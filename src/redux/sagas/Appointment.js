@@ -397,7 +397,6 @@ export function* getMessageRequiringImmediateAttentionStatusesSaga() {
 
       // If data has already been fetched or is currently loading, and it's not a forced refresh, skip the API call
       if ((hasBeenFetched || isLoading) && !forceRefresh) {
-        console.log('Message requiring immediate attention statuses already fetched or loading, skipping API call');
         return;
       }
 

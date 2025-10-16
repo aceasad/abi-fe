@@ -1,4 +1,4 @@
-import { Card, Table, Typography } from 'antd';
+import { Card, Table, Typography, Grid, Space, Button, Tag, Row, Col } from 'antd';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -9,6 +9,10 @@ import {
 import { makeSelectAppointmentsRemindersRequestData } from 'redux/selectors/Staff';
 import { DEFAULT_LIMIT } from 'services/StaffService';
 import { DEFAULT_PAGINATION_LIMIT, SET_DEFAULT_PAGINATION_LIMIT } from 'constants/ApiConstant';
+import { CalendarOutlined, ClockCircleOutlined, BellOutlined } from '@ant-design/icons';
+import utils from 'utils';
+
+const { useBreakpoint } = Grid;
 
 const AppointmentsRemindersTable = ({
   columns,
@@ -23,35 +27,155 @@ const AppointmentsRemindersTable = ({
   title,
   reminderType,
 }) => {
+  const screens = utils.getBreakPoint(useBreakpoint());
+  const isMobile = !screens.includes('lg');
 
   const handlePaginationSizeChange = (current, size) => {
     SET_DEFAULT_PAGINATION_LIMIT(size);
   };
+
+  // Mobile Card Component
+  const ReminderCard = ({ item }) => {
+    const patientColumn = columns.find(col => col.dataIndex?.[0] === 'patient');
+    const doctorColumn = columns.find(col => col.dataIndex?.[0] === 'doctor');
+    const appointmentDateColumn = columns.find(col => col.dataIndex?.[0] === 'appointment' && col.dataIndex?.[1] === 'date');
+    const reminderTemplateColumn = columns.find(col => col.dataIndex?.[0] === 'reminder' && col.dataIndex?.[1] === 'message_template');
+    const reminderDateColumn = columns.find(col => col.dataIndex?.[0] === 'reminder' && col.dataIndex?.[1] === 'date');
+    const reminderStatusColumn = columns.find(col => col.dataIndex?.[0] === 'reminder' && col.dataIndex?.[1] === 'status');
+    const actionsColumn = columns.find(col => col.key === 'action');
+
+    return (
+      <Card
+        hoverable
+        onClick={() => onRow && onRow(item).onClick && onRow(item).onClick()}
+        styles={{ body: { padding: '16px' } }}
+        style={{ height: '100%', borderRadius: '8px' }}
+      >
+        <Space direction="vertical" size="small" style={{ width: '100%' }}>
+          {patientColumn && (
+            <Typography.Text strong style={{ fontSize: '16px', display: 'block' }}>
+              {item.patient?.full_name}
+            </Typography.Text>
+          )}
+
+          {doctorColumn && reminderType === 'appointment' && (
+            <Typography.Text type="secondary" style={{ fontSize: '13px', display: 'block' }}>
+              Dr. {item.doctor?.full_name}
+            </Typography.Text>
+          )}
+
+          {reminderTemplateColumn && (
+            <Space size="small">
+              <BellOutlined style={{ fontSize: '12px', color: '#8c8c8c' }} />
+              <Typography.Text type="secondary" style={{ fontSize: '13px' }}>
+                {item.reminder?.message_template}
+              </Typography.Text>
+            </Space>
+          )}
+
+          {appointmentDateColumn && reminderType === 'appointment' && item.appointment?.date && (
+            <Space size="small">
+              <CalendarOutlined style={{ fontSize: '12px', color: '#8c8c8c' }} />
+              <Typography.Text type="secondary" style={{ fontSize: '12px' }}>
+                Appt: {appointmentDateColumn.render ? appointmentDateColumn.render(null, item) : `${item.appointment.date} ${item.appointment.time}`}
+              </Typography.Text>
+            </Space>
+          )}
+
+          {reminderDateColumn && item.reminder?.date && (
+            <Space size="small">
+              <ClockCircleOutlined style={{ fontSize: '12px', color: '#8c8c8c' }} />
+              <Typography.Text type="secondary" style={{ fontSize: '12px' }}>
+                Reminder: {reminderDateColumn.render ? reminderDateColumn.render(null, item) : `${item.reminder.date} ${item.reminder.time}`}
+              </Typography.Text>
+            </Space>
+          )}
+
+          <Space style={{ width: '100%', justifyContent: 'space-between', marginTop: '8px' }}>
+            {reminderStatusColumn && (
+              <Tag color={item.reminder?.status?.includes('Scheduled') ? 'blue' : 'default'}>
+                {item.reminder?.status}
+              </Tag>
+            )}
+            {actionsColumn && (
+              <div onClick={(e) => e.stopPropagation()}>
+                {actionsColumn.render(null, item)}
+              </div>
+            )}
+          </Space>
+        </Space>
+      </Card>
+    );
+  };
+
   return (
     <Card>
-      <Typography.Title level={4}>{title}</Typography.Title>
-      <div className="table-responsive ant-table-row-pointer">
-        <Table
-          columns={columns}
-          dataSource={(items || []).map((item) => ({
-            ...item,
-            key: item.id || item.key
-          }))}
-          onRow={onRow}
-          onChange={handleChange}
-          pagination={{
-            defaultPageSize: DEFAULT_PAGINATION_LIMIT,
-            total: count, // Use the count from API
-            onChange: handlePaginationChange,
-            onShowSizeChange: (current, size) => handlePaginationSizeChange(current, size),
-            hideOnSinglePage: true,
-            current: page,
-            showSizeChanger: true,
-            pageSizeOptions: ['10', '20', '50', '100'],
-          }}
-          loading={loading}
-        />
-      </div>
+      {title && <Typography.Title level={4}>{title}</Typography.Title>}
+      {isMobile ? (
+        // Mobile Card View
+        <>
+          {loading ? (
+            <Card loading={loading} />
+          ) : (
+            <>
+              <Row gutter={[12, 12]}>
+                {(items || []).map((item) => (
+                  <Col xs={24} sm={12} key={item.id || item.key}>
+                    <ReminderCard item={item} />
+                  </Col>
+                ))}
+              </Row>
+              {count > DEFAULT_PAGINATION_LIMIT && (
+                <div style={{ marginTop: '16px', textAlign: 'center' }}>
+                  <Space>
+                    <Button
+                      disabled={page === 1}
+                      onClick={() => handlePaginationChange(page - 1)}
+                      size="small"
+                    >
+                      Previous
+                    </Button>
+                    <Typography.Text>
+                      Page {page} of {Math.ceil(count / DEFAULT_PAGINATION_LIMIT)}
+                    </Typography.Text>
+                    <Button
+                      disabled={page >= Math.ceil(count / DEFAULT_PAGINATION_LIMIT)}
+                      onClick={() => handlePaginationChange(page + 1)}
+                      size="small"
+                    >
+                      Next
+                    </Button>
+                  </Space>
+                </div>
+              )}
+            </>
+          )}
+        </>
+      ) : (
+        // Desktop Table View
+        <div className="table-responsive ant-table-row-pointer">
+          <Table
+            columns={columns}
+            dataSource={(items || []).map((item) => ({
+              ...item,
+              key: item.id || item.key
+            }))}
+            onRow={onRow}
+            onChange={handleChange}
+            pagination={{
+              defaultPageSize: DEFAULT_PAGINATION_LIMIT,
+              total: count,
+              onChange: handlePaginationChange,
+              onShowSizeChange: (current, size) => handlePaginationSizeChange(current, size),
+              hideOnSinglePage: true,
+              current: page,
+              showSizeChanger: true,
+              pageSizeOptions: ['10', '20', '50', '100'],
+            }}
+            loading={loading}
+          />
+        </div>
+      )}
     </Card>
   );
 };

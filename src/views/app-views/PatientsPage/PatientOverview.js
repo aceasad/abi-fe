@@ -1,4 +1,4 @@
-import { Badge, Button, Card, Col, Row } from 'antd';
+import { Badge, Button, Card, Col, Row, Grid } from 'antd';
 import {
   LeftOutlined,
   EditOutlined,
@@ -32,8 +32,10 @@ import PatientOverviewPreviousOperations from './PatientOverviewPreviousOperatio
 import { getSingleAppointment } from 'redux/actions/Appointment';
 import AppointmentPreview from '../CalendarPage/AppointmentPreview';
 import { FROM_PATIENT_APPOINTMENTS } from 'constants/ClinicConstants';
+import utils from 'utils';
 
 const { Text, Title } = Typography;
+const { useBreakpoint } = Grid;
 
 const PatientOverview = ({
   patientId,
@@ -45,6 +47,8 @@ const PatientOverview = ({
   const { patient, loading } = useSelector(makeSelectPatientOverview());
   const [showMessages, setShowMessages] = useState();
   const { formatMessage } = useIntl();
+  const screens = utils.getBreakPoint(useBreakpoint());
+  const isMobile = !screens.includes('lg');
 
   const [activeAppointmnet, setActiveAppointment] = useState(null);
 
@@ -101,148 +105,161 @@ const PatientOverview = ({
   }, [dispatch, patientId]);
 
   return (
-    <Row gutter={16}>
-      <Col span={7}>
-        <Card>
-          <Flex justifyContent="between" alignItems="center" className="mb-4">
-            <div className="text-primary cursor-pointer" onClick={showList}>
-              <LeftOutlined />
-              <Text underline className="text-primary ml-2">
-                {formatMessage(messages.backToPatients)}
-              </Text>
-            </div>
-            <div
-              className="cursor-pointer"
-              onClick={() => updatePatient(patientId, PATIENT_PAGE.PREVIEW)}
-            >
-              <EditOutlined />
-              <Text underline className="text-primary ml-2">
-                {formatMessage(messages.editPatient)}
-              </Text>
-            </div>
-          </Flex>
-          {!patient || loading ? (
-            <Loading defaultSpinner />
-          ) : (
-            <>
-              <Formik
-                initialValues={{
-                  picture: patient.picture,
-                  whitelisted: patient.whitelisted,
-                }}
-                onSubmit={handleSubmit}
-              >
-                <Form>
-                  <Row gutter={[0, 16]} className="mb-4">
-                    <Col span={24}>
-                      <Field
-                        isSubmit
-                        component={FormImageUpload}
-                        name="picture"
-                      />
-                    </Col>
-                    <Col span={24}>
-                      <Title level={3} className="text-center">
-                        {patient.first_name} {patient.last_name}
-                      </Title>
-                    </Col>
-                    <Col span={24}>
-                      <div className="border d-flex justify-content-center form-item-no-margin">
-                        <Field
-                          isSubmit
-                          name="whitelisted"
-                          component={FormCheckbox}
-                          label="whitelisted"
-                        />
-                      </div>
-                    </Col>
-                  </Row>
-                </Form>
-              </Formik>
-              <PatientOverviewDetails
-                fields={patientDetailsFields}
-                patient={{
-                  ...patient,
-                  education: patient?.education?.name,
-                  ethnicity: patient?.ethnicity?.name,
-                  material_status: patient?.material_status?.name,
-                  employment: patient?.employment?.name,
-                }}
-              />
-            </>
-          )}
-        </Card>
-      </Col>
-
-      <Col span={17}>
-        {showMessages ? (
-          <>
-            <Title level={2} className="ml-3 mr-4 mb-4">
-              {formatMessage(messages.messages)}
-            </Title>
-            <div className="chat inner-app-layout">
-              <div className="main-content">
-                <Conversation
-                  showTitle={false}
-                  conversationId={patientId}
-                  isMenuVisible={false}
-                  BackAction={() => (
-                    <div
-                      className="cursor-pointer"
-                      onClick={() => setShowMessages(false)}
-                    >
-                      <LeftOutlined />
-                      <Text className="ml-2">
-                        {formatMessage(messages.backToOverview)}
-                      </Text>
-                    </div>
-                  )}
-                />
-              </div>
-            </div>
-          </>
-        ) : (
-          <>
+    <div style={{ paddingTop: isMobile ? 0 : '24px' }}>
+      <Row gutter={isMobile ? 12 : 16}>
+        <Col xs={24} lg={7}>
+          <Card>
             <Flex
               justifyContent="between"
               alignItems="center"
-              className="ml-3 mr-4 mb-4"
+              className="mb-4"
+              style={{ flexWrap: isMobile ? 'wrap' : 'nowrap', gap: isMobile ? '12px' : 0 }}
             >
-              <Title level={2} className="mb-0">
-                {formatMessage(messages.overviewTittle)}
-              </Title>
-              <Badge>
-                <Button type="primary" onClick={() => setShowMessages(true)}>
-                  <WhatsAppOutlined />{' '}
-                  <span>{formatMessage(messages.overviewButtonMessages)}</span>
-                </Button>
-              </Badge>
+              <div className="text-primary cursor-pointer" onClick={showList}>
+                <LeftOutlined />
+                <Text underline className="text-primary ml-2">
+                  {formatMessage(messages.backToPatients)}
+                </Text>
+              </div>
+              <div
+                className="cursor-pointer"
+                onClick={() => updatePatient(patientId, PATIENT_PAGE.PREVIEW)}
+              >
+                <EditOutlined />
+                <Text underline className="text-primary ml-2">
+                  {formatMessage(messages.editPatient)}
+                </Text>
+              </div>
             </Flex>
-            <PatientOverviewScheduledCard
-              patient={patient}
-              showAppointment={setActiveAppointment}
-            />
-            {/* <PatientOverviewExistingConditions patientId={patientId} />
+            {!patient || loading ? (
+              <Loading defaultSpinner />
+            ) : (
+              <>
+                <Formik
+                  initialValues={{
+                    picture: patient.picture,
+                    whitelisted: patient.whitelisted,
+                  }}
+                  onSubmit={handleSubmit}
+                >
+                  <Form>
+                    <Row gutter={[0, 16]} className="mb-4">
+                      <Col span={24}>
+                        <Field
+                          isSubmit
+                          component={FormImageUpload}
+                          name="picture"
+                        />
+                      </Col>
+                      <Col span={24}>
+                        <Title level={3} className="text-center">
+                          {patient.first_name} {patient.last_name}
+                        </Title>
+                      </Col>
+                      <Col span={24}>
+                        <div className="border d-flex justify-content-center form-item-no-margin">
+                          <Field
+                            isSubmit
+                            name="whitelisted"
+                            component={FormCheckbox}
+                            label="whitelisted"
+                          />
+                        </div>
+                      </Col>
+                    </Row>
+                  </Form>
+                </Formik>
+                <PatientOverviewDetails
+                  fields={patientDetailsFields}
+                  patient={{
+                    ...patient,
+                    education: patient?.education?.name,
+                    ethnicity: patient?.ethnicity?.name,
+                    material_status: patient?.material_status?.name,
+                    employment: patient?.employment?.name,
+                  }}
+                />
+              </>
+            )}
+          </Card>
+        </Col>
+
+        <Col xs={24} lg={17} style={{ marginTop: isMobile ? '16px' : 0 }}>
+          {showMessages ? (
+            <>
+              <Title level={2} className="ml-3 mr-4 mb-4">
+                {formatMessage(messages.messages)}
+              </Title>
+              <div className="chat inner-app-layout">
+                <div className="main-content">
+                  <Conversation
+                    showTitle={false}
+                    conversationId={patientId}
+                    isMenuVisible={false}
+                    BackAction={() => (
+                      <div
+                        className="cursor-pointer"
+                        onClick={() => setShowMessages(false)}
+                      >
+                        <LeftOutlined />
+                        <Text className="ml-2">
+                          {formatMessage(messages.backToOverview)}
+                        </Text>
+                      </div>
+                    )}
+                  />
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <Flex
+                justifyContent="between"
+                alignItems="center"
+                className={isMobile ? 'mb-4' : 'ml-3 mr-4 mb-4'}
+                style={{ flexWrap: isMobile ? 'wrap' : 'nowrap', gap: isMobile ? '12px' : 0 }}
+              >
+                <Title level={2} className="mb-0" style={{ fontSize: isMobile ? '20px' : '28px' }}>
+                  {formatMessage(messages.overviewTittle)}
+                </Title>
+                <Badge>
+                  <Button
+                    type="primary"
+                    onClick={() => setShowMessages(true)}
+                    icon={<WhatsAppOutlined />}
+                    size={isMobile ? 'small' : 'middle'}
+                  >
+                    {!isMobile && <span>{formatMessage(messages.overviewButtonMessages)}</span>}
+                    {isMobile && <span>Messages</span>}
+                  </Button>
+                </Badge>
+              </Flex>
+              <PatientOverviewScheduledCard
+                patient={patient}
+                showAppointment={setActiveAppointment}
+              />
+              {/* <PatientOverviewExistingConditions patientId={patientId} />
             <PatientOverviewPreviousOperations patientId={patientId} /> */}
-            <PatientOverviewHistoryCard
-              patient={patient}
-              showAppointment={setActiveAppointment}
-            />
-          </>
+              <PatientOverviewHistoryCard
+                patient={patient}
+                showAppointment={setActiveAppointment}
+              />
+            </>
+          )}
+        </Col>
+        {activeAppointmnet && (
+          <AppointmentPreview
+            handleClose={() => setActiveAppointment(null)}
+            patientId={patientId}
+            appointment_type={activeAppointmnet.type}
+            additionalSubmitData={{
+              patientAppointment: activeAppointmnet.type,
+              actionFrom: FROM_PATIENT_APPOINTMENTS,
+            }}
+          />
         )}
-      </Col>
-      {activeAppointmnet && (
-        <AppointmentPreview
-          handleClose={() => setActiveAppointment(null)}
-          patientId={patientId}
-          appointment_type={activeAppointmnet.type}
-          additionalSubmitData={{
-            patientAppointment: activeAppointmnet.type,
-            actionFrom: FROM_PATIENT_APPOINTMENTS,
-          }}
-        />
-      )}
-    </Row>
+      </Row>
+    </div>
   );
 };
 

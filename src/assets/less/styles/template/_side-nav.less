@@ -1,7 +1,7 @@
 .side-nav {
-    height: calc(100vh - @header-height); 
+    height: 100vh; 
     position: fixed;
-    top: @header-height;
+    top: 0;
     box-shadow: @side-nav-box-shadow;
     z-index: @zindex-modal - 1;
 
@@ -28,8 +28,13 @@
             color: @primary-color;
         }
     }
+
+    // Hide side nav on mobile and tablet views
+    @media (max-width: 991px) {
+        display: none !important;
+    }
 }
 
 .mobile-nav-menu {
-    height: calc(100vh - @header-height - 10px);
+    height: calc(100vh - 120px);
 }

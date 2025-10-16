@@ -50,6 +50,12 @@ const UpdateMessageRequiringImmediateAttentionStatus = ({
 
   const loading = useSelector(makeSelectSingleAppointmentLoading());
 
+  useEffect(() => {
+    if (messageRequiringImmediateAttentionStatuses.length === 0) {
+      dispatch(getMessageRequiringImmediateAttentionStatuses());
+    }
+  }, []);
+
   const afterMessageRequiringImmediateAttentionStatusUpdate = () => {
     message.success(
       formatMessage(
@@ -101,7 +107,7 @@ const UpdateMessageRequiringImmediateAttentionStatus = ({
     <Formik initialValues={initialState} onSubmit={handleSubmit}>
       {({ values, handleSubmit, isValid }) => (
         <Modal
-          visible
+          open
           title={formatMessage(
             messages.modalTitleUpdateMessageRequiringImmediateAttentionStatus
           )}

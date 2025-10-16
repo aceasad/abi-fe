@@ -123,7 +123,7 @@ function PreviewModal({
 
   return (
     <Modal
-      visible
+      open
       closable={false}
       title={
         <Flex justifyContent="between">
