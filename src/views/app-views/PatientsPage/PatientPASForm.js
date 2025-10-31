@@ -63,11 +63,24 @@ const PatientPASForm = ({
   const handleSubmitWrapper = (values, { setErrors }) => {
     const parsedValues = {
       ...values,
-      date_of_birth: dayjs(values.date_of_birth, 'DD/MM/YYYY').format(
-        DATE_FORMAT_DD_MM_YYYY
-      ),
       phone_number: values.country_code + values.phone_number,
     };
+
+    // Format date_of_birth if it exists and is valid, otherwise use dummy date
+    if (values.date_of_birth) {
+      const formattedDate = dayjs(values.date_of_birth, 'DD/MM/YYYY');
+      if (formattedDate.isValid()) {
+        parsedValues.date_of_birth = formattedDate.format(
+          DATE_FORMAT_DD_MM_YYYY
+        );
+      } else {
+        // Use dummy date if invalid
+        parsedValues.date_of_birth = '01/01/1990';
+      }
+    } else {
+      // Use dummy date if it doesn't exist
+      parsedValues.date_of_birth = '01/01/1990';
+    }
 
     handleSubmit(parsedValues, setErrors, enableRedirect);
   };
