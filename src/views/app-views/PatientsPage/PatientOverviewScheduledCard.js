@@ -89,13 +89,13 @@ const PatientOverviewScheduledCard = ({ patient, showAppointment }) => {
       sorter: true,
       responsive: ['lg'],
     },
-    {
-      title: formatMessage(messages.columnTitlePrediction),
-      dataIndex: 'no_show_score',
-      sorter: true,
-      render: RenderPredictionText,
-      responsive: ['lg'],
-    },
+    // {
+    //   title: formatMessage(messages.columnTitlePrediction),
+    //   dataIndex: 'no_show_score',
+    //   sorter: true,
+    //   render: RenderPredictionText,
+    //   responsive: ['lg'],
+    // },
   ];
 
   // Mobile Card Component

@@ -123,6 +123,10 @@ class PatientService extends ApiService {
       formData.append('start_time', payload.startTime);
     }
 
+    if (payload.frequency) {
+      formData.append('frequency', payload.frequency);
+    }
+
     return this.apiClient.post(ENDPOINTS.UPLOADPATIENTSCSV, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',

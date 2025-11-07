@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Modal, Input, Checkbox, message } from 'antd';
+import { Button, Modal, Input, Checkbox, Select, message } from 'antd';
 import patientsService from 'services/PatientService';
 import Dropzone from '../DocumentsPage/Dropzone';
 import { Formik } from 'formik';
@@ -19,7 +19,26 @@ const UploaderPatient = ({ onUploadComplete }) => {
   const [batchSize, setBatchSize] = useState('');
   const [startDate, setStartDate] = useState('');
   const [startTime, setStartTime] = useState('');
+  const [frequency, setFrequency] = useState('');
   const [validationError, setValidationError] = useState('');
+
+  const frequencyOptions = [
+    { label: 'Weekly', value: 'weekly' },
+    { label: 'Biweekly', value: 'biweekly' },
+    { label: 'Monthly', value: 'monthly' },
+  ];
+
+  const handlePeriodicToggle = (checked) => {
+    setIsPeriodicUpdate(checked);
+    setValidationError('');
+
+    if (!checked) {
+      setBatchSize('');
+      setStartDate('');
+      setStartTime('');
+      setFrequency('');
+    }
+  };
 
   const showModal = () => {
     setOpen(true);
@@ -30,6 +49,7 @@ const UploaderPatient = ({ onUploadComplete }) => {
     setBatchSize('');
     setStartDate('');
     setStartTime('');
+    setFrequency('');
     setFileRows(0);
     setValidationError('');
   };
@@ -56,6 +76,17 @@ const UploaderPatient = ({ onUploadComplete }) => {
       setFileRows(0);
     }
   }, [fileListToUpload]);
+
+  // Reset periodic upload settings when returning to the initial screen
+  useEffect(() => {
+    if (!showLargeFileWarning) {
+      setIsPeriodicUpdate(false);
+      setBatchSize('');
+      setStartDate('');
+      setStartTime('');
+      setFrequency('');
+    }
+  }, [showLargeFileWarning]);
 
   const createPatient = async (payload) => {
     try {
@@ -100,8 +131,8 @@ const UploaderPatient = ({ onUploadComplete }) => {
     if (isPeriodicUpdate) {
       // Check if fields are filled
       const batchSizeStr = String(batchSize || '').trim();
-      if (!batchSizeStr || !startDate || !startTime) {
-        const errorMsg = 'Please fill in all periodic upload fields: Batch Size, Start Date, and Start Time.';
+      if (!batchSizeStr || !startDate || !startTime || !frequency) {
+        const errorMsg = 'Please fill in all periodic upload fields: Batch Size, Start Date, Start Time, and Frequency.';
         setValidationError(errorMsg);
         message.error(errorMsg);
         return;
@@ -150,6 +181,7 @@ const UploaderPatient = ({ onUploadComplete }) => {
         batchSize: isPeriodicUpdate ? batchSize : undefined,
         startDate: isPeriodicUpdate ? startDate : undefined,
         startTime: isPeriodicUpdate ? startTime : undefined,
+        frequency: isPeriodicUpdate ? frequency : undefined,
       });
 
       // Add minimum delay of 1 second before completing
@@ -162,6 +194,7 @@ const UploaderPatient = ({ onUploadComplete }) => {
       setBatchSize('');
       setStartDate('');
       setStartTime('');
+      setFrequency('');
 
       // Call the callback when done
       if (onUploadComplete) {
@@ -253,93 +286,102 @@ const UploaderPatient = ({ onUploadComplete }) => {
                 </div>
               )}
 
-              {isPeriodicUpdate && (
-                <div style={{ marginTop: 24, padding: '16px', backgroundColor: '#f5f5f5', borderRadius: '4px' }}>
-                  <div style={{ marginBottom: 16 }}>
-                    <Checkbox
-                      checked={isPeriodicUpdate}
-                      onChange={(e) => {
-                        setIsPeriodicUpdate(e.target.checked);
-                        setValidationError('');
-                      }}
-                    >
-                      Periodic Bulk Upload
-                    </Checkbox>
-                  </div>
-
-                  <div style={{ marginBottom: 16 }}>
-                    <label style={{ display: 'block', marginBottom: 8, fontWeight: 500 }}>
-                      Batch Size
-                      {fileRows > 0 && (
-                        <span style={{ fontWeight: 'normal', color: '#666', marginLeft: 8 }}>
-                          (Max: {fileRows} rows)
-                        </span>
-                      )}
-                    </label>
-                    <Input
-                      type="number"
-                      placeholder="Enter batch size"
-                      value={batchSize}
-                      onChange={(e) => {
-                        setBatchSize(e.target.value);
-                        setValidationError('');
-                      }}
-                      style={{ width: '100%' }}
-                      min={1}
-                      max={fileRows > 0 ? fileRows : undefined}
-                      required
-                    />
-                  </div>
-
-                  <div style={{ marginBottom: 16 }}>
-                    <label style={{ display: 'block', marginBottom: 8, fontWeight: 500 }}>
-                      Start Date
-                    </label>
-                    <Input
-                      type="date"
-                      value={startDate}
-                      onChange={(e) => {
-                        setStartDate(e.target.value);
-                        setValidationError('');
-                      }}
-                      style={{ width: '100%' }}
-                      min={(() => {
-                        const tomorrow = new Date();
-                        tomorrow.setDate(tomorrow.getDate() + 1);
-                        return tomorrow.toISOString().split('T')[0];
-                      })()}
-                      required
-                    />
-                  </div>
-
-                  <div style={{ marginBottom: 16 }}>
-                    <label style={{ display: 'block', marginBottom: 8, fontWeight: 500 }}>
-                      Start Time
-                    </label>
-                    <Input
-                      type="time"
-                      value={startTime}
-                      onChange={(e) => {
-                        setStartTime(e.target.value);
-                        setValidationError('');
-                      }}
-                      style={{ width: '100%' }}
-                      required
-                    />
-                  </div>
-                </div>
-              )}
-
-              {!isPeriodicUpdate && (
-                <div style={{ marginTop: 16 }}>
+              <div style={{ marginTop: 24, padding: '16px', backgroundColor: '#f5f5f5', borderRadius: '4px' }}>
+                <div style={{ marginBottom: 16 }}>
                   <Checkbox
                     checked={isPeriodicUpdate}
-                    onChange={(e) => setIsPeriodicUpdate(e.target.checked)}
+                    onChange={(e) => handlePeriodicToggle(e.target.checked)}
                   >
                     Periodic Bulk Upload
                   </Checkbox>
                 </div>
-              )}
+
+                {isPeriodicUpdate && (
+                  <>
+                    <div style={{ marginBottom: 16 }}>
+                      <label style={{ display: 'block', marginBottom: 8, fontWeight: 500 }}>
+                        Batch Size
+                        {fileRows > 0 && (
+                          <span style={{ fontWeight: 'normal', color: '#666', marginLeft: 8 }}>
+                            (Max: {fileRows} rows)
+                          </span>
+                        )}
+                      </label>
+                      <Input
+                        type="number"
+                        placeholder="Enter batch size"
+                        value={batchSize}
+                        onChange={(e) => {
+                          setBatchSize(e.target.value);
+                          setValidationError('');
+                        }}
+                        style={{ width: '100%' }}
+                        min={1}
+                        max={fileRows > 0 ? fileRows : undefined}
+                        required
+                      />
+                    </div>
+
+                    <div style={{ marginBottom: 16 }}>
+                      <label style={{ display: 'block', marginBottom: 8, fontWeight: 500 }}>
+                        Frequency
+                      </label>
+                      <Select
+                        placeholder="Select frequency"
+                        value={frequency || undefined}
+                        onChange={(value) => {
+                          setFrequency(value);
+                          setValidationError('');
+                        }}
+                        style={{ width: '100%' }}
+                      >
+                        {frequencyOptions.map((option) => (
+                          <Select.Option key={option.value} value={option.value}>
+                            {option.label}
+                          </Select.Option>
+                        ))}
+                      </Select>
+                    </div>
+
+                    <div style={{ marginBottom: 16 }}>
+                      <label style={{ display: 'block', marginBottom: 8, fontWeight: 500 }}>
+                        Start Date
+                      </label>
+                      <Input
+                        type="date"
+                        value={startDate}
+                        onChange={(e) => {
+                          setStartDate(e.target.value);
+                          setValidationError('');
+                        }}
+                        style={{ width: '100%' }}
+                        min={(() => {
+                          const tomorrow = new Date();
+                          tomorrow.setDate(tomorrow.getDate() + 1);
+                          return tomorrow.toISOString().split('T')[0];
+                        })()}
+                        required
+                      />
+                    </div>
+
+                    <div style={{ marginBottom: 16 }}>
+                      <label style={{ display: 'block', marginBottom: 8, fontWeight: 500 }}>
+                        Start Time
+                      </label>
+                      <Input
+                        type="time"
+                        value={startTime}
+                        onChange={(e) => {
+                          setStartTime(e.target.value);
+                          setValidationError('');
+                        }}
+                        style={{ width: '100%' }}
+                        required
+                      />
+                    </div>
+                  </>
+                )}
+              </div>
 
               <p style={{ marginTop: 16 }}>Would you like to proceed with the upload?</p>
             </div>
@@ -356,14 +398,6 @@ const UploaderPatient = ({ onUploadComplete }) => {
                   style={{ width: '100%' }}
                   required
                 />
-              </div>
-              <div style={{ marginBottom: 16 }}>
-                <Checkbox
-                  checked={isPeriodicUpdate}
-                  onChange={(e) => setIsPeriodicUpdate(e.target.checked)}
-                >
-                  Periodic Bulk Upload
-                </Checkbox>
               </div>
               <Dropzone
                 onChange={setFileListToUpload}

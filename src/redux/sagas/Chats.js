@@ -1,4 +1,5 @@
 import { ALL_CHATS_PAGINATION_LIMIT } from 'constants/ApiConstant';
+import { CHAT_FILTERS } from 'constants/ChatConstants';
 import { all, call, fork, put, select, takeEvery } from 'redux-saga/effects';
 import {
   addMoreToAllChatsInfo,
@@ -80,11 +81,17 @@ export function* getAllChatsInfo({ payload }) {
   }
 }
 
-export function* getMoreChatsInfo() {
+export function* getMoreChatsInfo({ payload }) {
   try {
     yield put(setAllChatsInfoLoading(true));
     const { offset } = yield select(makeSelectAllChatsInfoRequestData);
-    const { data } = yield call(chatService.getAllChatInformation, offset);
+    const filter = payload?.filter ?? CHAT_FILTERS.ALL;
+    const { data } = yield call(
+      chatService.getAllChatInformation,
+      offset,
+      ALL_CHATS_PAGINATION_LIMIT,
+      filter
+    );
     yield put(addMoreToAllChatsInfo(data));
   } catch (err) {
   } finally {

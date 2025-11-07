@@ -59,8 +59,9 @@ export const addMoreToSingleChat = (payload) => ({
   payload,
 });
 
-export const getMoreChatsInfo = () => ({
+export const getMoreChatsInfo = (payload) => ({
   type: GET_MORE_CHATS_INFO,
+  payload,
 });
 
 export const getMoreSingleChatMessages = (payload) => ({
