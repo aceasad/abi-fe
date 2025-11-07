@@ -4,12 +4,10 @@ import { useDropzone } from 'react-dropzone';
 const Dropzone = ({ onChange, fileListToUpload }) => {
   const onDrop = useCallback(
     (acceptedFiles) => {
-      console.log(acceptedFiles);
-
       acceptedFiles.forEach((file) => {
         const reader = new FileReader();
-        reader.onabort = () => console.log('file reading was aborted');
-        reader.onerror = () => console.log('file reading has failed');
+        reader.onabort = () => console.error('file reading was aborted');
+        reader.onerror = () => console.error('file reading has failed');
         reader.readAsBinaryString(file);
       });
 
@@ -24,8 +22,8 @@ const Dropzone = ({ onChange, fileListToUpload }) => {
     return 0 == a
       ? '0 Bytes'
       : parseFloat((a / Math.pow(k, d)).toFixed(Math.max(0, b))) +
-          ' ' +
-          ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'][d];
+      ' ' +
+      ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'][d];
   }
 
   const files = fileListToUpload.map((file) => (

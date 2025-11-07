@@ -1,8 +1,10 @@
+import { createRoot } from "react-dom/client";
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import './index.css';
+import './assets/less/styles/styles.less';
 import LanguageProvider from 'containers/LanguageProvider';
 import { translationMessages } from './i18n';
 import { Provider } from 'react-redux';
@@ -12,16 +14,15 @@ import { ConnectedRouter } from 'connected-react-router';
 const MOUNT_NODE = document.getElementById('root');
 
 const render = (messages) => {
-  ReactDOM.render(
-    <Provider store={store}>
-      <ConnectedRouter history={history}>
-        <LanguageProvider messages={messages}>
-          <App />
-        </LanguageProvider>
-      </ConnectedRouter>
-    </Provider>,
-    MOUNT_NODE
-  );
+  const root = createRoot(MOUNT_NODE);
+
+  root.render(<Provider store={store}>
+    <ConnectedRouter history={history}>
+      <LanguageProvider messages={messages}>
+        <App />
+      </LanguageProvider>
+    </ConnectedRouter>
+  </Provider>);
 };
 
 render(translationMessages);

@@ -1,4 +1,4 @@
-import { Button, Card, Table, Typography } from 'antd';
+import { Button, Card, Table, Typography, Grid, Row, Col, Space, Tag } from 'antd';
 import React, { useState } from 'react';
 import { useIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,8 +14,11 @@ import { SCHEDULED_APPOINTMENT } from 'constants/ClinicConstants';
 import AppointmentFormWrapper from '../AppointmentsPage/AppointmentFormWrapper';
 import CreateAppointment from '../AppointmentsPage/CreateAppointment';
 import { RenderPredictionText } from 'utils/helpers';
+import { CalendarOutlined, ClockCircleOutlined, UserOutlined, FileTextOutlined } from '@ant-design/icons';
+import utils from 'utils';
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
+const { useBreakpoint } = Grid;
 
 const prepareField = (order, field) => {
   const base = order === ORDERING.DESC ? '-' : '';
@@ -33,6 +36,8 @@ const prepareField = (order, field) => {
 
 const PatientOverviewScheduledCard = ({ patient, showAppointment }) => {
   const dispatch = useDispatch();
+  const screens = utils.getBreakPoint(useBreakpoint());
+  const isMobile = !screens.includes('lg');
 
   const { items, loading, count, page } = useSelector(
     makeSelectScheduledAppointments()
@@ -76,49 +81,137 @@ const PatientOverviewScheduledCard = ({ patient, showAppointment }) => {
       title: formatMessage(messages.columnTitleDoctor),
       dataIndex: ['doctor', 'full_name'],
       sorter: true,
+      responsive: ['md'],
     },
     {
       title: formatMessage(messages.columnTitleType),
       dataIndex: ['appointment_type', 'name'],
       sorter: true,
+      responsive: ['lg'],
     },
-    {
-      title: formatMessage(messages.columnTitlePrediction),
-      dataIndex: 'no_show_score',
-      sorter: true,
-      render: RenderPredictionText,
-    },
+    // {
+    //   title: formatMessage(messages.columnTitlePrediction),
+    //   dataIndex: 'no_show_score',
+    //   sorter: true,
+    //   render: RenderPredictionText,
+    //   responsive: ['lg'],
+    // },
   ];
+
+  // Mobile Card Component
+  const AppointmentCard = ({ appointment }) => (
+    <Card
+      hoverable
+      onClick={() => showAppointment({ id: appointment.id, type: SCHEDULED_APPOINTMENT })}
+      styles={{ body: { padding: '16px' } }}
+      style={{ marginBottom: '12px', borderRadius: '8px' }}
+    >
+      <Space direction="vertical" size="small" style={{ width: '100%' }}>
+        <Space style={{ width: '100%', justifyContent: 'space-between' }}>
+          <Space>
+            <CalendarOutlined style={{ fontSize: '16px', color: '#1890ff' }} />
+            <Text strong>{appointment.date}</Text>
+          </Space>
+          <Space>
+            <ClockCircleOutlined style={{ fontSize: '12px', color: '#8c8c8c' }} />
+            <Text type="secondary">{appointment.time}</Text>
+          </Space>
+        </Space>
+
+        <Space size="small">
+          <UserOutlined style={{ fontSize: '12px', color: '#8c8c8c' }} />
+          <Text type="secondary" style={{ fontSize: '13px' }}>
+            {appointment.doctor?.full_name}
+          </Text>
+        </Space>
+
+        <Space size="small">
+          <FileTextOutlined style={{ fontSize: '12px', color: '#8c8c8c' }} />
+          <Text type="secondary" style={{ fontSize: '13px' }}>
+            {appointment.appointment_type?.name}
+          </Text>
+        </Space>
+
+        {appointment.no_show_score !== null && appointment.no_show_score !== undefined && (
+          <div style={{ marginTop: '8px' }}>
+            {RenderPredictionText(appointment.no_show_score)}
+          </div>
+        )}
+      </Space>
+    </Card>
+  );
 
   return (
     <Card>
-      <Flex justifyContent="between" alignItems="center" className="mb-3">
-        <Title level={4} className="mb-0">
+      <Flex justifyContent="between" alignItems="center" className="mb-3" style={{ flexWrap: 'wrap', gap: '8px' }}>
+        <Title level={4} className="mb-0" style={{ fontSize: isMobile ? '16px' : '20px' }}>
           {formatMessage(messages.cardTitleScheduledAppointments)}
         </Title>
-        <Button ghost type="primary" onClick={() => setIsModalVisible(true)}>
+        <Button ghost type="primary" onClick={() => setIsModalVisible(true)} size={isMobile ? 'small' : 'middle'}>
           {formatMessage(messages.buttonNewAppointment)}
         </Button>
       </Flex>
-      <div className="table-responsive ant-table-row-pointer">
-        <Table
-          onRow={(record) => ({
-            onClick: () =>
-              showAppointment({ id: record.id, type: SCHEDULED_APPOINTMENT }),
-          })}
-          columns={columnsScheduled}
-          dataSource={items.map((item) => ({ ...item, key: item.id || item.key }))}
-          onChange={handleChange}
-          pagination={{
-            defaultPageSize: DEFAULT_SMALL_PAGINATION_LIMIT,
-            total: count,
-            onChange: handlePaginationChange,
-            hideOnSinglePage: true,
-            current: page,
-          }}
-          loading={loading}
-        />
-      </div>
+
+      {isMobile ? (
+        // Mobile Card View
+        <>
+          {loading ? (
+            <Card loading={loading} />
+          ) : items.length > 0 ? (
+            <>
+              {items.map((appointment) => (
+                <AppointmentCard key={appointment.id} appointment={appointment} />
+              ))}
+              {count > DEFAULT_SMALL_PAGINATION_LIMIT && (
+                <div style={{ marginTop: '16px', textAlign: 'center' }}>
+                  <Space>
+                    <Button
+                      disabled={page === 1}
+                      onClick={() => handlePaginationChange(page - 1)}
+                      size="small"
+                    >
+                      Previous
+                    </Button>
+                    <Text>
+                      Page {page} of {Math.ceil(count / DEFAULT_SMALL_PAGINATION_LIMIT)}
+                    </Text>
+                    <Button
+                      disabled={page >= Math.ceil(count / DEFAULT_SMALL_PAGINATION_LIMIT)}
+                      onClick={() => handlePaginationChange(page + 1)}
+                      size="small"
+                    >
+                      Next
+                    </Button>
+                  </Space>
+                </div>
+              )}
+            </>
+          ) : (
+            <Text type="secondary">No scheduled appointments</Text>
+          )}
+        </>
+      ) : (
+        // Desktop Table View
+        <div className="table-responsive ant-table-row-pointer">
+          <Table
+            onRow={(record) => ({
+              onClick: () =>
+                showAppointment({ id: record.id, type: SCHEDULED_APPOINTMENT }),
+            })}
+            columns={columnsScheduled}
+            dataSource={items.map((item) => ({ ...item, key: item.id || item.key }))}
+            onChange={handleChange}
+            pagination={{
+              defaultPageSize: DEFAULT_SMALL_PAGINATION_LIMIT,
+              total: count,
+              onChange: handlePaginationChange,
+              hideOnSinglePage: true,
+              current: page,
+            }}
+            loading={loading}
+          />
+        </div>
+      )}
       {isModalVisible && (
         <AppointmentFormWrapper
           Component={(props) => (

@@ -29,7 +29,7 @@ import {
   rescheduleAppointmentReminder,
 } from 'redux/actions/Staff';
 import { removeLeadingZeroFromTime } from 'utils/helpers';
-import moment from 'moment';
+import dayjs from 'utils/dayjs';
 
 const { Panel } = Collapse;
 
@@ -184,68 +184,66 @@ const AppointmentsReminders = ({ title, startOpen }) => {
     </>
   );
 
-  const menu = (row) => {
-    return (
-      <Menu>
-        <Menu.Item
-          key="0"
-          onClick={({ domEvent }) => {
-            domEvent.stopPropagation();
-            setActiveAppointment({
-              id: row.appointment.id,
-              type: SCHEDULED,
-              patientId: row.patient.id,
-            });
-          }}
-        >
-          {formatMessage(overviewPageMessages.tableDropdownSeeAppointment)}
-        </Menu.Item>
-        <Menu.Item
-          key="1"
-          onClick={({ domEvent }) => {
-            domEvent.stopPropagation();
-            goToPatientShowMessages({ id: row.patient.id });
-          }}
-        >
-          {formatMessage(overviewPageMessages.tableDropdownAiReachout)}
-        </Menu.Item>
-        {row.reminder.status.indexOf('Scheduled') !== -1 && (
-          <Menu.Item
-            key="2"
-            onClick={({ domEvent }) => {
-              domEvent.stopPropagation();
-              cancelReminder(row);
-            }}
-          >
-            {formatMessage(
-              overviewPageMessages.tableDropdownCancelAppointmentReminder
-            )}
-          </Menu.Item>
-        )}
-        {row.reminder.status.indexOf('Cancelled') !== -1 && (
-          <Menu.Item
-            key="3"
-            onClick={({ domEvent }) => {
-              domEvent.stopPropagation();
-              reverseReminderCancellation(row);
-            }}
-          >
-            {formatMessage(
-              overviewPageMessages.tableDropdownReverseAppointmentReminderCancellation
-            )}
-          </Menu.Item>
-        )}
-        <Menu.Item
-          key="3"
-          onClick={({ domEvent }) => {
-            domEvent.stopPropagation();
-            sendReminderNow(row);
-          }}
-        >
-          <span style={{ color: '#CC0000' }}>Send reminder now</span>
-        </Menu.Item>
-      </Menu>
-    );
+  const getMenuItems = (row) => {
+    const items = [
+      {
+        key: "0",
+        label: formatMessage(overviewPageMessages.tableDropdownSeeAppointment),
+        onClick: ({ domEvent }) => {
+          domEvent.stopPropagation();
+          setActiveAppointment({
+            id: row.appointment.id,
+            type: SCHEDULED,
+            patientId: row.patient.id,
+          });
+        },
+      },
+      {
+        key: "1",
+        label: formatMessage(overviewPageMessages.tableDropdownAiReachout),
+        onClick: ({ domEvent }) => {
+          domEvent.stopPropagation();
+          goToPatientShowMessages({ id: row.patient.id });
+        },
+      },
+    ];
+
+    if (row.reminder.status.indexOf('Scheduled') !== -1) {
+      items.push({
+        key: "2",
+        label: formatMessage(
+          overviewPageMessages.tableDropdownCancelAppointmentReminder
+        ),
+        onClick: ({ domEvent }) => {
+          domEvent.stopPropagation();
+          cancelReminder(row);
+        },
+      });
+    }
+
+    if (row.reminder.status.indexOf('Cancelled') !== -1) {
+      items.push({
+        key: "3",
+        label: formatMessage(
+          overviewPageMessages.tableDropdownReverseAppointmentReminderCancellation
+        ),
+        onClick: ({ domEvent }) => {
+          domEvent.stopPropagation();
+          reverseReminderCancellation(row);
+        },
+      });
+    }
+
+    items.push({
+      key: "4",
+      label: <span style={{ color: '#CC0000' }}>Send reminder now</span>,
+      onClick: ({ domEvent }) => {
+        domEvent.stopPropagation();
+        sendReminderNow(row);
+      },
+    });
+
+    return items;
   };
 
   const getTableColumns = () => {
@@ -270,7 +268,7 @@ const AppointmentsReminders = ({ title, startOpen }) => {
           }
           return (
             <div className="text-left text-uppercase">{`${row.reminder.date} ${removeLeadingZeroFromTime(
-              moment(row.reminder.time, ['h:mm A']).format('hh:mm A')
+              dayjs(row.reminder.time, ['h:mm A']).format('hh:mm A')
             )}`}</div>
           );
         },
@@ -288,7 +286,7 @@ const AppointmentsReminders = ({ title, startOpen }) => {
         render: (_, row) => (
           <div className="text-right">
             <Dropdown
-              overlay={() => menu(row)}
+              menu={{ items: getMenuItems(row) }}
               trigger={['click']}
               placement="bottomRight"
             >
@@ -325,7 +323,7 @@ const AppointmentsReminders = ({ title, startOpen }) => {
             }
             return (
               <div className="text-left text-uppercase">{`${row.appointment.date} ${removeLeadingZeroFromTime(
-                moment(row.appointment.time, ['h:mm A']).format('hh:mm A')
+                dayjs(row.appointment.time, ['h:mm A']).format('hh:mm A')
               )}`}</div>
             );
           },

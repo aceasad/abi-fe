@@ -28,7 +28,7 @@ import {
 import { ROUTES } from 'routes';
 import { useHistory } from 'react-router-dom';
 import UpdateAppointmentCommunicationStatus from '../CalendarPage/UpdateAppointmentCommunicationStatus';
-import moment from 'moment';
+import dayjs from 'utils/dayjs';
 
 const { Panel } = Collapse;
 
@@ -103,34 +103,30 @@ const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
     </div>
   );
 
-  const menu = (row) => {
-    return (
-      <Menu>
-        <Menu.Item
-          key="0"
-          onClick={({ domEvent }) => {
-            domEvent.stopPropagation();
-            setActiveAppointment({
-              id: row.id,
-              type: SCHEDULED,
-              patientId: row.patient.id,
-              appointment: row,
-            });
-          }}
-        >
-          {formatMessage(overviewPageMessages.tableDropdownSeeAppointment)}
-        </Menu.Item>
-        <Menu.Item
-          key="1"
-          onClick={({ domEvent }) => {
-            domEvent.stopPropagation();
-            goToPatientShowMessages({ id: row.patient.id });
-          }}
-        >
-          {formatMessage(overviewPageMessages.tableDropdownAiReachout)}
-        </Menu.Item>
-      </Menu>
-    );
+  const getMenuItems = (row) => {
+    return [
+      {
+        key: "0",
+        label: formatMessage(overviewPageMessages.tableDropdownSeeAppointment),
+        onClick: ({ domEvent }) => {
+          domEvent.stopPropagation();
+          setActiveAppointment({
+            id: row.id,
+            type: SCHEDULED,
+            patientId: row.patient.id,
+            appointment: row,
+          });
+        },
+      },
+      {
+        key: "1",
+        label: formatMessage(overviewPageMessages.tableDropdownAiReachout),
+        onClick: ({ domEvent }) => {
+          domEvent.stopPropagation();
+          goToPatientShowMessages({ id: row.patient.id });
+        },
+      },
+    ];
   };
 
   const tableColumns = [
@@ -167,7 +163,7 @@ const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
       render: (_, row) => (
         <div className="text-uppercase">
           {removeLeadingZeroFromTime(
-            moment(row.time, ['h:mm A']).format('hh:mm A')
+            dayjs(row.time, ['h:mm A']).format('hh:mm A')
           )}
         </div>
       ),
@@ -207,7 +203,7 @@ const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
       render: (_, row) => (
         <div className="text-right">
           <Dropdown
-            overlay={() => menu(row)}
+            menu={{ items: getMenuItems(row) }}
             trigger={['click']}
             placement="bottomRight"
           >
@@ -250,17 +246,17 @@ const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
       <Appointments field={LIKELY_TO_BE_MISSED} id={''} columnMap={columnMap}>
         <Appointments.Table
           columns={tableColumns}
-          // onRow={(record) => {
-          //   return {
-          //     onClick: () => {
-          //       setActiveAppointment({
-          //         id: record.id,
-          //         type: LIKELY_TO_BE_MISSED,
-          //         patientId: record.patient.id,
-          //       });
-          //     },
-          //   };
-          // }}
+        // onRow={(record) => {
+        //   return {
+        //     onClick: () => {
+        //       setActiveAppointment({
+        //         id: record.id,
+        //         type: LIKELY_TO_BE_MISSED,
+        //         patientId: record.patient.id,
+        //       });
+        //     },
+        //   };
+        // }}
         />
       </Appointments>
       {activeAppointment && (
@@ -278,16 +274,16 @@ const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
       )}
       {showChildModal.modal ===
         NESTED_MODAL.UPDATE_APPOINTMENT_COMMUNICATION_STATUS && (
-        <UpdateAppointmentCommunicationStatus
-          handleClose={showPreview}
-          id={showChildModal.data.appointment.id}
-          patientId={showChildModal.data.appointment.patient.id}
-          appointment_type={LIKELY_TO_BE_MISSED}
-          updateCommunicationStatusFrom={FROM_OVERVIEW_APPOINTMENTS}
-          staffId={''}
-          appointment={showChildModal.data.appointment}
-        />
-      )}
+          <UpdateAppointmentCommunicationStatus
+            handleClose={showPreview}
+            id={showChildModal.data.appointment.id}
+            patientId={showChildModal.data.appointment.patient.id}
+            appointment_type={LIKELY_TO_BE_MISSED}
+            updateCommunicationStatusFrom={FROM_OVERVIEW_APPOINTMENTS}
+            staffId={''}
+            appointment={showChildModal.data.appointment}
+          />
+        )}
     </>
   );
 };

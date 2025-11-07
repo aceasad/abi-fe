@@ -13,6 +13,7 @@ import {
 import { CaretDownOutlined } from '@ant-design/icons';
 import { useIntl } from 'react-intl';
 import { useDispatch } from 'react-redux';
+import dayjs from 'utils/dayjs';
 import MessagesRequiringImmediateAttentionTable from './MessagesRequiringImmediateAttentionTable';
 import overviewPageMessages from './messages';
 import {
@@ -37,7 +38,6 @@ import UpdateMessageRequiringImmediateAttentionStatus from './UpdateMessageRequi
 import PreAppointmentQuestionnairePreviewModal from './PreAppointmentQuestionnairePreviewModal';
 import patient from 'redux/reducers/Patient';
 import { useSelector } from 'react-redux';
-import moment from 'moment';
 const { Panel } = Collapse;
 
 const columnMap = {
@@ -74,88 +74,78 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
       title: 'Date/Time',
       dataIndex: 'created_datetime',
       sorter: true,
-      render: (_, row) => {
-        return {
-          children: (
-            <div>
-              {row.created_datetime}
-            </div>
-          ),
-          props: {
-            'data-label': 'Date/Time',
-          },
-        };
-      },
+      render: (_, row) => (
+        <div>
+          {
+            dayjs(row.created_datetime, 'DD/MM/YYYY HH:mm:ss A').format('DD/MM/YYYY, h:mm A')
+          }
+        </div>
+      ),
+      onCell: () => ({
+        'data-label': 'Date/Time',
+      }),
     },
     {
       title: formatMessage(overviewPageMessages.columnTitlePatient),
       dataIndex: ['patient', 'full_name'],
       sorter: true,
-      render: (_, row) => ({
-        children: (
-          <Typography.Link
-            onClick={(e) => {
-              e.stopPropagation();
-              goToPatientShowMessages({ id: row.patient.id });
-            }}
-          >
-            {row.patient.full_name}
-          </Typography.Link>
-        ),
-        props: {
-          'data-label': formatMessage(overviewPageMessages.columnTitlePatient),
-        },
+      render: (_, row) => (
+        <Typography.Link
+          onClick={(e) => {
+            e.stopPropagation();
+            goToPatientShowMessages({ id: row.patient.id });
+          }}
+        >
+          {row.patient.full_name}
+        </Typography.Link>
+      ),
+      onCell: () => ({
+        'data-label': formatMessage(overviewPageMessages.columnTitlePatient),
       }),
     },
     {
       title: formatMessage(overviewPageMessages.columnTitleEvent),
       dataIndex: ['message_requiring_immediate_attention_type', 'name'],
       sorter: true,
-      render: (_, row) => ({
-        children: _,
-        props: {
-          'data-label': formatMessage(overviewPageMessages.columnTitleEvent),
-        },
+      render: (_, row) => _,
+      onCell: () => ({
+        'data-label': formatMessage(overviewPageMessages.columnTitleEvent),
       }),
     },
     // {
     //   title: formatMessage(overviewPageMessages.columnTitlePriority),
     //   dataIndex: ['priority', 'name'],
     //   sorter: true,
-    //   render: (_, row) => ({
-    //     children: (
-    //       <div
-    //         className={`mria-priority-${getSafe(() =>
-    //           row.priority?.name.toLowerCase()
-    //         )}`}
-    //       >
-    //         {row.priority?.name}
-    //       </div>
-    //     ),
-    //     props: {
-    //       'data-label': formatMessage(overviewPageMessages.columnTitlePriority),
-    //     },
+    //   render: (_, row) => (
+    //     <div
+    //       className={`mria-priority-${getSafe(() =>
+    //         row.priority?.name.toLowerCase()
+    //       )}`}
+    //     >
+    //       {row.priority?.name}
+    //     </div>
+    //   ),
+    //   onCell: () => ({
+    //     'data-label': formatMessage(overviewPageMessages.columnTitlePriority),
     //   }),
     // },
     {
       title: formatMessage(overviewPageMessages.columnTitleStatus),
       dataIndex: ['status', 'name'],
       sorter: true,
-      render: (_, row) => ({
-        children: (
-          <div
-            onClick={(e) =>
-              showUpdateMessageRequiringImmediateAttentionStatusWrapper(e, row)
-            }
-            className={`ant-tag text-left${row.status?.name === 'Pending' ? ' ant-tag-red' : ''
-              }`}
-          >
-            {row.status?.name} {/*  <CaretDownOutlined /> */}
-          </div>
-        ),
-        props: {
-          'data-label': formatMessage(overviewPageMessages.columnTitleStatus),
-        },
+      render: (_, row) => (
+        <div
+          onClick={(e) =>
+            showUpdateMessageRequiringImmediateAttentionStatusWrapper(e, row)
+          }
+          className={`ant-tag text-left${row.status?.name === 'Pending' ? ' ant-tag-red' : ''
+            }`}
+        >
+          {row.status?.name} {/*  <CaretDownOutlined /> */}
+        </div>
+      ),
+      onCell: () => ({
+        'data-label': formatMessage(overviewPageMessages.columnTitleStatus),
       }),
     },
     {
@@ -163,7 +153,7 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
       render: (_, row) => (
         <div className="text-right">
           <Dropdown
-            overlay={() => menu(row)}
+            menu={{ items: getMenuItems(row) }}
             trigger={['click']}
             placement="bottomRight"
           >
@@ -242,64 +232,63 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
     </>
   );
 
-  const menu = (row) => {
-    return (
-      <Menu>
-        <Menu.Item
-          key="1"
-          onClick={({ domEvent }) => {
-            domEvent.stopPropagation();
-            goToPatientShowMessages({ id: row.patient.id });
-          }}
-        >
-          {formatMessage(overviewPageMessages.tableDropdownPatientInfo)}
-        </Menu.Item>
-        {row.appointment && (
-          <Menu.Item
-            key="0"
-            onClick={({ domEvent }) => {
-              domEvent.stopPropagation();
-              setActiveAppointment({
-                id: row.appointment,
-                type: SCHEDULED,
-                patientId: row.patient.id,
-              });
-            }}
-          >
-            {formatMessage(overviewPageMessages.tableDropdownAppointmentInfo)}
-          </Menu.Item>
-        )}
-        {row.pre_appointment_questionnaire && (
-          <Menu.Item
-            key="1"
-            onClick={({ domEvent }) => {
-              domEvent.stopPropagation();
-              setActivePreAppointmentQuestionnaire({
-                appointment_id: row?.appointment,
-              });
-            }}
-          >
-            {formatMessage(
-              overviewPageMessages.tableDropdownPreAppointmentQuestionnaireInfo
-            )}
-          </Menu.Item>
-        )}
-        <Menu.Item
-          key="2"
-          onClick={({ domEvent }) => {
-            domEvent.stopPropagation();
-            showUpdateMessageRequiringImmediateAttentionStatusWrapper(
-              domEvent,
-              row
-            );
-          }}
-        >
-          {formatMessage(
-            overviewPageMessages.tableDropdownUpdateMessageRequiringImmediateAttentionStatus
-          )}
-        </Menu.Item>
-      </Menu>
-    );
+  const getMenuItems = (row) => {
+    const items = [
+      {
+        key: "1",
+        label: formatMessage(overviewPageMessages.tableDropdownPatientInfo),
+        onClick: ({ domEvent }) => {
+          domEvent.stopPropagation();
+          goToPatientShowMessages({ id: row.patient.id });
+        },
+      },
+    ];
+
+    if (row.appointment) {
+      items.push({
+        key: "0",
+        label: formatMessage(overviewPageMessages.tableDropdownAppointmentInfo),
+        onClick: ({ domEvent }) => {
+          domEvent.stopPropagation();
+          setActiveAppointment({
+            id: row.appointment,
+            type: SCHEDULED,
+            patientId: row.patient.id,
+          });
+        },
+      });
+    }
+
+    if (row.pre_appointment_questionnaire) {
+      items.push({
+        key: "3",
+        label: formatMessage(
+          overviewPageMessages.tableDropdownPreAppointmentQuestionnaireInfo
+        ),
+        onClick: ({ domEvent }) => {
+          domEvent.stopPropagation();
+          setActivePreAppointmentQuestionnaire({
+            appointment_id: row?.appointment,
+          });
+        },
+      });
+    }
+
+    items.push({
+      key: "2",
+      label: formatMessage(
+        overviewPageMessages.tableDropdownUpdateMessageRequiringImmediateAttentionStatus
+      ),
+      onClick: ({ domEvent }) => {
+        domEvent.stopPropagation();
+        showUpdateMessageRequiringImmediateAttentionStatusWrapper(
+          domEvent,
+          row
+        );
+      },
+    });
+
+    return items;
   };
 
 

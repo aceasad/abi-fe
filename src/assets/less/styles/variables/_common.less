@@ -17,20 +17,21 @@
 @theme: light;
 
 // Background color for `<body>`
-@body-background:    #fafafb;
+@body-background: #fafafb;
 // Base background color for most components
 @component-background: @white;
 // Popover background color
 @popover-background: @component-background;
 @popover-customize-border-color: @border-color-split;
 
-@font-family: 'PGF-Qualta', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
-  'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-  'Noto Color Emoji';
-@code-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+@font-family: 'PGF-Qualta', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+  Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
+  'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+@code-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier,
+  monospace;
 @text-color: @gray;
 @text-color-secondary: @gray-light;
-@text-muted: rgba(@gray-light, 0.7);
+@text-muted: rgba(0, 0, 0, 0.45);
 @text-color-inverse: @white;
 @icon-color: inherit;
 @icon-color-hover: @gray;
@@ -43,16 +44,16 @@
 @font-size-base: 14px;
 @font-size-lg: @font-size-base + 2px;
 @font-size-sm: 12px;
-@heading-1-size: ceil(@font-size-base * 2.14);
-@heading-2-size: ceil(@font-size-base * 1.57);
-@heading-3-size: ceil(@font-size-base * 1.43);
-@heading-4-size: ceil(@font-size-base * 1.21);
-@heading-5-size: ceil(@font-size-base * 0.857);
-@heading-6-size: ceil(@font-size-base * 0.714);
+@heading-1-size: 30px;
+@heading-2-size: 22px;
+@heading-3-size: 20px;
+@heading-4-size: 17px;
+@heading-5-size: 12px;
+@heading-6-size: 10px;
 @line-height-base: 1.5;
 @border-radius-base: 0.625rem;
 @border-radius-sm: 0.25rem;
-@border-radius-lg:  0.3rem;
+@border-radius-lg: 0.3rem;
 @rounded-pill: 50rem;
 
 @font-weight-lighter: lighter;
@@ -92,8 +93,8 @@
 @iconfont-css-prefix: anticon;
 
 @link-color: @primary-color;
-@link-hover-color: color(~`colorPalette('@{link-color}', 5) `);
-@link-active-color: color(~`colorPalette('@{link-color}', 7) `);
+@link-hover-color: @primary-5;
+@link-active-color: @primary-7;
 @link-decoration: none;
 @link-hover-decoration: none;
 @link-focus-decoration: none;
@@ -128,29 +129,32 @@
 @outline-color: @primary-color;
 @outline-fade: 20%;
 
-@background-color-light: hsv(0, 0, 98%); // background of header and selected item
+@background-color-light: hsv(
+  0,
+  0,
+  98%
+); // background of header and selected item
 @background-color-base: hsv(0, 0, 96%); // Default grey background color
 
 // Disabled states
 @disabled-color: #d0d4d7;
 @disabled-bg: @gray-lightest;
-@disabled-color-dark: fade(@white, 35%);
+@disabled-color-dark: rgba(255, 255, 255, 0.35);
 
 // Shadow
 @shadow-color: rgba(0, 0, 0, 0.15);
 @shadow-color-inverse: @component-background;
 @box-shadow-base: @shadow-2;
-@shadow-1-up: 0 -6px 16px -8px rgba(0, 0, 0, 0.08), 0 -9px 28px 0 rgba(0, 0, 0, 0.05),
-  0 -12px 48px 16px rgba(0, 0, 0, 0.03);
-@shadow-1-down: 0 6px 16px -8px rgba(0, 0, 0, 0.08), 0 9px 28px 0 rgba(0, 0, 0, 0.05),
-  0 12px 48px 16px rgba(0, 0, 0, 0.03);
-@shadow-1-left: -6px 0 16px -8px rgba(0, 0, 0, 0.08), -9px 0 28px 0 rgba(0, 0, 0, 0.05),
-  -12px 0 48px 16px rgba(0, 0, 0, 0.03);
-@shadow-1-right: 6px 0 16px -8px rgba(0, 0, 0, 0.08), 9px 0 28px 0 rgba(0, 0, 0, 0.05),
-  12px 0 48px 16px rgba(0, 0, 0, 0.03);
+@shadow-1-up: 0 -6px 16px -8px rgba(0, 0, 0, 0.08),
+  0 -9px 28px 0 rgba(0, 0, 0, 0.05), 0 -12px 48px 16px rgba(0, 0, 0, 0.03);
+@shadow-1-down: 0 6px 16px -8px rgba(0, 0, 0, 0.08),
+  0 9px 28px 0 rgba(0, 0, 0, 0.05), 0 12px 48px 16px rgba(0, 0, 0, 0.03);
+@shadow-1-left: -6px 0 16px -8px rgba(0, 0, 0, 0.08),
+  -9px 0 28px 0 rgba(0, 0, 0, 0.05), -12px 0 48px 16px rgba(0, 0, 0, 0.03);
+@shadow-1-right: 6px 0 16px -8px rgba(0, 0, 0, 0.08),
+  9px 0 28px 0 rgba(0, 0, 0, 0.05), 12px 0 48px 16px rgba(0, 0, 0, 0.03);
 @shadow-2: 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 6px 16px 0 rgba(0, 0, 0, 0.08),
   0 9px 28px 8px rgba(0, 0, 0, 0.05);
-
 
 // Buttons
 @btn-font-weight: 400;
@@ -209,6 +213,25 @@
 @btn-link-hover-bg: transparent;
 @btn-text-hover-bg: rgba(0, 0, 0, 0.018);
 
+// Radio
+// ---
+@radio-size: 20px;
+@radio-top: 0px;
+@radio-border-width: 2px;
+@radio-dot-size: @radio-size - 10px;
+@radio-dot-color: @primary-color;
+@radio-dot-disabled-color: rgba(0, 0, 0, 0.2);
+@radio-solid-checked-color: @component-background;
+
+// Radio buttons
+@radio-button-bg: @btn-default-bg;
+@radio-button-checked-bg: @btn-default-bg;
+@radio-button-color: @btn-default-color;
+@radio-button-hover-color: @primary-5;
+@radio-button-active-color: @primary-7;
+@radio-disabled-button-checked-bg: #e6e6e6;
+@radio-disabled-button-checked-color: @disabled-color;
+@radio-wrapper-margin-right: 8px;
 
 // Checkbox
 @checkbox-size: 20px;
@@ -217,7 +240,6 @@
 @checkbox-check-bg: @checkbox-check-color;
 @checkbox-border-width: @border-width-base;
 @checkbox-group-item-margin-right: 10px;
-
 
 // Descriptions
 @descriptions-bg: @gray-lightest;
@@ -242,26 +264,6 @@
 
 // Empty
 @empty-font-size: @font-size-base;
-
-
-// Radio
-@radio-size: 20px;
-@radio-top: 0px;
-@radio-border-width: 2px;
-@radio-dot-size: @radio-size - 10px;
-@radio-dot-color: @primary-color;
-@radio-dot-disabled-color: fade(@black, 20%);
-@radio-solid-checked-color: @component-background;
-
-// Radio buttons
-@radio-button-bg: @btn-default-bg;
-@radio-button-checked-bg: @btn-default-bg;
-@radio-button-color: @btn-default-color;
-@radio-button-hover-color: @primary-5;
-@radio-button-active-color: @primary-7;
-@radio-disabled-button-checked-bg: tint(@black, 90%);
-@radio-disabled-button-checked-color: @disabled-color;
-@radio-wrapper-margin-right: 8px;
 
 // Media queries breakpoints
 // @screen-xs and @screen-xs-min is not used in Grid
@@ -298,10 +300,10 @@
 @screen-xl-max: (@screen-xxl-min - 1px);
 
 @grid-breakpoints: {
-	xs: @screen-xs;
-	sm: @screen-sm;
-	md: @screen-md;
-	lg: @screen-lg;
+  xs: @screen-xs;
+  sm: @screen-sm;
+  md: @screen-md;
+  lg: @screen-lg;
   xl: @screen-xl;
   xxl: @screen-xxl;
 };
@@ -362,7 +364,6 @@
 @dropdown-font-size: @font-size-base;
 @dropdown-line-height: 1.5;
 
-
 // Form
 // ---
 @label-required-color: @highlight-color;
@@ -387,18 +388,10 @@
 @input-padding-horizontal-base: @input-padding-horizontal;
 @input-padding-horizontal-sm: @control-padding-horizontal-sm - 1px;
 @input-padding-horizontal-lg: @input-padding-horizontal;
-@input-padding-vertical-base: max(
-  round((@input-height-base - @font-size-base * @line-height-base) / 2 * 10) / 10 -
-    @border-width-base,
-  3px
-);
-@input-padding-vertical-sm: max(
-  round((@input-height-sm - @font-size-base * @line-height-base) / 2 * 10) / 10 - @border-width-base,
-  0
-);
-@input-padding-vertical-lg: ceil((@input-height-lg - @font-size-lg * @line-height-base) / 2 * 10) /
-  10 - @border-width-base;
-@input-placeholder-color: rgba(@gray-light, .4);
+@input-padding-vertical-base: 6px;
+@input-padding-vertical-sm: 2px;
+@input-padding-vertical-lg: 10px;
+@input-placeholder-color: rgba(0, 0, 0, 0.25);
 @input-color: @text-color;
 @input-icon-color: @input-color;
 @input-border-color: @border-color-base;
@@ -412,7 +405,7 @@
 @input-hover-border-color: @primary-5;
 @input-disabled-bg: @disabled-bg;
 @input-outline-offset: 0 0;
-@input-icon-hover-color: fade(@black, 85%);
+@input-icon-hover-color: rgba(0, 0, 0, 0.85);
 @input-disabled-color: @disabled-color;
 
 // Mentions
@@ -437,9 +430,10 @@
 @select-selection-item-bg: @background-color-base;
 @select-selection-item-border-color: @border-color-split;
 @select-single-item-height-lg: 40px;
-@select-multiple-item-height: @input-height-base - @input-padding-vertical-base * 2; // Normal 24px
+@select-multiple-item-height: @input-height-base - @input-padding-vertical-base *
+  2; // Normal 24px
 @select-multiple-item-height-lg: 32px;
-@select-multiple-item-spacing-half: ceil(@input-padding-vertical-base / 2);
+@select-multiple-item-spacing-half: 4px;
 @select-multiple-disabled-background: @input-disabled-bg;
 @select-multiple-item-disabled-color: #bfbfbf;
 @select-multiple-item-disabled-border-color: @select-border-color;
@@ -507,7 +501,8 @@
 @modal-header-padding-horizontal: @padding-lg;
 @modal-body-padding: @padding-lg;
 @modal-header-bg: @component-background;
-@modal-header-padding: @modal-header-padding-vertical @modal-header-padding-horizontal;
+@modal-header-padding: @modal-header-padding-vertical
+  @modal-header-padding-horizontal;
 @modal-header-border-width: @border-width-base;
 @modal-header-border-style: @border-style-base;
 @modal-header-title-line-height: 22px;
@@ -523,7 +518,7 @@
 @modal-footer-padding-vertical: 10px;
 @modal-footer-padding-horizontal: 16px;
 @modal-footer-border-width: @border-width-base;
-@modal-mask-bg: fade(@black, 45%);
+@modal-mask-bg: rgba(0, 0, 0, 0.45);
 @modal-confirm-body-padding: 32px 32px 24px;
 
 // Progress
@@ -546,7 +541,7 @@
 @menu-item-color: @text-color;
 @menu-highlight-color: @primary-color;
 @menu-highlight-danger-color: @error-color;
-@menu-item-active-bg: rgba(@menu-highlight-color, .1);
+@menu-item-active-bg: rgba(93, 78, 191, 0.1);
 @menu-item-active-danger-bg: @red-1;
 @menu-item-active-border-width: 3px;
 @menu-item-group-title-color: @text-color-secondary;
@@ -567,7 +562,7 @@
 @menu-dark-arrow-color: @white;
 @menu-dark-submenu-bg: @menu-dark-bg;
 @menu-dark-highlight-color: #fff;
-@menu-dark-item-active-bg: rgba(@white, 0.1);
+@menu-dark-item-active-bg: rgba(255, 255, 255, 0.1);
 @menu-dark-item-active-danger-bg: @error-color;
 @menu-dark-selected-item-icon-color: @white;
 @menu-dark-selected-item-text-color: @white;
@@ -587,9 +582,9 @@
 @table-body-sort-bg: #fafafa;
 @table-row-hover-bg: @background-color-light;
 @table-selected-row-color: inherit;
-@table-selected-row-bg: rgba(@primary-color: .1);
+@table-selected-row-bg: rgba(93, 78, 191, 0.1);
 @table-body-selected-sort-bg: @table-selected-row-bg;
-@table-selected-row-hover-bg: darken(@table-selected-row-bg, 2%);
+@table-selected-row-hover-bg: rgba(93, 78, 191, 0.12);
 @table-expanded-row-bg: #fbfbfb;
 @table-padding-vertical: 16px;
 @table-padding-horizontal: 16px;
@@ -606,9 +601,9 @@
 @table-font-size-sm: @table-font-size;
 // Sorter
 // Legacy: `table-header-sort-active-bg` is used for hover not real active
-@table-header-sort-active-bg: darken(@table-header-bg, 3%);
+@table-header-sort-active-bg: #f0f0f0;
 // Filter
-@table-header-filter-active-bg: darken(@table-header-sort-active-bg, 5%);
+@table-header-filter-active-bg: #e8e8e8;
 @table-filter-btns-bg: inherit;
 @table-filter-dropdown-bg: @component-background;
 @table-expand-icon-bg: @component-background;
@@ -628,11 +623,11 @@
 // ---
 @picker-bg: @component-background;
 @picker-basic-cell-hover-color: @item-hover-bg;
-@picker-basic-cell-active-with-range-color: rgba(@primary-color, .1);
-@picker-basic-cell-hover-with-range-color: lighten(@primary-color, 35%);
+@picker-basic-cell-active-with-range-color: rgba(93, 78, 191, 0.1);
+@picker-basic-cell-hover-with-range-color: #b8b3e6;
 @picker-basic-cell-disabled-bg: @disabled-bg;
 @picker-border-color: @border-color-split;
-@picker-date-hover-range-border-color: lighten(@primary-color, 20%);
+@picker-date-hover-range-border-color: #7a6bc7;
 @picker-date-hover-range-color: @picker-basic-cell-hover-with-range-color;
 @picker-time-panel-column-width: 56px;
 @picker-time-panel-column-height: 224px;
@@ -693,8 +688,8 @@
 @card-actions-li-margin: 12px 0;
 @card-skeleton-bg: #cfd8dc;
 @card-background: @component-background;
-@card-shadow: 0 1px 2px -2px rgba(0, 0, 0, 0.16), 0 3px 6px 0 rgba(0, 0, 0, 0.12),
-  0 5px 12px 4px rgba(0, 0, 0, 0.09);
+@card-shadow: 0 1px 2px -2px rgba(0, 0, 0, 0.16),
+  0 3px 6px 0 rgba(0, 0, 0, 0.12), 0 5px 12px 4px rgba(0, 0, 0, 0.09);
 @card-radius: @border-radius-base;
 @card-head-tabs-margin-bottom: -17px;
 @card-head-extra-color: @text-color;
@@ -707,7 +702,7 @@
 @comment-font-size-base: @font-size-base;
 @comment-font-size-sm: @font-size-sm;
 @comment-author-name-color: @text-color-secondary;
-@comment-author-time-color: rgba(@gray-dark, 0.6);
+@comment-author-time-color: rgba(0, 0, 0, 0.45);
 @comment-action-color: @text-color-secondary;
 @comment-action-hover-color: #595959;
 @comment-actions-margin-bottom: inherit;
@@ -718,15 +713,16 @@
 // ---
 @tabs-card-head-background: @background-color-light;
 @tabs-card-height: 40px;
-@tabs-card-active-color: @primary-color;
-@tabs-card-horizontal-padding: (@tabs-card-height - floor(@font-size-base * @line-height-base)) / 2 -
-  @border-width-base @padding-md;
+@tabs-card-active-color: #5d4ebf;
+@tabs-card-horizontal-padding: (
+    @tabs-card-height - floor(@font-size-base * @line-height-base)
+  ) / 2 - @border-width-base @padding-md;
 @tabs-card-horizontal-padding-sm: 6px @padding-md;
 @tabs-card-horizontal-padding-lg: 7px @padding-md 6px;
 @tabs-title-font-size: @font-size-base;
 @tabs-title-font-size-lg: @font-size-lg;
 @tabs-title-font-size-sm: @font-size-base;
-@tabs-ink-bar-color: @primary-color;
+@tabs-ink-bar-color: #5d4ebf;
 @tabs-bar-margin: 0 0 @margin-md 0;
 @tabs-horizontal-margin: 0 32px 0 0;
 @tabs-horizontal-margin-rtl: 0 0 0 32px;
@@ -736,9 +732,9 @@
 @tabs-vertical-padding: @padding-xs @padding-lg;
 @tabs-vertical-margin: 0 0 @margin-md 0;
 @tabs-scrolling-size: 32px;
-@tabs-highlight-color: @primary-color;
-@tabs-hover-color: @primary-5;
-@tabs-active-color: @primary-7;
+@tabs-highlight-color: #5d4ebf;
+@tabs-hover-color: #5d4ebf;
+@tabs-active-color: #5d4ebf;
 @tabs-card-gutter: 2px;
 @tabs-card-tab-active-border-top: 2px solid transparent;
 
@@ -774,10 +770,10 @@
 @switch-bg: @component-background;
 @switch-shadow-color: fade(#00230b, 20%);
 @switch-padding: 2px;
-@switch-inner-margin-min: ceil(@switch-height * 0.3);
-@switch-inner-margin-max: ceil(@switch-height * 1.1);
-@switch-sm-inner-margin-min: ceil(@switch-sm-height * 0.3);
-@switch-sm-inner-margin-max: ceil(@switch-sm-height * 1.1);
+@switch-inner-margin-min: 7px;
+@switch-inner-margin-max: 25px;
+@switch-sm-inner-margin-min: 5px;
+@switch-sm-inner-margin-max: 18px;
 
 // Pagination
 // ---
@@ -789,7 +785,7 @@
 @pagination-item-bg-active: @primary-color;
 @pagination-item-link-bg: @component-background;
 @pagination-item-disabled-color-active: @white;
-@pagination-item-disabled-bg-active: darken(@disabled-bg, 10%);
+@pagination-item-disabled-bg-active: #d9d9d9;
 @pagination-item-input-bg: @component-background;
 @pagination-mini-options-size-changer-top: 0px;
 
@@ -821,20 +817,20 @@
 @slider-margin: 10px 6px 10px;
 @slider-rail-background-color: @background-color-base;
 @slider-rail-background-color-hover: #e1e1e1;
-@slider-track-background-color: rgba(@primary-color, 0.8);
+@slider-track-background-color: rgba(93, 78, 191, 0.8);
 @slider-track-background-color-hover: @primary-color;
 @slider-handle-border-width: 2px;
 @slider-handle-background-color: @component-background;
-@slider-handle-color: rgba(@primary-color, 0.8);
+@slider-handle-color: rgba(93, 78, 191, 0.8);
 @slider-handle-color-hover: @primary-color;
-@slider-handle-color-focus: tint(@primary-color, 20%);
-@slider-handle-color-focus-shadow: fade(@primary-color, 12%);
+@slider-handle-color-focus: #7a6bc7;
+@slider-handle-color-focus-shadow: rgba(93, 78, 191, 0.12);
 @slider-handle-color-tooltip-open: @primary-color;
 @slider-handle-size: 18px;
 @slider-handle-margin-top: -7px;
 @slider-handle-shadow: 0;
 @slider-dot-border-color: @border-color-split;
-@slider-dot-border-color-active: tint(@primary-color, 50%);
+@slider-dot-border-color-active: #b8b3e6;
 @slider-disabled-color: @disabled-color;
 @slider-disabled-background-color: @component-background;
 
@@ -846,7 +842,7 @@
 @tree-directory-selected-color: #fff;
 @tree-directory-selected-bg: @primary-color;
 @tree-node-hover-bg: @item-hover-bg;
-@tree-node-selected-bg: rgba(@primary-color, 0.1);
+@tree-node-selected-bg: rgba(93, 78, 191, 0.1);
 
 // Collapse
 // ---
@@ -873,7 +869,7 @@
 @transfer-item-height: 44px;
 @transfer-disabled-bg: @disabled-bg;
 @transfer-list-height: 275px;
-@transfer-item-hover-bg: rgba(@primary-color, 0.1);
+@transfer-item-hover-bg: rgba(93, 78, 191, 0.1);
 @transfer-item-padding-vertical: 6px;
 @transfer-list-search-icon-top: 12px;
 
@@ -887,17 +883,17 @@
 
 // Alert
 // ---
-@alert-success-border-color: ~`colorPalette('@{success-color}', 3) `;
-@alert-success-bg-color: ~`colorPalette('@{success-color}', 1) `;
+@alert-success-border-color: @success-3;
+@alert-success-bg-color: @success-1;
 @alert-success-icon-color: @success-color;
-@alert-info-border-color: ~`colorPalette('@{info-color}', 3) `;
-@alert-info-bg-color: ~`colorPalette('@{info-color}', 1) `;
+@alert-info-border-color: @primary-3;
+@alert-info-bg-color: @primary-1;
 @alert-info-icon-color: @info-color;
-@alert-warning-border-color: ~`colorPalette('@{warning-color}', 3) `;
-@alert-warning-bg-color: ~`colorPalette('@{warning-color}', 1) `;
+@alert-warning-border-color: @warning-3;
+@alert-warning-bg-color: @warning-1;
 @alert-warning-icon-color: @warning-color;
-@alert-error-border-color: ~`colorPalette('@{error-color}', 3) `;
-@alert-error-bg-color: ~`colorPalette('@{error-color}', 1) `;
+@alert-error-border-color: @error-3;
+@alert-error-bg-color: @error-1;
 @alert-error-icon-color: @error-color;
 @alert-message-color: @heading-color;
 @alert-text-color: @text-color;
@@ -907,8 +903,9 @@
 @alert-with-description-no-icon-padding-vertical: @padding-md - 1px;
 @alert-with-description-padding-vertical: @padding-md - 1px;
 @alert-with-description-padding: @alert-with-description-padding-vertical 15px
-  @alert-with-description-no-icon-padding-vertical @alert-with-description-icon-size;
-@alert-icon-top: 8px + @font-size-base * @line-height-base / 2 - @font-size-base / 2;
+  @alert-with-description-no-icon-padding-vertical
+  @alert-with-description-icon-size;
+@alert-icon-top: 11.5px;
 @alert-with-description-icon-size: 24px;
 
 // List
@@ -963,7 +960,7 @@
 // Steps
 // ---
 @process-tail-color: @border-color-split;
-@steps-nav-arrow-color: fade(@black, 25%);
+@steps-nav-arrow-color: rgba(0, 0, 0, 0.25);
 @steps-background: @component-background;
 @steps-icon-size: 32px;
 @steps-icon-custom-size: @steps-icon-size;
@@ -1005,14 +1002,17 @@
 @image-color: #fff;
 @image-preview-operation-size: 18px;
 @image-preview-operation-color: @text-color-dark;
-@image-preview-operation-disabled-color: fade(@image-preview-operation-color, 25%);
+@image-preview-operation-disabled-color: fade(
+  @image-preview-operation-color,
+  25%
+);
 
 @sizes: {
-	25:   25%;
-	50:   50%;
-	75:   75%;
-	100:  100%;
-	auto: auto;
+  25: 25%;
+  50: 50%;
+  75: 75%;
+  100: 100%;
+  auto: auto;
 };
 
 @emphasized-link-hover-darken-percentage: 15%;

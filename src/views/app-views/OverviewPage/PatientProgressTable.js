@@ -1,9 +1,13 @@
-import { Card, Table, Button, Select } from 'antd';
+import { Card, Table, Button, Select, Grid, Space, Typography, Tag, Row, Col } from 'antd';
 import React, { useState, useEffect } from 'react';
 import { DEFAULT_LIMIT } from 'services/StaffService';
 import patientService from 'services/PatientService';
-import moment from 'moment';
+import dayjs from 'utils/dayjs';
 import { Link } from 'react-router-dom';
+import { CalendarOutlined, ClockCircleOutlined } from '@ant-design/icons';
+import utils from 'utils';
+
+const { useBreakpoint } = Grid;
 
 const PatientProgressTable = ({
   column,
@@ -90,7 +94,7 @@ const PatientProgressTable = ({
       sortOrder: sortedInfo.columnKey === 'Invitation Sent' && sortedInfo.order,
       render: (_, record) => {
         const invitationSent = record['Invitation Sent']; // or whatever field name contains the datetime
-        const formattedDatetime = moment(invitationSent).format('DD/MM/YYYY hh:mm A');
+        const formattedDatetime = dayjs(invitationSent).format('DD/MM/YYYY hh:mm A');
         return <div className="text-left text-uppercase">{`${formattedDatetime}`}</div>;
       },
     },
@@ -104,7 +108,7 @@ const PatientProgressTable = ({
       render: (_, record) => {
         const lastContacted = record['Last Contact']; // or whatever field name contains the datetime
         if (lastContacted !== null) {
-          const formattedDatetime = moment(lastContacted).format('DD/MM/YYYY hh:mm A');
+          const formattedDatetime = dayjs(lastContacted).format('DD/MM/YYYY hh:mm A');
           return <div className="text-left text-uppercase">{`${formattedDatetime}`}</div>;
         } else {
           return <div className="text-left">{`${''}`}</div>;
@@ -195,7 +199,6 @@ const PatientProgressTable = ({
       });
 
       setData(formattedData); // Set all data
-      console.log(formattedData)
       setDisplayData(formattedData.slice(0, pagination.pageSize)); // Display first `pageSize` records
     } catch (error) {
       console.error('Error fetching progress data:', error);
@@ -266,8 +269,8 @@ const PatientProgressTable = ({
           if (typeof a[columnKey] === 'string') {
             return a[columnKey].localeCompare(b[columnKey]) * sortOrder;
           }
-          if (moment(a[columnKey]).isValid() && moment(b[columnKey]).isValid()) {
-            return (moment(a[columnKey]).isBefore(moment(b[columnKey])) ? -1 : 1) * sortOrder;
+          if (dayjs(a[columnKey]).isValid() && dayjs(b[columnKey]).isValid()) {
+            return (dayjs(a[columnKey]).isBefore(dayjs(b[columnKey])) ? -1 : 1) * sortOrder;
           }
           return (a[columnKey] - b[columnKey]) * sortOrder;
         });
@@ -286,34 +289,123 @@ const PatientProgressTable = ({
     }));
   };
 
+  const screens = utils.getBreakPoint(useBreakpoint());
+  const isMobile = !screens.includes('lg');
+
+  // Mobile Card Component
+  const ProgressCard = ({ record }) => {
+    const buttonColor = getProgressColor(record.Status);
+
+    return (
+      <Card
+        hoverable
+        styles={{ body: { padding: '16px' } }}
+        style={{ height: '100%', borderRadius: '8px' }}
+      >
+        <Link to={`/pages/conversation/${record.PatientId}`}>
+          <Space direction="vertical" size="small" style={{ width: '100%' }}>
+            <Typography.Text strong style={{ fontSize: '16px', display: 'block' }}>
+              {record['Patient Name']}
+            </Typography.Text>
+
+            <Tag
+              style={{
+                backgroundColor: `${buttonColor}1A`,
+                border: 'none',
+                color: buttonColor,
+                fontWeight: 400,
+                borderRadius: '25px'
+              }}
+            >
+              {record.Status}
+            </Tag>
+
+            <Space size="small">
+              <CalendarOutlined style={{ fontSize: '12px', color: '#8c8c8c' }} />
+              <Typography.Text type="secondary" style={{ fontSize: '12px' }}>
+                Invited: {dayjs(record['Invitation Sent']).format('DD/MM/YYYY hh:mm A')}
+              </Typography.Text>
+            </Space>
+
+            {record['Last Contact'] && (
+              <Space size="small">
+                <ClockCircleOutlined style={{ fontSize: '12px', color: '#8c8c8c' }} />
+                <Typography.Text type="secondary" style={{ fontSize: '12px' }}>
+                  Last Contact: {dayjs(record['Last Contact']).format('DD/MM/YYYY hh:mm A')}
+                </Typography.Text>
+              </Space>
+            )}
+          </Space>
+        </Link>
+      </Card>
+    );
+  };
+
   return (
     <Card>
       <div style={{ marginBottom: 16 }}>
         <Select
-          style={{ width: 200 }}
+          style={{ width: isMobile ? '100%' : 200 }}
           placeholder="Filter by status"
           allowClear
           options={statusOptions}
           onChange={handleFilterChange}
         />
       </div>
-      <div className="responsive-table ant-table-row-pointer">
-        <Table
-          columns={columns}
-          dataSource={displayData}
-          onChange={handleTableChange}  // This will now handle both sorting and pagination
-          rowKey="PatientId"
-          sortedInfo={sortedInfo}
-          pagination={{
-            current: pagination.current,
-            pageSize: pagination.pageSize,
-            total: pagination.total,
-            pageSizeOptions: pagination.pageSizeOptions,
-            showSizeChanger: true,
-          }}
-          loading={loading}
-        />
-      </div>
+      {isMobile ? (
+        // Mobile Card View
+        <>
+          <Row gutter={[12, 12]}>
+            {displayData.map((record) => (
+              <Col xs={24} sm={12} key={record.PatientId}>
+                <ProgressCard record={record} />
+              </Col>
+            ))}
+          </Row>
+          {pagination.total > pagination.pageSize && (
+            <div style={{ marginTop: '16px', textAlign: 'center' }}>
+              <Space>
+                <Button
+                  disabled={pagination.current === 1}
+                  onClick={() => setPagination({ ...pagination, current: pagination.current - 1 })}
+                  size="small"
+                >
+                  Previous
+                </Button>
+                <Typography.Text>
+                  Page {pagination.current} of {Math.ceil(pagination.total / pagination.pageSize)}
+                </Typography.Text>
+                <Button
+                  disabled={pagination.current >= Math.ceil(pagination.total / pagination.pageSize)}
+                  onClick={() => setPagination({ ...pagination, current: pagination.current + 1 })}
+                  size="small"
+                >
+                  Next
+                </Button>
+              </Space>
+            </div>
+          )}
+        </>
+      ) : (
+        // Desktop Table View
+        <div className="responsive-table ant-table-row-pointer">
+          <Table
+            columns={columns}
+            dataSource={displayData}
+            onChange={handleTableChange}
+            rowKey="PatientId"
+            sortedInfo={sortedInfo}
+            pagination={{
+              current: pagination.current,
+              pageSize: pagination.pageSize,
+              total: pagination.total,
+              pageSizeOptions: pagination.pageSizeOptions,
+              showSizeChanger: true,
+            }}
+            loading={loading}
+          />
+        </div>
+      )}
     </Card>
   );
 };

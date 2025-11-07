@@ -26,6 +26,11 @@
             padding: 15px;
             overflow-y: auto;
 
+            @media (max-width: 991px) {
+                height: calc(100vh - @chat-header-height - @chat-footer-height - 200px);
+                padding: 12px;
+            }
+
             .msg {
                 display: flex;
                 margin-bottom: 15px;
@@ -143,7 +148,7 @@
             }
             
             .ant-input {
-                font-size: @heading-3-size;
+                font-size: 14px;
 
                 &:focus, 
                 .ant-input-focused {
@@ -157,6 +162,10 @@
         height: calc(100vh - @chat-header-height - @chat-footer-height - @layout-content-gutter - @header-height - 30px);
         overflow: auto;
         position: relative;
+
+        @media (max-width: 991px) {
+            height: calc(100vh - 200px);
+        }
         
         .chat-menu-list-item {
             transition: all 0.3s ease-in-out; 

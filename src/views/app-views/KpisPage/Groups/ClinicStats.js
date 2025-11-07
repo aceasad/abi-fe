@@ -23,17 +23,15 @@ const compareValues = (current, previous) => {
 
 // Helper function to format percentage change display with + for positive values
 const formatPercentageChangeDisplay = (value) => {
-  console.log('Display Percentage Change Input:', value);
   if (value == null || isNaN(value)) return null;
   const formattedValue = Number(value).toFixed(1);
-  console.log('Display Percentage Change Result:', formattedValue);
   return value < 0 ? `-${formattedValue}%` : `+${formattedValue}%`;
 };
 
-const StatCard = ({ title, value, subtitle, color = '#000000', change = "12", changeType = "percentage", style = {}, bare = false }) => {
+const StatCard = ({ title, value, subtitle, color = '#000000', change = "12", changeType = "percentage", style = {}, bare = false, isMobile = false }) => {
   const content = (
-    <div style={{ display: 'flex', alignItems: "center", gap: '8px' }}>
-      <div style={{ fontSize: '24px', fontWeight: 'bold', color }}>
+    <div style={{ display: 'flex', alignItems: "center", gap: '8px', flexWrap: isMobile ? 'wrap' : 'nowrap' }}>
+      <div style={{ fontSize: isMobile ? '20px' : '28px', fontWeight: 'bold', color }}>
         {value}
       </div>
       {change != null && (
@@ -42,6 +40,7 @@ const StatCard = ({ title, value, subtitle, color = '#000000', change = "12", ch
           style={{
             color: (changeType !== "decrease" && change > 0) ? '#10B981' : (changeType !== "increase" && change < 0) ? '#EF4444' : '#6B7280',
             justifyContent: 'center',
+            fontSize: isMobile ? '12px' : '16px',
           }}>
           {changeType === "percentage" ? formatPercentageChangeDisplay(change) : change}
         </Text>
@@ -50,15 +49,15 @@ const StatCard = ({ title, value, subtitle, color = '#000000', change = "12", ch
   );
   if (bare) {
     return (
-      <div style={{ height: '80px', textAlign: 'left', ...style }}>
+      <div style={{ height: isMobile ? '80px' : '100px', textAlign: 'left', ...style }}>
         <Text
           type='secondary'
           style={{
             display: 'block',
-            fontSize: '14px',
+            fontSize: isMobile ? '12px' : '15px',
             fontWeight: 'strong',
             lineHeight: '22px',
-            marginBottom: '4px'
+            marginBottom: isMobile ? '4px' : '8px'
 
           }}
         >
@@ -70,13 +69,18 @@ const StatCard = ({ title, value, subtitle, color = '#000000', change = "12", ch
   }
 
   return (
-    <Card title={<Text type='secondary' style={{ fontWeight: 'strong', }}>{title}</Text>} size="small">
+    <Card
+      title={<Text type='secondary' style={{ fontWeight: 'strong', fontSize: isMobile ? '12px' : '15px' }}>{title}</Text>}
+      size="small"
+      style={style}
+      styles={{ body: { padding: isMobile ? '12px' : '16px' } }}
+    >
       {content}
     </Card>
   );
 };
 
-const ClinicStats = ({ title, previousPeriod }) => {
+const ClinicStats = ({ title, previousPeriod, isMobile = false }) => {
   const {
     engagement_rate,
     booking_rate,
@@ -173,149 +177,211 @@ const ClinicStats = ({ title, previousPeriod }) => {
   return (
     <>
       <Card title="Patient Communication Flow">
-        {previousPeriod && (
+        {previousPeriod && !isMobile && (
           <Text type="secondary" style={{ position: "absolute", top: 20, left: 276 }}>
             Previous period {previousPeriod[0].format('D MMMM YYYY')} - {previousPeriod[1].format('D MMMM YYYY')}
           </Text>
         )}
 
+        {previousPeriod && isMobile && (
+          <Text type="secondary" style={{ display: 'block', marginBottom: '12px', fontSize: '12px' }}>
+            Previous: {previousPeriod[0].format('DD/MM/YY')} - {previousPeriod[1].format('DD/MM/YY')}
+          </Text>
+        )}
+
         <Row gutter={16}>
           {/* LEFT COLUMN */}
-          <Col xs={24} md={18}>
+          <Col xs={24} lg={18}>
             {/* Top 4 StatCards */}
-            <Row gutter={16} justify="space-between">
-              <Col xs={12} sm={8} md={4} lg={6}>
-                <StatCard title="Patients invited" value={displayValue(total_patients_added)} style={{ width: 218, height: 80 }} />
+            <Row gutter={isMobile ? 8 : 16}>
+              <Col xs={12} sm={6} md={6} lg={6}>
+                <StatCard title="Patients invited" value={displayValue(total_patients_added)} style={{ width: '100%', height: isMobile ? 80 : 100 }} isMobile={isMobile} />
               </Col>
-              <Col xs={12} sm={8} md={4} lg={6}>
-                <StatCard title="Invites delivered" value={displayValue(total_patients_invited)} style={{ width: 218, height: 80 }} />
+              <Col xs={12} sm={6} md={6} lg={6}>
+                <StatCard title="Invites delivered" value={displayValue(total_patients_invited)} style={{ width: '100%', height: isMobile ? 80 : 100 }} isMobile={isMobile} />
               </Col>
-              <Col xs={12} sm={8} md={4} lg={6}>
-                <StatCard title="Patients engaged" value={displayValue(total_patients_engaged)} style={{ width: 218, height: 80 }} />
+              <Col xs={12} sm={6} md={6} lg={6}>
+                <StatCard title="Patients engaged" value={displayValue(total_patients_engaged)} style={{ width: '100%', height: isMobile ? 80 : 100 }} isMobile={isMobile} />
               </Col>
-              <Col xs={12} sm={8} md={4} lg={6}>
-                <StatCard title="Bookings made" value={displayValue(bookings)} style={{ width: 218, height: 80 }} />
+              <Col xs={12} sm={6} md={6} lg={6}>
+                <StatCard title="Bookings made" value={displayValue(bookings)} style={{ width: '100%', height: isMobile ? 80 : 100 }} isMobile={isMobile} />
               </Col>
             </Row>
 
             {/* Graph + Engagement/AfterHours inside same Card */}
-            <Card style={{ borderRadius: 8, }}>
-              <div style={{
-                display: 'flex',
-                flexDirection: 'row',
-                flexWrap: 'nowrap',
-                alignItems: 'flex-start',
-                height: '175px',
-              }}>
-                {/* Bar Chart */}
-                <div style={{ flex: 2 }}>
-                  <ResponsiveContainer width="100%" height={175}>
-                    <BarChart data={communicationFlowData} margin={{ top: 20, right: 30, left: 20, bottom: 0 }}>
-                      <Bar dataKey="value" fill="#5B4CDB" radius={[4, 4, 0, 0]}>
-                        <LabelList dataKey="name" position="top" style={{ fill: '#000000', fontSize: '14px' }} />
-                      </Bar>
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
+            <Card style={{ borderRadius: 8, marginTop: 16 }}>
+              {isMobile ? (
+                // Mobile: Stack everything vertically
+                <>
+                  {/* Bar Chart */}
+                  <div style={{ width: '100%', marginBottom: '16px' }}>
+                    <ResponsiveContainer width="100%" height={175}>
+                      <BarChart data={communicationFlowData} margin={{ top: 20, right: 10, left: 10, bottom: 0 }}>
+                        <Bar dataKey="value" fill="#5B4CDB" radius={[4, 4, 0, 0]}>
+                          <LabelList dataKey="name" position="top" style={{ fill: '#000000', fontSize: '12px' }} />
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
 
-                {/* Inline Engagement & After Hours (no card borders) */}
+                  {/* Engagement & After Hours stacked */}
+                  <Row gutter={8}>
+                    <Col span={12}>
+                      <StatCard
+                        title="Engagement"
+                        value={displayValue(engagement_rate, true)}
+                        change={percentage_changes?.pc_engagement_rate}
+                        changeType="percentage"
+                        bare
+                        isMobile={isMobile}
+                      />
+                    </Col>
+                    <Col span={12}>
+                      <StatCard
+                        title="After hours"
+                        value={displayValue(calculateAfterHoursBookings())}
+                        change={percentage_changes?.pc_booking_time_distribution}
+                        changeType="percentage"
+                        bare
+                        isMobile={isMobile}
+                      />
+                    </Col>
+                  </Row>
+                </>
+              ) : (
+                // Desktop: Side by side
                 <div style={{
                   display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'space-between',
-                  height: '100%',
-                  minWidth: '218px'
+                  flexDirection: 'row',
+                  flexWrap: 'nowrap',
+                  alignItems: 'flex-start',
+                  height: '220px',
                 }}>
-                  <div style={{ width: '218px', height: '80px' }}>
-                    <StatCard
-                      title="Engagement"
-                      value={displayValue(engagement_rate, true)}
-                      change={percentage_changes?.pc_engagement_rate}
-                      changeType="percentage"
-                      bare
-                    />
+                  {/* Bar Chart */}
+                  <div style={{ flex: 1 }}>
+                    <ResponsiveContainer width="100%" height={220}>
+                      <BarChart data={communicationFlowData} margin={{ top: 20, right: 30, left: 20, bottom: 0 }}>
+                        <Bar dataKey="value" fill="#5B4CDB" radius={[4, 4, 0, 0]}>
+                          <LabelList dataKey="name" position="top" style={{ fill: '#000000', fontSize: '14px' }} />
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
                   </div>
-                  <div style={{ width: '218px', height: '80px' }}>
-                    <StatCard
-                      title="Bookings made after hours"
-                      value={displayValue(calculateAfterHoursBookings())}
-                      change={percentage_changes?.pc_booking_time_distribution}
-                      changeType="percentage"
-                      bare
-                    />
+
+                  {/* Inline Engagement & After Hours (no card borders) */}
+                  <div style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    height: '100%',
+                    minWidth: '240px',
+                    marginLeft: '16px'
+                  }}>
+                    <div style={{ width: '100%', marginBottom: '20px' }}>
+                      <StatCard
+                        title="Engagement"
+                        value={displayValue(engagement_rate, true)}
+                        change={percentage_changes?.pc_engagement_rate}
+                        changeType="percentage"
+                        bare
+                        isMobile={false}
+                      />
+                    </div>
+                    <div style={{ width: '100%' }}>
+                      <StatCard
+                        title="Bookings made after hours"
+                        value={displayValue(calculateAfterHoursBookings())}
+                        change={percentage_changes?.pc_booking_time_distribution}
+                        changeType="percentage"
+                        bare
+                        isMobile={false}
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
             </Card>
           </Col>
 
           {/* RIGHT COLUMN */}
-          <Col xs={24} md={5} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-            <StatCard
-              title="Booking rate"
-              value={displayValue(booking_rate, true)}
-              change={percentage_changes?.pc_booking_rate}
-              changeType="percentage"
-              style={{ width: 218, height: 80 }}
-            />
-            <StatCard
-              title={<><span style={{ color: "#EF4444" }}>Failed</span> - Message failed</>}
-              value={displayValue(total_patients_failed_message_status)}
-              change={percentage_changes?.pc_failed_messages}
-              changeType="percentage"
-              style={{ width: 218, height: 80 }}
-            />
-            <StatCard
-              title={<><span style={{ color: "#EF4444" }}>Failed</span> - Unengaged</>}
-              value={displayValue(total_patients_read_but_no_response)}
-              change={percentage_changes?.pc_failed_messages}
-              changeType="percentage"
-              style={{ width: 218, height: 80 }}
-            />
+          <Col xs={24} lg={6} style={{ marginTop: isMobile ? 12 : 0 }}>
+            <Row gutter={isMobile ? 8 : 16}>
+              <Col xs={24} sm={8} lg={24}>
+                <StatCard
+                  title="Booking rate"
+                  value={displayValue(booking_rate, true)}
+                  change={percentage_changes?.pc_booking_rate}
+                  changeType="percentage"
+                  style={{ width: '100%', height: isMobile ? 80 : 100, marginBottom: 16 }}
+                  isMobile={isMobile}
+                />
+              </Col>
+              <Col xs={24} sm={8} lg={24}>
+                <StatCard
+                  title={<><span style={{ color: "#EF4444" }}>Failed</span> - Message failed</>}
+                  value={displayValue(total_patients_failed_message_status)}
+                  change={percentage_changes?.pc_failed_messages}
+                  changeType="percentage"
+                  style={{ width: '100%', height: isMobile ? 80 : 100, marginBottom: 16 }}
+                  isMobile={isMobile}
+                />
+              </Col>
+              <Col xs={24} sm={8} lg={24}>
+                <StatCard
+                  title={<><span style={{ color: "#EF4444" }}>Failed</span> - Unengaged</>}
+                  value={displayValue(total_patients_read_but_no_response)}
+                  change={percentage_changes?.pc_failed_messages}
+                  changeType="percentage"
+                  style={{ width: '100%', height: isMobile ? 80 : 100 }}
+                  isMobile={isMobile}
+                />
+              </Col>
+            </Row>
           </Col>
         </Row>
       </Card>
 
-      <Row gutter={16}>
+      <Row gutter={isMobile ? 12 : 16} style={{ marginTop: isMobile ? 12 : 0 }}>
         {/* Appointment Outcomes Pie Chart */}
-        <Col xs={24} sm={24} md={12} lg={12}>
-          <Card title="Appointment Outcomes" style={{ height: 425 }}>
-            <div style={{ display: 'flex', flexDirection: window.innerWidth < 768 ? 'column' : 'row' }}>
-              <ResponsiveContainer height={350}>
+        <Col xs={24} sm={24} md={12} lg={12} style={{ marginBottom: isMobile ? 12 : 0 }}>
+          <Card title="Appointment Outcomes" style={{ height: isMobile ? 'auto' : 425 }}>
+            <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row' }}>
+              <ResponsiveContainer height={isMobile ? 300 : 350}>
                 <PieChart>
                   <Pie
                     data={appointmentOutcomes}
                     cx="50%"
                     cy="50%"
                     dataKey="value"
-                    label={({ name, value }) => value > 0 ? `${name}: ${value}` : ''}
+                    label={({ name, value }) => value > 0 ? (isMobile ? `${value}` : `${name}: ${value}`) : ''}
                     labelLine={{ stroke: '#666', strokeWidth: 1 }}
                     labelPosition="outside"
-                    style={{ fontWeight: 'bold' }}
+                    style={{ fontWeight: 'bold', fontSize: isMobile ? '12px' : '14px' }}
                   >
                     {appointmentOutcomes.map((_entry, index) => <Cell key={`cell-${index}`} fill={pieChartColors[index]} />)}
                   </Pie>
                 </PieChart>
               </ResponsiveContainer>
               <div style={{
-                width: window.innerWidth < 768 ? '100%' : '120px',
+                width: isMobile ? '100%' : '120px',
                 display: 'flex',
-                flexDirection: window.innerWidth < 768 ? 'row' : 'column',
+                flexDirection: isMobile ? 'row' : 'column',
                 flexWrap: 'wrap',
-                justifyContent: window.innerWidth < 768 ? 'center' : 'center',
-                gap: window.innerWidth < 768 ? '16px' : '12px'
+                justifyContent: isMobile ? 'center' : 'center',
+                gap: isMobile ? '12px' : '12px',
+                marginTop: isMobile ? '12px' : 0
               }}>
                 {appointmentOutcomes.map((item, index) => (
                   <div key={index} style={{ display: 'flex', alignItems: 'center' }}>
                     <div style={{
                       width: '8px',
                       height: '8px',
-                      backgroundColor: item.color,
+                      backgroundColor: pieChartColors[index],
                       borderRadius: '50%',
                       marginRight: '8px',
                       flexShrink: 0
                     }} />
-                    <Text strong>{item.name}</Text>
+                    <Text strong style={{ fontSize: isMobile ? '12px' : '14px' }}>{item.name}</Text>
                   </div>
                 ))}
               </div>
@@ -325,17 +391,20 @@ const ClinicStats = ({ title, previousPeriod }) => {
 
         {/* Intervention & Special Cases */}
         <Col xs={24} sm={24} md={12} lg={12}>
-          <Card title="Intervention & Special Cases" style={{ height: 425 }}>
-            <Row gutter={16}>
+          <Card title="Intervention & Special Cases" style={{ height: isMobile ? 'auto' : 425 }}>
+            <Row gutter={isMobile ? 8 : 16}>
               {interventionData.map((item, index) => {
                 const comparison = compareValues(item.value, item.previousValue);
                 return (
-                  <Col key={index} xs={12} sm={12} md={12} lg={12}>
+                  <Col key={index} xs={12} sm={12} md={12} lg={12} style={{ marginBottom: isMobile ? 8 : 0 }}>
                     <StatCard
                       title={item.title}
                       value={item.value}
                       change={comparison?.value}
-                      changeType={comparison?.type} />
+                      changeType={comparison?.type}
+                      style={{ width: '100%' }}
+                      isMobile={isMobile}
+                    />
                   </Col>
                 );
               })}

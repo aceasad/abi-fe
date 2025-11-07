@@ -69,20 +69,16 @@ export const HeaderNav = (props) => {
         <div className="nav" style={{ width: `calc(100% - ${getNavWidth()})` }}>
           <div className="nav-left">
             <Menu mode="horizontal">
-              {isNavTop && !isMobile ? null : (
+              {isMobile ? (
                 <Menu.Item
                   key="0"
                   onClick={() => {
                     onToggle();
                   }}
                 >
-                  {navCollapsed || isMobile ? (
-                    <MenuUnfoldOutlined className="nav-icon" />
-                  ) : (
-                    <MenuFoldOutlined className="nav-icon" />
-                  )}
+                  <MenuUnfoldOutlined className="nav-icon" />
                 </Menu.Item>
-              )}
+              ) : null}
             </Menu>
           </div>
           <Space className="nav-right">

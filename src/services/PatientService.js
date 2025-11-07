@@ -107,6 +107,26 @@ class PatientService extends ApiService {
       formData.append('campaign_name', payload.campaignName);
     }
 
+    if (payload.isPeriodicUpdate !== undefined) {
+      formData.append('isPeriodicUpdate', payload.isPeriodicUpdate);
+    }
+
+    if (payload.batchSize) {
+      formData.append('batch_size', payload.batchSize);
+    }
+
+    if (payload.startDate) {
+      formData.append('start_date', payload.startDate);
+    }
+
+    if (payload.startTime) {
+      formData.append('start_time', payload.startTime);
+    }
+
+    if (payload.frequency) {
+      formData.append('frequency', payload.frequency);
+    }
+
     return this.apiClient.post(ENDPOINTS.UPLOADPATIENTSCSV, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',

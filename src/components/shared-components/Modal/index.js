@@ -15,7 +15,7 @@ const ModalComponent = ({
         title={title}
         okText={primaryAction}
         cancelText={secondaryAction}
-        visible={visible}
+        open={visible}
         onOk={handlePrimaryAction}
         onCancel={handleSecondaryAction}
       >

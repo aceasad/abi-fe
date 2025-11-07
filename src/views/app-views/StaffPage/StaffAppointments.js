@@ -1,4 +1,5 @@
-import { PageHeader, Typography } from 'antd';
+import { Typography } from 'antd';
+import { PageHeader } from '@ant-design/pro-components';
 import React, { useState, useEffect } from 'react';
 import { useIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';

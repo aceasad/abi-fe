@@ -46,11 +46,6 @@ const ChatContentFooter = ({ onSend }) => {
     );
   }, [chatInfo, isSocketOpen]);
 
-  console.log('isDisabled', isDisabled);
-  console.log('patient.is_rasa_paused', chatInfo?.patient?.is_rasa_paused);
-  console.log('isSocketOpen', isSocketOpen);
-  console.log('chatInfo?.isSendEnabled', chatInfo?.isSendEnabled);
-
   return (
     <div className="chat-content-footer">
       <Form form={form} name="msgInput" onFinish={handleSend} className="w-100">

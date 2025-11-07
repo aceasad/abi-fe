@@ -74,8 +74,8 @@ const MassInviteModal = ({ isModalVisible, closeModal }) => {
       {({ values, dirty, isValid, resetForm, handleSubmit }) => (
         <Modal
           title={formatMessage(messages.massInvitesLabel)}
-          visible={isModalVisible}
-          destroyOnClose
+          open={isModalVisible}
+          destroyOnHidden
           onCancel={() => closeModal()}
           afterClose={resetForm}
           footer={[

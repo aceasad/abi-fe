@@ -39,7 +39,7 @@ import { makeSelectAppointmentStatuses } from 'redux/selectors/Appointment';
 import RowWithMultipleColumns from 'components/util-components/Grid/RowWithMultipleColumns';
 import { getAppointments } from 'redux/actions/Staff';
 import EndAppointment from '../CalendarPage/EndAppointment';
-import moment from 'moment';
+import dayjs from 'utils/dayjs';
 import { removeLeadingZeroFromTime } from 'utils/helpers';
 
 const { Panel } = Collapse;
@@ -115,44 +115,39 @@ const PassedAppointmentsRequiringImmediateStatusUpdate = ({
     </>
   );
 
-  const menu = (row) => {
-    return (
-      <Menu>
-        <Menu.Item
-          key="0"
-          onClick={({ domEvent }) => {
-            domEvent.stopPropagation();
-            setActiveAppointment({
-              id: row.id,
-              type: HISTORY_REQUIRING_IMMEDIATE_STATUS_UPDATE,
-              patientId: row.patient.id,
-            });
-          }}
-        >
-          {formatMessage(overviewPageMessages.tableDropdownSeeAppointment)}
-        </Menu.Item>
-        <Menu.Item
-          key="1"
-          onClick={({ domEvent }) => {
-            domEvent.stopPropagation();
-            goToPatientShowMessages({ id: row.patient.id });
-          }}
-        >
-          {formatMessage(overviewPageMessages.tableDropdownAiReachout)}
-        </Menu.Item>
-        <Menu.Item
-          key="1"
-          onClick={({ domEvent }) => {
-            domEvent.stopPropagation();
-            showUpdateAppointmentStatusWrapper(domEvent, row);
-          }}
-        >
-          {formatMessage(
-            overviewPageMessages.tableDropdownUpdateMessageRequiringImmediateAttentionStatus
-          )}
-        </Menu.Item>
-      </Menu>
-    );
+  const getMenuItems = (row) => {
+    return [
+      {
+        key: "0",
+        label: formatMessage(overviewPageMessages.tableDropdownSeeAppointment),
+        onClick: ({ domEvent }) => {
+          domEvent.stopPropagation();
+          setActiveAppointment({
+            id: row.id,
+            type: HISTORY_REQUIRING_IMMEDIATE_STATUS_UPDATE,
+            patientId: row.patient.id,
+          });
+        },
+      },
+      {
+        key: "1",
+        label: formatMessage(overviewPageMessages.tableDropdownAiReachout),
+        onClick: ({ domEvent }) => {
+          domEvent.stopPropagation();
+          goToPatientShowMessages({ id: row.patient.id });
+        },
+      },
+      {
+        key: "2",
+        label: formatMessage(
+          overviewPageMessages.tableDropdownUpdateMessageRequiringImmediateAttentionStatus
+        ),
+        onClick: ({ domEvent }) => {
+          domEvent.stopPropagation();
+          showUpdateAppointmentStatusWrapper(domEvent, row);
+        },
+      },
+    ];
   };
 
   const tableColumns = [
@@ -173,7 +168,7 @@ const PassedAppointmentsRequiringImmediateStatusUpdate = ({
       sorter: true,
       render: (_, row) => (
         <div className="text-left">
-          {`${row.doctor.full_name}`} 
+          {`${row.doctor.full_name}`}
         </div>
       ),
     },
@@ -189,7 +184,7 @@ const PassedAppointmentsRequiringImmediateStatusUpdate = ({
       render: (_, row) => (
         <div>
           {removeLeadingZeroFromTime(
-            moment(row.time, ['h:mm A']).format('hh:mm A')
+            dayjs(row.time, ['h:mm A']).format('hh:mm A')
           )}
         </div>
       ),
@@ -199,7 +194,7 @@ const PassedAppointmentsRequiringImmediateStatusUpdate = ({
       render: (_, row) => (
         <div className="text-right">
           <Dropdown
-            overlay={() => menu(row)}
+            menu={{ items: getMenuItems(row) }}
             trigger={['click']}
             placement="bottomRight"
           >
@@ -222,17 +217,17 @@ const PassedAppointmentsRequiringImmediateStatusUpdate = ({
       >
         <Appointments.Table
           columns={tableColumns}
-          // onRow={(record) => {
-          //   return {
-          //     onClick: () => {
-          //       setActiveAppointment({
-          //         id: record.id,
-          //         type: HISTORY_REQUIRING_IMMEDIATE_STATUS_UPDATE,
-          //         patientId: record.patient.id,
-          //       });
-          //     },
-          //   };
-          // }}
+        // onRow={(record) => {
+        //   return {
+        //     onClick: () => {
+        //       setActiveAppointment({
+        //         id: record.id,
+        //         type: HISTORY_REQUIRING_IMMEDIATE_STATUS_UPDATE,
+        //         patientId: record.patient.id,
+        //       });
+        //     },
+        //   };
+        // }}
         />
       </Appointments>
       {activeAppointment && (

@@ -126,7 +126,7 @@ const EndAppointment = ({
     >
       {({ values, handleSubmit, isValid }) => (
         <Modal
-          visible
+          open
           title={formatMessage(messages.endAppointment)}
           okText={formatMessage(messages.confirm)}
           cancelText={formatMessage(messages.cancel)}

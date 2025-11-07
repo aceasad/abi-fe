@@ -1,6 +1,5 @@
 import {
   Col,
-  PageHeader,
   Row,
   DatePicker,
   Typography,
@@ -9,7 +8,10 @@ import {
   Layout,
   Button,
   Select,
+  Grid,
+  Space,
 } from 'antd';
+import { PageHeader } from '@ant-design/pro-components';
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
@@ -28,9 +30,11 @@ import overviewService from 'services/OverviewService';
 import {
   SHOW_KPIS,
 } from 'configs/AppConfig';
-import moment from 'moment';
+import dayjs from 'utils/dayjs';
+import utils from 'utils';
 const { RangePicker } = DatePicker;
 const { Option } = Select;
+const { useBreakpoint } = Grid;
 
 const downloadKpiData = async (start_time, end_time, campaign_id) => {
   try {
@@ -46,12 +50,14 @@ const KpisPage = () => {
   const dispatch = useDispatch();
   const campaignsSelector = useSelector(makeSelectCampaigns());
   const { campaigns, loading: campaignsLoading } = campaignsSelector;
+  const screens = utils.getBreakPoint(useBreakpoint());
+  const isMobile = !screens.includes('lg');
 
-  const startDate = moment('2024-05-01');
+  const startDate = dayjs('2024-05-01');
 
   const [dateRange, setDateRange] = useState([
     startDate.clone().startOf('day'),
-    moment().endOf('day')
+    dayjs().endOf('day')
   ]);
 
   const [previousPeriod, setPreviousPeriod] = useState([
@@ -70,8 +76,8 @@ const KpisPage = () => {
     if (dates) {
       setDateRange(dates);
       const startDate = dates[0];
-      const previousStart = moment(startDate).subtract(30, 'days');
-      const previousEnd = moment(startDate).subtract(1, 'days');
+      const previousStart = dayjs(startDate).subtract(30, 'days');
+      const previousEnd = dayjs(startDate).subtract(1, 'days');
       setPreviousPeriod([previousStart, previousEnd]);
     } else {
       setDateRange(null);
@@ -89,21 +95,21 @@ const KpisPage = () => {
         const nextCampaign = campaigns[campaignIndex + 1];
 
         // Set start date to selected campaign's created_at
-        const startDate = moment(selectedCampaignData.created_at);
+        const startDate = dayjs(selectedCampaignData.created_at);
 
         // Set end date to next campaign's created_at or current date if it's the last campaign
         let endDate;
         if (nextCampaign) {
-          endDate = moment(nextCampaign.created_at);
+          endDate = dayjs(nextCampaign.created_at);
         } else {
-          endDate = moment().endOf('day');
+          endDate = dayjs().endOf('day');
         }
 
         setDateRange([startDate, endDate]);
 
         // Update previous period
-        const previousStart = moment(startDate).subtract(30, 'days');
-        const previousEnd = moment(startDate).subtract(1, 'days');
+        const previousStart = dayjs(startDate).subtract(30, 'days');
+        const previousEnd = dayjs(startDate).subtract(1, 'days');
         setPreviousPeriod([previousStart, previousEnd]);
       }
     }
@@ -143,33 +149,33 @@ const KpisPage = () => {
   }, [dispatch, dateRange, selectedCampaign]);
 
   return (
-    <>
-      <PageHeader
-        className="p-0 mb-4"
-        title={
-          <Typography.Title level={2} className="mb-0">
-            {'Key Performance Indicators'}
-          </Typography.Title>
-        }
-      />
+    <div style={{ maxWidth: '100%', overflowX: 'hidden' }}>
+      <div className="mb-4" style={{ paddingTop: isMobile ? 0 : '24px' }}>
+        <Typography.Title level={2} style={{ margin: 0, marginBottom: '16px' }}>
+          Key Performance Indicators
+        </Typography.Title>
+      </div>
+
       <Layout>
         {SHOW_KPIS && (
           <>
-            <Row justify="space-between" align="middle">
-              <Col>
-                <Row gutter={16} align="middle">
-                  <Col>
+            {isMobile ? (
+              // Mobile/Tablet Layout
+              <div style={{ marginBottom: '16px' }}>
+                <Row gutter={[12, 12]}>
+                  <Col xs={24} sm={12}>
                     <RangePicker
                       onChange={handleDateRangeChange}
                       value={dateRange}
                       format="DD/MM/YYYY"
-                      disabledDate={(current) => current && current > moment().endOf('day')}
+                      disabledDate={(current) => current && current > dayjs().endOf('day')}
+                      style={{ width: '100%' }}
                     />
                   </Col>
-                  <Col>
+                  <Col xs={24} sm={12}>
                     <Select
                       placeholder="Select Campaign"
-                      style={{ width: 200 }}
+                      style={{ width: '100%' }}
                       value={selectedCampaign}
                       onChange={handleCampaignChange}
                       loading={campaignsLoading}
@@ -182,27 +188,73 @@ const KpisPage = () => {
                       ))}
                     </Select>
                   </Col>
+                  <Col xs={24} sm={12}>
+                    <Button
+                      type="primary"
+                      icon={<DownloadOutlined />}
+                      onClick={handleDownload}
+                    >
+                      Export Data
+                    </Button>
+                  </Col>
                 </Row>
-              </Col>
-              <Col>
-                <Button
-                  type="primary"
-                  icon={<DownloadOutlined />}
-                  onClick={handleDownload}
-                >
-                  Export Data
-                </Button>
-              </Col>
-            </Row>
-            <Row gutter={48}>
+              </div>
+            ) : (
+              // Desktop/Tablet Layout
+              <Row justify="space-between" align="middle" style={{ marginBottom: '16px' }}>
+                <Col>
+                  <Row gutter={16} align="middle">
+                    <Col>
+                      <RangePicker
+                        onChange={handleDateRangeChange}
+                        value={dateRange}
+                        format="DD/MM/YYYY"
+                        disabledDate={(current) => current && current > dayjs().endOf('day')}
+                      />
+                    </Col>
+                    <Col>
+                      <Select
+                        placeholder="Select Campaign"
+                        style={{ width: 200 }}
+                        value={selectedCampaign}
+                        onChange={handleCampaignChange}
+                        loading={campaignsLoading}
+                        allowClear
+                      >
+                        {campaigns && campaigns.map((campaign) => (
+                          <Option key={campaign.id} value={campaign.id}>
+                            {campaign.campaign_name}
+                          </Option>
+                        ))}
+                      </Select>
+                    </Col>
+                  </Row>
+                </Col>
+                <Col>
+                  <Button
+                    type="primary"
+                    icon={<DownloadOutlined />}
+                    onClick={handleDownload}
+                  >
+                    Export Data
+                  </Button>
+                </Col>
+              </Row>
+            )}
+
+            <Row gutter={isMobile ? 12 : 48}>
               <Col span={24} className="mt-4">
-                <ClinicStats title={formatMessage(messages.bookingTitle)} previousPeriod={previousPeriod} />
+                <ClinicStats
+                  title={formatMessage(messages.bookingTitle)}
+                  previousPeriod={previousPeriod}
+                  isMobile={isMobile}
+                />
               </Col>
             </Row>
           </>
         )}
       </Layout>
-    </>
+    </div>
   );
 };
 

@@ -1,4 +1,5 @@
-import { Button, PageHeader, Space, Typography, Grid, Modal, Row, Col } from 'antd';
+import { Button, Grid, Typography, Space } from 'antd';
+import { PageHeader } from '@ant-design/pro-components';
 import React, { useState } from 'react';
 import CalendarPage from '../CalendarPage';
 import { useIntl } from 'react-intl';
@@ -31,10 +32,8 @@ const AppointmentsPage = () => {
   }
 
   const StartSyncProcess = () => {
-    console.log("Sync Process initiated from ASA Clinic dashboard!")
     mutate(undefined, {
       onSuccess: (data) => {
-        console.log("Sync API Response:", data);
         setPASIsModalVisible(false);
       },
       onError: (error) => {
@@ -85,8 +84,8 @@ const AppointmentsPage = () => {
       {isPASModalVisible && (
         <Modal
           title={"Pas Sync Process"}
-          visible
-          destroyOnClose
+          open
+          destroyOnHidden
           closable={true}
           onCancel={closePasModel}
           width={400}

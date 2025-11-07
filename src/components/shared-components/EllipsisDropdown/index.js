@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 const EllipsisDropdown = (props) => {
   return (
     <Dropdown
-      overlay={props.menu}
+      menu={props.menu}
       placement={props.placement}
       trigger={['click']}
       onClick={(e) => e.stopPropagation()}
@@ -26,7 +26,7 @@ EllipsisDropdown.propTypes = {
 EllipsisDropdown.defaultProps = {
   trigger: 'click',
   placement: 'bottomRight',
-  menu: <Menu />,
+  menu: { items: [] },
 };
 
 export default EllipsisDropdown;

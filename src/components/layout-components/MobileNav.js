@@ -17,10 +17,18 @@ export const MobileNav = ({
   hideGroupTitle,
   localization = true,
 }) => {
-  const props = { sideNavTheme, routeInfo, hideGroupTitle, localization };
-
   const onClose = () => {
     onMobileNavToggle(false);
+  };
+
+  const props = {
+    sideNavTheme,
+    routeInfo,
+    hideGroupTitle,
+    localization,
+    isMobile: true, // Explicitly set isMobile to true for mobile drawer
+    onMobileNavToggle, // Pass the toggle function
+    closeMobileDrawer: onClose, // Pass the close function directly
   };
 
   return (
@@ -28,8 +36,8 @@ export const MobileNav = ({
       placement="left"
       closable={false}
       onClose={onClose}
-      visible={mobileNav}
-      bodyStyle={{ padding: 5 }}
+      open={mobileNav}
+      styles={{ body: { padding: 5 } }}
     >
       <Flex flexDirection="column" className="h-100">
         <Flex justifyContent="between" alignItems="center">

@@ -49,6 +49,8 @@ const ChatMenu = (props) => {
   const currentChatID = parseInt(location.pathname.match(/\/([^/]+)\/?$/)[1]);
   const [query, setQuery] = useState('');
   const debouncedSearch = useDebounce(query, 500);
+  const trimmedQuery = query.trim();
+  const isSearching = trimmedQuery.length > 0;
 
   const nextRef = useRef(null);
   const menuRef = useRef(null);
@@ -132,8 +134,8 @@ const ChatMenu = (props) => {
   useEffect(() => {
     // this will trigger search when query changes
     if (query === debouncedSearch) {
-      if (query.trim()) {
-        dispatch(searchConversations({ query: query.trim(), filter }));
+      if (trimmedQuery) {
+        dispatch(searchConversations({ query: trimmedQuery, filter }));
       } else {
         // If query is empty, load all conversations
         dispatch(getAllChatsInfo(filter));
@@ -144,8 +146,8 @@ const ChatMenu = (props) => {
   useEffect(() => {
     // this will trigger triggered data load
     if (props.triggerSearchConversations) {
-      if (query.trim()) {
-        dispatch(searchConversations({ query: query.trim(), filter }));
+      if (trimmedQuery) {
+        dispatch(searchConversations({ query: trimmedQuery, filter }));
       } else {
         dispatch(getAllChatsInfo(filter));
       }
@@ -158,20 +160,29 @@ const ChatMenu = (props) => {
   }, [next]);
 
   const handleGetMoreChatsInfo = useCallback(
-    () => dispatch(getMoreChatsInfo()),
-    [dispatch]
+    () => {
+      if (isSearching) {
+        return;
+      }
+      dispatch(getMoreChatsInfo({ filter }));
+    },
+    [dispatch, filter, isSearching]
   );
 
   useLazyLoad(
     '#chat-menu-scroll div',
     handleGetMoreChatsInfo,
-    [loading],
-    () => !!nextRef.current
+    [loading, isSearching],
+    () => !!nextRef.current && !isSearching
   );
 
   const openChat = (id) => {
     dispatch(setConversationToRead(id));
     history.push(`${match.url}/${id}`);
+    // Close mobile drawer if the function is provided
+    if (props.closeMobileDrawer) {
+      props.closeMobileDrawer();
+    }
   };
 
   const searchOnChange = (e) => {
@@ -196,7 +207,9 @@ const ChatMenu = (props) => {
     if (scrollDown) {
       stopScroll();
     }
-    scrollHeightRef.current = menuRef.current.getScrollHeight();
+    if (menuRef.current) {
+      scrollHeightRef.current = menuRef.current.getScrollHeight();
+    }
   }, [items]);
 
 
@@ -227,6 +240,8 @@ const ChatMenu = (props) => {
         <Scrollbars id="chat-menu-scroll" ref={menuRef} autoHide={false}>
           {items.map((item, index) => {
             const statusColor = getStatusColor(item.patient.conversation_status);
+            const lastMessageText = item.last_message?.text || '';
+            const lastMessageCreatedAt = item.last_message?.created_at;
 
             return (
               <div
@@ -281,16 +296,15 @@ const ChatMenu = (props) => {
                   <div
                     className="text-muted"
                     style={{
-                      fontSize: '13px',
+                      fontSize: '14px',
                       whiteSpace: 'nowrap',
                       overflow: 'hidden',
                       textOverflow: 'ellipsis'
                     }}
                   >
                     {(() => {
-                      const text = item.last_message.text || "";
-                      const words = text.split(" ");
-                      return words.slice(0, 8).join(" ");
+                      const words = lastMessageText.split(' ');
+                      return words.slice(0, 8).join(' ');
                     })()}
                   </div>
                 </div>
@@ -303,8 +317,8 @@ const ChatMenu = (props) => {
                   fontSize: '12px',
                   color: '#888'
                 }}>
-                  {item.last_message.created_at ?
-                    new Date(item.last_message.created_at)
+                  {lastMessageCreatedAt ?
+                    new Date(lastMessageCreatedAt)
                       .toLocaleDateString('en-GB', {
                         day: '2-digit',
                         month: '2-digit',

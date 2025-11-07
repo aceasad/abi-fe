@@ -1,4 +1,4 @@
-import produce from 'immer';
+import { produce } from 'immer';
 import {
   SET_ANEMNESIS_LOADING,
   SET_MEDICAL_CONDITIONS,

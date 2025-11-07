@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Calendar, Card, Row, Col, Typography, Badge } from 'antd';
-import moment from 'moment';
+import dayjs from 'dayjs'
 import {
-  DATE_FORMAT_DD_MMM_YYYY,
   DATE_FORMAT_LONG_DATE,
   DATE_FORMAT_YYYY_MM_DD,
 } from 'constants/DateConstant';
@@ -26,7 +25,7 @@ const CalendarPage = () => {
   );
 
   const [selectedDate, setSelectedDate] = useState(
-    moment(new Date(), DATE_FORMAT_DD_MMM_YYYY)
+    () => dayjs(new Date())
   );
 
   const onPanelChange = (value) => {
@@ -99,7 +98,7 @@ const CalendarPage = () => {
             onSelect={onSelect}
             value={selectedDate}
             className="abi-calendar"
-            dateCellRender={dateCellRender}
+            cellRender={dateCellRender}
             headerRender={CalendarHeader}
           />
         </Col>

@@ -15,7 +15,7 @@ import { useIntl } from 'react-intl';
 import messages from './messages';
 import { DeleteFilled, CloseOutlined } from '@ant-design/icons';
 import Scrollbars from 'react-custom-scrollbars';
-import moment from 'moment';
+import dayjs from 'utils/dayjs';
 import { useGetOperationTypes } from 'queries/shared';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -86,8 +86,8 @@ const PatientFormPreviousOperationss = ({
           (operation) => operation.id === item.id
         )
           ? prev.changedOperations.map((operation) =>
-              operation.id === item.id ? item : operation
-            )
+            operation.id === item.id ? item : operation
+          )
           : [...prev.changedOperations, item],
       }));
     }
@@ -177,47 +177,47 @@ const PatientFormPreviousOperationss = ({
       item.hidden
         ? acc
         : [
-            ...acc,
-            <div
-              key={item.id === 0 ? item.key : item.id}
-              className="list-with-delete-item list-with-delete-item-small"
-            >
-              <Row gutter={16}>
-                <Col span={16} className="d-flex align-items-center">
-                  <Typography.Text>{item.operation_type}</Typography.Text>
-                </Col>
-                <Col span={6}>
-                  <DatePicker
-                    size="small"
-                    picker="year"
-                    disabledDate={(current) => current.valueOf() > Date.now()}
-                    allowClear={false}
-                    defaultValue={moment(item.year, YEAR_FORMAT_YYYY)}
-                    format={YEAR_FORMAT_YYYY}
-                    onChange={(_, year) => changeOperation({ ...item, year })}
-                  />
-                </Col>
-                <Col
-                  span={2}
-                  className="d-flex align-items-center justify-content-end"
-                >
-                  <CloseOutlined
-                    onClick={() => deleteOperation(item)}
-                    className="list-with-delete-icon cursor-pointer mr-2"
-                  />
+          ...acc,
+          <div
+            key={item.id === 0 ? item.key : item.id}
+            className="list-with-delete-item list-with-delete-item-small"
+          >
+            <Row gutter={16}>
+              <Col span={16} className="d-flex align-items-center">
+                <Typography.Text>{item.operation_type}</Typography.Text>
+              </Col>
+              <Col span={6}>
+                <DatePicker
+                  size="small"
+                  picker="year"
+                  disabledDate={(current) => current.valueOf() > Date.now()}
+                  allowClear={false}
+                  defaultValue={dayjs(item.year, YEAR_FORMAT_YYYY)}
+                  format={YEAR_FORMAT_YYYY}
+                  onChange={(_, year) => changeOperation({ ...item, year })}
+                />
+              </Col>
+              <Col
+                span={2}
+                className="d-flex align-items-center justify-content-end"
+              >
+                <CloseOutlined
+                  onClick={() => deleteOperation(item)}
+                  className="list-with-delete-icon cursor-pointer mr-2"
+                />
 
-                  {isOrganizationOwner && (
-                    <DeleteFilled
-                      onClick={() =>
-                        deleteOperationType({ item, action: deleteOperation })
-                      }
-                      className="list-with-delete-icon cursor-pointer"
-                    />
-                  )}
-                </Col>
-              </Row>
-            </div>,
-          ],
+                {isOrganizationOwner && (
+                  <DeleteFilled
+                    onClick={() =>
+                      deleteOperationType({ item, action: deleteOperation })
+                    }
+                    className="list-with-delete-icon cursor-pointer"
+                  />
+                )}
+              </Col>
+            </Row>
+          </div>,
+        ],
     []
   );
 

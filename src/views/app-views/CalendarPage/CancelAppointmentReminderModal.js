@@ -44,7 +44,7 @@ const CancelAppointmentReminderModal = ({
 
   return (
     <Modal
-      visible
+      open
       cancelText={formatMessage(messages.cancel)}
       okText={formatMessage(messages.confirm)}
       title={formatMessage(messages.deleteAppointment)}

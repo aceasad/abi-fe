@@ -2,64 +2,41 @@ import React from 'react';
 import { Row, Col, Select } from 'antd';
 
 const CalendarHeader = ({ value, onChange }) => {
-  const start = 0;
-  const end = 12;
-  const monthOptions = [];
-
-  const current = value.clone();
-  const localeData = value.localeData();
-  const months = [];
-  for (let i = 0; i < 12; i++) {
-    current.month(i);
-    months.push(localeData.monthsShort(current));
-  }
-
-  for (let index = start; index < end; index++) {
-    monthOptions.push(
-      <Select.Option className="month-item" key={`${index}`}>
-        {months[index]}
-      </Select.Option>
-    );
-  }
+  const year = value.year();
   const month = value.month();
 
-  const year = value.year();
-  const options = [];
+  const months = value.localeData().monthsShort();
 
-  for (let i = year - 10; i < year + 10; i += 1) {
-    options.push(
-      <Select.Option key={i} value={i} className="year-item">
-        {i}
-      </Select.Option>
-    );
-  }
+  const years = Array.from({ length: 20 }, (_, i) => year - 10 + i);
 
   return (
-    <Row type="flex" justify="start">
+    <Row justify="start" gutter={8}>
       <Col>
         <Select
-          dropdownMatchSelectWidth={false}
+          popupMatchSelectWidth={false}
           className="my-year-select"
-          onChange={(newYear) => {
-            const now = value.clone().year(newYear);
-            onChange(now);
-          }}
-          value={String(year)}
+          value={year}
+          onChange={(newYear) => onChange(value.clone().year(newYear))}
         >
-          {options}
+          {years.map((y) => (
+            <Select.Option key={y} value={y} className="year-item">
+              {y}
+            </Select.Option>
+          ))}
         </Select>
       </Col>
-      <Col className="ml-3">
+
+      <Col>
         <Select
-          dropdownMatchSelectWidth={false}
-          value={String(month)}
-          onChange={(selectedMonth) => {
-            const newValue = value.clone();
-            newValue.month(parseInt(selectedMonth, 10));
-            onChange(newValue);
-          }}
+          popupMatchSelectWidth={false}
+          value={month}
+          onChange={(m) => onChange(value.clone().month(m))}
         >
-          {monthOptions}
+          {months.map((label, i) => (
+            <Select.Option key={i} value={i} className="month-item">
+              {label}
+            </Select.Option>
+          ))}
         </Select>
       </Col>
     </Row>

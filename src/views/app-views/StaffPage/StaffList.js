@@ -11,7 +11,9 @@ import { makeSelectStaff, makeSelectPagination } from 'redux/selectors/Staff';
 import Loading from 'components/shared-components/Loading';
 import Modal from 'components/shared-components/Modal';
 import { deleteStaff } from 'redux/actions/Staff';
-import { message, List, Button, PageHeader, Typography, Grid } from 'antd';
+import { message, List, Button, Typography, Grid, Row, Col, Card, Space, Dropdown, Avatar } from 'antd';
+import { PageHeader } from '@ant-design/pro-components';
+import { UserOutlined, EyeOutlined, MoreOutlined } from '@ant-design/icons';
 import utils from 'utils';
 
 const { useBreakpoint } = Grid;
@@ -70,97 +72,222 @@ const StaffList = ({ showCreate, editUser, seeAppointments }) => {
     return '';
   };
 
+  // Mobile Card Component (matching other pages style)
+  const StaffCard = ({ staffItem }) => {
+    const menuItems = [
+      {
+        key: OPTION_KEYS.EDIT,
+        label: 'Edit',
+      },
+      {
+        key: OPTION_KEYS.DELETE,
+        label: 'Delete',
+        danger: true,
+      },
+    ];
+
+    return (
+      <Card
+        hoverable
+        onClick={() => seeAppointments(staffItem.id)}
+        styles={{ body: { padding: '16px' } }}
+        style={{ height: '100%', borderRadius: '8px' }}
+      >
+        <Space direction="vertical" size="small" style={{ width: '100%' }}>
+          <Space style={{ width: '100%', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+            <Space align="start">
+              <Avatar
+                src={staffItem.profile_picture}
+                icon={!staffItem.profile_picture && <UserOutlined />}
+                size="large"
+              />
+              <div>
+                <Typography.Text strong style={{ fontSize: '16px', display: 'block' }}>
+                  {staffItem.first_name + ' ' + staffItem.last_name}
+                </Typography.Text>
+                {!isPasIntegrated && staffItem.seniority && staffItem.specialization && (
+                  <Typography.Text type="secondary" style={{ fontSize: '13px', display: 'block', marginTop: '4px' }}>
+                    {staffItem.seniority} {staffItem.specialization}
+                  </Typography.Text>
+                )}
+              </div>
+            </Space>
+            <Dropdown
+              menu={{
+                items: menuItems,
+                onClick: ({ key }) => {
+                  const event = new Event('click');
+                  event.stopPropagation();
+                  handleOptionClick(staffItem.id, key);
+                }
+              }}
+              trigger={['click']}
+              placement="bottomRight"
+            >
+              <Button
+                type="text"
+                icon={<MoreOutlined />}
+                size="small"
+                onClick={(e) => e.stopPropagation()}
+              />
+            </Dropdown>
+          </Space>
+
+          <Button
+            type="primary"
+            icon={<EyeOutlined />}
+            size="small"
+            style={{ marginTop: '8px' }}
+            onClick={(e) => {
+              e.stopPropagation();
+              seeAppointments(staffItem.id);
+            }}
+          >
+            View Appointments
+          </Button>
+        </Space>
+      </Card>
+    );
+  };
+
   return (
-    <>
-      <PageHeader
-        className="p-0 mb-4"
-        title={
-          isMobile ? (
-            <Typography.Title level={2} className="mb-0">
-              {formatMessage(messages.staff)}
-            </Typography.Title>
-          ) : null
-        }
-        extra={[
-          <Button type="primary" onClick={showCreate}>
-            {formatMessage(messages.addNewStaff)}
-          </Button>,
-        ]}
-      />
+    <div style={{ maxWidth: '100%', overflowX: 'hidden' }}>
+      {isMobile ? (
+        // Mobile Layout
+        <div className="mb-4">
+          <Row gutter={16} align="middle" style={{ marginBottom: '16px' }}>
+            <Col flex="auto">
+              <Typography.Title level={2} style={{ fontSize: '20px', margin: 0 }}>
+                {formatMessage(messages.staff)}
+              </Typography.Title>
+            </Col>
+            <Col>
+              <Button
+                type="primary"
+                onClick={showCreate}
+              >
+                Add Staff
+              </Button>
+            </Col>
+          </Row>
+        </div>
+      ) : (
+        // Desktop/Tablet Layout
+        <div className="mb-4" style={{ paddingTop: '24px' }}>
+          <Row gutter={16} align="middle" style={{ marginBottom: '16px' }}>
+            <Col flex="auto">
+              <Typography.Title level={2} style={{ margin: 0 }}>
+                {formatMessage(messages.staff)}
+              </Typography.Title>
+            </Col>
+            <Col>
+              <Button type="primary" onClick={showCreate}>
+                {formatMessage(messages.addNewStaff)}
+              </Button>
+            </Col>
+          </Row>
+        </div>
+      )}
 
       {loading ? (
         <Loading defaultSpinner cover="content" />
       ) : (
         <>
-          <List
-            className="staff-list"
-            grid={{
-              gutter: 8,
-              xs: 1,
-              sm: 2,
-              md: 3,
-              lg: 3,
-              xl: 4,
-              xxl: 5,
-            }}
-            dataSource={staff.map((st) => ({ ...st, key: st.id || st.key }))}
-            renderItem={(staffItem) => (
-              <List.Item key={staffItem.id}>
-                {isPasIntegrated ? (
-                <CardComponent
-                  key={staffItem.id}
-                  title={staffItem.first_name + ' ' + staffItem.last_name}
-                  description={''}
-                  avatar={staffItem.profile_picture}
-                  action={formatMessage(messages.seeAppointments)}
-                  Options={() => (
-                    <StaffCardOptions
-                      handleMenuClick={({ key }) =>
-                        handleOptionClick(staffItem.id, key)
-                      }
-                    />
-                  )}
-                  handleClick={() => seeAppointments(staffItem.id)}
-                />):( <CardComponent
-                  key={staffItem.id}
-                  title={staffItem.first_name + ' ' + staffItem.last_name}
-                  description={
-                staffItem.seniority + ' ' + staffItem.specialization
-                  }
-                  avatar={staffItem.profile_picture}
-                  action={formatMessage(messages.seeAppointments)}
-                  Options={() => (
-                    <StaffCardOptions
-                      handleMenuClick={({ key }) =>
-                        handleOptionClick(staffItem.id, key)
-                      }
-                    />
-                  )}
-                  handleClick={() => seeAppointments(staffItem.id)}
-                />)}
-               
-              </List.Item>
-            )}
-          />
-          <PaginationComponent
-            page={page}
-            count={count}
-            handlePageChange={(page) => dispatch(setStaffPage(page))}
-          />
-          <Modal
-            title={formatMessage(messages.deleteTitle)}
-            description={formatMessage(messages.deleteDescription, {
-              label: getStaffFirstAndLastName(),
-            })}
-            primaryAction={formatMessage(messages.delete)}
-            secondaryAction={formatMessage(messages.cancel)}
-            visible={staffForDelete}
-            handlePrimaryAction={handleDelete}
-            handleSecondaryAction={() => setStaffForDelete(null)}
-          />
+          {isMobile ? (
+            // Mobile/Tablet Card View
+            <>
+              <Row gutter={[12, 12]}>
+                {staff.map((staffItem) => (
+                  <Col xs={24} sm={12} key={staffItem.id}>
+                    <StaffCard staffItem={staffItem} />
+                  </Col>
+                ))}
+              </Row>
+              <div style={{ marginTop: '16px' }}>
+                <PaginationComponent
+                  page={page}
+                  count={count}
+                  handlePageChange={(page) => dispatch(setStaffPage(page))}
+                />
+              </div>
+            </>
+          ) : (
+            // Desktop Grid View (Original Style)
+            <>
+              <List
+                className="staff-list"
+                grid={{
+                  gutter: 16,
+                  xs: 1,
+                  sm: 2,
+                  md: 3,
+                  lg: 3,
+                  xl: 4,
+                  xxl: 5,
+                }}
+                dataSource={staff.map((st) => ({ ...st, key: st.id || st.key }))}
+                renderItem={(staffItem) => (
+                  <List.Item key={staffItem.id}>
+                    {isPasIntegrated ? (
+                      <CardComponent
+                        key={staffItem.id}
+                        title={staffItem.first_name + ' ' + staffItem.last_name}
+                        description={''}
+                        avatar={staffItem.profile_picture}
+                        action={formatMessage(messages.seeAppointments)}
+                        Options={() => (
+                          <StaffCardOptions
+                            handleMenuClick={({ key }) =>
+                              handleOptionClick(staffItem.id, key)
+                            }
+                          />
+                        )}
+                        handleClick={() => seeAppointments(staffItem.id)}
+                      />
+                    ) : (
+                      <CardComponent
+                        key={staffItem.id}
+                        title={staffItem.first_name + ' ' + staffItem.last_name}
+                        description={
+                          staffItem.seniority + ' ' + staffItem.specialization
+                        }
+                        avatar={staffItem.profile_picture}
+                        action={formatMessage(messages.seeAppointments)}
+                        Options={() => (
+                          <StaffCardOptions
+                            handleMenuClick={({ key }) =>
+                              handleOptionClick(staffItem.id, key)
+                            }
+                          />
+                        )}
+                        handleClick={() => seeAppointments(staffItem.id)}
+                      />
+                    )}
+                  </List.Item>
+                )}
+              />
+              <PaginationComponent
+                page={page}
+                count={count}
+                handlePageChange={(page) => dispatch(setStaffPage(page))}
+              />
+            </>
+          )}
         </>
       )}
-    </>
+
+      <Modal
+        title={formatMessage(messages.deleteTitle)}
+        description={formatMessage(messages.deleteDescription, {
+          label: getStaffFirstAndLastName(),
+        })}
+        primaryAction={formatMessage(messages.delete)}
+        secondaryAction={formatMessage(messages.cancel)}
+        open={staffForDelete}
+        handlePrimaryAction={handleDelete}
+        handleSecondaryAction={() => setStaffForDelete(null)}
+      />
+    </div>
   );
 };
 

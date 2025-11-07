@@ -104,7 +104,7 @@ const OverviewTable = () => {
       key: 'action',
       render: () => (
         <div className="text-right">
-          <Dropdown overlay={menu} trigger={['click']} placement="bottomRight">
+          <Dropdown menu={{ items: menuItems }} trigger={['click']} placement="bottomRight">
             <Button type="primary" ghost>
               {formatMessage(messages.tableDropdownTitleContact)}
               <DownOutlined />
@@ -115,23 +115,23 @@ const OverviewTable = () => {
     },
   ];
 
-  const menu = (
-    <Menu>
-      <Menu.Item key="0">
-        {formatMessage(messages.tableDropdownSeeAppointment)}
-      </Menu.Item>
-      <Menu.Item key="1">
-        {formatMessage(messages.tableDropdownAiReachout)}
-      </Menu.Item>
-    </Menu>
-  );
+  const menuItems = [
+    {
+      key: "0",
+      label: formatMessage(messages.tableDropdownSeeAppointment),
+    },
+    {
+      key: "1",
+      label: formatMessage(messages.tableDropdownAiReachout),
+    },
+  ];
 
   return (
     <>
-      <Typography.Title level={2} className="mb-4">
+      <Typography.Title level={2} className="mb-2">
         {formatMessage(messages.tableTitle)}
       </Typography.Title>
-      <Card>
+      <Card className="mt-0">
         <Table columns={columns} dataSource={dummyData} />
       </Card>
     </>

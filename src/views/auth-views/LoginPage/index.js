@@ -17,7 +17,7 @@ const LoginPage = (props) => {
     fetch('https://api.ipify.org?format=json')
       .then(response => response.json())
       .then(data => setIPAddress(data.ip))
-      .catch(error => console.log(error))
+      .catch(error => console.error(error))
   }, [])
 
   useEffect(() => {
@@ -37,7 +37,7 @@ const LoginPage = (props) => {
   }
   return (
     <>
-    
+
       <AuthFormWrapper title={formatMessage(messages.loginTitle)}>
         <LoginForm {...props} />
         <div style={{ textAlign: 'center' }}>

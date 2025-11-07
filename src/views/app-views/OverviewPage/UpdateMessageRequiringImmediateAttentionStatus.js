@@ -50,6 +50,12 @@ const UpdateMessageRequiringImmediateAttentionStatus = ({
 
   const loading = useSelector(makeSelectSingleAppointmentLoading());
 
+  useEffect(() => {
+    if (messageRequiringImmediateAttentionStatuses.length === 0) {
+      dispatch(getMessageRequiringImmediateAttentionStatuses());
+    }
+  }, []);
+
   const afterMessageRequiringImmediateAttentionStatusUpdate = () => {
     message.success(
       formatMessage(
@@ -61,7 +67,9 @@ const UpdateMessageRequiringImmediateAttentionStatus = ({
       updateMessageRequiringImmediateAttentionStatusFrom ===
       FROM_OVERVIEW_APPOINTMENTS
     ) {
-      // console.log("from overview appointment")
+      // Force refresh the status data after update
+      dispatch(getMessageRequiringImmediateAttentionStatuses({ force: true }));
+      // Also refresh the messages table
       var payload = { id: null, field: 'messages_requiring_immediate_attention' }
       dispatch(
         getMessagesRequiringImmediateAttention(payload)
@@ -99,7 +107,7 @@ const UpdateMessageRequiringImmediateAttentionStatus = ({
     <Formik initialValues={initialState} onSubmit={handleSubmit}>
       {({ values, handleSubmit, isValid }) => (
         <Modal
-          visible
+          open
           title={formatMessage(
             messages.modalTitleUpdateMessageRequiringImmediateAttentionStatus
           )}
