@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import { makeSelectSinglePreAppointmentQuestionnaire } from 'redux/selectors/Appointment';
 import { Space } from 'antd';
 import Flex from 'components/shared-components/Flex';
-import { formatMessage } from '@formatjs/intl';
+//import { formatMessage } from '@formatjs/intl';
 import messages from './messages';
 import { useIntl } from 'react-intl';
 import { getSafe } from 'utils/helpers';
