@@ -24,8 +24,9 @@ const UploaderPatient = ({ onUploadComplete }) => {
 
   const frequencyOptions = [
     { label: 'Weekly', value: 'weekly' },
-    { label: 'Biweekly', value: 'biweekly' },
+    { label: 'Every two weeks', value: 'biweekly' },
     { label: 'Monthly', value: 'monthly' },
+    { label: 'Daily', value: 'daily' }
   ];
 
   const handlePeriodicToggle = (checked) => {
@@ -154,17 +155,33 @@ const UploaderPatient = ({ onUploadComplete }) => {
         return;
       }
 
-      // Validate start date: must be in the future (not today or past)
-      const today = new Date();
-      today.setHours(0, 0, 0, 0); // Set to start of today for comparison
+      // Validate start date and time: must be in the future
+      const now = new Date();
       const selectedDate = new Date(startDate);
       selectedDate.setHours(0, 0, 0, 0);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
 
+      // All frequencies require a future date (not today or past)
       if (selectedDate <= today) {
         const errorMsg = 'Start date must be a future date. It cannot be today or a date in the past.';
         setValidationError(errorMsg);
         message.error(errorMsg);
         return;
+      }
+
+      // Validate that the combined date and time is in the future
+      if (startDate && startTime) {
+        const [hours, minutes] = startTime.split(':').map(Number);
+        const selectedDateTime = new Date(startDate);
+        selectedDateTime.setHours(hours, minutes, 0, 0);
+
+        if (selectedDateTime <= now) {
+          const errorMsg = 'Start date and time must be in the future. Please select a time that has not yet passed.';
+          setValidationError(errorMsg);
+          message.error(errorMsg);
+          return;
+        }
       }
     }
 
@@ -174,13 +191,42 @@ const UploaderPatient = ({ onUploadComplete }) => {
     setConfirmLoading(true);
 
     try {
+      // Convert date and time to UTC if periodic update is enabled
+      let utcStartDate = undefined;
+      let utcStartTime = undefined;
+
+      if (isPeriodicUpdate && startDate && startTime) {
+        // Capture client timezone
+        const clientTimezoneOffset = new Date().getTimezoneOffset(); // Offset in minutes
+        const clientTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+        // Log client timezone information
+        console.log('Client Timezone:', clientTimezone);
+        console.log('Client Timezone Offset (minutes):', clientTimezoneOffset);
+
+        // Combine local date and time into a date string
+        const [hours, minutes] = startTime.split(':').map(Number);
+        const localDateTimeString = `${startDate}T${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:00`;
+
+        // Create Date object - JavaScript interprets this in local timezone
+        const localDateTime = new Date(localDateTimeString);
+
+        // Convert to UTC - toISOString() automatically converts to UTC
+        const utcDateTimeString = localDateTime.toISOString();
+
+        // Extract UTC date and time components
+        utcStartDate = utcDateTimeString.split('T')[0];
+        const utcTimePart = utcDateTimeString.split('T')[1];
+        utcStartTime = utcTimePart.substring(0, 5); // Extract HH:MM from HH:MM:SS.sssZ
+      }
+
       await createPatient({
         file: fileListToUpload[0],
         campaignName: campaignName,
         isPeriodicUpdate: isPeriodicUpdate,
         batchSize: isPeriodicUpdate ? batchSize : undefined,
-        startDate: isPeriodicUpdate ? startDate : undefined,
-        startTime: isPeriodicUpdate ? startTime : undefined,
+        startDate: isPeriodicUpdate ? utcStartDate : undefined,
+        startTime: isPeriodicUpdate ? utcStartTime : undefined,
         frequency: isPeriodicUpdate ? frequency : undefined,
       });
 
@@ -356,6 +402,7 @@ const UploaderPatient = ({ onUploadComplete }) => {
                         }}
                         style={{ width: '100%' }}
                         min={(() => {
+                          // All frequencies require tomorrow or later
                           const tomorrow = new Date();
                           tomorrow.setDate(tomorrow.getDate() + 1);
                           return tomorrow.toISOString().split('T')[0];
