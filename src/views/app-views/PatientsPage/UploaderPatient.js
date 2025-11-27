@@ -1,9 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { Button, Modal, Input, Checkbox, Select, message } from 'antd';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Button, Modal, Input, Checkbox, Select, message, Radio, Spin } from 'antd';
+import { UploadOutlined } from '@ant-design/icons';
+import { useDropzone } from 'react-dropzone';
 import patientsService from 'services/PatientService';
 import Dropzone from '../DocumentsPage/Dropzone';
-import { Formik } from 'formik';
+import { Formik, Field } from 'formik';
 import appointmentService from 'services/AppointmentService';
+import FormDatePicker from 'components/custom-components/Form/FormDatePicker';
+import FormTimePicker from 'components/custom-components/Form/FormTimePicker';
+import dayjs from 'utils/dayjs';
+import { DATE_FORMAT_DD_MM_YYYY, DATE_FORMAT_YYYY_MM_DD } from 'constants/DateConstant';
 
 const UploaderPatient = ({ onUploadComplete }) => {
   const [open, setOpen] = useState(false);
@@ -16,6 +22,7 @@ const UploaderPatient = ({ onUploadComplete }) => {
   const [appointmentDaysCountLoading, setAppointmentDaysCountLoading] = useState(false);
   const [campaignName, setCampaignName] = useState('');
   const [isPeriodicUpdate, setIsPeriodicUpdate] = useState(false);
+  const [inviteSchedule, setInviteSchedule] = useState('invite_now'); // 'invite_now' or 'periodic'
   const [batchSize, setBatchSize] = useState('');
   const [startDate, setStartDate] = useState('');
   const [startTime, setStartTime] = useState('');
@@ -41,12 +48,32 @@ const UploaderPatient = ({ onUploadComplete }) => {
     }
   };
 
+  const handleInviteScheduleChange = (e, setFieldValue) => {
+    const value = e.target.value;
+    setInviteSchedule(value);
+    // Explicitly set isPeriodicUpdate: false for 'invite_now', true for 'periodic'
+    setIsPeriodicUpdate(value === 'periodic' ? true : false);
+    setValidationError('');
+
+    if (value !== 'periodic') {
+      setBatchSize('');
+      if (setFieldValue) {
+        setFieldValue('startDate', '');
+        setFieldValue('startTime', '');
+      }
+      setStartDate('');
+      setStartTime('');
+      setFrequency('');
+    }
+  };
+
   const showModal = () => {
     setOpen(true);
     setFileListToUpload([]);
     setShowLargeFileWarning(false);
     setCampaignName('');
     setIsPeriodicUpdate(false);
+    setInviteSchedule('invite_now');
     setBatchSize('');
     setStartDate('');
     setStartTime('');
@@ -67,6 +94,36 @@ const UploaderPatient = ({ onUploadComplete }) => {
     });
   };
 
+  // Custom dropzone for the initial upload screen
+  const onDrop = useCallback(
+    (acceptedFiles) => {
+      acceptedFiles.forEach((file) => {
+        const reader = new FileReader();
+        reader.onabort = () => console.error('file reading was aborted');
+        reader.onerror = () => console.error('file reading has failed');
+        reader.readAsBinaryString(file);
+      });
+      setFileListToUpload([...fileListToUpload, ...acceptedFiles]);
+    },
+    [fileListToUpload]
+  );
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: {
+      'text/csv': ['.csv']
+    }
+  });
+
+  function formatBytes(a, b = 2, k = 1024) {
+    let d = Math.floor(Math.log(a) / Math.log(k));
+    return 0 == a
+      ? '0 Bytes'
+      : parseFloat((a / Math.pow(k, d)).toFixed(Math.max(0, b))) +
+      ' ' +
+      ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'][d];
+  }
+
   // Count CSV rows when file is selected
   useEffect(() => {
     if (fileListToUpload.length > 0) {
@@ -82,6 +139,7 @@ const UploaderPatient = ({ onUploadComplete }) => {
   useEffect(() => {
     if (!showLargeFileWarning) {
       setIsPeriodicUpdate(false);
+      setInviteSchedule('invite_now');
       setBatchSize('');
       setStartDate('');
       setStartTime('');
@@ -129,10 +187,13 @@ const UploaderPatient = ({ onUploadComplete }) => {
     }
 
     // Validate periodic upload fields if enabled
-    if (isPeriodicUpdate) {
+    if (inviteSchedule === 'periodic') {
       // Check if fields are filled
       const batchSizeStr = String(batchSize || '').trim();
-      if (!batchSizeStr || !startDate || !startTime || !frequency) {
+      const formStartDate = values.startDate || '';
+      const formStartTime = values.startTime || '';
+
+      if (!batchSizeStr || !formStartDate || !formStartTime || !frequency) {
         const errorMsg = 'Please fill in all periodic upload fields: Batch Size, Start Date, Start Time, and Frequency.';
         setValidationError(errorMsg);
         message.error(errorMsg);
@@ -155,15 +216,20 @@ const UploaderPatient = ({ onUploadComplete }) => {
         return;
       }
 
+      // Convert date from DD/MM/YYYY to YYYY-MM-DD for validation
+      const dateInYYYYMMDD = formStartDate ? dayjs(formStartDate, DATE_FORMAT_DD_MM_YYYY).format(DATE_FORMAT_YYYY_MM_DD) : '';
+
       // Validate start date and time: must be in the future
       const now = new Date();
-      const selectedDate = new Date(startDate);
-      selectedDate.setHours(0, 0, 0, 0);
+      const selectedDate = dateInYYYYMMDD ? new Date(dateInYYYYMMDD) : null;
+      if (selectedDate) {
+        selectedDate.setHours(0, 0, 0, 0);
+      }
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
       // All frequencies require a future date (not today or past)
-      if (selectedDate <= today) {
+      if (selectedDate && selectedDate <= today) {
         const errorMsg = 'Start date must be a future date. It cannot be today or a date in the past.';
         setValidationError(errorMsg);
         message.error(errorMsg);
@@ -171,9 +237,9 @@ const UploaderPatient = ({ onUploadComplete }) => {
       }
 
       // Validate that the combined date and time is in the future
-      if (startDate && startTime) {
-        const [hours, minutes] = startTime.split(':').map(Number);
-        const selectedDateTime = new Date(startDate);
+      if (dateInYYYYMMDD && formStartTime) {
+        const [hours, minutes] = formStartTime.split(':').map(Number);
+        const selectedDateTime = new Date(dateInYYYYMMDD);
         selectedDateTime.setHours(hours, minutes, 0, 0);
 
         if (selectedDateTime <= now) {
@@ -195,7 +261,13 @@ const UploaderPatient = ({ onUploadComplete }) => {
       let utcStartDate = undefined;
       let utcStartTime = undefined;
 
-      if (isPeriodicUpdate && startDate && startTime) {
+      const formStartDate = values.startDate || '';
+      const formStartTime = values.startTime || '';
+
+      if (inviteSchedule === 'periodic' && formStartDate && formStartTime) {
+        // Convert date from DD/MM/YYYY to YYYY-MM-DD
+        const dateInYYYYMMDD = dayjs(formStartDate, DATE_FORMAT_DD_MM_YYYY).format(DATE_FORMAT_YYYY_MM_DD);
+
         // Capture client timezone
         const clientTimezoneOffset = new Date().getTimezoneOffset(); // Offset in minutes
         const clientTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -205,8 +277,8 @@ const UploaderPatient = ({ onUploadComplete }) => {
         console.log('Client Timezone Offset (minutes):', clientTimezoneOffset);
 
         // Combine local date and time into a date string
-        const [hours, minutes] = startTime.split(':').map(Number);
-        const localDateTimeString = `${startDate}T${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:00`;
+        const [hours, minutes] = formStartTime.split(':').map(Number);
+        const localDateTimeString = `${dateInYYYYMMDD}T${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:00`;
 
         // Create Date object - JavaScript interprets this in local timezone
         const localDateTime = new Date(localDateTimeString);
@@ -220,14 +292,16 @@ const UploaderPatient = ({ onUploadComplete }) => {
         utcStartTime = utcTimePart.substring(0, 5); // Extract HH:MM from HH:MM:SS.sssZ
       }
 
+      // Use inviteSchedule as the source of truth
+      const isPeriodic = inviteSchedule === 'periodic';
       await createPatient({
         file: fileListToUpload[0],
         campaignName: campaignName,
-        isPeriodicUpdate: isPeriodicUpdate,
-        batchSize: isPeriodicUpdate ? batchSize : undefined,
-        startDate: isPeriodicUpdate ? utcStartDate : undefined,
-        startTime: isPeriodicUpdate ? utcStartTime : undefined,
-        frequency: isPeriodicUpdate ? frequency : undefined,
+        isPeriodicUpdate: isPeriodic,
+        batchSize: isPeriodic ? batchSize : undefined,
+        startDate: isPeriodic ? utcStartDate : undefined,
+        startTime: isPeriodic ? utcStartTime : undefined,
+        frequency: isPeriodic ? frequency : undefined,
       });
 
       // Add minimum delay of 1 second before completing
@@ -237,6 +311,7 @@ const UploaderPatient = ({ onUploadComplete }) => {
       setConfirmLoading(false);
       setShowLargeFileWarning(false);
       setIsPeriodicUpdate(false);
+      setInviteSchedule('invite_now');
       setBatchSize('');
       setStartDate('');
       setStartTime('');
@@ -272,16 +347,19 @@ const UploaderPatient = ({ onUploadComplete }) => {
       </Button>
     </div>
     <Formik
-      initialValues={{}}
+      initialValues={{
+        startDate: startDate || '',
+        startTime: startTime || ''
+      }}
       onSubmit={handleOk}
       enableReinitialize
       validateOnMount
     >
-      {({ values, handleSubmit }) => (
+      {({ values, handleSubmit, setFieldValue }) => (
         <Modal
           title={showLargeFileWarning
-            ? "Are you sure you want to proceed with the upload?"
-            : "Bulk Upload of Patients from EMIS exported CSV"}
+            ? "Bulk Upload of Patients"
+            : "Bulk Upload of Patients"}
           open={open}
           destroyOnHidden
           confirmLoading={confirmLoading}
@@ -304,24 +382,40 @@ const UploaderPatient = ({ onUploadComplete }) => {
               disabled={confirmLoading || appointmentDaysCountLoading}
               loading={confirmLoading}
             >
-              {showLargeFileWarning ? 'Proceed with Upload' : 'Upload'}
+              {showLargeFileWarning ? 'Next' : 'Next'}
             </Button>,
           ]}
         >
           {appointmentDaysCountLoading ? (
             <div style={{ textAlign: 'center', padding: '2em 0' }}>
-              <span className="ant-spin ant-spin-spinning" style={{ fontSize: 24, marginBottom: 16, display: 'inline-block' }} />
+              <Spin size="large" style={{ marginBottom: 16, display: 'block' }} />
               <p>Loading available appointment days...</p>
             </div>
           ) : showLargeFileWarning ? (
             <div>
-              <p>
-                You are about to upload <strong>{fileRows}  patients </strong>. In the next 30 days, there are <strong>{monthlyDays ?? 0} days with available appointments </strong>, offering a total of <strong>{monthlyTimeslots} available timeslots</strong>.
-              </p>
+              {/* Information Box */}
+              <div style={{
+                border: '1px solid #d9d9d9',
+                borderRadius: '4px',
+                backgroundColor: '#ffffff',
+                padding: '16px',
+                marginBottom: '24px'
+              }}>
+                <p style={{ margin: 0, marginBottom: '8px', color: '#262626' }}>
+                  You are about to upload <strong>{fileRows} patients</strong>.
+                </p>
+                <p style={{ margin: 0, marginBottom: '8px', color: '#262626' }}>
+                  In the next 30 days, there are <strong>{monthlyDays ?? 0} days</strong> with available appointments.
+                </p>
+                <p style={{ margin: 0, color: '#262626' }}>
+                  There are a total of <strong>{monthlyTimeslots} available time slots</strong>.
+                </p>
+              </div>
 
               {validationError && (
                 <div style={{
                   marginTop: 16,
+                  marginBottom: 24,
                   padding: '12px 16px',
                   backgroundColor: '#fff2f0',
                   border: '1px solid #ffccc7',
@@ -332,18 +426,79 @@ const UploaderPatient = ({ onUploadComplete }) => {
                 </div>
               )}
 
-              <div style={{ marginTop: 24, padding: '16px', backgroundColor: '#f5f5f5', borderRadius: '4px' }}>
-                <div style={{ marginBottom: 16 }}>
-                  <Checkbox
-                    checked={isPeriodicUpdate}
-                    onChange={(e) => handlePeriodicToggle(e.target.checked)}
-                  >
-                    Periodic Bulk Upload
-                  </Checkbox>
-                </div>
+              {/* Select the invite schedule Section */}
+              <div style={{ marginBottom: 24 }}>
+                <h3 style={{
+                  margin: 0,
+                  marginBottom: '8px',
+                  fontWeight: 600,
+                  fontSize: '16px',
+                }}>
+                  Select the invite schedule
+                </h3>
+                <p style={{
+                  margin: 0,
+                  marginBottom: '16px',
+                  fontSize: '14px',
+                  color: '#595959'
+                }}>
+                  When a patient is invited, Asa will start a conversation with them.
+                </p>
+                <p style={{
+                  margin: 0,
+                  marginBottom: '16px',
+                  fontSize: '14px',
+                  color: '#595959'
+                }}>
+                  Select when to reach out to your uploaded patients
+                </p>
 
-                {isPeriodicUpdate && (
-                  <>
+                <Radio.Group
+                  value={inviteSchedule}
+                  onChange={(e) => handleInviteScheduleChange(e, setFieldValue)}
+                  style={{ width: '100%' }}
+                >
+                  <div
+                    onClick={() => handleInviteScheduleChange({ target: { value: 'invite_now' } }, setFieldValue)}
+                    style={{
+                      marginBottom: '12px',
+                      border: inviteSchedule === 'invite_now' ? '2px solid #1890ff' : '1px solid #d9d9d9',
+                      borderRadius: '4px',
+                      padding: '12px 16px',
+                      backgroundColor: '#ffffff',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s'
+                    }}
+                  >
+                    <Radio value="invite_now" style={{ width: '100%', pointerEvents: 'none' }}>
+                      Invite now
+                    </Radio>
+                  </div>
+                  <div
+                    onClick={() => handleInviteScheduleChange({ target: { value: 'periodic' } }, setFieldValue)}
+                    style={{
+                      border: inviteSchedule === 'periodic' ? '2px solid #1890ff' : '1px solid #d9d9d9',
+                      borderRadius: '4px',
+                      padding: '12px 16px',
+                      backgroundColor: '#ffffff',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s'
+                    }}
+                  >
+                    <Radio value="periodic" style={{ width: '100%', pointerEvents: 'none' }}>
+                      Periodic upload
+                    </Radio>
+                  </div>
+                </Radio.Group>
+
+                {inviteSchedule === 'periodic' && (
+                  <div style={{
+                    marginTop: '24px',
+                    padding: '16px',
+                    backgroundColor: '#fafafa',
+                    borderRadius: '4px',
+                    border: '1px solid #d9d9d9'
+                  }}>
                     <div style={{ marginBottom: 16 }}>
                       <label style={{ display: 'block', marginBottom: 8, fontWeight: 500 }}>
                         Batch Size
@@ -366,6 +521,15 @@ const UploaderPatient = ({ onUploadComplete }) => {
                         max={fileRows > 0 ? fileRows : undefined}
                         required
                       />
+                      <p style={{
+                        marginTop: 8,
+                        marginBottom: 0,
+                        fontSize: '14px',
+                        color: '#595959',
+                        lineHeight: '1.5'
+                      }}>
+                        The number of patients to contact in every round of invites
+                      </p>
                     </div>
 
                     <div style={{ marginBottom: 16 }}>
@@ -387,69 +551,134 @@ const UploaderPatient = ({ onUploadComplete }) => {
                           </Select.Option>
                         ))}
                       </Select>
+                      <p style={{
+                        marginTop: 8,
+                        marginBottom: 0,
+                        fontSize: '14px',
+                        color: '#595959',
+                        lineHeight: '1.5'
+                      }}>
+                        How often the batch of patients should be added
+                      </p>
                     </div>
 
                     <div style={{ marginBottom: 16 }}>
-                      <label style={{ display: 'block', marginBottom: 8, fontWeight: 500 }}>
-                        Start Date
-                      </label>
-                      <Input
-                        type="date"
-                        value={startDate}
-                        onChange={(e) => {
-                          setStartDate(e.target.value);
-                          setValidationError('');
-                        }}
-                        style={{ width: '100%' }}
-                        min={(() => {
-                          // All frequencies require tomorrow or later
-                          const tomorrow = new Date();
-                          tomorrow.setDate(tomorrow.getDate() + 1);
-                          return tomorrow.toISOString().split('T')[0];
-                        })()}
+                      <Field
+                        component={FormDatePicker}
+                        label="Start Date"
+                        name="startDate"
                         required
+                        disabledDate={(current) => {
+                          // Disable today and all past dates, only allow future dates
+                          return current && current <= dayjs().endOf('day');
+                        }}
                       />
                     </div>
 
                     <div style={{ marginBottom: 16 }}>
-                      <label style={{ display: 'block', marginBottom: 8, fontWeight: 500 }}>
-                        Start Time
-                      </label>
-                      <Input
-                        type="time"
-                        value={startTime}
-                        onChange={(e) => {
-                          setStartTime(e.target.value);
-                          setValidationError('');
-                        }}
-                        style={{ width: '100%' }}
+                      <Field
+                        component={FormTimePicker}
+                        label="Start Time"
+                        name="startTime"
                         required
                       />
+                      <p style={{
+                        marginTop: 8,
+                        marginBottom: 0,
+                        fontSize: '14px',
+                        color: '#595959',
+                        lineHeight: '1.5'
+                      }}>
+                        Select the date and time the patients should be added
+                      </p>
                     </div>
-                  </>
+                  </div>
                 )}
               </div>
-
-              <p style={{ marginTop: 16 }}>Would you like to proceed with the upload?</p>
             </div>
           ) : (
             <div>
-              <div style={{ marginBottom: 16 }}>
-                <label style={{ display: 'block', marginBottom: 8, fontWeight: 500 }}>
-                  Campaign Name
+              <div style={{ marginBottom: 24 }}>
+                <label style={{ display: 'block', marginBottom: 8, fontWeight: 500, color: '#262626' }}>
+                  Campaign name
                 </label>
                 <Input
-                  placeholder="Enter campaign name"
+                  placeholder="Delivery type"
                   value={campaignName}
                   onChange={(e) => setCampaignName(e.target.value)}
                   style={{ width: '100%' }}
                   required
                 />
+                <p style={{
+                  marginTop: 8,
+                  marginBottom: 0,
+                  fontSize: '14px',
+                  color: '#595959',
+                  lineHeight: '1.5'
+                }}>
+                  The name helps you identify this batch of patients within the Asa platform.
+                </p>
               </div>
-              <Dropzone
-                onChange={setFileListToUpload}
-                fileListToUpload={fileListToUpload}
-              />
+
+              <div style={{ marginBottom: 24 }}>
+                <label style={{
+                  display: 'block',
+                  marginBottom: 12,
+                  fontWeight: 600,
+                  fontSize: '16px',
+                }}>
+                  Upload a CSV of Patients from EMIS
+                </label>
+                <div
+                  {...getRootProps()}
+                  style={{
+                    border: isDragActive ? '2px dashed #1890ff' : '1px solid #d9d9d9',
+                    borderRadius: '4px',
+                    backgroundColor: isDragActive ? '#e6f7ff' : '#fafafa',
+                    padding: '40px 20px',
+                    textAlign: 'center',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s',
+                    minHeight: '200px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                >
+                  <input {...getInputProps()} />
+                  {fileListToUpload.length === 0 ? (
+                    <>
+                      <UploadOutlined style={{
+                        fontSize: '48px',
+                        color: '#000',
+                        marginBottom: '16px',
+                        display: 'block'
+                      }} />
+                      <p style={{
+                        margin: 0,
+                        color: '#595959',
+                        fontSize: '14px'
+                      }}>
+                        Click to select a file or drag and drop a file.
+                      </p>
+                    </>
+                  ) : (
+                    <div>
+                      {fileListToUpload.map((file) => (
+                        <div key={file.path || file.name} style={{ color: '#262626' }}>
+                          <div style={{ fontWeight: 500, marginBottom: '4px' }}>
+                            {file.path || file.name}
+                          </div>
+                          <div style={{ fontSize: '12px', color: '#8c8c8c' }}>
+                            {formatBytes(file.size)}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           )}
         </Modal>

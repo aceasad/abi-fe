@@ -27,9 +27,20 @@ const FormDatePicker = ({
       ? formatMessage(errors[field.name], errorTexts)
       : defaultErrorMessage());
 
-  const disabledDate = (current) => {
+  const defaultDisabledDate = (current) => {
     // Can not select days before today and today
     return current && current > dayjs().endOf('day');
+  };
+
+  // Use custom disabledDate if provided, otherwise use default if disablePastDates is true
+  const getDisabledDate = () => {
+    if (props.disabledDate) {
+      return props.disabledDate;
+    }
+    if (props.disablePastDates) {
+      return defaultDisabledDate;
+    }
+    return undefined;
   };
 
   return (
@@ -44,7 +55,7 @@ const FormDatePicker = ({
           setFieldTouched(field.name, true);
           setFieldValue(field.name, str);
         }}
-        disabledDate={props.disablePastDates && disabledDate}
+        disabledDate={getDisabledDate()}
         format={DATE_FORMAT_DD_MM_YYYY}
         mask={DATE_FORMAT_DD_MM_YYYY}
       />
