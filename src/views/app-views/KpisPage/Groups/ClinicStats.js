@@ -28,7 +28,7 @@ const formatPercentageChangeDisplay = (value) => {
   return value < 0 ? `-${formattedValue}%` : `+${formattedValue}%`;
 };
 
-const StatCard = ({ title, value, subtitle, color = '#000000', change = "12", changeType = "percentage", style = {}, bare = false, isMobile = false }) => {
+const StatCard = ({ title, value, subtitle, color = '#000000', change = null, changeType = "percentage", style = {}, bare = false, isMobile = false }) => {
   const content = (
     <div style={{ display: 'flex', alignItems: "center", gap: '8px', flexWrap: isMobile ? 'wrap' : 'nowrap' }}>
       <div style={{ fontSize: isMobile ? '20px' : '28px', fontWeight: 'bold', color }}>
@@ -110,6 +110,21 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false }) => {
     already_screened,
     percentage_changes
   } = useSelector(makeSelectClinicStatsData);
+
+  // Console log percentage changes to verify backend data
+  console.log('Percentage Changes from Backend:', percentage_changes);
+  console.log('Detailed Percentage Changes:', {
+    pc_engagement_rate: percentage_changes?.pc_engagement_rate,
+    pc_booking_rate: percentage_changes?.pc_booking_rate,
+    pc_booking_time_distribution: percentage_changes?.pc_booking_time_distribution,
+    pc_failed_messages: percentage_changes?.pc_failed_messages,
+    pc_emergency_situation: percentage_changes?.pc_emergency_situation,
+    pc_human_intervention: percentage_changes?.pc_human_intervention,
+    pc_already_screened: percentage_changes?.pc_already_screened,
+    pc_declined: percentage_changes?.pc_declined,
+    pc_opt_out: percentage_changes?.pc_opt_out,
+    pc_snoozed: percentage_changes?.pc_snoozed
+  });
 
   // Calculate after hours bookings (evening + night)
   const calculateAfterHoursBookings = () => {
@@ -230,7 +245,8 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false }) => {
                       <StatCard
                         title="Engagement"
                         value={displayValue(engagement_rate, true)}
-                        change={percentage_changes?.pc_engagement_rate}
+                        // change={percentage_changes?.pc_engagement_rate}
+                        change={null}
                         changeType="percentage"
                         bare
                         isMobile={isMobile}
@@ -281,7 +297,8 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false }) => {
                       <StatCard
                         title="Engagement"
                         value={displayValue(engagement_rate, true)}
-                        change={percentage_changes?.pc_engagement_rate}
+                        // change={percentage_changes?.pc_engagement_rate}
+                        change={null}
                         changeType="percentage"
                         bare
                         isMobile={false}
@@ -320,7 +337,8 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false }) => {
                 <StatCard
                   title={<><span style={{ color: "#EF4444" }}>Failed</span> - Message failed</>}
                   value={displayValue(total_patients_failed_message_status)}
-                  change={percentage_changes?.pc_failed_messages}
+                  // change={percentage_changes?.pc_failed_messages}
+                  change={null}
                   changeType="percentage"
                   style={{ width: '100%', height: isMobile ? 80 : 100, marginBottom: 16 }}
                   isMobile={isMobile}
@@ -330,7 +348,8 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false }) => {
                 <StatCard
                   title={<><span style={{ color: "#EF4444" }}>Failed</span> - Unengaged</>}
                   value={displayValue(total_patients_read_but_no_response)}
-                  change={percentage_changes?.pc_failed_messages}
+                  // change={percentage_changes?.pc_failed_messages}
+                  change={null}
                   changeType="percentage"
                   style={{ width: '100%', height: isMobile ? 80 : 100 }}
                   isMobile={isMobile}

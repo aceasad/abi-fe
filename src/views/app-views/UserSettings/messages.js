@@ -77,4 +77,8 @@ export default defineMessages({
     id: `${scope}.messages.success_deleted`,
     defaultMessage: 'User Deleted',
   },
+  userDeleteError: {
+    id: `${scope}.messages.error_deleted`,
+    defaultMessage: 'Failed to delete user. Please try again.',
+  },
 });
