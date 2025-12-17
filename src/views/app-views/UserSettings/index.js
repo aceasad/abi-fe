@@ -42,6 +42,10 @@ const UserSettings = () => {
     message.success(formatMessage(messages.userDeleted));
   };
 
+  const onDeleteError = () => {
+    message.error(formatMessage(messages.userDeleteError));
+  };
+
   const showDeleteConfirm = (element) => {
     confirm({
       title: formatMessage(messages.deleteConfirmation, {
@@ -51,7 +55,7 @@ const UserSettings = () => {
       okType: 'danger',
       cancelText: formatMessage(messages.formCancelButton),
       onOk() {
-        dispatch(deleteUser({ id: element.id, afterDelete }));
+        dispatch(deleteUser({ id: element.id, afterDelete, onDeleteError }));
       },
     });
   };

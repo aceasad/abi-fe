@@ -63,12 +63,16 @@ function* updateUser({ payload }) {
 
 function* deleteUser({ payload }) {
   try {
+    yield put(setUsersLoading(true));
     const { isLast, page } = yield select(makeSelectLastOnThePage());
     yield call(userService.deleteUser, payload.id);
     yield payload.afterDelete();
     if (isLast) yield put(setUsersPage(page - 1));
     else yield getUsers();
   } catch (err) {
+    if (payload.onDeleteError) {
+      yield payload.onDeleteError();
+    }
   } finally {
     yield put(setUsersLoading(false));
   }
