@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: abi-fe
-        image: europe-west2-docker.pkg.dev/spryt-medbridge/sprytacrmedbridge/abi-fe:latest
+        image: us-east1-docker.pkg.dev/spryt-medbridge/sprytacrmedbridge/abi-fe:latest
         ports:
         - containerPort: 80
         imagePullPolicy: Always
