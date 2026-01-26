@@ -66,6 +66,7 @@ const CreatePatient = ({ showList }) => {
             date_of_birth: '5/11/1992',
             gender: '',
             ExternalIdentificationNumber: '',
+            case_id: '',
             isPASPatient: true,
             phone_number: '',
             email: '',

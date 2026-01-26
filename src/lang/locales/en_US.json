@@ -354,7 +354,7 @@
   "patients_page.text.success.new_condition_created": "Condition created",
   "patients_page.text.error.condition_already_exists": "Condition with this name already exists",
   "patients_page.text.error.country_code_format": "Country code must be in valid format",
-  "patients_page.text.patient_ident":"Patient NHS Number",
+  "patients_page.text.patient_ident":"Patient Identification Number",
   "patient_overview.title": "Overview",
   "patient_overview.back_to_patients": "Back to patients",
   "patient_overview.button.messages": "Messages",

@@ -230,9 +230,22 @@ const PatientPASForm = ({
                         name="ExternalIdentificationNumber"
                         errorTexts={{
                           label: formatMessage(messages.patientIdent),
+                          matchesLabel: formatMessage(
+                            messages.patientIdentFormat
+                          ),
                           maxValue: NHS_MAX,
                         }}
                         required
+                      />
+                      <ColumnField
+                        span={isMobile && !isTablet ? 24 : 8}
+                        component={FormField}
+                        label={formatMessage(messages.caseId)}
+                        name="case_id"
+                        errorTexts={{
+                          label: formatMessage(messages.caseId),
+                          maxValue: 20,
+                        }}
                       />
                       {/* <ColumnField
                       span={8}

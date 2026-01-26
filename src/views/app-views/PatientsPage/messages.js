@@ -35,6 +35,14 @@ export default defineMessages({
     id: `${scope}.text.patient_ident`,
     defaultMessage: 'Patient NHS Number',
   },
+  patientIdentFormat: {
+    id: `${scope}.error.patient_ident_format`,
+    defaultMessage: 'Patient Identification Number must be 7 or 10 digits',
+  },
+  caseId: {
+    id: `${scope}.text.case_id`,
+    defaultMessage: 'Case ID',
+  },
   firstName: {
     id: `${scope}.text.first_name`,
     defaultMessage: 'First name',
