@@ -20,7 +20,10 @@ import PatientPASForm from './PatientPASForm';
 const UpdatePatient = ({ showList, patientId }) => {
   const { formatMessage } = useIntl();
   const dispatch = useDispatch();
-  const { isPasIntegrated } = useSelector(state => state.auth.user);
+  const { isPasIntegrated, PASProvider } = useSelector(
+    (state) => state.auth.user || {}
+  );
+  const normalizedPasProvider = PASProvider?.toLowerCase();
 
   const { patient, loading } = useSelector(makeSelectPatientSingle());
   const { items } = useSelector(makeSelectExistingMedicalConditions());
@@ -61,8 +64,15 @@ const UpdatePatient = ({ showList, patientId }) => {
       material_status: patient?.material_status?.id,
       employment: patient?.employment?.id,
       medicalConditions: items.map((condition) => condition.id),
-      phone_number: patient?.phone_number.substr(patient?.phone_number?.length - 10, patient?.phone_number?.length),
-      country_code: patient?.phone_number.substr(0, patient?.phone_number?.length - 10),
+      phone_number: patient?.phone_number.substr(
+        patient?.phone_number?.length - 10,
+        patient?.phone_number?.length
+      ),
+      country_code: patient?.phone_number.substr(
+        0,
+        patient?.phone_number?.length - 10
+      ),
+      pas_provider: normalizedPasProvider,
     }
     : {
       first_name: '',
@@ -86,6 +96,7 @@ const UpdatePatient = ({ showList, patientId }) => {
       education: '',
       insurance: '',
       medicalConditions: [],
+      pas_provider: normalizedPasProvider,
     };
 
   const renderUpdatePatientForm = () => {
@@ -98,6 +109,7 @@ const UpdatePatient = ({ showList, patientId }) => {
           showList={showList}
           handleSubmit={handleSubmit}
           loading={loading}
+          pasProvider={normalizedPasProvider}
           initialState={initialState}
           genderChoices={GENDER_CHOICES}
         />)
