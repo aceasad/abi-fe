@@ -43,6 +43,10 @@ export default defineMessages({
     id: `${scope}.text.case_id`,
     defaultMessage: 'Case ID',
   },
+  homeLocation: {
+    id: `${scope}.text.home_location`,
+    defaultMessage: 'Location ID',
+  },
   firstName: {
     id: `${scope}.text.first_name`,
     defaultMessage: 'First name',

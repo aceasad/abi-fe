@@ -15,7 +15,10 @@ const CreatePatient = ({ showList }) => {
   const { formatMessage } = useIntl();
   const dispatch = useDispatch();
   const { loading } = useSelector(makeSelectPatientLoading());
-  const { isPasIntegrated } = useSelector(state => state.auth.user);
+  const { isPasIntegrated, PASProvider } = useSelector(
+    (state) => state.auth.user || {}
+  );
+  const normalizedPasProvider = PASProvider?.toLowerCase();
 
   const GENDER_CHOICES = [
     { id: GENDER.MALE, name: formatMessage(messages.male) },
@@ -60,6 +63,7 @@ const CreatePatient = ({ showList }) => {
           showList={showList}
           handleSubmit={handleSubmit}
           loading={loading}
+          pasProvider={normalizedPasProvider}
           initialState={{
             first_name: '',
             last_name: '',
@@ -67,6 +71,8 @@ const CreatePatient = ({ showList }) => {
             gender: '',
             ExternalIdentificationNumber: '',
             case_id: '',
+            home_location: '',
+            pas_provider: normalizedPasProvider,
             isPASPatient: true,
             phone_number: '',
             email: '',

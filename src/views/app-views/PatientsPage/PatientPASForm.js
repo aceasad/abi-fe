@@ -40,6 +40,7 @@ const PatientPASForm = ({
   initialState,
   loading,
   id,
+  pasProvider,
 }) => {
   const { formatMessage } = useIntl();
   const headerRef = useRef(null);
@@ -51,6 +52,7 @@ const PatientPASForm = ({
   const screens = utils.getBreakPoint(useBreakpoint());
   const isMobile = !screens.includes('lg');
   const isTablet = screens.includes('md') && !screens.includes('lg');
+  const isMedbridge = pasProvider === 'medbridge';
 
   const { education, employment, material_status, ethnicities } = useSelector(
     makeSelectPatientDetails()
@@ -65,6 +67,7 @@ const PatientPASForm = ({
       ...values,
       phone_number: values.country_code + values.phone_number,
     };
+    delete parsedValues.pas_provider;
 
     // Format date_of_birth if it exists and is valid, otherwise use dummy date
     if (values.date_of_birth) {
@@ -237,16 +240,32 @@ const PatientPASForm = ({
                         }}
                         required
                       />
-                      <ColumnField
-                        span={isMobile && !isTablet ? 24 : 8}
-                        component={FormField}
-                        label={formatMessage(messages.caseId)}
-                        name="case_id"
-                        errorTexts={{
-                          label: formatMessage(messages.caseId),
-                          maxValue: 20,
-                        }}
-                      />
+                      {isMedbridge && (
+                        <>
+                          <ColumnField
+                            span={isMobile && !isTablet ? 24 : 8}
+                            component={FormField}
+                            label={formatMessage(messages.caseId)}
+                            name="case_id"
+                            errorTexts={{
+                              label: formatMessage(messages.caseId),
+                              maxValue: 20,
+                            }}
+                            required={isMedbridge}
+                          />
+                          <ColumnField
+                            span={isMobile && !isTablet ? 24 : 8}
+                            component={FormField}
+                            label={formatMessage(messages.homeLocation)}
+                            name="home_location"
+                            errorTexts={{
+                              label: formatMessage(messages.homeLocation),
+                              maxValue: 20,
+                            }}
+                            required={isMedbridge}
+                          />
+                        </>
+                      )}
                       {/* <ColumnField
                       span={8}
                       maxDate={new Date()}

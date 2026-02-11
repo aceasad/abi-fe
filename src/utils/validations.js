@@ -123,7 +123,16 @@ export const patientSchema = Yup.object().shape({
   ExternalIdentificationNumber: Yup.string()
     .matches(externalIdentificationFormat, { excludeEmptyString: true })
     .max(10),
-  case_id: Yup.string().max(20),
+  case_id: Yup.string().max(20).when('pas_provider', {
+    is: 'medbridge',
+    then: (schema) => schema.required(),
+    otherwise: (schema) => schema,
+  }),
+  home_location: Yup.string().max(20).when('pas_provider', {
+    is: 'medbridge',
+    then: (schema) => schema.required(),
+    otherwise: (schema) => schema,
+  }),
   isPASPatient: Yup.boolean(),
 });
 
