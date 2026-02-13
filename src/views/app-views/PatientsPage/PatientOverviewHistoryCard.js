@@ -42,6 +42,9 @@ const PatientOverviewHistoryCard = ({ patient, showAppointment }) => {
 
   const { items, loading, count, page } = useSelector(makeSelectHistory());
 
+  const { PASProvider } = useSelector((state) => state.auth.user || {});
+  const isMedbridge = PASProvider?.toLowerCase() === 'medbridge';
+
   const columnsHistory = [
     {
       title: formatMessage(messages.columnTitleDate),
@@ -51,11 +54,15 @@ const PatientOverviewHistoryCard = ({ patient, showAppointment }) => {
       title: formatMessage(messages.columnTitleTime),
       dataIndex: 'time',
     },
-    {
-      title: formatMessage(messages.columnTitleDoctor),
-      dataIndex: ['doctor', 'full_name'],
-      responsive: ['md'],
-    },
+    ...(!isMedbridge
+      ? [
+          {
+            title: formatMessage(messages.columnTitleDoctor),
+            dataIndex: ['doctor', 'full_name'],
+            responsive: ['md'],
+          },
+        ]
+      : []),
     {
       title: formatMessage(messages.columnTitleType),
       dataIndex: ['appointment_type', 'name'],
@@ -92,12 +99,14 @@ const PatientOverviewHistoryCard = ({ patient, showAppointment }) => {
           <Text type="secondary" style={{ fontSize: '13px' }}>{appointment.time}</Text>
         </Space>
 
-        <Space size="small">
-          <UserOutlined style={{ fontSize: '12px', color: '#8c8c8c' }} />
-          <Text type="secondary" style={{ fontSize: '13px' }}>
-            {appointment.doctor?.full_name}
-          </Text>
-        </Space>
+        {!isMedbridge && (
+          <Space size="small">
+            <UserOutlined style={{ fontSize: '12px', color: '#8c8c8c' }} />
+            <Text type="secondary" style={{ fontSize: '13px' }}>
+              {appointment.doctor?.full_name}
+            </Text>
+          </Space>
+        )}
 
         <Space size="small">
           <FileTextOutlined style={{ fontSize: '12px', color: '#8c8c8c' }} />

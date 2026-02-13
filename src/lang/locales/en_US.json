@@ -482,7 +482,7 @@
   "appointments_page.title": "Appointments",
   "appointments_page.button.export": "Export",
   "appointments_page.button.new_appointment": "New appointment",
-  "appointments_page.button.sync_process": "Sync with EMIS",
+  "appointments_page.button.sync_process": "Sync with Health System",
   "appointments_page.tooltip.miss": "Likely to miss an appointment",
   "appointments_page.tooltip.attend": "Likely to attend an appointment",
   "appointments_page.text.no_appointments_for_date": "No appointments for selected date",

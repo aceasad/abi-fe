@@ -26,7 +26,8 @@ function PreviewModal({
     makeSelectSingleAppointment()
   );
   const isLoading = singleLoading || !appointment;
-  const { isPasIntegrated } = useSelector(state => state.auth.user);
+  const { isPasIntegrated, PASProvider } = useSelector((state) => state.auth.user || {});
+  const isMedbridge = PASProvider?.toLowerCase() === 'medbridge';
   const footer = [];
   if (!isLoading && new Date(appointment.datetime_iso) > new Date()) {
     footer.push(
@@ -68,19 +69,21 @@ function PreviewModal({
         </Typography.Text>
       ),
     },
-    {
-      label: formatMessage(messages.doctor),
-      value: (
-        <>
-          <Typography.Text strong>
-            {appointment?.doctor?.full_name}{' '}
-          </Typography.Text>
-          {isPasIntegrated ? (<></>) : (<span className="text-primary">({appointment?.specialization})</span>)}
-
-        </>
-      ),
-    },
-
+    ...(!isMedbridge
+      ? [
+          {
+            label: formatMessage(messages.doctor),
+            value: (
+              <>
+                <Typography.Text strong>
+                  {appointment?.doctor?.full_name}{' '}
+                </Typography.Text>
+                {isPasIntegrated ? (<></>) : (<span className="text-primary">({appointment?.specialization})</span>)}
+              </>
+            ),
+          },
+        ]
+      : []),
     {
       label: formatMessage(messages.status),
       value: appointment?.status?.name,

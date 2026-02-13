@@ -17,8 +17,7 @@ const UploaderPatient = ({ onUploadComplete }) => {
   const [fileListToUpload, setFileListToUpload] = useState([]);
   const [showLargeFileWarning, setShowLargeFileWarning] = useState(false);
   const [fileRows, setFileRows] = useState(0);
-  const [monthlyDays, setmonthlyDays] = useState(0);
-  const [monthlyTimeslots, setmonthlyTimeslots] = useState(0);
+  const [appointmentTypesData, setAppointmentTypesData] = useState([]);
   const [appointmentDaysCountLoading, setAppointmentDaysCountLoading] = useState(false);
   const [campaignName, setCampaignName] = useState('');
   const [isPeriodicUpdate, setIsPeriodicUpdate] = useState(false);
@@ -79,6 +78,7 @@ const UploaderPatient = ({ onUploadComplete }) => {
     setStartTime('');
     setFrequency('');
     setFileRows(0);
+    setAppointmentTypesData([]);
     setValidationError('');
   };
 
@@ -173,12 +173,10 @@ const UploaderPatient = ({ onUploadComplete }) => {
       setAppointmentDaysCountLoading(true);
       try {
         const response = await appointmentService.getTotalAppointmentDaysCount();
-        // Assuming response.data has the structure { days: X, timeslots: Y }
-        setmonthlyDays(response.data?.available_days ?? 0);
-        setmonthlyTimeslots(response.data?.total_slots ?? 0);
+        // Response is now an array of appointment types with their data
+        setAppointmentTypesData(Array.isArray(response.data) ? response.data : []);
       } catch (err) {
-        setmonthlyDays(0);
-        setmonthlyTimeslots(0);
+        setAppointmentTypesData([]);
       } finally {
         setAppointmentDaysCountLoading(false);
       }
@@ -401,15 +399,54 @@ const UploaderPatient = ({ onUploadComplete }) => {
                 padding: '16px',
                 marginBottom: '24px'
               }}>
-                <p style={{ margin: 0, marginBottom: '8px', color: '#262626' }}>
+                <p style={{ margin: 0, marginBottom: '16px', color: '#262626' }}>
                   You are about to upload <strong>{fileRows} patients</strong>.
                 </p>
-                <p style={{ margin: 0, marginBottom: '8px', color: '#262626' }}>
-                  In the next 30 days, there are <strong>{monthlyDays ?? 0} days</strong> with available appointments.
-                </p>
-                <p style={{ margin: 0, color: '#262626' }}>
-                  There are a total of <strong>{monthlyTimeslots} available time slots</strong>.
-                </p>
+                {appointmentTypesData.length > 0 ? (
+                  <div>
+                    <p style={{ margin: 0, marginBottom: '12px', color: '#262626', fontWeight: 500 }}>
+                      Available appointments in the next 30 days:
+                    </p>
+                    {appointmentTypesData.map((appointmentType, index) => (
+                      <div
+                        key={index}
+                        style={{
+                          marginBottom: index < appointmentTypesData.length - 1 ? '12px' : 0,
+                          padding: '12px',
+                          backgroundColor: '#fafafa',
+                          borderRadius: '4px',
+                          border: '1px solid #e8e8e8'
+                        }}
+                      >
+                        <p style={{ margin: 0, marginBottom: '4px', color: '#595959', fontSize: '14px' }}>
+                          Appointment Type: <strong>{appointmentType.appointment_type_name || 'Unknown Type'} </strong>
+                        </p>
+                        <p style={{ margin: 0, marginBottom: '4px', color: '#595959', fontSize: '14px' }}>
+                          Available days: <strong>{appointmentType.available_days ?? 0}</strong>
+                        </p>
+                        <p style={{ margin: 0, color: '#595959', fontSize: '14px' }}>
+                          Total slots: <strong>{appointmentType.total_slots ?? 0}</strong>
+                        </p>
+                        {appointmentType.locations && appointmentType.locations.length > 0 && (
+                          <div style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid #e8e8e8' }}>
+                            <p style={{ margin: 0, marginBottom: '4px', color: '#8c8c8c', fontSize: '12px', fontWeight: 500 }}>
+                              Locations:
+                            </p>
+                            {appointmentType.locations.map((location, locIndex) => (
+                              <p key={locIndex} style={{ margin: 0, marginLeft: '12px', color: '#8c8c8c', fontSize: '12px' }}>
+                                {location.location_id} - {location.location_name} - {location.available_days} days, {location.total_slots} slots
+                              </p>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p style={{ margin: 0, color: '#595959' }}>
+                    No appointment availability data available.
+                  </p>
+                )}
               </div>
 
               {validationError && (
@@ -627,7 +664,7 @@ const UploaderPatient = ({ onUploadComplete }) => {
                   fontWeight: 600,
                   fontSize: '16px',
                 }}>
-                  Upload a CSV of Patients from EMIS
+                  Upload a CSV of Patients
                 </label>
                 <div
                   {...getRootProps()}
