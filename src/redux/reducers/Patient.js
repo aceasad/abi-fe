@@ -8,6 +8,8 @@ import {
   SET_PATIENT_SEARCH,
   SET_PATIENT_DETAILS,
   SET_PATIENT_DETAILS_NEW_PATIENT_FORM,
+  SET_PATIENT_LOCATIONS,
+  SET_PATIENT_LOCATIONS_LOADING,
   SET_PATIENT_SINGLE,
   MODIFY_PATIENT,
   SET_APPOINTMENT_HISTORY_LOADING,
@@ -33,6 +35,10 @@ const initialState = {
   scheduledAppointments: { ...baseState },
   appointmentHistory: { ...baseState },
   campaigns: { ...baseState },
+  locations: {
+    items: [],
+    loading: false,
+  },
 };
 
 /* eslint-disable default-case */
@@ -78,6 +84,18 @@ const patient = (state = initialState, action) =>
         draft.employment = action.payload.employment;
         draft.material_status = action.payload.material_status;
         draft.ethnicities = action.payload.ethnicities;
+        break;
+      case SET_PATIENT_LOCATIONS:
+        draft.locations = {
+          ...state.locations,
+          items: action.payload,
+        };
+        break;
+      case SET_PATIENT_LOCATIONS_LOADING:
+        draft.locations = {
+          ...state.locations,
+          loading: action.payload,
+        };
         break;
       case SET_PATIENT_SINGLE:
         draft.patients = { ...state.patients, single: action.payload };

@@ -11,7 +11,10 @@ import FormDatePicker from 'components/custom-components/Form/FormDatePicker';
 import FormSelect from 'components/custom-components/Form/FormSelect';
 import ColumnField from 'components/custom-components/Form/ColumnField';
 import messages from './messages';
-import { makeSelectPatientDetails } from 'redux/selectors/Patient';
+import {
+  makeSelectPatientDetails,
+  makeSelectPatientLocations,
+} from 'redux/selectors/Patient';
 import { patientSchema } from 'utils/validations';
 import { MAX, NHS_MAX } from 'constants/ClinicConstants';
 import { filterNumberInput } from 'utils/helpers';
@@ -23,7 +26,10 @@ import {
   resetPreviousOperations,
 } from 'redux/actions/Anamnesis';
 import { BeforeRouteContext } from 'utils/context';
-import { getPatientDetailsNewPatientForm } from 'redux/actions/Patient';
+import {
+  getPatientDetailsNewPatientForm,
+  getPatientLocations,
+} from 'redux/actions/Patient';
 import { DATE_FORMAT_DD_MM_YYYY } from 'constants/DateConstant';
 import dayjs from 'utils/dayjs';
 import { COUNTRY_CODES } from 'constants/CountryCodesConstants';
@@ -53,21 +59,45 @@ const PatientPASForm = ({
   const isMobile = !screens.includes('lg');
   const isTablet = screens.includes('md') && !screens.includes('lg');
   const isMedbridge = pasProvider === 'medbridge';
-
   const { education, employment, material_status, ethnicities } = useSelector(
     makeSelectPatientDetails()
   );
+  const { locations } = useSelector(makeSelectPatientLocations());
 
   const afterDelete = () => {
     message.success(formatMessage(messages.operationTypeDeleted));
   };
 
   const handleSubmitWrapper = (values, { setErrors }) => {
+    const locationsById = locations.reduce((acc, location) => {
+      if (location?.LocationId) {
+        acc[String(location.LocationId)] = location;
+      }
+      return acc;
+    }, {});
     const parsedValues = {
       ...values,
       phone_number: values.country_code + values.phone_number,
     };
     delete parsedValues.pas_provider;
+    if (isMedbridge) {
+      if (parsedValues.home_location) {
+        parsedValues.home_location =
+          locationsById[String(parsedValues.home_location)] || {
+            LocationId: parsedValues.home_location,
+          };
+      }
+
+      if (Array.isArray(parsedValues.available_location_ids)) {
+        parsedValues.available_location_ids =
+          parsedValues.available_location_ids
+            .map(
+              (locationId) =>
+                locationsById[String(locationId)] || { LocationId: locationId }
+            )
+            .filter(Boolean);
+      }
+    }
 
     // Format date_of_birth if it exists and is valid, otherwise use dummy date
     if (values.date_of_birth) {
@@ -85,6 +115,7 @@ const PatientPASForm = ({
       parsedValues.date_of_birth = '01/01/1990';
     }
 
+    console.log('Patient submit payload (PAS)', parsedValues);
     handleSubmit(parsedValues, setErrors, enableRedirect);
   };
 
@@ -159,6 +190,24 @@ const PatientPASForm = ({
   useEffect(() => {
     dispatch(getPatientDetailsNewPatientForm());
   }, []);
+
+  useEffect(() => {
+    if (isMedbridge) {
+      dispatch(getPatientLocations());
+    }
+  }, [dispatch, isMedbridge]);
+
+  const locationOptions = locations
+    .map((location) => {
+      if (!location?.LocationId) return null;
+      const id = String(location.LocationId);
+      const name = location.LocationName || id;
+      return {
+        id,
+        name: `${name} (${id})`,
+      };
+    })
+    .filter(Boolean);
 
   return (
     <div style={{ paddingTop: isMobile ? 0 : '24px' }}>
@@ -255,14 +304,29 @@ const PatientPASForm = ({
                           />
                           <ColumnField
                             span={isMobile && !isTablet ? 24 : 8}
-                            component={FormField}
+                            component={FormSelect}
                             label={formatMessage(messages.homeLocation)}
                             name="home_location"
+                            options={locationOptions}
+                            optionField="name"
                             errorTexts={{
                               label: formatMessage(messages.homeLocation),
                               maxValue: 20,
                             }}
                             required={isMedbridge}
+                          />
+                          <ColumnField
+                            span={isMobile && !isTablet ? 24 : 8}
+                            component={FormSelect}
+                            label={formatMessage(messages.availableLocations)}
+                            name="available_location_ids"
+                            options={locationOptions}
+                            optionField="name"
+                            mode="multiple"
+                            errorTexts={{
+                              label: formatMessage(messages.availableLocations),
+                              maxValue: 20,
+                            }}
                           />
                         </>
                       )}

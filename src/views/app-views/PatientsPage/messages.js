@@ -47,6 +47,10 @@ export default defineMessages({
     id: `${scope}.text.home_location`,
     defaultMessage: 'Location ID',
   },
+  availableLocations: {
+    id: `${scope}.text.available_location_ids`,
+    defaultMessage: 'Available locations',
+  },
   firstName: {
     id: `${scope}.text.first_name`,
     defaultMessage: 'First name',

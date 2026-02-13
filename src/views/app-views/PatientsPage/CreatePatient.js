@@ -72,6 +72,7 @@ const CreatePatient = ({ showList }) => {
             ExternalIdentificationNumber: '',
             case_id: '',
             home_location: '',
+            available_location_ids: [],
             pas_provider: normalizedPasProvider,
             isPASPatient: true,
             phone_number: '',

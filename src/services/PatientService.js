@@ -16,6 +16,7 @@ const ENDPOINTS = {
   MARK_CONVERSATION_NOT_IN_EMERGENCY_SITUATION:
     '/patients/:id/mark-conversation-not-in-emergency-situation/',
   GET_PATIENTS_DETAILS_NEW_PATIENT_FORM: '/patients/patient-details/',
+  GET_PATIENT_LOCATIONS: '/patients/locations/',
   UPLOADPATIENTSCSV: '/patients/uploadcsv/',
   PATIENTPROGRESS: '/patients/get-all-communication-status-for-patient/',
   DOWNLOADPATIENTSNOTONWHATSAPP: '/patients/download_not_on_whatsapp_patients_text_file/',
@@ -41,6 +42,11 @@ class PatientService extends ApiService {
 
   getPatientDetailsNewPatientForm = () =>
     this.apiClient.get(ENDPOINTS.GET_PATIENTS_DETAILS_NEW_PATIENT_FORM);
+
+  getPatientLocations = (locationId) =>
+    this.apiClient.get(ENDPOINTS.GET_PATIENT_LOCATIONS, {
+      params: locationId ? { location_id: locationId } : undefined,
+    });
 
   createPatient = (data) => this.apiClient.post(ENDPOINTS.GET_PATIENTS, data);
   getPatientSingle = (id) =>

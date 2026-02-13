@@ -133,6 +133,7 @@ export const patientSchema = Yup.object().shape({
     then: (schema) => schema.required(),
     otherwise: (schema) => schema,
   }),
+  available_location_ids: Yup.array().of(Yup.string()),
   isPASPatient: Yup.boolean(),
 });
 
