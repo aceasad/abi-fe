@@ -40,6 +40,12 @@ const makeSelectPatientDetails = () =>
     ethnicities: substate.ethnicities,
   }));
 
+const makeSelectPatientLocations = () =>
+  createSelector(selectPatientsDomain, (substate) => ({
+    locations: substate.locations.items,
+    loading: substate.locations.loading,
+  }));
+
 const makeSelectPatientSingle = () =>
   createSelector(selectPatientsDomain, ({ patients }) => ({
     loading: patients.loading,
@@ -111,6 +117,7 @@ export {
   makeSelectPatientRequestData,
   makeSelectLastOnThePage,
   makeSelectPatientDetails,
+  makeSelectPatientLocations,
   makeSelectPatientSingle,
   makeSelectPatientLoading,
   makeSelectPatientOverview,

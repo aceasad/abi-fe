@@ -10,6 +10,9 @@ import {
   SET_PATIENT_DETAILS,
   GET_PATIENT_DETAILS_NEW_PATIENT_FORM,
   SET_PATIENT_DETAILS_NEW_PATIENT_FORM,
+  GET_PATIENT_LOCATIONS,
+  SET_PATIENT_LOCATIONS,
+  SET_PATIENT_LOCATIONS_LOADING,
   CREATE_PATIENT,
   GET_PATIENT_SINGLE,
   SET_PATIENT_SINGLE,
@@ -85,6 +88,21 @@ export const getPatientDetailsNewPatientForm = () => ({
 
 export const setPatientDetailsNewPatientForm = (payload) => ({
   type: SET_PATIENT_DETAILS_NEW_PATIENT_FORM,
+  payload,
+});
+
+export const getPatientLocations = (payload) => ({
+  type: GET_PATIENT_LOCATIONS,
+  payload,
+});
+
+export const setPatientLocations = (payload) => ({
+  type: SET_PATIENT_LOCATIONS,
+  payload,
+});
+
+export const setPatientLocationsLoading = (payload) => ({
+  type: SET_PATIENT_LOCATIONS_LOADING,
   payload,
 });
 
