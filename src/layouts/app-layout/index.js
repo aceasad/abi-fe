@@ -12,7 +12,7 @@ import { Layout, Grid, Button } from 'antd';
 import { MenuOutlined } from '@ant-design/icons';
 import { onMobileNavToggle } from 'redux/actions/Theme';
 
-import navigationConfig from 'configs/NavigationConfig';
+import { useNavigationConfig } from 'configs/NavigationConfig';
 import {
   SIDE_NAV_WIDTH,
   SIDE_NAV_COLLAPSED_WIDTH,
@@ -25,6 +25,7 @@ const { Content } = Layout;
 const { useBreakpoint } = Grid;
 
 export const AppLayout = ({ navCollapsed, navType, location, onMobileNavToggle, mobileNav }) => {
+  const navigationConfig = useNavigationConfig();
   const currentRouteInfo = utils.getRouteInfo(
     navigationConfig,
     location.pathname
