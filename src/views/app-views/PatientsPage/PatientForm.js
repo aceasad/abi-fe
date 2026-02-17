@@ -296,6 +296,12 @@ const PatientForm = ({
                         optionField="name"
                         defaultOption={values.country_code}
                         label={formatMessage(messages.countryCode)}
+                        showSearch
+                        filterOption={(input, option) =>
+                          `${option?.value ?? ''} ${option?.children ?? ''}`
+                            .toLowerCase()
+                            .includes(input.toLowerCase())
+                        }
                         errorTexts={{
                           label: formatMessage(messages.countryCode),
                           matchesLabel: formatMessage(messages.countryCodeFormat),
