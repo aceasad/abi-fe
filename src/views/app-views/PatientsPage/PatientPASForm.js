@@ -309,6 +309,12 @@ const PatientPASForm = ({
                             name="home_location"
                             options={locationOptions}
                             optionField="name"
+                            showSearch
+                            filterOption={(input, option) =>
+                              `${option?.value ?? ''} ${option?.children ?? ''}`
+                                .toLowerCase()
+                                .includes(input.toLowerCase())
+                            }
                             errorTexts={{
                               label: formatMessage(messages.homeLocation),
                               maxValue: 20,
@@ -323,6 +329,12 @@ const PatientPASForm = ({
                             options={locationOptions}
                             optionField="name"
                             mode="multiple"
+                            showSearch
+                            filterOption={(input, option) =>
+                              `${option?.value ?? ''} ${option?.children ?? ''}`
+                                .toLowerCase()
+                                .includes(input.toLowerCase())
+                            }
                             errorTexts={{
                               label: formatMessage(messages.availableLocations),
                               maxValue: 20,
@@ -412,6 +424,12 @@ const PatientPASForm = ({
                         optionField="name"
                         defaultOption={values.country_code}
                         label={formatMessage(messages.countryCode)}
+                        showSearch
+                        filterOption={(input, option) =>
+                          `${option?.value ?? ''} ${option?.children ?? ''}`
+                            .toLowerCase()
+                            .includes(input.toLowerCase())
+                        }
                         errorTexts={{
                           label: formatMessage(messages.countryCode),
                           matchesLabel: formatMessage(messages.countryCodeFormat),
