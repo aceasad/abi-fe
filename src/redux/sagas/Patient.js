@@ -97,7 +97,7 @@ function* getPatientLocations({ payload }) {
     yield put(setPatientLocationsLoading(true));
     const { data } = yield call(
       patientService.getPatientLocations,
-      payload?.locationId
+      payload?.location_id
     );
     const results = Array.isArray(data) ? data : data?.results || [];
     yield put(setPatientLocations(results));

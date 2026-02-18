@@ -358,7 +358,6 @@
   "patients_page.error.patient_ident_format": "Patient Identification Number must be 7 or 10 digits",
   "patients_page.text.case_id":"Case ID",
   "patients_page.text.home_location":"Location ID",
-  "patients_page.text.available_locations":"Available locations",
   "patients_page.text.available_location_ids": "Available locations",
   "patients_page.button.notonwhatsappPatient": "Unsuccessful Invites",
   "patient_overview.title": "Overview",
