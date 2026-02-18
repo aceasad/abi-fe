@@ -70,8 +70,8 @@ const PatientPASForm = ({
 
   const handleSubmitWrapper = (values, { setErrors }) => {
     const locationsById = locations.reduce((acc, location) => {
-      if (location?.LocationId) {
-        acc[String(location.LocationId)] = location;
+      if (location?.location_id) {
+        acc[String(location.location_id)] = location;
       }
       return acc;
     }, {});
@@ -84,7 +84,7 @@ const PatientPASForm = ({
       if (parsedValues.home_location) {
         parsedValues.home_location =
           locationsById[String(parsedValues.home_location)] || {
-            LocationId: parsedValues.home_location,
+            location_id: parsedValues.home_location,
           };
       }
 
@@ -92,8 +92,8 @@ const PatientPASForm = ({
         parsedValues.available_location_ids =
           parsedValues.available_location_ids
             .map(
-              (locationId) =>
-                locationsById[String(locationId)] || { LocationId: locationId }
+              (location_id) =>
+                locationsById[String(location_id)] || { location_id: location_id }
             )
             .filter(Boolean);
       }
@@ -142,7 +142,7 @@ const PatientPASForm = ({
   };
 
   const showDiscardModal = () => {
-    formRef.current.dirty ? setDiscardModalVisible(true) : enableRedirect();
+    formRef.current?.dirty ? setDiscardModalVisible(true) : enableRedirect();
   };
 
   useEffect(() => {
@@ -199,9 +199,9 @@ const PatientPASForm = ({
 
   const locationOptions = locations
     .map((location) => {
-      if (!location?.LocationId) return null;
-      const id = String(location.LocationId);
-      const name = location.LocationName || id;
+      if (!location?.location_id) return null;
+      const id = String(location.location_id);
+      const name = location.location_name || id;
       return {
         id,
         name: `${name} (${id})`,

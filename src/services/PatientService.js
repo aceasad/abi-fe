@@ -43,9 +43,9 @@ class PatientService extends ApiService {
   getPatientDetailsNewPatientForm = () =>
     this.apiClient.get(ENDPOINTS.GET_PATIENTS_DETAILS_NEW_PATIENT_FORM);
 
-  getPatientLocations = (locationId) =>
+  getPatientLocations = (location_id) =>
     this.apiClient.get(ENDPOINTS.GET_PATIENT_LOCATIONS, {
-      params: locationId ? { location_id: locationId } : undefined,
+      params: location_id ? { location_id: location_id } : undefined,
     });
 
   createPatient = (data) => this.apiClient.post(ENDPOINTS.GET_PATIENTS, data);

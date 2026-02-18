@@ -72,12 +72,12 @@ const UpdatePatient = ({ showList, patientId }) => {
         0,
         patient?.phone_number?.length - 10
       ),
-      home_location: patient?.home_location?.LocationId
-        ? String(patient.home_location.LocationId)
+      home_location: patient?.home_location?.location_id
+        ? String(patient.home_location.location_id)
         : '',
       available_location_ids: Array.isArray(patient?.available_location_ids)
         ? patient.available_location_ids
-          .map((location) => location?.LocationId || location?.location_id)
+          .map((location) => location?.location_id)
           .filter(Boolean)
           .map((id) => String(id))
         : [],
