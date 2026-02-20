@@ -16,7 +16,7 @@ const ChatContentFooter = ({ onSend }) => {
 
   const handleSend = (values) => {
     form.resetFields(['newMessage']);
-    values['newMessage'] = values['newMessage'] + ' - ' + name
+    values['newMessage'] = values['newMessage'] // + ' - ' + name
     onSend(values);
     textAreaRef.current.focus();
   };
