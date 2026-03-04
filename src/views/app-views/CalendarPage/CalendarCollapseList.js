@@ -21,7 +21,8 @@ const CalendarCollapseList = () => {
   const { formatMessage } = useIntl();
 
   const [activeAppointment, setActiveAppointment] = useState(null);
-  const { isPasIntegrated } = useSelector(state => state.auth.user);
+  const { isPasIntegrated, PASProvider } = useSelector((state) => state.auth.user || {});
+  const isMedbridge = PASProvider?.toLowerCase() === 'medbridge';
 
   const collapseHeader = (data) => (
     <div className="d-flex justify-content-between">
@@ -73,10 +74,29 @@ const CalendarCollapseList = () => {
     ),
   }));
 
+  const allAppointments = doctorAppointments.flatMap((item) => item.appointments);
+
   return (
     <div>
-      {doctorAppointments.length ? (
-        <Collapse expandIconPosition="end" items={collapseItems} />
+      {allAppointments.length ? (
+        isMedbridge ? (
+          <List
+            itemLayout="horizontal"
+            dataSource={allAppointments}
+            renderItem={(appointment) => (
+              <List.Item
+                onClick={() => handleClick(appointment)}
+                className="cursor-pointer list-item-hover"
+              >
+                <List.Item.Meta
+                  description={<StaffPanelItem data={appointment} />}
+                />
+              </List.Item>
+            )}
+          />
+        ) : (
+          <Collapse expandIconPosition="end" items={collapseItems} />
+        )
       ) : (
         <div>{formatMessage(messages.noAppointments)}</div>
       )}

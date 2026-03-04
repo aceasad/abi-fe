@@ -8,6 +8,7 @@ import {
   DELETE_PATIENT,
   GET_PATIENTS_DETAILS,
   GET_PATIENT_DETAILS_NEW_PATIENT_FORM,
+  GET_PATIENT_LOCATIONS,
   CREATE_PATIENT,
   GET_PATIENT_SINGLE,
   UPDATE_PATIENT,
@@ -25,6 +26,8 @@ import {
 import {
   setPatientDetails,
   setPatientDetailsNewPatientForm,
+  setPatientLocations,
+  setPatientLocationsLoading,
   setPatientLoading,
   setPatientPage,
   setPatients,
@@ -87,6 +90,22 @@ function* getPatientDetailsNewPatientFormData() {
     const { data } = yield call(patientService.getPatientDetailsNewPatientForm);
     yield put(setPatientDetailsNewPatientForm(data));
   } catch (error) { }
+}
+
+function* getPatientLocations({ payload }) {
+  try {
+    yield put(setPatientLocationsLoading(true));
+    const { data } = yield call(
+      patientService.getPatientLocations,
+      payload?.location_id
+    );
+    const results = Array.isArray(data) ? data : data?.results || [];
+    yield put(setPatientLocations(results));
+  } catch (error) {
+    yield put(setPatientLocations([]));
+  } finally {
+    yield put(setPatientLocationsLoading(false));
+  }
 }
 
 function* createPatient({ payload }) {
@@ -229,6 +248,7 @@ export function* patientSaga() {
     GET_PATIENT_DETAILS_NEW_PATIENT_FORM,
     getPatientDetailsNewPatientFormData
   );
+  yield takeEvery(GET_PATIENT_LOCATIONS, getPatientLocations);
   yield takeEvery(CREATE_PATIENT, createPatient);
   yield takeEvery(GET_PATIENT_SINGLE, function* ({ payload }) {
     yield all([

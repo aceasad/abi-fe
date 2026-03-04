@@ -3,7 +3,7 @@ import { Link, withRouter } from 'react-router-dom';
 import { Menu, Grid } from 'antd';
 import IntlMessage from '../util-components/IntlMessage';
 import Icon from '../util-components/Icon';
-import navigationConfig from 'configs/NavigationConfig';
+import { useNavigationConfig } from 'configs/NavigationConfig';
 import { connect } from 'react-redux';
 import { SIDE_NAV_LIGHT, NAV_TYPE_SIDE } from 'constants/ThemeConstant';
 import utils from 'utils';
@@ -53,6 +53,7 @@ const SideNavContent = ({
   const dispatch = useDispatch();
   const { formatMessage } = useIntl();
   const unreadCount = useSelector(makeSelectUnreadCount());
+  const navigationConfig = useNavigationConfig();
 
   const history = useHistory();
   const [route, setRoute] = useState({});
@@ -210,6 +211,7 @@ const SideNavContent = ({
 
 const TopNavContent = (props) => {
   const { topNavColor, localization } = props;
+  const navigationConfig = useNavigationConfig();
 
   const convertTopNavItems = (menus) => {
     return menus.map((menu) => {

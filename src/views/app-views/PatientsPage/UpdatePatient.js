@@ -72,6 +72,15 @@ const UpdatePatient = ({ showList, patientId }) => {
         0,
         patient?.phone_number?.length - 10
       ),
+      home_location: patient?.home_location?.location_id
+        ? String(patient.home_location.location_id)
+        : '',
+      available_location_ids: Array.isArray(patient?.available_location_ids)
+        ? patient.available_location_ids
+          .map((location) => location?.location_id)
+          .filter(Boolean)
+          .map((id) => String(id))
+        : [],
       pas_provider: normalizedPasProvider,
     }
     : {
@@ -97,6 +106,7 @@ const UpdatePatient = ({ showList, patientId }) => {
       insurance: '',
       medicalConditions: [],
       pas_provider: normalizedPasProvider,
+      available_location_ids: [],
     };
 
   const renderUpdatePatientForm = () => {

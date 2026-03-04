@@ -12,7 +12,7 @@ import {
 } from 'antd';
 import { WhatsAppOutlined } from '@ant-design/icons';
 import { useIntl } from 'react-intl';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import AppointmentsRemindersTable from './AppointmentsRemindersTable';
 import overviewPageMessages from '../OverviewPage/messages';
 import { SCHEDULED, UPCOMING_REMINDERS } from 'redux/reducers/Staff';
@@ -55,6 +55,8 @@ const AppointmentsReminders = ({ title, startOpen }) => {
   const history = useHistory();
   const { formatMessage } = useIntl();
   const dispatch = useDispatch();
+  const { PASProvider } = useSelector((state) => state.auth.user || {});
+  const isMedbridge = PASProvider?.toLowerCase() === 'medbridge';
 
   const [activeAppointment, setActiveAppointment] = useState(null);
   const [reminderType, setReminderType] = useState('appointment');
@@ -301,18 +303,22 @@ const AppointmentsReminders = ({ title, startOpen }) => {
     ];
 
     if (reminderType === 'appointment') {
-      // Insert doctor and appointment columns after patient column
-      baseColumns.splice(1, 0,
-        {
-          title: formatMessage(overviewPageMessages.tableColumnDoctor),
-          dataIndex: ['doctor', 'full_name'],
-          sorter: true,
-          render: (_, row) => (
-            <div className="text-left">
-              {`${row.doctor.full_name} `}
-            </div>
-          ),
-        },
+      // Insert doctor and appointment columns after patient column (omit doctor for MedBridge)
+      const appointmentColumns = [
+        ...(!isMedbridge
+          ? [
+              {
+                title: formatMessage(overviewPageMessages.tableColumnDoctor),
+                dataIndex: ['doctor', 'full_name'],
+                sorter: true,
+                render: (_, row) => (
+                  <div className="text-left">
+                    {`${row.doctor.full_name} `}
+                  </div>
+                ),
+              },
+            ]
+          : []),
         {
           title: formatMessage(overviewPageMessages.tableColumnAppointmentDatetime),
           dataIndex: ['appointment', 'date'],
@@ -327,8 +333,9 @@ const AppointmentsReminders = ({ title, startOpen }) => {
               )}`}</div>
             );
           },
-        }
-      );
+        },
+      ];
+      baseColumns.splice(1, 0, ...appointmentColumns);
     }
 
     return baseColumns;

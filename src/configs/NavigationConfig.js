@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   PieChartOutlined,
   CalendarOutlined,
@@ -9,6 +10,7 @@ import {
   LineChartOutlined,
   NotificationOutlined,
 } from '@ant-design/icons';
+import { useSelector } from 'react-redux';
 import { APP_PAGES_PREFIX_PATH } from 'configs/AppConfig';
 
 const pagesNavTree = [
@@ -85,6 +87,19 @@ const pagesNavTree = [
     submenu: [],
   },
 ];
+
+export const getNavigationConfig = (pasProvider) => {
+  const isMedbridge = pasProvider?.toLowerCase() === 'medbridge';
+  if (isMedbridge) {
+    return pagesNavTree.filter((item) => item.key !== 'staff');
+  }
+  return [...pagesNavTree];
+};
+
+export const useNavigationConfig = () => {
+  const { PASProvider } = useSelector((state) => state.auth.user || {});
+  return getNavigationConfig(PASProvider);
+};
 
 const navigationConfig = [...pagesNavTree];
 
