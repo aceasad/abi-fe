@@ -17,6 +17,10 @@ const FormSelect = ({
   required,
   afterSelectChange,
   afterSelectChangeFieldName,
+  mode,
+  showSearch,
+  optionFilterProp,
+  filterOption,
 }) => {
   const { formatMessage } = useIntl();
 
@@ -48,10 +52,18 @@ const FormSelect = ({
       help={showError()}
     >
       <Select
-        value={field.value || defaultOption || null}
+        value={
+          field.value ??
+          defaultOption ??
+          (mode === 'multiple' ? [] : null)
+        }
         placeholder={placeholderText}
         onChange={handleSelected}
         onBlur={() => setFieldTouched(field.name, true)}
+        mode={mode}
+        showSearch={showSearch}
+        optionFilterProp={optionFilterProp}
+        filterOption={filterOption}
       >
         {options.map((item, index) => (
           <Option key={index} value={item.id}>

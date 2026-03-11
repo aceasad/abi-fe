@@ -30,6 +30,7 @@ const passwordRepeatValidation = (refField) =>
 
 const usernameSchema = Yup.string().email();
 const nameSchema = Yup.string().trim().max(MAX).required();
+const externalIdentificationFormat = /^(?:\d{7}|\d{10})$/;
 
 export const loginSchema = Yup.object().shape({
   username: usernameSchema,
@@ -119,7 +120,20 @@ export const patientSchema = Yup.object().shape({
   city: Yup.string().max(64),
   post_code: Yup.string().max(16),
   country: Yup.string().max(64),
-  ExternalIdentificationNumber: Yup.string().max(10),
+  ExternalIdentificationNumber: Yup.string()
+    .matches(externalIdentificationFormat, { excludeEmptyString: true })
+    .max(10),
+  case_id: Yup.string().max(20).when('pas_provider', {
+    is: 'medbridge',
+    then: (schema) => schema.required(),
+    otherwise: (schema) => schema,
+  }),
+  home_location: Yup.string().max(20).when('pas_provider', {
+    is: 'medbridge',
+    then: (schema) => schema.required(),
+    otherwise: (schema) => schema,
+  }),
+  available_location_ids: Yup.array().of(Yup.string()),
   isPASPatient: Yup.boolean(),
 });
 

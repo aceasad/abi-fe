@@ -1,0 +1,34 @@
+#mdh axone k8s deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: abi-fe
+  namespace: production
+  labels:
+    app: abi-fe
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: abi-fe
+  template:
+    metadata:
+      labels:
+        app: abi-fe
+    spec:
+      containers:
+      - name: abi-fe
+        image: us-east1-docker.pkg.dev/spryt-medbridge/sprytacrmedbridge/abi-fe:latest
+        ports:
+        - containerPort: 80
+        imagePullPolicy: Always
+        envFrom:
+        - configMapRef:
+            name: abi-fe-env-configmap
+        resources:
+          requests:
+            memory: "384Mi"
+            cpu: "150m"
+          limits:
+            memory: "600Mi"
+            cpu: "200m"

@@ -2,11 +2,11 @@ apiVersion: v1
 kind: ConfigMap 
 metadata:
   name: abi-fe-env-configmap
-  namespace: spryt-dev 
+  namespace: production 
 data:
-  VITE_APP_API_URL: https://dev.backend.spryt.com/abi-be/api/v1
-  VITE_APP_SOCKETS_DOMAIN: wss://dev.backend.spryt.com/abi-be/ws/chat
-  VITE_APP_SOCKETS_NOTIFICATION_DOMAIN: wss://dev.backend.spryt.com/abi-be/ws/notifications
+  VITE_APP_API_URL: https://medbridge.backend.spryt.com/abi-be/api/v1
+  VITE_APP_SOCKETS_DOMAIN: wss://medbridge.backend.spryt.com/abi-be/ws/chat
+  VITE_APP_SOCKETS_NOTIFICATION_DOMAIN: wss://medbridge.backend.spryt.com/abi-be/ws/notifications
   VITE_APP_URL_PREFIX_PATH: ""
   VITE_APP_API_CDN: ""
   VITE_APP_FACEBOOK_APP_ID: ""
@@ -19,4 +19,4 @@ data:
   VITE_APP_SHOW_MESSAGES_REQUIRING_IMMEDIATE_ATTENTION: "true"
   VITE_APP_SHOW_APPOINTMENTS_REMINDERS: "true"
   VITE_APP_SHOW_KPIS: "true"
-  CAPTCHA_CLIENT_KEY_V2: 6LeQH5EqAAAAABQNFhLE68MJ2SJOUSITwhNqBn8h
+  CAPTCHA_CLIENT_KEY_V2: 6LcpU1MsAAAAACTSQSzGuld0j6B8ovgNWXctxT4C

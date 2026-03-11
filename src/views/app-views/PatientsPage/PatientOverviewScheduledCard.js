@@ -43,6 +43,8 @@ const PatientOverviewScheduledCard = ({ patient, showAppointment }) => {
     makeSelectScheduledAppointments()
   );
 
+  const { PASProvider } = useSelector((state) => state.auth.user || {});
+
   const handlePaginationChange = (page) => {
     dispatch(setScheduledPage({ page, id: patient.id }));
   };
@@ -66,6 +68,8 @@ const PatientOverviewScheduledCard = ({ patient, showAppointment }) => {
     setIsModalVisible(false);
   };
 
+  const isMedbridge = PASProvider?.toLowerCase() === 'medbridge';
+
   const columnsScheduled = [
     {
       title: formatMessage(messages.columnTitleDate),
@@ -77,12 +81,16 @@ const PatientOverviewScheduledCard = ({ patient, showAppointment }) => {
       dataIndex: 'time',
       sorter: false,
     },
-    {
-      title: formatMessage(messages.columnTitleDoctor),
-      dataIndex: ['doctor', 'full_name'],
-      sorter: true,
-      responsive: ['md'],
-    },
+    ...(!isMedbridge
+      ? [
+          {
+            title: formatMessage(messages.columnTitleDoctor),
+            dataIndex: ['doctor', 'full_name'],
+            sorter: true,
+            responsive: ['md'],
+          },
+        ]
+      : []),
     {
       title: formatMessage(messages.columnTitleType),
       dataIndex: ['appointment_type', 'name'],
@@ -118,12 +126,14 @@ const PatientOverviewScheduledCard = ({ patient, showAppointment }) => {
           </Space>
         </Space>
 
-        <Space size="small">
-          <UserOutlined style={{ fontSize: '12px', color: '#8c8c8c' }} />
-          <Text type="secondary" style={{ fontSize: '13px' }}>
-            {appointment.doctor?.full_name}
-          </Text>
-        </Space>
+        {!isMedbridge && (
+          <Space size="small">
+            <UserOutlined style={{ fontSize: '12px', color: '#8c8c8c' }} />
+            <Text type="secondary" style={{ fontSize: '13px' }}>
+              {appointment.doctor?.full_name}
+            </Text>
+          </Space>
+        )}
 
         <Space size="small">
           <FileTextOutlined style={{ fontSize: '12px', color: '#8c8c8c' }} />

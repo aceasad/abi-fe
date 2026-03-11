@@ -11,7 +11,10 @@ import FormDatePicker from 'components/custom-components/Form/FormDatePicker';
 import FormSelect from 'components/custom-components/Form/FormSelect';
 import ColumnField from 'components/custom-components/Form/ColumnField';
 import messages from './messages';
-import { makeSelectPatientDetails } from 'redux/selectors/Patient';
+import {
+  makeSelectPatientDetails,
+  makeSelectPatientLocations,
+} from 'redux/selectors/Patient';
 import { patientSchema } from 'utils/validations';
 import { MAX, NHS_MAX } from 'constants/ClinicConstants';
 import { filterNumberInput } from 'utils/helpers';
@@ -23,7 +26,10 @@ import {
   resetPreviousOperations,
 } from 'redux/actions/Anamnesis';
 import { BeforeRouteContext } from 'utils/context';
-import { getPatientDetailsNewPatientForm } from 'redux/actions/Patient';
+import {
+  getPatientDetailsNewPatientForm,
+  getPatientLocations,
+} from 'redux/actions/Patient';
 import { DATE_FORMAT_DD_MM_YYYY } from 'constants/DateConstant';
 import dayjs from 'utils/dayjs';
 import { COUNTRY_CODES } from 'constants/CountryCodesConstants';
@@ -40,6 +46,7 @@ const PatientPASForm = ({
   initialState,
   loading,
   id,
+  pasProvider,
 }) => {
   const { formatMessage } = useIntl();
   const headerRef = useRef(null);
@@ -51,20 +58,46 @@ const PatientPASForm = ({
   const screens = utils.getBreakPoint(useBreakpoint());
   const isMobile = !screens.includes('lg');
   const isTablet = screens.includes('md') && !screens.includes('lg');
-
+  const isMedbridge = pasProvider === 'medbridge';
   const { education, employment, material_status, ethnicities } = useSelector(
     makeSelectPatientDetails()
   );
+  const { locations } = useSelector(makeSelectPatientLocations());
 
   const afterDelete = () => {
     message.success(formatMessage(messages.operationTypeDeleted));
   };
 
   const handleSubmitWrapper = (values, { setErrors }) => {
+    const locationsById = locations.reduce((acc, location) => {
+      if (location?.location_id) {
+        acc[String(location.location_id)] = location;
+      }
+      return acc;
+    }, {});
     const parsedValues = {
       ...values,
       phone_number: values.country_code + values.phone_number,
     };
+    delete parsedValues.pas_provider;
+    if (isMedbridge) {
+      if (parsedValues.home_location) {
+        parsedValues.home_location =
+          locationsById[String(parsedValues.home_location)] || {
+            location_id: parsedValues.home_location,
+          };
+      }
+
+      if (Array.isArray(parsedValues.available_location_ids)) {
+        parsedValues.available_location_ids =
+          parsedValues.available_location_ids
+            .map(
+              (location_id) =>
+                locationsById[String(location_id)] || { location_id: location_id }
+            )
+            .filter(Boolean);
+      }
+    }
 
     // Format date_of_birth if it exists and is valid, otherwise use dummy date
     if (values.date_of_birth) {
@@ -82,6 +115,7 @@ const PatientPASForm = ({
       parsedValues.date_of_birth = '01/01/1990';
     }
 
+    console.log('Patient submit payload (PAS)', parsedValues);
     handleSubmit(parsedValues, setErrors, enableRedirect);
   };
 
@@ -108,7 +142,7 @@ const PatientPASForm = ({
   };
 
   const showDiscardModal = () => {
-    formRef.current.dirty ? setDiscardModalVisible(true) : enableRedirect();
+    formRef.current?.dirty ? setDiscardModalVisible(true) : enableRedirect();
   };
 
   useEffect(() => {
@@ -156,6 +190,24 @@ const PatientPASForm = ({
   useEffect(() => {
     dispatch(getPatientDetailsNewPatientForm());
   }, []);
+
+  useEffect(() => {
+    if (isMedbridge) {
+      dispatch(getPatientLocations());
+    }
+  }, [dispatch, isMedbridge]);
+
+  const locationOptions = locations
+    .map((location) => {
+      if (!location?.location_id) return null;
+      const id = String(location.location_id);
+      const name = location.location_name || id;
+      return {
+        id,
+        name: `${name} (${id})`,
+      };
+    })
+    .filter(Boolean);
 
   return (
     <div style={{ paddingTop: isMobile ? 0 : '24px' }}>
@@ -230,10 +282,66 @@ const PatientPASForm = ({
                         name="ExternalIdentificationNumber"
                         errorTexts={{
                           label: formatMessage(messages.patientIdent),
+                          matchesLabel: formatMessage(
+                            messages.patientIdentFormat
+                          ),
                           maxValue: NHS_MAX,
                         }}
                         required
                       />
+                      {isMedbridge && (
+                        <>
+                          <ColumnField
+                            span={isMobile && !isTablet ? 24 : 8}
+                            component={FormField}
+                            label={formatMessage(messages.caseId)}
+                            name="case_id"
+                            errorTexts={{
+                              label: formatMessage(messages.caseId),
+                              maxValue: 20,
+                            }}
+                            required={isMedbridge}
+                          />
+                          <ColumnField
+                            span={isMobile && !isTablet ? 24 : 8}
+                            component={FormSelect}
+                            label={formatMessage(messages.homeLocation)}
+                            name="home_location"
+                            options={locationOptions}
+                            optionField="name"
+                            showSearch
+                            filterOption={(input, option) =>
+                              `${option?.value ?? ''} ${option?.children ?? ''}`
+                                .toLowerCase()
+                                .includes(input.toLowerCase())
+                            }
+                            errorTexts={{
+                              label: formatMessage(messages.homeLocation),
+                              maxValue: 20,
+                            }}
+                            required={isMedbridge}
+                          />
+                          <ColumnField
+                            span={isMobile && !isTablet ? 24 : 8}
+                            component={FormSelect}
+                            label={formatMessage(messages.availableLocations)}
+                            name="available_location_ids"
+                            options={locationOptions}
+                            optionField="name"
+                            mode="multiple"
+                            showSearch
+                            filterOption={(input, option) =>
+                              `${option?.value ?? ''} ${option?.children ?? ''}`
+                                .toLowerCase()
+                                .includes(input.toLowerCase())
+                            }
+                            errorTexts={{
+                              label: formatMessage(messages.availableLocations),
+                              maxValue: 20,
+                            }}
+                          />
+                        </>
+                      )}
                       {/* <ColumnField
                       span={8}
                       maxDate={new Date()}
@@ -316,6 +424,12 @@ const PatientPASForm = ({
                         optionField="name"
                         defaultOption={values.country_code}
                         label={formatMessage(messages.countryCode)}
+                        showSearch
+                        filterOption={(input, option) =>
+                          `${option?.value ?? ''} ${option?.children ?? ''}`
+                            .toLowerCase()
+                            .includes(input.toLowerCase())
+                        }
                         errorTexts={{
                           label: formatMessage(messages.countryCode),
                           matchesLabel: formatMessage(messages.countryCodeFormat),

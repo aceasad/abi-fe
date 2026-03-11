@@ -1,0 +1,18 @@
+# abi-fe k8s service
+apiVersion: v1
+kind: Service
+metadata:
+  name: abi-fe-service
+  namespace: production
+  labels:
+    app: abi-fe
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+    name: http
+  selector:
+    app: abi-fe
+

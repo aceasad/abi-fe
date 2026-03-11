@@ -68,6 +68,7 @@ const PatientForm = ({
       ),
       phone_number: values.country_code + values.phone_number,
     };
+    console.log('Patient submit payload (non-PAS)', parsedValues);
     handleSubmit(parsedValues, setErrors, enableRedirect);
   };
 
@@ -295,6 +296,12 @@ const PatientForm = ({
                         optionField="name"
                         defaultOption={values.country_code}
                         label={formatMessage(messages.countryCode)}
+                        showSearch
+                        filterOption={(input, option) =>
+                          `${option?.value ?? ''} ${option?.children ?? ''}`
+                            .toLowerCase()
+                            .includes(input.toLowerCase())
+                        }
                         errorTexts={{
                           label: formatMessage(messages.countryCode),
                           matchesLabel: formatMessage(messages.countryCodeFormat),

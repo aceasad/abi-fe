@@ -1,0 +1,8 @@
+name: abi-fe-medbridge
+description: A Helm Chart created manually
+version: 0.0.1
+apiVersion: v2
+keywords:
+  - abi-fe-medbridge
+sources:
+home:

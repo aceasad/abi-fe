@@ -9,22 +9,20 @@ import {
 import { Link } from 'react-router-dom';
 import { AutoComplete, Input } from 'antd';
 import IntlMessage from 'components/util-components/IntlMessage';
-import navigationConfig from 'configs/NavigationConfig';
+import { useNavigationConfig } from 'configs/NavigationConfig';
 
 function getOptionList(navigationTree, optionTree) {
   optionTree = optionTree ? optionTree : [];
   for (const navItem of navigationTree) {
-    if (navItem.submenu.length === 0) {
+    if (navItem.submenu && navItem.submenu.length === 0) {
       optionTree.push(navItem);
     }
-    if (navItem.submenu.length > 0) {
+    if (navItem.submenu && navItem.submenu.length > 0) {
       getOptionList(navItem.submenu, optionTree);
     }
   }
   return optionTree;
 }
-
-const optionList = getOptionList(navigationConfig);
 
 const getCategoryIcon = (category) => {
   switch (category) {
@@ -41,7 +39,7 @@ const getCategoryIcon = (category) => {
   }
 };
 
-const searchResult = () =>
+const searchResult = (optionList) =>
   optionList.map((item) => {
     const category = item.key.split('-')[0];
     return {
@@ -64,6 +62,8 @@ const searchResult = () =>
 
 const SearchInput = (props) => {
   const { active, close, isMobile, mode } = props;
+  const navigationConfig = useNavigationConfig();
+  const optionList = getOptionList(navigationConfig);
   const [value, setValue] = useState('');
   const [options, setOptions] = useState([]);
   const inputRef = useRef(null);
@@ -78,7 +78,7 @@ const SearchInput = (props) => {
 
   const onSearch = (searchText) => {
     setValue(searchText);
-    setOptions(!searchText ? [] : searchResult(searchText));
+    setOptions(!searchText ? [] : searchResult(optionList));
   };
 
   const autofocus = () => {
