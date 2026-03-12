@@ -77,7 +77,8 @@ const CreatePatient = ({ showList }) => {
             isPASPatient: true,
             phone_number: '',
             email: '',
-            country: ''
+            country: '',
+            appointment_type: '',
           }}
           genderChoices={GENDER_CHOICES}
         />)

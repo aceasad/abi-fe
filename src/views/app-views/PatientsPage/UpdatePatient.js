@@ -82,6 +82,7 @@ const UpdatePatient = ({ showList, patientId }) => {
           .map((id) => String(id))
         : [],
       pas_provider: normalizedPasProvider,
+      appointment_type: patient?.appointment_type?.id || '',
     }
     : {
       first_name: '',
