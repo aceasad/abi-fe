@@ -15,6 +15,7 @@ import {
   makeSelectPatientDetails,
   makeSelectPatientLocations,
 } from 'redux/selectors/Patient';
+import { makeSelectAppointmentTypes } from 'redux/selectors/Appointment';
 import { patientSchema } from 'utils/validations';
 import { MAX, NHS_MAX } from 'constants/ClinicConstants';
 import { filterNumberInput } from 'utils/helpers';
@@ -30,6 +31,7 @@ import {
   getPatientDetailsNewPatientForm,
   getPatientLocations,
 } from 'redux/actions/Patient';
+import { getAppointmentTypes } from 'redux/actions/Appointment';
 import { DATE_FORMAT_DD_MM_YYYY } from 'constants/DateConstant';
 import dayjs from 'utils/dayjs';
 import { COUNTRY_CODES } from 'constants/CountryCodesConstants';
@@ -63,12 +65,23 @@ const PatientPASForm = ({
     makeSelectPatientDetails()
   );
   const { locations } = useSelector(makeSelectPatientLocations());
+  const { appointmentTypes, appointmentTypesLoading } = useSelector(
+    makeSelectAppointmentTypes()
+  );
 
   const afterDelete = () => {
     message.success(formatMessage(messages.operationTypeDeleted));
   };
 
   const handleSubmitWrapper = (values, { setErrors }) => {
+    if (isMedbridge && !values.appointment_type) {
+      setErrors({
+        appointment_type: formatMessage
+          ? formatMessage(messages.appointmentType)
+          : 'Appointment type is required',
+      });
+      return;
+    }
     const locationsById = locations.reduce((acc, location) => {
       if (location?.location_id) {
         acc[String(location.location_id)] = location;
@@ -81,6 +94,11 @@ const PatientPASForm = ({
     };
     delete parsedValues.pas_provider;
     if (isMedbridge) {
+      // ensure appointment_type is null or a primitive id
+      if (!parsedValues.appointment_type) {
+        parsedValues.appointment_type = null;
+      }
+
       if (parsedValues.home_location) {
         parsedValues.home_location =
           locationsById[String(parsedValues.home_location)] || {
@@ -197,6 +215,12 @@ const PatientPASForm = ({
     }
   }, [dispatch, isMedbridge]);
 
+  useEffect(() => {
+    if (isMedbridge && !appointmentTypes?.length && !appointmentTypesLoading) {
+      dispatch(getAppointmentTypes());
+    }
+  }, [dispatch, isMedbridge, appointmentTypes?.length, appointmentTypesLoading]);
+
   const locationOptions = locations
     .map((location) => {
       if (!location?.location_id) return null;
@@ -208,6 +232,11 @@ const PatientPASForm = ({
       };
     })
     .filter(Boolean);
+
+  const appointmentTypeOptions = (appointmentTypes || []).map((type) => ({
+    id: type.id,
+    name: type.name,
+  }));
 
   return (
     <div style={{ paddingTop: isMobile ? 0 : '24px' }}>
@@ -318,6 +347,18 @@ const PatientPASForm = ({
                             errorTexts={{
                               label: formatMessage(messages.homeLocation),
                               maxValue: 20,
+                            }}
+                            required={isMedbridge}
+                          />
+                          <ColumnField
+                            span={isMobile && !isTablet ? 24 : 8}
+                            component={FormSelect}
+                            label={formatMessage(messages.appointmentType)}
+                            name="appointment_type"
+                            options={appointmentTypeOptions}
+                            optionField="name"
+                            errorTexts={{
+                              label: formatMessage(messages.appointmentType),
                             }}
                             required={isMedbridge}
                           />

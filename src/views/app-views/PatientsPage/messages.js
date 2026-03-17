@@ -155,6 +155,10 @@ export default defineMessages({
     id: `${detailScope}.side.title.contact_details`,
     defaultMessage: 'Address',
   },
+  appointmentType: {
+    id: `${detailScope}.side.form.appointment_type`,
+    defaultMessage: 'Appointment type',
+  },
   addressDetails: {
     id: `${detailScope}.side.title.address_details`,
     defaultMessage: 'Address details',
