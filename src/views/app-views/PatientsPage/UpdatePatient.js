@@ -16,6 +16,8 @@ import dayjs from 'utils/dayjs';
 import { DATE_FORMAT_DD_MM_YYYY, DATE_FORMAT_DD_MMM_YYYY } from 'constants/DateConstant';
 import { makeSelectExistingMedicalConditions } from 'redux/selectors/Anemnesis';
 import PatientPASForm from './PatientPASForm';
+import { makeSelectAppointmentTypes } from 'redux/selectors/Appointment';
+import { getAppointmentTypes } from 'redux/actions/Appointment';
 
 const UpdatePatient = ({ showList, patientId }) => {
   const { formatMessage } = useIntl();
@@ -24,9 +26,13 @@ const UpdatePatient = ({ showList, patientId }) => {
     (state) => state.auth.user || {}
   );
   const normalizedPasProvider = PASProvider?.toLowerCase();
+  const isMedbridge = normalizedPasProvider === 'medbridge';
 
   const { patient, loading } = useSelector(makeSelectPatientSingle());
   const { items } = useSelector(makeSelectExistingMedicalConditions());
+  const { appointmentTypes, appointmentTypesLoading } = useSelector(
+    makeSelectAppointmentTypes()
+  );
 
   const GENDER_CHOICES = [
     { id: GENDER.MALE, name: formatMessage(messages.male) },
@@ -37,6 +43,17 @@ const UpdatePatient = ({ showList, patientId }) => {
   useEffect(() => {
     dispatch(getSinglePatient({ id: patientId, noLimit: true }));
   }, [dispatch, patientId]);
+
+  useEffect(() => {
+    if (isMedbridge && !appointmentTypes?.length && !appointmentTypesLoading) {
+      dispatch(getAppointmentTypes());
+    }
+  }, [
+    dispatch,
+    isMedbridge,
+    appointmentTypes?.length,
+    appointmentTypesLoading,
+  ]);
 
   const afterUpdate = () => {
     showList();
@@ -82,7 +99,7 @@ const UpdatePatient = ({ showList, patientId }) => {
           .map((id) => String(id))
         : [],
       pas_provider: normalizedPasProvider,
-      appointment_type: patient?.appointment_type?.id || '',
+      appointment_type: patient?.appointment_type || '',
     }
     : {
       first_name: '',
