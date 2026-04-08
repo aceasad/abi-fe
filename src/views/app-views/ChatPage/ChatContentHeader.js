@@ -1,7 +1,9 @@
 import {
   AudioMutedOutlined,
   DeleteOutlined,
+  MessageOutlined,
   UserOutlined,
+  WhatsAppOutlined,
 } from '@ant-design/icons';
 import { Menu } from 'antd';
 import EllipsisDropdown from 'components/shared-components/EllipsisDropdown';
@@ -58,13 +60,20 @@ const ChatContentHeader = ({
   };
 
   let nameWithSuffix = chatInfo?.patient?.full_name;
-  let nameWrapper = <span>{nameWithSuffix}</span>;
+  const channel = chatInfo?.patient?.communication_channel;
+  const channelIcon = channel === 'sms'
+    ? <MessageOutlined style={{ marginLeft: '6px', color: '#1890ff', fontSize: '14px' }} />
+    : channel === 'whatsapp'
+    ? <WhatsAppOutlined style={{ marginLeft: '6px', color: '#25D366', fontSize: '14px' }} />
+    : null;
+
+  let nameWrapper = <span>{nameWithSuffix}{channelIcon}</span>;
 
   if (chatInfo?.patient?.is_in_emergency_situation) {
-    nameWrapper = <span>{nameWithSuffix}&nbsp;&#9888;</span>;
+    nameWrapper = <span>{nameWithSuffix}{channelIcon}&nbsp;&#9888;</span>;
   }
   if (chatInfo?.patient?.is_in_opt_out_situation) {
-    nameWrapper = <span>{nameWithSuffix}&nbsp;&#9888;</span>;
+    nameWrapper = <span>{nameWithSuffix}{channelIcon}&nbsp;&#9888;</span>;
   }
 
   return (
