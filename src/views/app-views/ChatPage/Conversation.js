@@ -13,9 +13,8 @@ import ChatContentFooter from './ChatContentFooter';
 import ChatContentHeader from './ChatContentHeader';
 import WebSocketClient from 'services/WebSocketClient';
 import { useLazyLoad } from 'utils/hooks';
-import { markConversationHumanNotRequired } from 'redux/actions/Patient';
-import { markConversationNotInEmergencySituation } from 'redux/actions/Patient';
 import { triggerSearchConversations } from 'redux/actions/Chats';
+import patientService from 'services/PatientService';
 
 const Conversation = ({
   conversationId,
@@ -108,7 +107,7 @@ const Conversation = ({
       return;
     }
     
-    await dispatch(markConversationHumanNotRequired(patient_id));
+    await patientService.markConversationHumanNotRequired(patient_id);
     dispatch(triggerSearchConversations());
     getConversation(patient_id);
   };
@@ -120,7 +119,7 @@ const Conversation = ({
       return;
     }
     
-    await dispatch(markConversationNotInEmergencySituation(patient_id));
+    await patientService.markConversationNotInEmergencySituation(patient_id);
     dispatch(triggerSearchConversations());
     getConversation(patient_id);
   };

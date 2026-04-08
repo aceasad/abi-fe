@@ -62,9 +62,9 @@ const ChatContentHeader = ({
   let nameWithSuffix = chatInfo?.patient?.full_name;
   const channel = chatInfo?.patient?.communication_channel;
   const channelIcon = channel === 'sms'
-    ? <MessageOutlined style={{ marginLeft: '6px', color: '#1890ff', fontSize: '14px' }} />
+    ? <MessageOutlined className="channel-icon channel-icon-sms" />
     : channel === 'whatsapp'
-    ? <WhatsAppOutlined style={{ marginLeft: '6px', color: '#25D366', fontSize: '14px' }} />
+    ? <WhatsAppOutlined className="channel-icon channel-icon-whatsapp" />
     : null;
 
   let nameWrapper = <span>{nameWithSuffix}{channelIcon}</span>;
