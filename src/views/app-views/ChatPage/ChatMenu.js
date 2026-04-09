@@ -126,11 +126,6 @@ const ChatMenu = (props) => {
 
   const [filter, setFilter] = useState(CONVERSATION_FILTERS[0].value);
 
-  // Initial load of all conversations
-  useEffect(() => {
-    dispatch(getAllChatsInfo(filter));
-  }, [dispatch, filter]);
-
   useEffect(() => {
     // this will trigger search when query changes
     if (query === debouncedSearch) {
@@ -200,7 +195,6 @@ const ChatMenu = (props) => {
   const handleFilterChange = (selected) => {
     setFilter(selected);
     setQuery('');
-    dispatch(getAllChatsInfo(selected));
   };
 
   useEffect(() => {
