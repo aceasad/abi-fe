@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { Badge, Input, Select } from 'antd';
 import AvatarStatus from 'components/shared-components/AvatarStatus';
 import { COLOR_1 } from 'constants/ChartConstant';
-import { SearchOutlined } from '@ant-design/icons';
+import { SearchOutlined, MessageOutlined, WhatsAppOutlined } from '@ant-design/icons';
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
 import { useIntl } from 'react-intl';
 import messages from './messages';
@@ -126,11 +126,6 @@ const ChatMenu = (props) => {
 
   const [filter, setFilter] = useState(CONVERSATION_FILTERS[0].value);
 
-  // Initial load of all conversations
-  useEffect(() => {
-    dispatch(getAllChatsInfo(filter));
-  }, [dispatch, filter]);
-
   useEffect(() => {
     // this will trigger search when query changes
     if (query === debouncedSearch) {
@@ -200,7 +195,6 @@ const ChatMenu = (props) => {
   const handleFilterChange = (selected) => {
     setFilter(selected);
     setQuery('');
-    dispatch(getAllChatsInfo(selected));
   };
 
   useEffect(() => {
@@ -288,6 +282,10 @@ const ChatMenu = (props) => {
                     textOverflow: 'ellipsis'
                   }}>
                     {item.patient.full_name}
+                    {item.patient.communication_channel === 'sms' &&
+                      <MessageOutlined style={{ marginLeft: '6px', color: '#1890ff', fontSize: '13px' }} />}
+                    {item.patient.communication_channel === 'whatsapp' &&
+                      <WhatsAppOutlined style={{ marginLeft: '6px', color: '#25D366', fontSize: '13px' }} />}
                     {item.patient.is_in_emergency_situation &&
                       <span style={{ marginLeft: '6px', color: '#FF474C' }}>⚠</span>}
                     {item.patient.is_human_required &&
