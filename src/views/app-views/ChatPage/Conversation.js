@@ -7,6 +7,7 @@ import {
   makeSelectSingleChat,
   makeSelectSingleChatInfo,
 } from 'redux/selectors/Chats';
+import { makeSelectClinic } from 'redux/selectors/Clinic';
 import { addDividers, formatMessageForSocketSend } from 'utils/helpers';
 import ChatContentBody from './ChatContentBody';
 import ChatContentFooter from './ChatContentFooter';
@@ -32,6 +33,7 @@ const Conversation = ({
     makeSelectSingleChat
   );
   const { chatInfo } = useSelector(makeSelectSingleChatInfo);
+  const clinic = useSelector(makeSelectClinic());
 
   const dispatch = useDispatch();
 
@@ -128,7 +130,7 @@ const Conversation = ({
   const chatContentBody = (messages, next, patientPicture) =>
     messages ? (
       <ChatContentBody
-        messages={addDividers(messages, next)}
+        messages={addDividers(messages, next, clinic?.country)}
         patientPicture={patientPicture}
         onClickMarkHumanRequiredResolved={handleOnClickMarkHumanRequiredResolved}
         onClickMarkInEmergencySituationResolved={handleOnClickMarkInEmergencySituationResolved}

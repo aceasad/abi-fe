@@ -13,7 +13,6 @@ import {
 import { CaretDownOutlined } from '@ant-design/icons';
 import { useIntl } from 'react-intl';
 import { useDispatch } from 'react-redux';
-import dayjs from 'utils/dayjs';
 import MessagesRequiringImmediateAttentionTable from './MessagesRequiringImmediateAttentionTable';
 import overviewPageMessages from './messages';
 import {
@@ -33,11 +32,12 @@ import { DownOutlined } from '@ant-design/icons';
 import { setPatientShowMessages } from 'redux/actions/Patient';
 import { ROUTES } from 'routes';
 import { useHistory } from 'react-router-dom';
-import { getSafe } from 'utils/helpers';
+import { formatDateTimeByCountry, getSafe } from 'utils/helpers';
 import UpdateMessageRequiringImmediateAttentionStatus from './UpdateMessageRequiringImmediateAttentionStatus';
 import PreAppointmentQuestionnairePreviewModal from './PreAppointmentQuestionnairePreviewModal';
 import patient from 'redux/reducers/Patient';
 import { useSelector } from 'react-redux';
+import { makeSelectClinic } from 'redux/selectors/Clinic';
 const { Panel } = Collapse;
 
 const columnMap = {
@@ -59,6 +59,7 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
   const { formatMessage } = useIntl();
   const dispatch = useDispatch();
   const { isPasIntegrated } = useSelector(state => state.auth.user);
+  const clinic = useSelector(makeSelectClinic());
 
   const [activeAppointment, setActiveAppointment] = useState(null);
   useEffect(() => {
@@ -77,7 +78,18 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
       render: (_, row) => (
         <div>
           {
-            dayjs(row.created_datetime, 'DD/MM/YYYY HH:mm:ss A').format('DD/MM/YYYY, h:mm A')
+            formatDateTimeByCountry(
+              row.created_datetime,
+              clinic?.country,
+              'h:mm A',
+              [
+                'DD/MM/YYYY HH:mm:ss A',
+                'MM/DD/YYYY HH:mm:ss A',
+                'YYYY-MM-DDTHH:mm:ss',
+                'YYYY-MM-DDTHH:mm:ss.SSSZ',
+                'YYYY-MM-DD HH:mm:ss',
+              ]
+            )
           }
         </div>
       ),

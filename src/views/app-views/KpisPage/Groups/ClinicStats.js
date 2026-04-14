@@ -3,6 +3,8 @@ import { useSelector } from 'react-redux';
 import { makeSelectClinicStatsData } from 'redux/selectors/Overview';
 import { Card, Row, Col, Typography } from 'antd';
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, LabelList } from 'recharts';
+import { formatDateByCountry, getDateFormatByCountry } from 'utils/helpers';
+import dayjs from 'utils/dayjs';
 
 const { Text } = Typography;
 
@@ -80,7 +82,7 @@ const StatCard = ({ title, value, subtitle, color = '#000000', change = null, ch
   );
 };
 
-const ClinicStats = ({ title, previousPeriod, isMobile = false }) => {
+const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
   const {
     engagement_rate,
     booking_rate,
@@ -188,19 +190,20 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false }) => {
     { name: 'Engaged', value: total_patients_engaged ?? -1 },
     { name: 'Booked', value: bookings ?? -1 }
   ];
+  const mobileShortFormat = getDateFormatByCountry(country).replace('YYYY', 'YY');
 
   return (
     <>
       <Card title="Patient Communication Flow">
         {previousPeriod && !isMobile && (
           <Text type="secondary" style={{ position: "absolute", top: 20, left: 276 }}>
-            Previous period {previousPeriod[0].format('D MMMM YYYY')} - {previousPeriod[1].format('D MMMM YYYY')}
+            Previous period {formatDateByCountry(previousPeriod[0], country)} - {formatDateByCountry(previousPeriod[1], country)}
           </Text>
         )}
 
         {previousPeriod && isMobile && (
           <Text type="secondary" style={{ display: 'block', marginBottom: '12px', fontSize: '12px' }}>
-            Previous: {previousPeriod[0].format('DD/MM/YY')} - {previousPeriod[1].format('DD/MM/YY')}
+            Previous: {dayjs(previousPeriod[0]).format(mobileShortFormat)} - {dayjs(previousPeriod[1]).format(mobileShortFormat)}
           </Text>
         )}
 

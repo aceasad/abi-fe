@@ -15,6 +15,8 @@ const FormTimePicker = ({
   minuteStep = 15,
   showNow = false,
   disabled = false,
+  displayFormat = TIME_FORMAT_HH_MM,
+  use12Hours = false,
 }) => {
   const { formatMessage } = useIntl();
 
@@ -38,7 +40,10 @@ const FormTimePicker = ({
   const onChange = (timeMoment, timeString) => {
     setTime(timeMoment);
     setFieldTouched(field.name, true);
-    setFieldValue(field.name, timeString);
+    setFieldValue(
+      field.name,
+      timeMoment ? timeMoment.format(TIME_FORMAT_HH_MM) : ''
+    );
   };
 
   useEffect(() => {
@@ -62,7 +67,8 @@ const FormTimePicker = ({
           field.value ? field.value : defaultTime,
           TIME_FORMAT_HH_MM
         )}
-        format={TIME_FORMAT_HH_MM}
+        format={displayFormat}
+        use12Hours={use12Hours}
         onChange={onChange}
         hourStep={hourStep}
         minuteStep={minuteStep}
@@ -75,6 +81,8 @@ const FormTimePicker = ({
 
 FormTimePicker.defaultProps = {
   defaultTime: '00:00',
+  displayFormat: TIME_FORMAT_HH_MM,
+  use12Hours: false,
 };
 
 export default FormTimePicker;
