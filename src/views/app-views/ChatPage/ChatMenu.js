@@ -8,8 +8,7 @@ import { useIntl } from 'react-intl';
 import messages from './messages';
 import {
   chatListItemStyle,
-  formatMessageTimestamp,
-  removeLeadingZeroFromTime,
+  getDateFormatByCountry,
 } from 'utils/helpers';
 import {
   getAllChatsInfo,
@@ -20,10 +19,12 @@ import {
 } from 'redux/actions/Chats';
 import { useDispatch, useSelector } from 'react-redux';
 import { makeSelectAllChatsInfo } from 'redux/selectors/Chats';
+import { makeSelectClinic } from 'redux/selectors/Clinic';
 import { useDebounce, useLazyLoad } from 'utils/hooks';
 import Scrollbars from 'react-custom-scrollbars';
 import { CHAT_FILTERS, MESSAGE_STATUS } from 'constants/ChatConstants';
 import { Option } from 'antd/lib/mentions';
+import dayjs from 'utils/dayjs';
 
 const ChatMenu = (props) => {
 
@@ -58,6 +59,11 @@ const ChatMenu = (props) => {
 
   const { items, next, loading, scrollDown } = useSelector(
     makeSelectAllChatsInfo
+  );
+  const clinic = useSelector(makeSelectClinic());
+  const shortDateFormat = getDateFormatByCountry(clinic?.country).replace(
+    'YYYY',
+    'YY'
   );
 
   const CONVERSATION_FILTERS = [
@@ -316,12 +322,7 @@ const ChatMenu = (props) => {
                   color: '#888'
                 }}>
                   {lastMessageCreatedAt ?
-                    new Date(lastMessageCreatedAt)
-                      .toLocaleDateString('en-GB', {
-                        day: '2-digit',
-                        month: '2-digit',
-                        year: '2-digit'
-                      }).replace(/\//g, '/') :
+                    dayjs(lastMessageCreatedAt).format(shortDateFormat) :
                     ''}
                 </div>
               </div>

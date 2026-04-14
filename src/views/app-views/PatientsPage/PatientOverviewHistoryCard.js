@@ -9,6 +9,9 @@ import { useIntl } from 'react-intl';
 import { APPOINTMENT_HISTORY } from 'constants/ClinicConstants';
 import { CalendarOutlined, ClockCircleOutlined, UserOutlined, FileTextOutlined } from '@ant-design/icons';
 import utils from 'utils';
+import { makeSelectClinic } from 'redux/selectors/Clinic';
+import { formatDateByCountry, removeLeadingZeroFromTime } from 'utils/helpers';
+import dayjs from 'utils/dayjs';
 
 const { Title, Text } = Typography;
 const { useBreakpoint } = Grid;
@@ -41,6 +44,7 @@ const PatientOverviewHistoryCard = ({ patient, showAppointment }) => {
   const isMobile = !screens.includes('lg');
 
   const { items, loading, count, page } = useSelector(makeSelectHistory());
+  const clinic = useSelector(makeSelectClinic());
 
   const { PASProvider } = useSelector((state) => state.auth.user || {});
   const isMedbridge = PASProvider?.toLowerCase() === 'medbridge';
@@ -49,10 +53,16 @@ const PatientOverviewHistoryCard = ({ patient, showAppointment }) => {
     {
       title: formatMessage(messages.columnTitleDate),
       dataIndex: 'date',
+      render: (date) => formatDateByCountry(date, clinic?.country, [
+        'DD/MM/YYYY',
+        'MM/DD/YYYY',
+        'YYYY-MM-DD',
+      ]),
     },
     {
       title: formatMessage(messages.columnTitleTime),
       dataIndex: 'time',
+      render: (time) => removeLeadingZeroFromTime(dayjs(time, ['HH:mm', 'h:mm A']).format('hh:mm A')),
     },
     ...(!isMedbridge
       ? [
@@ -87,7 +97,13 @@ const PatientOverviewHistoryCard = ({ patient, showAppointment }) => {
         <Space style={{ width: '100%', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <Space>
             <CalendarOutlined style={{ fontSize: '16px', color: '#1890ff' }} />
-            <Text strong>{appointment.date}</Text>
+            <Text strong>
+              {formatDateByCountry(appointment.date, clinic?.country, [
+                'DD/MM/YYYY',
+                'MM/DD/YYYY',
+                'YYYY-MM-DD',
+              ])}
+            </Text>
           </Space>
           <div>
             {statusColor(appointment.status?.name)}
@@ -96,7 +112,11 @@ const PatientOverviewHistoryCard = ({ patient, showAppointment }) => {
 
         <Space>
           <ClockCircleOutlined style={{ fontSize: '12px', color: '#8c8c8c' }} />
-          <Text type="secondary" style={{ fontSize: '13px' }}>{appointment.time}</Text>
+          <Text type="secondary" style={{ fontSize: '13px' }}>
+            {removeLeadingZeroFromTime(
+              dayjs(appointment.time, ['HH:mm', 'h:mm A']).format('hh:mm A')
+            )}
+          </Text>
         </Space>
 
         {!isMedbridge && (
