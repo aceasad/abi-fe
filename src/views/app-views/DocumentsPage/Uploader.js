@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button } from 'antd';
+import { Button, message } from 'antd';
 import documentsService from 'services/DocumentsService';
 import Modal from 'antd/lib/modal/Modal';
 import Dropzone from './Dropzone';
@@ -8,7 +8,7 @@ import FormSelect from 'components/custom-components/Form/FormSelect';
 import Form from 'antd/lib/form/Form';
 import { Field, Formik } from 'formik';
 
-const Uploader = ({ handleUpdateDataSource, appointmentTypes }) => {
+const Uploader = ({ handleUpdateDataSource, appointmentTypes, locations, isMedbridge }) => {
   const [open, setOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [fileListToUpload, setFileListToUpload] = useState([]);
@@ -26,44 +26,71 @@ const Uploader = ({ handleUpdateDataSource, appointmentTypes }) => {
 
   const handleOk = (values) => {
     setConfirmLoading(true);
-    let appointment_type_name;
-    try {
-      appointment_type_name = appointmentTypes.find(
-        (type) => type.id === values.appointmentType
-      )['name'];
+    const selectedDocumentType = isMedbridge
+      ? values.document_type
+      : 'appointment_type';
+    const selectedLocation = (locations || []).find(
+      (location) => String(location?.location_id) === String(values.location_id)
+    );
 
-    } catch {
-      appointment_type_name = null;
-    }
     createDocument({
       file: fileListToUpload[0],
       document_name: values.document_name,
-      appointment_type_name,
-    }).then(() => {
-      setOpen(false);
-      setConfirmLoading(false);
-    });
+      document_type: selectedDocumentType,
+      appointment_type_id:
+        selectedDocumentType === 'appointment_type' ? values.appointment_type_id : null,
+      location_id:
+        selectedDocumentType === 'location' ? values.location_id : null,
+      location: selectedLocation || null,
+    })
+      .then(() => {
+        setOpen(false);
+      })
+      .catch((error) => {
+        const data = error?.response?.data;
+        if (typeof data === 'string') {
+          message.error(data);
+          return;
+        }
+        if (data && typeof data === 'object') {
+          const firstError = Object.values(data)?.[0];
+          if (Array.isArray(firstError) && firstError.length > 0) {
+            message.error(firstError[0]);
+            return;
+          }
+        }
+        message.error('Unable to upload document');
+      })
+      .finally(() => {
+        setConfirmLoading(false);
+      });
   };
 
   const handleCancel = () => {
     setOpen(false);
   };
 
+  const handleLocationSelect = (setFieldValue, _fieldName, value) => {
+    const selectedLocation = (locations || []).find(
+      (location) => String(location?.location_id) === String(value)
+    );
+    const locationName = selectedLocation?.location_description || selectedLocation?.location_name;
+    if (locationName) {
+      setFieldValue('document_name', locationName);
+    }
+  };
+
   return (
     <>
-      <div
-        style={{
-          marginLeft: 'auto',
-          marginBottom: '2rem',
-        }}
-      >
-        <Button type="primary" onClick={showModal}>
-          Upload document
-        </Button>
-      </div>
+      <Button type="primary" onClick={showModal}>
+        Upload document
+      </Button>
       <Formik
         initialValues={{
-          appointmentType: '',
+          document_name: '',
+          document_type: 'appointment_type',
+          appointment_type_id: '',
+          location_id: '',
         }}
         onSubmit={handleOk}
         enableReinitialize
@@ -110,13 +137,53 @@ const Uploader = ({ handleUpdateDataSource, appointmentTypes }) => {
                   name="document_name"
                 />
                 <Field
-                  label="Appointment Type"
+                  label="Document Type"
                   component={FormSelect}
-                  name="appointmentType"
-                  options={appointmentTypes}
+                  name="document_type"
+                  options={
+                    isMedbridge
+                      ? [
+                          { id: 'appointment_type', name: 'Appointment Type Specific' },
+                          { id: 'location', name: 'Clinic Location Specific' },
+                        ]
+                      : [{ id: 'appointment_type', name: 'Appointment Type Specific' }]
+                  }
                   optionField="name"
-                  defaultOption={values.appointmentType}
+                  defaultOption={values.document_type}
                 />
+                {values.document_type === 'appointment_type' && (
+                  <Field
+                    label="Appointment Type"
+                    component={FormSelect}
+                    name="appointment_type_id"
+                    options={appointmentTypes}
+                    optionField="name"
+                    defaultOption={values.appointment_type_id}
+                  />
+                )}
+                {isMedbridge && values.document_type === 'location' && (
+                  <Field
+                    label="Location"
+                    component={FormSelect}
+                    name="location_id"
+                    options={(locations || [])
+                      .filter((location) => location?.location_id)
+                      .map((location) => ({
+                        ...location,
+                        id: String(location.location_id),
+                        name: `${location.location_name || location.location_id} (${location.location_id})`,
+                      }))}
+                    optionField="name"
+                    defaultOption={values.location_id}
+                    afterSelectChange={handleLocationSelect}
+                    showSearch
+                    filterOption={(input, option) =>
+                      `${option?.value ?? ''} ${option?.children ?? ''}`
+                        .toLowerCase()
+                        .includes(input.toLowerCase())
+                    }
+                  />
+                )}
               </Form>
             </div>
           </Modal>
