@@ -31,6 +31,9 @@ const EditModal = ({
 
   const handleSubmit = (values) => {
     setConfirmLoading(true);
+    const selectedDocumentType = isMedbridge
+      ? values.document_type
+      : 'appointment_type';
 
     const selectedLocation = isMedbridge
       ? (locations || []).find(
@@ -41,9 +44,11 @@ const EditModal = ({
     const payload = {
       id: record.id,
       document_name: values.document_name,
-      appointment_type_ids: values.appointment_type_id
-        ? [values.appointment_type_id]
-        : undefined,
+      document_type: selectedDocumentType,
+      appointment_type_id:
+        selectedDocumentType === 'appointment_type' ? values.appointment_type_id || null : null,
+      location_id:
+        selectedDocumentType === 'location' ? values.location_id || null : null,
       location: selectedLocation || undefined,
       file: fileListToUpload[0],
     };
@@ -107,6 +112,7 @@ const EditModal = ({
         enableReinitialize
         initialValues={{
           document_name: record.document_name || '',
+          document_type: record.document_type || 'appointment_type',
           appointment_type_id: record.appointment_type_id || '',
           location_id: record.location_id ? String(record.location_id) : '',
         }}
@@ -152,20 +158,37 @@ const EditModal = ({
               <Form layout="vertical" name="document-edit-form">
                 <Field label="Document name" component={FormField} name="document_name" />
                 <Field
-                  label="Appointment type"
+                  label="Document Type"
                   component={FormSelect}
-                  name="appointment_type_id"
-                  options={appointmentOptions}
-                  optionField="name"
-                  defaultOption={values.appointment_type_id}
-                  showSearch
-                  filterOption={(input, option) =>
-                    `${option?.value ?? ''} ${option?.children ?? ''}`
-                      .toLowerCase()
-                      .includes(input.toLowerCase())
+                  name="document_type"
+                  options={
+                    isMedbridge
+                      ? [
+                          { id: 'appointment_type', name: 'Appointment Type Specific' },
+                          { id: 'location', name: 'Clinic Location Specific' },
+                        ]
+                      : [{ id: 'appointment_type', name: 'Appointment Type Specific' }]
                   }
+                  optionField="name"
+                  defaultOption={values.document_type}
                 />
-                {isMedbridge && (
+                {values.document_type === 'appointment_type' && (
+                  <Field
+                    label="Appointment type"
+                    component={FormSelect}
+                    name="appointment_type_id"
+                    options={appointmentOptions}
+                    optionField="name"
+                    defaultOption={values.appointment_type_id}
+                    showSearch
+                    filterOption={(input, option) =>
+                      `${option?.value ?? ''} ${option?.children ?? ''}`
+                        .toLowerCase()
+                        .includes(input.toLowerCase())
+                    }
+                  />
+                )}
+                {isMedbridge && values.document_type === 'location' && (
                   <Field
                     label="Location"
                     component={FormSelect}

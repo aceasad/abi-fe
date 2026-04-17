@@ -26,11 +26,9 @@ const Uploader = ({ handleUpdateDataSource, appointmentTypes, locations, isMedbr
 
   const handleOk = (values) => {
     setConfirmLoading(true);
-    const appointment_type_ids = Array.isArray(values.appointmentTypes)
-      ? values.appointmentTypes
-      : values.appointmentTypes
-        ? [values.appointmentTypes]
-        : [];
+    const selectedDocumentType = isMedbridge
+      ? values.document_type
+      : 'appointment_type';
     const selectedLocation = (locations || []).find(
       (location) => String(location?.location_id) === String(values.location_id)
     );
@@ -38,7 +36,11 @@ const Uploader = ({ handleUpdateDataSource, appointmentTypes, locations, isMedbr
     createDocument({
       file: fileListToUpload[0],
       document_name: values.document_name,
-      appointment_type_ids,
+      document_type: selectedDocumentType,
+      appointment_type_id:
+        selectedDocumentType === 'appointment_type' ? values.appointment_type_id : null,
+      location_id:
+        selectedDocumentType === 'location' ? values.location_id : null,
       location: selectedLocation || null,
     })
       .then(() => {
@@ -86,7 +88,8 @@ const Uploader = ({ handleUpdateDataSource, appointmentTypes, locations, isMedbr
       <Formik
         initialValues={{
           document_name: '',
-          appointmentTypes: [],
+          document_type: 'appointment_type',
+          appointment_type_id: '',
           location_id: '',
         }}
         onSubmit={handleOk}
@@ -134,15 +137,31 @@ const Uploader = ({ handleUpdateDataSource, appointmentTypes, locations, isMedbr
                   name="document_name"
                 />
                 <Field
-                  label="Appointment Type(s)"
+                  label="Document Type"
                   component={FormSelect}
-                  name="appointmentTypes"
-                  options={appointmentTypes}
+                  name="document_type"
+                  options={
+                    isMedbridge
+                      ? [
+                          { id: 'appointment_type', name: 'Appointment Type Specific' },
+                          { id: 'location', name: 'Clinic Location Specific' },
+                        ]
+                      : [{ id: 'appointment_type', name: 'Appointment Type Specific' }]
+                  }
                   optionField="name"
-                  defaultOption={values.appointmentTypes}
-                  mode="multiple"
+                  defaultOption={values.document_type}
                 />
-                {isMedbridge && (
+                {values.document_type === 'appointment_type' && (
+                  <Field
+                    label="Appointment Type"
+                    component={FormSelect}
+                    name="appointment_type_id"
+                    options={appointmentTypes}
+                    optionField="name"
+                    defaultOption={values.appointment_type_id}
+                  />
+                )}
+                {isMedbridge && values.document_type === 'location' && (
                   <Field
                     label="Location"
                     component={FormSelect}

@@ -199,6 +199,17 @@ const DocumentsPage = () => {
       key: 'document_name',
     },
     {
+      title: 'Document type',
+      dataIndex: 'document_type',
+      key: 'document_type',
+      render: (document_type) => (
+        <Tag color={document_type === 'location' ? 'blue' : 'purple'}>
+          {(document_type || 'appointment_type').replace('_', ' ').toUpperCase()}
+        </Tag>
+      ),
+      responsive: ['md'],
+    },
+    {
       title: 'Appointment type',
       dataIndex: 'appointment_type',
       key: 'appointment_type',
@@ -262,10 +273,12 @@ const DocumentsPage = () => {
     const query = search.trim().toLowerCase();
     if (!query) return true;
     const appointmentType = (document.appointment_type || '').toLowerCase();
+    const documentType = (document.document_type || '').toLowerCase();
     const documentName = (document.document_name || '').toLowerCase();
     const locationLabel = getLocationLabel(document.location_id).toLowerCase();
     return (
       documentName.includes(query) ||
+      documentType.includes(query) ||
       appointmentType.includes(query) ||
       locationLabel.includes(query)
     );
@@ -292,6 +305,11 @@ const DocumentsPage = () => {
             <Tag color="red">{document.appointment_type.toUpperCase()}</Tag>
           </Space>
         )}
+        <Space size="small">
+          <Tag color={document.document_type === 'location' ? 'blue' : 'purple'}>
+            {(document.document_type || 'appointment_type').replace('_', ' ').toUpperCase()}
+          </Tag>
+        </Space>
         {isMedbridge && (
           <Space size="small">
             <TagOutlined style={{ fontSize: '12px', color: '#8c8c8c' }} />

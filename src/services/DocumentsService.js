@@ -11,11 +11,14 @@ class DocumentsService extends ApiService {
     const formData = new FormData();
     formData.append('file', payload.file);
     formData.append('document_name', payload.document_name);
-    if (Array.isArray(payload.appointment_type_ids)) {
-      formData.append(
-        'appointment_type_ids',
-        JSON.stringify(payload.appointment_type_ids)
-      );
+    if (payload.document_type) {
+      formData.append('document_type', payload.document_type);
+    }
+    if (payload.appointment_type_id != null && payload.appointment_type_id !== '') {
+      formData.append('appointment_type_id', payload.appointment_type_id);
+    }
+    if (payload.location_id != null && payload.location_id !== '') {
+      formData.append('location_id', payload.location_id);
     }
     if (payload.location) {
       formData.append('location', JSON.stringify(payload.location));
@@ -33,8 +36,14 @@ class DocumentsService extends ApiService {
     if (payload.document_name != null && payload.document_name !== '') {
       formData.append('document_name', payload.document_name);
     }
-    if (Array.isArray(payload.appointment_type_ids) && payload.appointment_type_ids.length > 0) {
-      formData.append('appointment_type_ids', JSON.stringify(payload.appointment_type_ids));
+    if (payload.document_type) {
+      formData.append('document_type', payload.document_type);
+    }
+    if (payload.appointment_type_id != null) {
+      formData.append('appointment_type_id', payload.appointment_type_id);
+    }
+    if (payload.location_id != null) {
+      formData.append('location_id', payload.location_id);
     }
     if (payload.location) {
       formData.append('location', JSON.stringify(payload.location));
