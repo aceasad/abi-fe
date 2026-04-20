@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Layout, Space, Table, Tag, Typography, Grid, Card, Row, Col, Button, Tooltip, message } from 'antd';
+import { Layout, Space, Table, Tag, Typography, Grid, Card, Row, Col, Button, Tooltip, message, Input } from 'antd';
 import documentsService from 'services/DocumentsService';
+import patientService from 'services/PatientService';
 import EditModal from './EditModal';
 import Uploader from './Uploader';
 import AskQuestions from './AskQuestions';
 import utils from 'utils';
 import Modal from 'components/shared-components/Modal';
-import { FileTextOutlined, DownloadOutlined, TagOutlined, DeleteOutlined } from '@ant-design/icons';
+import { FileTextOutlined, DownloadOutlined, TagOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons';
+import { useSelector } from 'react-redux';
 const { Title } = Typography;
 
 const { useBreakpoint } = Grid;
@@ -14,7 +16,14 @@ const { useBreakpoint } = Grid;
 const DocumentsPage = () => {
   const [listOfDocuments, setListOfDocuments] = useState([]);
   const [appointmentTypes, setAppointmentTypes] = useState([]);
+  const [locations, setLocations] = useState([]);
   const [documentToDelete, setDocumentToDelete] = useState(null);
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const [bulkDeleteLoading, setBulkDeleteLoading] = useState(false);
+  const [isBulkDeleteModalOpen, setIsBulkDeleteModalOpen] = useState(false);
+  const [search, setSearch] = useState('');
+  const { PASProvider } = useSelector((state) => state.auth.user || {});
+  const isMedbridge = (PASProvider || '').toLowerCase() === 'medbridge';
 
   const screens = utils.getBreakPoint(useBreakpoint());
   const isMobile = !screens.includes('lg');
@@ -46,12 +55,63 @@ const DocumentsPage = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    if (!isMedbridge) {
+      setLocations([]);
+      return;
+    }
+    async function fetchLocations() {
+      try {
+        const response = await patientService.getPatientLocations();
+        setLocations(Array.isArray(response.data) ? response.data : []);
+      } catch {
+        setLocations([]);
+      }
+    }
+    fetchLocations();
+  }, [isMedbridge]);
+
+  useEffect(() => {
+    const ids = new Set((listOfDocuments || []).map((item) => item.id));
+    setSelectedRowKeys((prev) => prev.filter((key) => ids.has(key)));
+  }, [listOfDocuments]);
+
+  const getLocationLabel = (locationId) => {
+    if (!locationId) return '-';
+    const location = (locations || []).find(
+      (item) => String(item?.location_id) === String(locationId)
+    );
+    const locationName = location?.location_description || location?.location_name;
+    return locationName ? `${locationName} (${locationId})` : `(${locationId})`;
+  };
+
   const handleUpdateDataSource = (newValues, type) => {
     if (type === 'delete') {
       const filteredData = listOfDocuments.filter(
         (item) => item.id !== newValues
       );
       setListOfDocuments(filteredData);
+      return;
+    }
+
+    const incomingValues = Array.isArray(newValues) ? newValues : [newValues];
+    const hasArrayResponse = Array.isArray(newValues);
+
+    if (hasArrayResponse) {
+      const updated = [...listOfDocuments];
+      incomingValues.forEach((value) => {
+        const existingIndex = updated.findIndex((item) => item.id === value.id);
+        const mappedValue = {
+          ...value,
+          key: value.id,
+        };
+        if (existingIndex >= 0) {
+          updated[existingIndex] = mappedValue;
+        } else {
+          updated.push(mappedValue);
+        }
+      });
+      setListOfDocuments(updated);
       return;
     }
 
@@ -93,11 +153,61 @@ const DocumentsPage = () => {
     });
   };
 
+  const handleBulkDelete = async () => {
+    if (!selectedRowKeys.length) {
+      setIsBulkDeleteModalOpen(false);
+      return;
+    }
+    setBulkDeleteLoading(true);
+    const results = await Promise.allSettled(
+      selectedRowKeys.map((id) => documentsService.deleteDocumentById(id))
+    );
+
+    const deletedIds = [];
+    let failedCount = 0;
+    results.forEach((result, index) => {
+      if (result.status === 'fulfilled') {
+        deletedIds.push(selectedRowKeys[index]);
+      } else {
+        failedCount += 1;
+      }
+    });
+
+    if (deletedIds.length) {
+      setListOfDocuments((prev) => prev.filter((item) => !deletedIds.includes(item.id)));
+      setSelectedRowKeys((prev) => prev.filter((id) => !deletedIds.includes(id)));
+    }
+
+    if (failedCount === 0) {
+      message.success(`${deletedIds.length} document(s) deleted successfully`);
+    } else if (deletedIds.length) {
+      message.warning(
+        `${deletedIds.length} document(s) deleted, ${failedCount} failed`
+      );
+    } else {
+      message.error('Failed to delete selected documents');
+    }
+
+    setBulkDeleteLoading(false);
+    setIsBulkDeleteModalOpen(false);
+  };
+
   const columns = [
     {
       title: 'Document name',
       dataIndex: 'document_name',
       key: 'document_name',
+    },
+    {
+      title: 'Document type',
+      dataIndex: 'document_type',
+      key: 'document_type',
+      render: (document_type) => (
+        <Tag color={document_type === 'location' ? 'blue' : 'purple'}>
+          {(document_type || 'appointment_type').replace('_', ' ').toUpperCase()}
+        </Tag>
+      ),
+      responsive: ['md'],
     },
     {
       title: 'Appointment type',
@@ -110,6 +220,15 @@ const DocumentsPage = () => {
       ),
       responsive: ['md'], // Hide on mobile
     },
+    ...(isMedbridge
+      ? [{
+        title: 'Location',
+        dataIndex: 'location_id',
+        key: 'location_id',
+        render: (location_id) => getLocationLabel(location_id),
+        responsive: ['md'],
+      }]
+      : []),
     {
       title: '',
       dataIndex: 'actions',
@@ -126,6 +245,13 @@ const DocumentsPage = () => {
                 size="small"
               />
             </Tooltip>
+            <EditModal
+              record={record}
+              appointmentTypes={appointmentTypes}
+              locations={locations}
+              isMedbridge={isMedbridge}
+              handleUpdateDataSource={handleUpdateDataSource}
+            />
             <Tooltip title="Delete">
               <Button
                 icon={<DeleteOutlined />}
@@ -142,6 +268,21 @@ const DocumentsPage = () => {
       ),
     },
   ];
+
+  const filteredDocuments = listOfDocuments.filter((document) => {
+    const query = search.trim().toLowerCase();
+    if (!query) return true;
+    const appointmentType = (document.appointment_type || '').toLowerCase();
+    const documentType = (document.document_type || '').toLowerCase();
+    const documentName = (document.document_name || '').toLowerCase();
+    const locationLabel = getLocationLabel(document.location_id).toLowerCase();
+    return (
+      documentName.includes(query) ||
+      documentType.includes(query) ||
+      appointmentType.includes(query) ||
+      locationLabel.includes(query)
+    );
+  });
 
   // Mobile Card Component
   const DocumentCard = ({ document }) => (
@@ -164,8 +305,28 @@ const DocumentsPage = () => {
             <Tag color="red">{document.appointment_type.toUpperCase()}</Tag>
           </Space>
         )}
+        <Space size="small">
+          <Tag color={document.document_type === 'location' ? 'blue' : 'purple'}>
+            {(document.document_type || 'appointment_type').replace('_', ' ').toUpperCase()}
+          </Tag>
+        </Space>
+        {isMedbridge && (
+          <Space size="small">
+            <TagOutlined style={{ fontSize: '12px', color: '#8c8c8c' }} />
+            <Typography.Text type="secondary">
+              {getLocationLabel(document.location_id)}
+            </Typography.Text>
+          </Space>
+        )}
 
         <Space style={{ width: '100%', justifyContent: 'flex-end', marginTop: '8px' }}>
+          <EditModal
+            record={document}
+            appointmentTypes={appointmentTypes}
+            locations={locations}
+            isMedbridge={isMedbridge}
+            handleUpdateDataSource={handleUpdateDataSource}
+          />
           <Tooltip title="Download">
             <Button
               icon={<DownloadOutlined />}
@@ -194,24 +355,69 @@ const DocumentsPage = () => {
 
   return (
     <Layout style={{ maxWidth: '100%', overflowX: 'hidden' }}>
-      <div className="mb-4" style={{ paddingTop: isMobile ? 0 : '24px' }}>
-        <Typography.Title level={2} style={{ margin: 0, marginBottom: '16px' }}>
-          Documents
-        </Typography.Title>
-      </div>
-
-      <div style={{ marginBottom: '16px' }}>
-        <Uploader
-          handleUpdateDataSource={handleUpdateDataSource}
-          appointmentTypes={appointmentTypes}
-        />
+      <div className="mb-4" style={{ paddingTop: isMobile ? 0 : '24px', marginBottom: '16px' }}>
+        {isMobile ? (
+          <>
+            <Typography.Title level={2} style={{ margin: 0, marginBottom: '16px' }}>
+              Documents
+            </Typography.Title>
+            <Input
+              placeholder="Search documents"
+              prefix={<SearchOutlined />}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              style={{ marginBottom: '12px' }}
+            />
+            <Space wrap size="small">
+              <Uploader
+                handleUpdateDataSource={handleUpdateDataSource}
+                appointmentTypes={appointmentTypes}
+                locations={locations}
+                isMedbridge={isMedbridge}
+              />
+            </Space>
+          </>
+        ) : (
+          <Row gutter={16} align="middle">
+            <Col flex="auto">
+              <Typography.Title level={2} style={{ margin: 0 }}>
+                Documents
+              </Typography.Title>
+            </Col>
+            <Col>
+              <Space size="middle">
+                <Input
+                  placeholder="Search documents"
+                  prefix={<SearchOutlined />}
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  style={{ width: '220px' }}
+                />
+                <Uploader
+                  handleUpdateDataSource={handleUpdateDataSource}
+                  appointmentTypes={appointmentTypes}
+                  locations={locations}
+                  isMedbridge={isMedbridge}
+                />
+                <Button
+                  danger
+                  icon={<DeleteOutlined />}
+                  disabled={!selectedRowKeys.length}
+                  onClick={() => setIsBulkDeleteModalOpen(true)}
+                >
+                  Delete selected ({selectedRowKeys.length})
+                </Button>
+              </Space>
+            </Col>
+          </Row>
+        )}
       </div>
 
       {isMobile ? (
         // Mobile Card View
-        listOfDocuments.length > 0 ? (
+        filteredDocuments.length > 0 ? (
           <Row gutter={[12, 12]}>
-            {listOfDocuments.map((document) => (
+            {filteredDocuments.map((document) => (
               <Col xs={24} sm={12} key={document.id}>
                 <DocumentCard document={document} />
               </Col>
@@ -224,7 +430,14 @@ const DocumentsPage = () => {
         )
       ) : (
         // Desktop Table View
-        <Table columns={columns} dataSource={listOfDocuments} />
+        <Table
+          columns={columns}
+          dataSource={filteredDocuments}
+          rowSelection={{
+            selectedRowKeys,
+            onChange: (keys) => setSelectedRowKeys(keys),
+          }}
+        />
       )}
 
       <Modal
@@ -235,6 +448,16 @@ const DocumentsPage = () => {
         visible={!!documentToDelete}
         handlePrimaryAction={handleDelete}
         handleSecondaryAction={() => setDocumentToDelete(null)}
+      />
+      <Modal
+        title="Delete Selected Documents"
+        description={`Are you sure you want to delete ${selectedRowKeys.length} selected document(s)?`}
+        primaryAction="Delete"
+        secondaryAction="Cancel"
+        visible={isBulkDeleteModalOpen}
+        handlePrimaryAction={handleBulkDelete}
+        handleSecondaryAction={() => setIsBulkDeleteModalOpen(false)}
+        confirmLoading={bulkDeleteLoading}
       />
     </Layout>
   );
