@@ -28,8 +28,9 @@ import {
   reverseAppointmentReminderCancellation,
   rescheduleAppointmentReminder,
 } from 'redux/actions/Staff';
-import { removeLeadingZeroFromTime } from 'utils/helpers';
+import { formatDateByCountry, removeLeadingZeroFromTime } from 'utils/helpers';
 import dayjs from 'utils/dayjs';
+import { makeSelectClinic } from 'redux/selectors/Clinic';
 
 const { Panel } = Collapse;
 
@@ -56,6 +57,7 @@ const AppointmentsReminders = ({ title, startOpen }) => {
   const { formatMessage } = useIntl();
   const dispatch = useDispatch();
   const { PASProvider } = useSelector((state) => state.auth.user || {});
+  const clinic = useSelector(makeSelectClinic());
   const isMedbridge = PASProvider?.toLowerCase() === 'medbridge';
 
   const [activeAppointment, setActiveAppointment] = useState(null);
@@ -268,8 +270,13 @@ const AppointmentsReminders = ({ title, startOpen }) => {
           if (!row.reminder?.date || !row.reminder?.time) {
             return <div className="text-left text-uppercase"></div>;
           }
+          const formattedReminderDate = formatDateByCountry(
+            row.reminder.date,
+            clinic?.country,
+            ['DD/MM/YYYY', 'MM/DD/YYYY', 'YYYY-MM-DD']
+          );
           return (
-            <div className="text-left text-uppercase">{`${row.reminder.date} ${removeLeadingZeroFromTime(
+            <div className="text-left text-uppercase">{`${formattedReminderDate} ${removeLeadingZeroFromTime(
               dayjs(row.reminder.time, ['h:mm A']).format('hh:mm A')
             )}`}</div>
           );
@@ -327,8 +334,13 @@ const AppointmentsReminders = ({ title, startOpen }) => {
             if (!row.appointment?.date || !row.appointment?.time) {
               return <div className="text-left text-uppercase"></div>;
             }
+            const formattedAppointmentDate = formatDateByCountry(
+              row.appointment.date,
+              clinic?.country,
+              ['DD/MM/YYYY', 'MM/DD/YYYY', 'YYYY-MM-DD']
+            );
             return (
-              <div className="text-left text-uppercase">{`${row.appointment.date} ${removeLeadingZeroFromTime(
+              <div className="text-left text-uppercase">{`${formattedAppointmentDate} ${removeLeadingZeroFromTime(
                 dayjs(row.appointment.time, ['h:mm A']).format('hh:mm A')
               )}`}</div>
             );

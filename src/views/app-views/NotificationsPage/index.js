@@ -15,6 +15,7 @@ import { Link } from 'react-router-dom';
 import { useIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
 import { makeSelectLoginDetails } from 'redux/selectors/Auth';
+import { makeSelectClinic } from 'redux/selectors/Clinic';
 import {
     makeSelectNotifications,
     makeSelectUnreadCount,
@@ -24,7 +25,11 @@ import {
     makeSelectBookingNotifications,
     makeSelectOffTopicNotifications
 } from 'redux/selectors/Notifications';
-import { createWebsocketNotificationUrl, parseReceivedEvent } from 'utils/helpers';
+import {
+    createWebsocketNotificationUrl,
+    parseReceivedEvent,
+    formatDateByCountry
+} from 'utils/helpers';
 import { addOneMessage, resetChats } from 'redux/actions/Chats';
 import {
     addNotification,
@@ -54,6 +59,7 @@ const { Title, Text } = Typography;
 const Notification = () => {
     const { formatMessage } = useIntl();
     const { token } = useSelector(makeSelectLoginDetails());
+    const clinic = useSelector(makeSelectClinic());
     const notifications = useSelector(makeSelectNotifications()) || [];
     const unreadCount = useSelector(makeSelectUnreadCount()) || 0;
     const fetchLoading = useSelector(makeSelectFetchLoading()) || false;
@@ -133,7 +139,7 @@ const Notification = () => {
         if (diffInMinutes < 1) return 'Just now';
         if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
         if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)}h ago`;
-        return date.toLocaleDateString();
+        return formatDateByCountry(date, clinic?.country);
     };
 
     // Define human intervention notification types

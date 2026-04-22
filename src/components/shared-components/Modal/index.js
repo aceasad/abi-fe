@@ -8,6 +8,7 @@ const ModalComponent = ({
   secondaryAction,
   title,
   description,
+  confirmLoading,
 }) => {
   return (
     <div>
@@ -18,6 +19,7 @@ const ModalComponent = ({
         open={visible}
         onOk={handlePrimaryAction}
         onCancel={handleSecondaryAction}
+        confirmLoading={confirmLoading}
       >
         {description}
       </Modal>

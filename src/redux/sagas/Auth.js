@@ -103,7 +103,20 @@ export function* createUserPassword() {
       yield call(AuthService.createUserPassword, payload);
       yield put(setPasswordChanged());
     } catch (err) {
-      yield put(showAuthMessage(messages.createPasswordError));
+      const backendError =
+        err?.response?.data?.error ||
+        err?.response?.data?.detail ||
+        err?.message;
+      yield put(
+        showAuthMessage(
+          backendError
+            ? {
+                id: messages.createPasswordError.id,
+                defaultMessage: backendError,
+              }
+            : messages.createPasswordError
+        )
+      );
     } finally {
       yield put(showLoading(false));
     }

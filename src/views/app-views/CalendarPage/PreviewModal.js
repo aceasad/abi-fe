@@ -7,11 +7,16 @@ import { CloseOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import Loading from 'components/shared-components/Loading';
 import { useSelector } from 'react-redux';
 import { makeSelectSingleAppointment } from 'redux/selectors/Appointment';
+import { makeSelectClinic } from 'redux/selectors/Clinic';
 import { Button, Space, Typography } from 'antd';
 import { NESTED_MODAL } from 'views/app-views/CalendarPage/AppointmentPreview';
 import Flex from 'components/shared-components/Flex';
 import RowWithMultipleColumns from 'components/util-components/Grid/RowWithMultipleColumns';
-import { RenderPredictionText, removeLeadingZeroFromTime } from 'utils/helpers';
+import {
+  formatDateByCountry,
+  RenderPredictionText,
+  removeLeadingZeroFromTime,
+} from 'utils/helpers';
 import dayjs from 'utils/dayjs';
 
 function PreviewModal({
@@ -25,6 +30,7 @@ function PreviewModal({
   const { appointment, singleLoading } = useSelector(
     makeSelectSingleAppointment()
   );
+  const clinic = useSelector(makeSelectClinic());
   const isLoading = singleLoading || !appointment;
   const { isPasIntegrated, PASProvider } = useSelector((state) => state.auth.user || {});
   const isMedbridge = PASProvider?.toLowerCase() === 'medbridge';
@@ -90,7 +96,11 @@ function PreviewModal({
     },
     {
       label: formatMessage(messages.date),
-      value: appointment?.date,
+      value: formatDateByCountry(appointment?.date, clinic?.country, [
+        'DD/MM/YYYY',
+        'MM/DD/YYYY',
+        'YYYY-MM-DD',
+      ]),
     },
     {
       label: formatMessage(messages.type),

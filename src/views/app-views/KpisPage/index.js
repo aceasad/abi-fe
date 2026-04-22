@@ -25,6 +25,7 @@ import ClinicStats from './Groups/ClinicStats';
 import { getOverviewClinicStatsData } from 'redux/actions/Overview';
 import { getCampaigns } from 'redux/actions/Patient';
 import { makeSelectCampaigns } from 'redux/selectors/Patient';
+import { makeSelectClinic } from 'redux/selectors/Clinic';
 import { DownloadOutlined } from '@ant-design/icons';
 import overviewService from 'services/OverviewService';
 import {
@@ -32,6 +33,7 @@ import {
 } from 'configs/AppConfig';
 import dayjs from 'utils/dayjs';
 import utils from 'utils';
+import { getDateFormatByCountry } from 'utils/helpers';
 const { RangePicker } = DatePicker;
 const { Option } = Select;
 const { useBreakpoint } = Grid;
@@ -49,9 +51,11 @@ const KpisPage = () => {
   const { formatMessage } = useIntl();
   const dispatch = useDispatch();
   const campaignsSelector = useSelector(makeSelectCampaigns());
+  const clinic = useSelector(makeSelectClinic());
   const { campaigns, loading: campaignsLoading } = campaignsSelector;
   const screens = utils.getBreakPoint(useBreakpoint());
   const isMobile = !screens.includes('lg');
+  const datePickerFormat = getDateFormatByCountry(clinic?.country);
 
   const startDate = dayjs('2024-05-01');
 
@@ -167,7 +171,7 @@ const KpisPage = () => {
                     <RangePicker
                       onChange={handleDateRangeChange}
                       value={dateRange}
-                      format="DD/MM/YYYY"
+                      format={datePickerFormat}
                       disabledDate={(current) => current && current > dayjs().endOf('day')}
                       style={{ width: '100%' }}
                     />
@@ -208,7 +212,7 @@ const KpisPage = () => {
                       <RangePicker
                         onChange={handleDateRangeChange}
                         value={dateRange}
-                        format="DD/MM/YYYY"
+                        format={datePickerFormat}
                         disabledDate={(current) => current && current > dayjs().endOf('day')}
                       />
                     </Col>
@@ -248,6 +252,7 @@ const KpisPage = () => {
                   title={formatMessage(messages.bookingTitle)}
                   previousPeriod={previousPeriod}
                   isMobile={isMobile}
+                  country={clinic?.country}
                 />
               </Col>
             </Row>

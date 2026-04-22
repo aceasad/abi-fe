@@ -125,10 +125,10 @@ export const formHasError = (fields, errors) =>
 
 export const generateKey = () => Math.random().toString(36).substring(7);
 
-export const formatMessageTimestamp = (timestamp) => {
+export const formatMessageTimestamp = (timestamp, country = '') => {
   const dayjsDate = dayjs(timestamp).local();
   const isSame = dayjs().local().isSame(dayjsDate, 'd');
-  return dayjsDate.format(isSame ? 'h:mm' : 'DD/MM/YYYY');
+  return dayjsDate.format(isSame ? 'h:mm' : getDateFormatByCountry(country));
 };
 
 export const formatMessagesTimestampMinutes = (timestamp) =>
@@ -137,12 +137,12 @@ export const formatMessagesTimestampMinutes = (timestamp) =>
 export const isSameDay = (timestamp1, timestamp2) =>
   dayjs(timestamp1).local().isSame(dayjs(timestamp2).local(), 'd');
 
-export const formatMessagesTimestampDate = (timestamp) =>
-  dayjs(timestamp).local().format('DD/MM/YYYY');
+export const formatMessagesTimestampDate = (timestamp, country = '') =>
+  dayjs(timestamp).local().format(getDateFormatByCountry(country));
 
-export const generateDividerMessage = (date) => {
+export const generateDividerMessage = (date, country = '') => {
   return {
-    created_at: formatMessagesTimestampDate(date),
+    created_at: formatMessagesTimestampDate(date, country),
     type: MESSAGE_TYPE.DIVIDER,
     id: 'divider',
   };
@@ -150,16 +150,16 @@ export const generateDividerMessage = (date) => {
 
 // hasMoreMessages - if there is more messages on BE for lazy load
 // If there is no more messages to load -> add date divider as first element
-export const addDividers = (messages, hasMoreMessages) => {
+export const addDividers = (messages, hasMoreMessages, country = '') => {
   if (messages.length === 1) {
-    return [generateDividerMessage(messages[0].created_at), ...messages];
+    return [generateDividerMessage(messages[0].created_at, country), ...messages];
   }
   const added = messages.reduce((acc, item) => {
     if (acc.length) {
       if (isSameDay(acc[acc.length - 1].created_at, item.created_at)) {
         return [...acc, item];
       } else {
-        return [...acc, generateDividerMessage(item.created_at), item];
+        return [...acc, generateDividerMessage(item.created_at, country), item];
       }
     } else {
       return [item];
@@ -167,7 +167,7 @@ export const addDividers = (messages, hasMoreMessages) => {
   }, []);
 
   if (!hasMoreMessages && added.length) {
-    return [generateDividerMessage(added[0].created_at), ...added];
+    return [generateDividerMessage(added[0].created_at, country), ...added];
   }
   return added;
 };
@@ -277,4 +277,65 @@ export const removeLeadingZeroFromTime = (time) => {
     return time.slice(1);
   }
   return time;
+};
+
+const US_COUNTRY_IDENTIFIERS = [
+  'usa',
+  'united states',
+  'america',
+  'united states of america',
+];
+
+export const isUsCountry = (country = '') =>
+  US_COUNTRY_IDENTIFIERS.includes(String(country).trim().toLowerCase());
+
+export const getDateFormatByCountry = (country = '') =>
+  isUsCountry(country) ? 'MM/DD/YYYY' : 'DD/MM/YYYY';
+
+export const formatDateByCountry = (
+  dateValue,
+  country = '',
+  inputFormats = []
+) => {
+  if (!dateValue) {
+    return '';
+  }
+
+  let parsedDate = dayjs(dateValue);
+  if (!parsedDate.isValid() && inputFormats.length) {
+    parsedDate = dayjs(dateValue, inputFormats, true);
+  }
+  if (!parsedDate.isValid() && inputFormats.length) {
+    parsedDate = dayjs(dateValue, inputFormats);
+  }
+
+  return parsedDate.isValid()
+    ? parsedDate.format(getDateFormatByCountry(country))
+    : dateValue;
+};
+
+export const formatDateTimeByCountry = (
+  dateTimeValue,
+  country = '',
+  timeFormat = 'hh:mm A',
+  inputFormats = []
+) => {
+  if (!dateTimeValue) {
+    return '';
+  }
+
+  let parsedDateTime = dayjs(dateTimeValue);
+  if (!parsedDateTime.isValid() && inputFormats.length) {
+    parsedDateTime = dayjs(dateTimeValue, inputFormats, true);
+  }
+  if (!parsedDateTime.isValid() && inputFormats.length) {
+    parsedDateTime = dayjs(dateTimeValue, inputFormats);
+  }
+  if (!parsedDateTime.isValid()) {
+    return dateTimeValue;
+  }
+
+  const formattedDate = parsedDateTime.format(getDateFormatByCountry(country));
+  const formattedTime = parsedDateTime.format(timeFormat);
+  return `${formattedDate} ${formattedTime}`.trim();
 };

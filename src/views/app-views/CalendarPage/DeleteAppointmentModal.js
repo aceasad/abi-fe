@@ -4,13 +4,16 @@ import { useIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
 import messages from './messages';
 import { makeSelectSingleAppointmentLoading } from 'redux/selectors/Appointment';
+import { makeSelectClinic } from 'redux/selectors/Clinic';
 import { Typography } from 'antd';
 import RowWithMultipleColumns from 'components/util-components/Grid/RowWithMultipleColumns';
+import { formatDateByCountry } from 'utils/helpers';
 
 const DeleteAppointmentModal = ({ handleClose, handleDelete, appointment }) => {
   const { formatMessage } = useIntl();
 
   const loading = useSelector(makeSelectSingleAppointmentLoading());
+  const clinic = useSelector(makeSelectClinic());
 
   const listData = [
     {
@@ -23,7 +26,11 @@ const DeleteAppointmentModal = ({ handleClose, handleDelete, appointment }) => {
     },
     {
       label: formatMessage(messages.date),
-      value: appointment?.date,
+      value: formatDateByCountry(appointment?.date, clinic?.country, [
+        'DD/MM/YYYY',
+        'MM/DD/YYYY',
+        'YYYY-MM-DD',
+      ]),
     },
     {
       label: formatMessage(messages.time),
