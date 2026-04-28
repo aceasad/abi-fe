@@ -129,7 +129,6 @@ const UpdatePatient = ({ showList, patientId }) => {
 
   const renderUpdatePatientForm = () => {
     if (isPasIntegrated) {
-      initialState.date_of_birth = '5/11/1992'
       return (
         <PatientPASForm
           id={patientId}

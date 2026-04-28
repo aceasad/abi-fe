@@ -67,7 +67,7 @@ const CreatePatient = ({ showList }) => {
           initialState={{
             first_name: '',
             last_name: '',
-            date_of_birth: '5/11/1992',
+            date_of_birth: '',
             gender: '',
             ExternalIdentificationNumber: '',
             case_id: '',

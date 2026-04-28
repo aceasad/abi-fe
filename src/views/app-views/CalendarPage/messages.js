@@ -80,6 +80,10 @@ export default defineMessages({
     id: `${scope}.text.time`,
     defaultMessage: 'Time',
   },
+  location: {
+    id: `${scope}.text.location`,
+    defaultMessage: 'Location',
+  },
   appointmentPrice: {
     id: `${scope}.text.appointment_price`,
     defaultMessage: 'Appointment price',
