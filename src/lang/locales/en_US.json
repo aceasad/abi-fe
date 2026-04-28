@@ -495,6 +495,7 @@
   "appointments_page.text.status": "Status",
   "appointments_page.text.date": "Date",
   "appointments_page.text.time": "Time",
+  "appointments_page.text.location": "Location",
   "appointments_page.text.appointment_price": "Appointment price",
   "appointments_page.text.missing_reason": "Why did the patient miss the appointment?",
   "appointments_page.text.missing_reason_details": "Missing details",

@@ -34,6 +34,23 @@ function PreviewModal({
   const isLoading = singleLoading || !appointment;
   const { isPasIntegrated, PASProvider } = useSelector((state) => state.auth.user || {});
   const isMedbridge = PASProvider?.toLowerCase() === 'medbridge';
+  const getLocationDisplay = () => {
+    const location =
+      appointment?.location ||
+      appointment?.home_location ||
+      appointment?.patient?.home_location;
+
+    if (!location) return '';
+    if (typeof location === 'string') return location;
+    if (typeof location === 'object') {
+      if (location.location_name && location.location_id) {
+        return `${location.location_name} (${location.location_id})`;
+      }
+      return location.location_name || location.location_id || '';
+    }
+    return '';
+  };
+  const locationDisplay = getLocationDisplay();
   const footer = [];
   if (!isLoading && new Date(appointment.datetime_iso) > new Date()) {
     footer.push(
@@ -112,6 +129,14 @@ function PreviewModal({
         dayjs(appointment?.time, 'HH:mm a').format('hh:mm A')
       ),
     },
+    ...(isMedbridge && locationDisplay
+      ? [
+          {
+            label: formatMessage(messages.location),
+            value: locationDisplay,
+          },
+        ]
+      : []),
     // {
     //   label: formatMessage(messages.appointmentPrice),
     //   value: `£${appointment?.price}`,
