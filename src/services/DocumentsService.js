@@ -11,7 +11,18 @@ class DocumentsService extends ApiService {
     const formData = new FormData();
     formData.append('file', payload.file);
     formData.append('document_name', payload.document_name);
-    formData.append('appointment_type_name', payload.appointment_type_name);
+    if (payload.document_type) {
+      formData.append('document_type', payload.document_type);
+    }
+    if (payload.appointment_type_id != null && payload.appointment_type_id !== '') {
+      formData.append('appointment_type_id', payload.appointment_type_id);
+    }
+    if (payload.location_id != null && payload.location_id !== '') {
+      formData.append('location_id', payload.location_id);
+    }
+    if (payload.location) {
+      formData.append('location', JSON.stringify(payload.location));
+    }
 
     return this.apiClient.post(ENDPOINTS.DOCUMENTS, formData, {
       headers: {
@@ -20,8 +31,32 @@ class DocumentsService extends ApiService {
     });
   };
 
-  updateDocument = (payload) =>
-    this.apiClient.patch(`${ENDPOINTS.DOCUMENTS}${payload.id}/`, payload);
+  updateDocument = (payload) => {
+    const formData = new FormData();
+    if (payload.document_name != null && payload.document_name !== '') {
+      formData.append('document_name', payload.document_name);
+    }
+    if (payload.document_type) {
+      formData.append('document_type', payload.document_type);
+    }
+    if (payload.appointment_type_id != null) {
+      formData.append('appointment_type_id', payload.appointment_type_id);
+    }
+    if (payload.location_id != null) {
+      formData.append('location_id', payload.location_id);
+    }
+    if (payload.location) {
+      formData.append('location', JSON.stringify(payload.location));
+    }
+    if (payload.file) {
+      formData.append('file', payload.file);
+    }
+    return this.apiClient.patch(`${ENDPOINTS.DOCUMENTS}${payload.id}/`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  };
 
   deleteDocumentById = (id) =>
     this.apiClient.delete(`${ENDPOINTS.DOCUMENTS}${id}/`);

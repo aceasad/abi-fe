@@ -407,7 +407,7 @@ const ChatContentBody = ({
       </style>
       {chatMessages.map((message, index) => (
         <div
-          key={`msg-${message.id}-${index}`}
+          key={`msg-${message.id || `${message.created_at}-${message.text || ''}-${message.type || ''}`}`}
           className={singleChatMessageStyle(message)}
         >
           {renderSingleMessage(message)}

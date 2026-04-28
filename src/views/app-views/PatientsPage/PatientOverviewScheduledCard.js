@@ -13,9 +13,15 @@ import {
 import { SCHEDULED_APPOINTMENT } from 'constants/ClinicConstants';
 import AppointmentFormWrapper from '../AppointmentsPage/AppointmentFormWrapper';
 import CreateAppointment from '../AppointmentsPage/CreateAppointment';
-import { RenderPredictionText } from 'utils/helpers';
+import {
+  formatDateByCountry,
+  removeLeadingZeroFromTime,
+  RenderPredictionText,
+} from 'utils/helpers';
 import { CalendarOutlined, ClockCircleOutlined, UserOutlined, FileTextOutlined } from '@ant-design/icons';
 import utils from 'utils';
+import { makeSelectClinic } from 'redux/selectors/Clinic';
+import dayjs from 'utils/dayjs';
 
 const { Title, Text } = Typography;
 const { useBreakpoint } = Grid;
@@ -44,6 +50,7 @@ const PatientOverviewScheduledCard = ({ patient, showAppointment }) => {
   );
 
   const { PASProvider } = useSelector((state) => state.auth.user || {});
+  const clinic = useSelector(makeSelectClinic());
 
   const handlePaginationChange = (page) => {
     dispatch(setScheduledPage({ page, id: patient.id }));
@@ -75,11 +82,17 @@ const PatientOverviewScheduledCard = ({ patient, showAppointment }) => {
       title: formatMessage(messages.columnTitleDate),
       dataIndex: 'date',
       sorter: true,
+      render: (date) => formatDateByCountry(date, clinic?.country, [
+        'DD/MM/YYYY',
+        'MM/DD/YYYY',
+        'YYYY-MM-DD',
+      ]),
     },
     {
       title: formatMessage(messages.columnTitleTime),
       dataIndex: 'time',
       sorter: false,
+      render: (time) => removeLeadingZeroFromTime(dayjs(time, ['HH:mm', 'h:mm A']).format('hh:mm A')),
     },
     ...(!isMedbridge
       ? [
@@ -118,11 +131,21 @@ const PatientOverviewScheduledCard = ({ patient, showAppointment }) => {
         <Space style={{ width: '100%', justifyContent: 'space-between' }}>
           <Space>
             <CalendarOutlined style={{ fontSize: '16px', color: '#1890ff' }} />
-            <Text strong>{appointment.date}</Text>
+            <Text strong>
+              {formatDateByCountry(appointment.date, clinic?.country, [
+                'DD/MM/YYYY',
+                'MM/DD/YYYY',
+                'YYYY-MM-DD',
+              ])}
+            </Text>
           </Space>
           <Space>
             <ClockCircleOutlined style={{ fontSize: '12px', color: '#8c8c8c' }} />
-            <Text type="secondary">{appointment.time}</Text>
+            <Text type="secondary">
+              {removeLeadingZeroFromTime(
+                dayjs(appointment.time, ['HH:mm', 'h:mm A']).format('hh:mm A')
+              )}
+            </Text>
           </Space>
         </Space>
 

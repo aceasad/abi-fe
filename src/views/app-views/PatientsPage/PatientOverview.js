@@ -24,7 +24,7 @@ import {
 import { makeSelectPatientOverview } from 'redux/selectors/Patient';
 import Loading from 'components/shared-components/Loading';
 import { PATIENT_PAGE } from './index';
-import { prepareFormData } from 'utils/helpers';
+import { formatDateByCountry, prepareFormData } from 'utils/helpers';
 import messages from './messages';
 import Conversation from '../ChatPage/Conversation';
 import PatientOverviewExistingConditions from './PatientOverviewExistingConditions';
@@ -33,6 +33,7 @@ import { getSingleAppointment } from 'redux/actions/Appointment';
 import AppointmentPreview from '../CalendarPage/AppointmentPreview';
 import { FROM_PATIENT_APPOINTMENTS } from 'constants/ClinicConstants';
 import utils from 'utils';
+import { makeSelectClinic } from 'redux/selectors/Clinic';
 
 const { Text, Title } = Typography;
 const { useBreakpoint } = Grid;
@@ -48,6 +49,7 @@ const PatientOverview = ({
   const { PASProvider } = useSelector((state) => state.auth.user || {});
   const [showMessages, setShowMessages] = useState();
   const { formatMessage } = useIntl();
+  const clinic = useSelector(makeSelectClinic());
   const screens = utils.getBreakPoint(useBreakpoint());
   const isMobile = !screens.includes('lg');
   const isMedbridge = PASProvider?.toLowerCase() === 'medbridge';
@@ -195,6 +197,28 @@ const PatientOverview = ({
                   fields={patientDetailsFields}
                   patient={{
                     ...patient,
+                    date_of_birth: formatDateByCountry(
+                      patient?.date_of_birth,
+                      clinic?.country,
+                      [
+                        'DD/MM/YYYY',
+                        'D/M/YYYY',
+                        'MM/DD/YYYY',
+                        'M/D/YYYY',
+                        'YYYY-MM-DD',
+                      ]
+                    ),
+                    last_appointment: formatDateByCountry(
+                      patient?.last_appointment,
+                      clinic?.country,
+                      [
+                        'DD/MM/YYYY',
+                        'D/M/YYYY',
+                        'MM/DD/YYYY',
+                        'M/D/YYYY',
+                        'YYYY-MM-DD',
+                      ]
+                    ),
                     education: patient?.education?.name,
                     ethnicity: patient?.ethnicity?.name,
                     material_status: patient?.material_status?.name,

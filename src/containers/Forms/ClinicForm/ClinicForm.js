@@ -18,7 +18,7 @@ import {
 } from 'constants/ClinicConstants';
 import messages from './messages';
 import ColumnField from 'components/custom-components/Form/ColumnField';
-import { prepareFormData } from 'utils/helpers';
+import { isUsCountry, prepareFormData } from 'utils/helpers';
 import { useLocation } from 'react-router-dom';
 import FormTimePicker from 'components/custom-components/Form/FormTimePicker';
 import Checkbox from 'antd/lib/checkbox/Checkbox';
@@ -107,7 +107,12 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
         validationSchema={clinicSchema}
         onSubmit={handleSubmit}
       >
-        {({ dirty, isValid, values, handleSubmit, setFieldValue }) => (
+        {({ dirty, isValid, values, handleSubmit, setFieldValue }) => {
+          const workingHoursDisplayFormat = isUsCountry(values.country || '')
+            ? 'h:mm A'
+            : 'HH:mm';
+          const isWorkingHours12h = workingHoursDisplayFormat === 'h:mm A';
+          return (
           <Form
             layout="vertical"
             name="clinic-form"
@@ -307,6 +312,8 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
                       span={isMobile && !isTablet ? 24 : 6}
                       component={FormTimePicker}
                       name="start_of_work"
+                      displayFormat={workingHoursDisplayFormat}
+                      use12Hours={isWorkingHours12h}
                       errorTexts={{
                         label: formatMessage(messages.startOfWork),
                       }}
@@ -321,6 +328,8 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
                       span={isMobile && !isTablet ? 24 : 6}
                       component={FormTimePicker}
                       name="end_of_work"
+                      displayFormat={workingHoursDisplayFormat}
+                      use12Hours={isWorkingHours12h}
                       errorTexts={{
                         label: formatMessage(messages.endOfWork),
                       }}
@@ -357,7 +366,8 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
               </Col>
             </Row>
           </Form>
-        )}
+          );
+        }}
       </Formik>
     </div>
   );

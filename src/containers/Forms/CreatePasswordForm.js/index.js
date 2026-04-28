@@ -33,6 +33,9 @@ export const CreatePassowrdForm = () => {
       <div>{formatMessage(messages.lettersAndNumberMixture)}</div>
       <div>{formatMessage(messages.specialCharacters)}</div>
       <div>{formatMessage(messages.specialCharactersExcluded)}</div>
+      <div>{formatMessage(messages.notCommonPassword)}</div>
+      <div>{formatMessage(messages.notEntirelyNumeric)}</div>
+      <div>{formatMessage(messages.notSimilarToPersonalInfo)}</div>
     </div>
   );
 

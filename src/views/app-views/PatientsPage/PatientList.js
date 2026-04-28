@@ -41,11 +41,12 @@ import {
 import messages from './messages';
 import { DEFAULT_PAGINATION_LIMIT, SET_DEFAULT_PAGINATION_LIMIT } from 'constants/ApiConstant';
 import { makeSelectPatients } from 'redux/selectors/Patient';
+import { makeSelectClinic } from 'redux/selectors/Clinic';
 import Modal from 'components/shared-components/Modal';
-import dayjs from 'utils/dayjs';
 import utils from 'utils';
 import UploaderPatient from './UploaderPatient';
 import patientService from 'services/PatientService';
+import { formatDateByCountry } from 'utils/helpers';
 
 const { useBreakpoint } = Grid;
 
@@ -61,6 +62,7 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
   const isMedbridge = PASProvider?.toLowerCase() === 'medbridge';
   const [isUploadCompleted, setIsUploadCompleted] = useState(false);
   const { count, patients, loading, page } = useSelector(makeSelectPatients());
+  const clinic = useSelector(makeSelectClinic());
 
   const getHomeLocationDisplay = (homeLocation) => {
     if (!homeLocation) return '-';
@@ -146,7 +148,9 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
       dataIndex: 'last_appointment',
       render: (lastAppointment) => (
         <span>
-          {lastAppointment ? dayjs(lastAppointment).format('D/MM/yyyy') : '-'}
+          {lastAppointment
+            ? formatDateByCountry(lastAppointment, clinic?.country)
+            : '-'}
         </span>
       ),
       sorter: true,
@@ -253,7 +257,7 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
           <Space size="small">
             <CalendarOutlined style={{ fontSize: '12px', color: '#8c8c8c' }} />
             <Typography.Text type="secondary" style={{ fontSize: '12px' }}>
-              Last: {dayjs(patient.last_appointment).format('D/MM/YYYY')}
+              Last: {formatDateByCountry(patient.last_appointment, clinic?.country)}
             </Typography.Text>
           </Space>
         )}

@@ -41,7 +41,9 @@ const chats = (state = initialState, action) =>
             1,
           offset: action.payload.results.items.length,
           chatInfo: {
-            patient: action.payload.results.items[0].patient,
+            patient:
+              action.payload.results.items[0]?.patient ||
+              state.single.chatInfo?.patient,
             isSendEnabled: action.payload.results.is_conversation_enabled,
           },
         };
@@ -119,10 +121,33 @@ const chats = (state = initialState, action) =>
         const foundChat = state.items.find(
           (item) => item.patient.id === action.payload.patient.id
         );
+        const lastMessage = foundChat?.last_message;
+        const isSameLastMessageId =
+          !!lastMessage?.id &&
+          !!action.payload.id &&
+          lastMessage.id === action.payload.id;
+        const incomingCreatedAtTs = action.payload?.created_at
+          ? Date.parse(action.payload.created_at)
+          : null;
+        const currentLastCreatedAtTs = lastMessage?.created_at
+          ? Date.parse(lastMessage.created_at)
+          : null;
+        const isStaleMessage =
+          Number.isFinite(incomingCreatedAtTs) &&
+          Number.isFinite(currentLastCreatedAtTs) &&
+          incomingCreatedAtTs <= currentLastCreatedAtTs;
+
+        if (isSameLastMessageId || isStaleMessage) {
+          break;
+        }
+
+        const activePatientId = state.single.chatInfo?.patient?.id;
+        const isConversationActive =
+          !!activePatientId && activePatientId === foundChat?.patient?.id;
         // conversation already in Redux Store
         if (foundChat) {
           // is this conversation active
-          if (state.single.chatInfo.patient.id === foundChat.patient.id) {
+          if (isConversationActive) {
             draft.single = updateConversation(state.single, action.payload);
             draft.items = updateChatMenuItems(
               foundChat,

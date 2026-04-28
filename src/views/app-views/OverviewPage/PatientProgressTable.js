@@ -6,6 +6,9 @@ import dayjs from 'utils/dayjs';
 import { Link } from 'react-router-dom';
 import { CalendarOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import utils from 'utils';
+import { useSelector } from 'react-redux';
+import { makeSelectClinic } from 'redux/selectors/Clinic';
+import { formatDateTimeByCountry } from 'utils/helpers';
 import { SearchOutlined } from '@ant-design/icons';
 
 const { useBreakpoint } = Grid;
@@ -28,6 +31,7 @@ const PatientProgressTable = ({
     pageSizeOptions: ['10', '20', '50', '100', '200'], // Available page size options
   });
   const [filterStatus, setFilterStatus] = useState(null); // Add new state for filter
+  const clinic = useSelector(makeSelectClinic());
   const [patientSearch, setPatientSearch] = useState('');
 
   const getProgressColor = (status) => {
@@ -96,7 +100,11 @@ const PatientProgressTable = ({
       sortOrder: sortedInfo.columnKey === 'Invitation Sent' && sortedInfo.order,
       render: (_, record) => {
         const invitationSent = record['Invitation Sent']; // or whatever field name contains the datetime
-        const formattedDatetime = dayjs(invitationSent).format('DD/MM/YYYY hh:mm A');
+        const formattedDatetime = formatDateTimeByCountry(
+          invitationSent,
+          clinic?.country,
+          'hh:mm A'
+        );
         return <div className="text-left text-uppercase">{`${formattedDatetime}`}</div>;
       },
     },
@@ -110,7 +118,11 @@ const PatientProgressTable = ({
       render: (_, record) => {
         const lastContacted = record['Last Contact']; // or whatever field name contains the datetime
         if (lastContacted !== null) {
-          const formattedDatetime = dayjs(lastContacted).format('DD/MM/YYYY hh:mm A');
+          const formattedDatetime = formatDateTimeByCountry(
+            lastContacted,
+            clinic?.country,
+            'hh:mm A'
+          );
           return <div className="text-left text-uppercase">{`${formattedDatetime}`}</div>;
         } else {
           return <div className="text-left">{`${''}`}</div>;
@@ -340,7 +352,11 @@ const PatientProgressTable = ({
             <Space size="small">
               <CalendarOutlined style={{ fontSize: '12px', color: '#8c8c8c' }} />
               <Typography.Text type="secondary" style={{ fontSize: '12px' }}>
-                Invited: {dayjs(record['Invitation Sent']).format('DD/MM/YYYY hh:mm A')}
+                Invited: {formatDateTimeByCountry(
+                  record['Invitation Sent'],
+                  clinic?.country,
+                  'hh:mm A'
+                )}
               </Typography.Text>
             </Space>
 
@@ -348,7 +364,11 @@ const PatientProgressTable = ({
               <Space size="small">
                 <ClockCircleOutlined style={{ fontSize: '12px', color: '#8c8c8c' }} />
                 <Typography.Text type="secondary" style={{ fontSize: '12px' }}>
-                  Last Contact: {dayjs(record['Last Contact']).format('DD/MM/YYYY hh:mm A')}
+                  Last Contact: {formatDateTimeByCountry(
+                    record['Last Contact'],
+                    clinic?.country,
+                    'hh:mm A'
+                  )}
                 </Typography.Text>
               </Space>
             )}

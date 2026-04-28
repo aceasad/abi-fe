@@ -38,6 +38,18 @@ export default defineMessages({
     defaultMessage:
       'Note: do not use < or > in your password, as both can cause problems in Web browsers',
   },
+  notCommonPassword: {
+    id: `${scope}.note.not_common_password`,
+    defaultMessage: 'Do not use a common password (for example: password, 12345678).',
+  },
+  notEntirelyNumeric: {
+    id: `${scope}.note.not_entirely_numeric`,
+    defaultMessage: 'Your password cannot be entirely numeric.',
+  },
+  notSimilarToPersonalInfo: {
+    id: `${scope}.note.not_similar_to_personal_info`,
+    defaultMessage: 'Your password must not be too similar to your personal information.',
+  },
   createPassword: {
     id: `${scope}.text.create_password_title`,
     defaultMessage: 'Create password',
