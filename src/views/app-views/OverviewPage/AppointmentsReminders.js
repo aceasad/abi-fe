@@ -8,14 +8,19 @@ import {
   Tooltip,
   Menu,
   Dropdown,
-  Select
+  Select,
+  Input,
 } from 'antd';
 import { WhatsAppOutlined } from '@ant-design/icons';
 import { useIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
 import AppointmentsRemindersTable from './AppointmentsRemindersTable';
 import overviewPageMessages from '../OverviewPage/messages';
-import { SCHEDULED, UPCOMING_REMINDERS } from 'redux/reducers/Staff';
+import {
+  SCHEDULED,
+  UPCOMING_REMINDERS_APPOINTMENT,
+  UPCOMING_REMINDERS_SYSTEM,
+} from 'redux/reducers/Staff';
 import { getSingleAppointment } from 'redux/actions/Appointment';
 import AppointmentPreview from '../CalendarPage/AppointmentPreview';
 import { FROM_STAFF_APPOINTMENTS } from 'constants/ClinicConstants';
@@ -31,6 +36,7 @@ import {
 import { formatDateByCountry, removeLeadingZeroFromTime } from 'utils/helpers';
 import dayjs from 'utils/dayjs';
 import { makeSelectClinic } from 'redux/selectors/Clinic';
+import { SearchOutlined } from '@ant-design/icons';
 
 const { Panel } = Collapse;
 
@@ -62,6 +68,11 @@ const AppointmentsReminders = ({ title, startOpen }) => {
 
   const [activeAppointment, setActiveAppointment] = useState(null);
   const [reminderType, setReminderType] = useState('appointment');
+  const [patientSearch, setPatientSearch] = useState('');
+  const remindersField =
+    reminderType === 'system'
+      ? UPCOMING_REMINDERS_SYSTEM
+      : UPCOMING_REMINDERS_APPOINTMENT;
   const handleReminderTypeChange = (value) => {
     setReminderType(value);
   };
@@ -79,12 +90,12 @@ const AppointmentsReminders = ({ title, startOpen }) => {
         cancelAppointmentReminder({
           id: '',
           cancelReminderId,
-          field: UPCOMING_REMINDERS,
+          field: remindersField,
           reminderType,
         })
       );
     }
-  }, [cancelReminderId, dispatch]);
+  }, [cancelReminderId, dispatch, reminderType, remindersField]);
 
   const cancelReminder = (row) => {
     if (
@@ -106,12 +117,12 @@ const AppointmentsReminders = ({ title, startOpen }) => {
         reverseAppointmentReminderCancellation({
           id: '',
           reverseReminderCancellationId,
-          field: UPCOMING_REMINDERS,
+          field: remindersField,
           reminderType
         })
       );
     }
-  }, [reverseReminderCancellationId, dispatch]);
+  }, [reverseReminderCancellationId, dispatch, reminderType, remindersField]);
 
   const reverseReminderCancellation = (row) => {
     if (
@@ -130,11 +141,12 @@ const AppointmentsReminders = ({ title, startOpen }) => {
         rescheduleAppointmentReminder({
           id: '',
           rescheduleReminderData,
-          field: UPCOMING_REMINDERS,
+          field: remindersField,
+          reminderType,
         })
       );
     }
-  }, [rescheduleReminderData, dispatch]);
+  }, [rescheduleReminderData, dispatch, reminderType, remindersField]);
 
   const rescheduleReminder = (row) => {
     const new_reminder_datetime = window.prompt(
@@ -191,6 +203,17 @@ const AppointmentsReminders = ({ title, startOpen }) => {
   const getMenuItems = (row) => {
     const items = [
       {
+        key: "1",
+        label: formatMessage(overviewPageMessages.tableDropdownAiReachout),
+        onClick: ({ domEvent }) => {
+          domEvent.stopPropagation();
+          goToPatientShowMessages({ id: row.patient.id });
+        },
+      },
+    ];
+
+    if (reminderType === 'appointment' && row.appointment?.id) {
+      items.unshift({
         key: "0",
         label: formatMessage(overviewPageMessages.tableDropdownSeeAppointment),
         onClick: ({ domEvent }) => {
@@ -201,16 +224,8 @@ const AppointmentsReminders = ({ title, startOpen }) => {
             patientId: row.patient.id,
           });
         },
-      },
-      {
-        key: "1",
-        label: formatMessage(overviewPageMessages.tableDropdownAiReachout),
-        onClick: ({ domEvent }) => {
-          domEvent.stopPropagation();
-          goToPatientShowMessages({ id: row.patient.id });
-        },
-      },
-    ];
+      });
+    }
 
     if (row.reminder.status.indexOf('Scheduled') !== -1) {
       items.push({
@@ -314,17 +329,17 @@ const AppointmentsReminders = ({ title, startOpen }) => {
       const appointmentColumns = [
         ...(!isMedbridge
           ? [
-              {
-                title: formatMessage(overviewPageMessages.tableColumnDoctor),
-                dataIndex: ['doctor', 'full_name'],
-                sorter: true,
-                render: (_, row) => (
-                  <div className="text-left">
-                    {`${row.doctor.full_name} `}
-                  </div>
-                ),
-              },
-            ]
+            {
+              title: formatMessage(overviewPageMessages.tableColumnDoctor),
+              dataIndex: ['doctor', 'full_name'],
+              sorter: true,
+              render: (_, row) => (
+                <div className="text-left">
+                  {`${row.doctor.full_name} `}
+                </div>
+              ),
+            },
+          ]
           : []),
         {
           title: formatMessage(overviewPageMessages.tableColumnAppointmentDatetime),
@@ -357,23 +372,34 @@ const AppointmentsReminders = ({ title, startOpen }) => {
   return (
     <>
       <div className="mb-3">
-        <Select
-          value={reminderType}
-          onChange={handleReminderTypeChange}
-          style={{ width: 200 }}
-        >
-          <Select.Option value="appointment">Appointment Reminders</Select.Option>
-          <Select.Option value="system">System Reminders</Select.Option>
-        </Select>
+        <Space wrap size="middle">
+          <Select
+            value={reminderType}
+            onChange={handleReminderTypeChange}
+            style={{ width: 220 }}
+          >
+            <Select.Option value="appointment">Appointment Reminders</Select.Option>
+            <Select.Option value="system">System Reminders</Select.Option>
+          </Select>
+          <Input
+            style={{ width: 240, maxWidth: '100%' }}
+            placeholder="Search by patient name"
+            prefix={<SearchOutlined />}
+            value={patientSearch}
+            onChange={(e) => setPatientSearch(e.target.value)}
+            allowClear
+          />
+        </Space>
       </div>
       <AppointmentsRemindersTable
-        field={UPCOMING_REMINDERS}
+        field={remindersField}
         id={''}
         columnMap={columnMap}
         reminderType={reminderType}  // Add this prop
       >
         <AppointmentsRemindersTable.Table
           columns={tableColumns}
+          patientSearch={patientSearch}
         />
       </AppointmentsRemindersTable>
       {/* <AppointmentsRemindersTable

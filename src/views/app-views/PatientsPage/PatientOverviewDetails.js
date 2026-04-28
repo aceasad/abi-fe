@@ -3,17 +3,17 @@ import React from 'react';
 import PatientInfoListItem from './PatientInfoListItem';
 
 const PatientOverviewDetails = ({ fields, patient }) => {
+  const visibleFields = Object.keys(fields).filter((field) => !!patient[field]);
   const firstDivider = 4;
   const secondDivider = 11;
 
-  const hasDivider = (index) =>
-    index === firstDivider || index === secondDivider;
+  const hasDivider = (index) => index === firstDivider || index === secondDivider;
 
   return (
     <>
-      {Object.keys(fields).map((field, index) => (
+      {visibleFields.map((field, index) => (
         <div key={index}>
-          <PatientInfoListItem className={!patient[field] ? 'd-none' : ''}>
+          <PatientInfoListItem>
             {fields[field]}
             {patient[field]}
           </PatientInfoListItem>

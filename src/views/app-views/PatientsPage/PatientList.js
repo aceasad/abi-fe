@@ -58,9 +58,24 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
   const { formatMessage } = useIntl();
   const screens = utils.getBreakPoint(useBreakpoint());
   const isMobile = !screens.includes('lg');
+  const { PASProvider } = useSelector((state) => state.auth.user || {});
+  const isMedbridge = PASProvider?.toLowerCase() === 'medbridge';
   const [isUploadCompleted, setIsUploadCompleted] = useState(false);
   const { count, patients, loading, page } = useSelector(makeSelectPatients());
   const clinic = useSelector(makeSelectClinic());
+
+  const getHomeLocationDisplay = (homeLocation) => {
+    if (!homeLocation) return '-';
+
+    if (typeof homeLocation === 'object') {
+      if (homeLocation.location_name && homeLocation.location_id) {
+        return `${homeLocation.location_name} (${homeLocation.location_id})`;
+      }
+      return homeLocation.location_name || homeLocation.location_id || '-';
+    }
+
+    return homeLocation;
+  };
 
   useEffect(() => {
     dispatch(getPatients());
@@ -118,6 +133,16 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
       sorter: true,
       responsive: ['md'], // Hide on mobile
     },
+    ...(isMedbridge
+      ? [
+          {
+            title: formatMessage(messages.homeLocation),
+            dataIndex: 'home_location',
+            render: (homeLocation) => <span>{getHomeLocationDisplay(homeLocation)}</span>,
+            responsive: ['lg'],
+          },
+        ]
+      : []),
     {
       title: formatMessage(messages.lastAppointment),
       dataIndex: 'last_appointment',
@@ -223,6 +248,11 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
           </Space>
         </Space>
 
+        {isMedbridge && (
+          <Typography.Text type="secondary" style={{ fontSize: '12px' }}>
+            {formatMessage(messages.homeLocation)}: {getHomeLocationDisplay(patient.home_location)}
+          </Typography.Text>
+        )}
         {patient.last_appointment && (
           <Space size="small">
             <CalendarOutlined style={{ fontSize: '12px', color: '#8c8c8c' }} />

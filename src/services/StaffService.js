@@ -3,7 +3,8 @@ import {
   HISTORY,
   SCHEDULED,
   LIKELY_TO_BE_MISSED,
-  UPCOMING_REMINDERS,
+  UPCOMING_REMINDERS_APPOINTMENT,
+  UPCOMING_REMINDERS_SYSTEM,
   HISTORY_REQUIRING_IMMEDIATE_STATUS_UPDATE,
   MESSAGES_REQUIRING_IMMEDIATE_ATTENTION,
 } from 'redux/reducers/Staff';
@@ -20,7 +21,8 @@ const ENDPOINTS = {
       '/appointments/passed-requiring-immediate-status-update/',
   },
   GET_APPOINTMENTS_REMINDERS: {
-    [UPCOMING_REMINDERS]: '/appointments/reminders/upcoming/',
+    [UPCOMING_REMINDERS_APPOINTMENT]: '/appointments/reminders/upcoming/',
+    [UPCOMING_REMINDERS_SYSTEM]: '/appointments/reminders/upcoming/',
   },
   GET_MESSAGES_REQUIRING_IMMEDIATE_ATTENTION: {
     [MESSAGES_REQUIRING_IMMEDIATE_ATTENTION]:
