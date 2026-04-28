@@ -1,5 +1,5 @@
 import { Card, Table, Typography, Grid, Space, Button, Tag, Row, Col } from 'antd';
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   getAppointmentsReminders,
@@ -26,6 +26,7 @@ const AppointmentsRemindersTable = ({
   loading,
   title,
   reminderType,
+  patientSearch = '',
 }) => {
   const screens = utils.getBreakPoint(useBreakpoint());
   const isMobile = !screens.includes('lg');
@@ -33,6 +34,16 @@ const AppointmentsRemindersTable = ({
   const handlePaginationSizeChange = (current, size) => {
     SET_DEFAULT_PAGINATION_LIMIT(size);
   };
+
+  const filteredItems = useMemo(() => {
+    const normalizedSearch = patientSearch.trim().toLowerCase();
+    if (!normalizedSearch) return items || [];
+    return (items || []).filter((item) =>
+      (item?.patient?.full_name || '').toLowerCase().includes(normalizedSearch)
+    );
+  }, [items, patientSearch]);
+
+  const effectiveCount = patientSearch.trim() ? filteredItems.length : count;
 
   // Mobile Card Component
   const ReminderCard = ({ item }) => {
@@ -119,13 +130,13 @@ const AppointmentsRemindersTable = ({
           ) : (
             <>
               <Row gutter={[12, 12]}>
-                {(items || []).map((item) => (
+                {filteredItems.map((item) => (
                   <Col xs={24} sm={12} key={item.id || item.key}>
                     <ReminderCard item={item} />
                   </Col>
                 ))}
               </Row>
-              {count > DEFAULT_PAGINATION_LIMIT && (
+              {effectiveCount > DEFAULT_PAGINATION_LIMIT && (
                 <div style={{ marginTop: '16px', textAlign: 'center' }}>
                   <Space>
                     <Button
@@ -136,10 +147,10 @@ const AppointmentsRemindersTable = ({
                       Previous
                     </Button>
                     <Typography.Text>
-                      Page {page} of {Math.ceil(count / DEFAULT_PAGINATION_LIMIT)}
+                      Page {page} of {Math.ceil(effectiveCount / DEFAULT_PAGINATION_LIMIT)}
                     </Typography.Text>
                     <Button
-                      disabled={page >= Math.ceil(count / DEFAULT_PAGINATION_LIMIT)}
+                      disabled={page >= Math.ceil(effectiveCount / DEFAULT_PAGINATION_LIMIT)}
                       onClick={() => handlePaginationChange(page + 1)}
                       size="small"
                     >
@@ -156,7 +167,7 @@ const AppointmentsRemindersTable = ({
         <div className="table-responsive ant-table-row-pointer">
           <Table
             columns={columns}
-            dataSource={(items || []).map((item) => ({
+            dataSource={filteredItems.map((item) => ({
               ...item,
               key: item.id || item.key
             }))}
@@ -164,7 +175,7 @@ const AppointmentsRemindersTable = ({
             onChange={handleChange}
             pagination={{
               defaultPageSize: DEFAULT_PAGINATION_LIMIT,
-              total: count,
+              total: effectiveCount,
               onChange: handlePaginationChange,
               onShowSizeChange: (current, size) => handlePaginationSizeChange(current, size),
               hideOnSinglePage: true,

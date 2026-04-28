@@ -45,10 +45,14 @@ const PatientOverview = ({
 }) => {
   const dispatch = useDispatch();
   const { patient, loading } = useSelector(makeSelectPatientOverview());
+  const { PASProvider } = useSelector((state) => state.auth.user || {});
   const [showMessages, setShowMessages] = useState();
   const { formatMessage } = useIntl();
   const screens = utils.getBreakPoint(useBreakpoint());
   const isMobile = !screens.includes('lg');
+  const isMedbridge = PASProvider?.toLowerCase() === 'medbridge';
+  const isEmis = PASProvider?.toLowerCase() === 'emis';
+  const shouldHideDobAndGender = isMedbridge || isEmis;
 
   const [activeAppointmnet, setActiveAppointment] = useState(null);
 
@@ -64,8 +68,12 @@ const PatientOverview = ({
   }, [patient_show_messages]);
 
   const patientDetailsFields = {
-    date_of_birth: formatMessage(messages.dateOfBirth),
-    gender: formatMessage(messages.sex),
+    ...(!shouldHideDobAndGender
+      ? {
+          date_of_birth: formatMessage(messages.dateOfBirth),
+          gender: formatMessage(messages.sex),
+        }
+      : {}),
     ethnicity: formatMessage(messages.ethnicity),
     height: formatMessage(messages.height),
     weight: formatMessage(messages.weight),
@@ -83,6 +91,20 @@ const PatientOverview = ({
     education: formatMessage(messages.education),
     insurance: formatMessage(messages.insurance),
     last_appointment: formatMessage(messages.lastAppointment),
+    ...(isMedbridge ? { home_location: formatMessage(messages.homeLocation) } : {}),
+  };
+
+  const getHomeLocationDisplay = (homeLocation) => {
+    if (!homeLocation) return '';
+
+    if (typeof homeLocation === 'object') {
+      if (homeLocation.location_name && homeLocation.location_id) {
+        return `${homeLocation.location_name} (${homeLocation.location_id})`;
+      }
+      return homeLocation.location_name || homeLocation.location_id || '';
+    }
+
+    return homeLocation;
   };
 
   useEffect(() => {
@@ -177,6 +199,9 @@ const PatientOverview = ({
                     ethnicity: patient?.ethnicity?.name,
                     material_status: patient?.material_status?.name,
                     employment: patient?.employment?.name,
+                    home_location: isMedbridge
+                      ? getHomeLocationDisplay(patient?.home_location)
+                      : patient?.home_location,
                   }}
                 />
               </>

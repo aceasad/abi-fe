@@ -1,4 +1,4 @@
-import { Card, Table, Button, Select, Grid, Space, Typography, Tag, Row, Col } from 'antd';
+import { Card, Table, Button, Select, Grid, Space, Typography, Tag, Row, Col, Input } from 'antd';
 import React, { useState, useEffect } from 'react';
 import { DEFAULT_LIMIT } from 'services/StaffService';
 import patientService from 'services/PatientService';
@@ -6,6 +6,7 @@ import dayjs from 'utils/dayjs';
 import { Link } from 'react-router-dom';
 import { CalendarOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import utils from 'utils';
+import { SearchOutlined } from '@ant-design/icons';
 
 const { useBreakpoint } = Grid;
 
@@ -27,6 +28,7 @@ const PatientProgressTable = ({
     pageSizeOptions: ['10', '20', '50', '100', '200'], // Available page size options
   });
   const [filterStatus, setFilterStatus] = useState(null); // Add new state for filter
+  const [patientSearch, setPatientSearch] = useState('');
 
   const getProgressColor = (status) => {
     if (status === 'Rescheduled' || status === 'Booked' || status === 'Reminded') {
@@ -217,6 +219,13 @@ const PatientProgressTable = ({
       filteredData = data.filter(item => item.originalProcess === filterStatus);
     }
 
+    const normalizedSearch = patientSearch.trim().toLowerCase();
+    if (normalizedSearch) {
+      filteredData = filteredData.filter((item) =>
+        (item['Patient Name'] || '').toLowerCase().includes(normalizedSearch)
+      );
+    }
+
     // Then apply pagination
     const startIndex = (pagination.current - 1) * pagination.pageSize;
     const endIndex = startIndex + pagination.pageSize;
@@ -227,7 +236,7 @@ const PatientProgressTable = ({
       ...prev,
       total: filteredData.length,
     }));
-  }, [pagination.current, pagination.pageSize, data, filterStatus]);
+  }, [pagination.current, pagination.pageSize, data, filterStatus, patientSearch]);
 
   // Modified handleTableChange to handle both sorting and pagination
   const handleTableChange = (paginationParams, filters, sorter) => {
@@ -289,6 +298,14 @@ const PatientProgressTable = ({
     }));
   };
 
+  const handlePatientSearchChange = (e) => {
+    setPatientSearch(e.target.value);
+    setPagination(prev => ({
+      ...prev,
+      current: 1,
+    }));
+  };
+
   const screens = utils.getBreakPoint(useBreakpoint());
   const isMobile = !screens.includes('lg');
 
@@ -343,7 +360,18 @@ const PatientProgressTable = ({
 
   return (
     <Card>
-      <div style={{ marginBottom: 16 }}>
+      <Space
+        direction={isMobile ? 'vertical' : 'horizontal'}
+        style={{ width: '100%', marginBottom: 16 }}
+      >
+        <Input
+          style={{ width: isMobile ? '100%' : 240 }}
+          placeholder="Search by patient name"
+          prefix={<SearchOutlined />}
+          value={patientSearch}
+          onChange={handlePatientSearchChange}
+          allowClear
+        />
         <Select
           style={{ width: isMobile ? '100%' : 200 }}
           placeholder="Filter by status"
@@ -351,7 +379,7 @@ const PatientProgressTable = ({
           options={statusOptions}
           onChange={handleFilterChange}
         />
-      </div>
+      </Space>
       {isMobile ? (
         // Mobile Card View
         <>

@@ -45,7 +45,7 @@ export default defineMessages({
   },
   homeLocation: {
     id: `${scope}.text.home_location`,
-    defaultMessage: 'Location ID',
+    defaultMessage: 'Location',
   },
   availableLocations: {
     id: `${scope}.text.available_location_ids`,
