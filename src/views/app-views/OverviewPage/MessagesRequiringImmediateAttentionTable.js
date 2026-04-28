@@ -7,7 +7,7 @@ import {
   setMessagesRequiringImmediateAttentionOrder,
 } from 'redux/actions/Staff';
 import { makeSelectMessagesRequiringImmediateAttentionRequestData } from 'redux/selectors/Staff';
-import { DEFAULT_LIMIT } from 'services/StaffService';
+import { DEFAULT_PAGINATION_LIMIT, SET_DEFAULT_PAGINATION_LIMIT } from 'constants/ApiConstant';
 import { ClockCircleOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import utils from 'utils';
 import { SearchOutlined } from '@ant-design/icons';
@@ -30,6 +30,11 @@ const MessagesRequiringImmediateAttentionTable = ({
   const isMobile = !screens.includes('lg');
   const [patientSearch, setPatientSearch] = useState('');
 
+  const handlePaginationSizeChange = (current, size) => {
+    SET_DEFAULT_PAGINATION_LIMIT(size);
+    handlePaginationChange(1);
+  };
+
   const filteredItems = useMemo(() => {
     const normalizedSearch = patientSearch.trim().toLowerCase();
     if (!normalizedSearch) return items || [];
@@ -38,7 +43,8 @@ const MessagesRequiringImmediateAttentionTable = ({
     );
   }, [items, patientSearch]);
 
-  const effectiveCount = patientSearch.trim() ? filteredItems.length : count;
+  const totalCount = count || 0;
+  const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
 
   // Mobile Card Component
   const MessageCard = ({ item }) => {
@@ -135,7 +141,7 @@ const MessagesRequiringImmediateAttentionTable = ({
                   </Col>
                 ))}
               </Row>
-              {effectiveCount > pageSize && (
+              {totalCount > pageSize && (
                 <div style={{ marginTop: '16px', textAlign: 'center' }}>
                   <Space>
                     <Button
@@ -146,10 +152,10 @@ const MessagesRequiringImmediateAttentionTable = ({
                       Previous
                     </Button>
                     <Typography.Text>
-                      Page {page} of {Math.ceil(effectiveCount / pageSize)}
+                      Page {page} of {totalPages}
                     </Typography.Text>
                     <Button
-                      disabled={page >= Math.ceil(effectiveCount / pageSize)}
+                      disabled={page >= totalPages}
                       onClick={() => handlePaginationChange(page + 1)}
                       size="small"
                     >
@@ -171,10 +177,14 @@ const MessagesRequiringImmediateAttentionTable = ({
             onChange={handleChange}
             pagination={{
               defaultPageSize: pageSize,
-              total: effectiveCount,
+              pageSize,
+              total: totalCount,
               onChange: handlePaginationChange,
+              onShowSizeChange: handlePaginationSizeChange,
               hideOnSinglePage: true,
               current: page,
+              showSizeChanger: true,
+              pageSizeOptions: ['10', '20', '50', '100'],
             }}
             loading={loading}
           />
@@ -236,7 +246,7 @@ const MessagesRequiringImmediateAttention = ({
     ) {
       return React.cloneElement(child, {
         items,
-        pageSize: DEFAULT_LIMIT,
+        pageSize: DEFAULT_PAGINATION_LIMIT,
         loading,
         page,
         count,
