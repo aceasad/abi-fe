@@ -32,7 +32,7 @@ import {
   HISTORY_REQUIRING_IMMEDIATE_STATUS_UPDATE,
   LIKELY_TO_BE_MISSED,
   SCHEDULED,
-  UPCOMING_REMINDERS,
+  UPCOMING_REMINDERS_APPOINTMENT,
 } from 'redux/reducers/Staff';
 import { getAppointments } from 'redux/actions/Staff';
 
@@ -107,7 +107,7 @@ const UpdateAppointmentCommunicationStatus = ({
           (communication_status) =>
             communication_status.id === values.communication_status
         ),
-        field: UPCOMING_REMINDERS,
+        field: UPCOMING_REMINDERS_APPOINTMENT,
         afterCommunicationStatusUpdate,
       })
     );

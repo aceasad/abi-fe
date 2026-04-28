@@ -25,7 +25,10 @@ export const HISTORY = 'history_appointments';
 export const HISTORY_REQUIRING_IMMEDIATE_STATUS_UPDATE =
   'history_appointments_requiring_immediate_status_update';
 export const LIKELY_TO_BE_MISSED = 'likely_to_be_missed_appointments';
-export const UPCOMING_REMINDERS = 'upcoming_appointments_reminders';
+export const UPCOMING_REMINDERS_APPOINTMENT =
+  'upcoming_appointments_reminders_appointment';
+export const UPCOMING_REMINDERS_SYSTEM =
+  'upcoming_appointments_reminders_system';
 export const MESSAGES_REQUIRING_IMMEDIATE_ATTENTION =
   'messages_requiring_immediate_attention';
 
@@ -42,7 +45,8 @@ const initialState = {
   [HISTORY]: baseState,
   [HISTORY_REQUIRING_IMMEDIATE_STATUS_UPDATE]: baseState,
   [LIKELY_TO_BE_MISSED]: baseState,
-  [UPCOMING_REMINDERS]: baseState,
+  [UPCOMING_REMINDERS_APPOINTMENT]: baseState,
+  [UPCOMING_REMINDERS_SYSTEM]: baseState,
   [MESSAGES_REQUIRING_IMMEDIATE_ATTENTION]: baseState,
 };
 

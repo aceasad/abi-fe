@@ -1,5 +1,5 @@
-import { Card, Table, Typography, Grid, Row, Col, Space, Button, Tag } from 'antd';
-import React, { useEffect } from 'react';
+import { Card, Table, Typography, Grid, Row, Col, Space, Button, Tag, Input } from 'antd';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   getMessagesRequiringImmediateAttention,
@@ -10,6 +10,7 @@ import { makeSelectMessagesRequiringImmediateAttentionRequestData } from 'redux/
 import { DEFAULT_LIMIT } from 'services/StaffService';
 import { ClockCircleOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import utils from 'utils';
+import { SearchOutlined } from '@ant-design/icons';
 
 const { useBreakpoint } = Grid;
 
@@ -27,6 +28,17 @@ const MessagesRequiringImmediateAttentionTable = ({
 }) => {
   const screens = utils.getBreakPoint(useBreakpoint());
   const isMobile = !screens.includes('lg');
+  const [patientSearch, setPatientSearch] = useState('');
+
+  const filteredItems = useMemo(() => {
+    const normalizedSearch = patientSearch.trim().toLowerCase();
+    if (!normalizedSearch) return items || [];
+    return (items || []).filter((item) =>
+      (item?.patient?.full_name || '').toLowerCase().includes(normalizedSearch)
+    );
+  }, [items, patientSearch]);
+
+  const effectiveCount = patientSearch.trim() ? filteredItems.length : count;
 
   // Mobile Card Component
   const MessageCard = ({ item }) => {
@@ -97,6 +109,17 @@ const MessagesRequiringImmediateAttentionTable = ({
 
   return (
     <Card>
+      <div style={{ marginBottom: 16 }}>
+        <Input
+          style={{ width: isMobile ? '100%' : 240, maxWidth: '100%' }}
+          placeholder="Search by patient name"
+          prefix={<SearchOutlined />}
+          value={patientSearch}
+          onChange={(e) => setPatientSearch(e.target.value)}
+          allowClear
+          size="middle"
+        />
+      </div>
       {title && <Typography.Title level={4}>{title}</Typography.Title>}
       {isMobile ? (
         // Mobile Card View
@@ -106,13 +129,13 @@ const MessagesRequiringImmediateAttentionTable = ({
           ) : (
             <>
               <Row gutter={[12, 12]}>
-                {items.map((item) => (
+                {filteredItems.map((item) => (
                   <Col xs={24} sm={12} key={item.id || item.key}>
                     <MessageCard item={item} />
                   </Col>
                 ))}
               </Row>
-              {count > pageSize && (
+              {effectiveCount > pageSize && (
                 <div style={{ marginTop: '16px', textAlign: 'center' }}>
                   <Space>
                     <Button
@@ -123,10 +146,10 @@ const MessagesRequiringImmediateAttentionTable = ({
                       Previous
                     </Button>
                     <Typography.Text>
-                      Page {page} of {Math.ceil(count / pageSize)}
+                      Page {page} of {Math.ceil(effectiveCount / pageSize)}
                     </Typography.Text>
                     <Button
-                      disabled={page >= Math.ceil(count / pageSize)}
+                      disabled={page >= Math.ceil(effectiveCount / pageSize)}
                       onClick={() => handlePaginationChange(page + 1)}
                       size="small"
                     >
@@ -143,12 +166,12 @@ const MessagesRequiringImmediateAttentionTable = ({
         <div className="responsive-table ant-table-row-pointer">
           <Table
             columns={columns}
-            dataSource={items.map((item) => ({ ...item, key: item.id || item.key }))}
+            dataSource={filteredItems.map((item) => ({ ...item, key: item.id || item.key }))}
             onRow={onRow}
             onChange={handleChange}
             pagination={{
               defaultPageSize: pageSize,
-              total: count,
+              total: effectiveCount,
               onChange: handlePaginationChange,
               hideOnSinglePage: true,
               current: page,
