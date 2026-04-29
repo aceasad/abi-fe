@@ -1,4 +1,4 @@
-import { ORDERING } from 'constants/ApiConstant';
+import { DEFAULT_PAGINATION_LIMIT, ORDERING } from 'constants/ApiConstant';
 import {
   HISTORY,
   SCHEDULED,
@@ -40,8 +40,8 @@ class StaffService extends ApiService {
   getPaginatedStaff = ({ page }) =>
     this.apiClient.get(ENDPOINTS.GET_STAFF, {
       params: {
-        limit: DEFAULT_LIMIT,
-        offset: (page - 1) * DEFAULT_LIMIT,
+        limit: DEFAULT_PAGINATION_LIMIT,
+        offset: (page - 1) * DEFAULT_PAGINATION_LIMIT,
       },
     });
   getStaffDetails = () => this.apiClient.get(ENDPOINTS.GET_STAFF_DETAILS);
@@ -64,8 +64,8 @@ class StaffService extends ApiService {
             .split(',')
             .map((part) => `${order === ORDERING.DESC ? '-' : ''}${part}`)
             .join(),
-          limit: DEFAULT_LIMIT,
-          offset: (page - 1) * DEFAULT_LIMIT,
+          limit: DEFAULT_PAGINATION_LIMIT,
+          offset: (page - 1) * DEFAULT_PAGINATION_LIMIT,
         },
       }
     );
@@ -81,8 +81,8 @@ class StaffService extends ApiService {
             .split(',')
             .map((part) => `${order === ORDERING.DESC ? '-' : ''}${part}`)
             .join(),
-          limit: DEFAULT_LIMIT,
-          offset: (page - 1) * DEFAULT_LIMIT,
+          limit: DEFAULT_PAGINATION_LIMIT,
+          offset: (page - 1) * DEFAULT_PAGINATION_LIMIT,
           ...params
         },
       }
@@ -103,8 +103,8 @@ class StaffService extends ApiService {
             .split(',')
             .map((part) => `${order === ORDERING.DESC ? '-' : ''}${part}`)
             .join(),
-          limit: DEFAULT_LIMIT,
-          offset: (page - 1) * DEFAULT_LIMIT,
+          limit: DEFAULT_PAGINATION_LIMIT,
+          offset: (page - 1) * DEFAULT_PAGINATION_LIMIT,
         },
       }
     );

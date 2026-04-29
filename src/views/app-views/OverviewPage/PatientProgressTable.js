@@ -1,6 +1,5 @@
 import { Card, Table, Button, Select, Grid, Space, Typography, Tag, Row, Col, Input } from 'antd';
 import React, { useState, useEffect } from 'react';
-import { DEFAULT_LIMIT } from 'services/StaffService';
 import patientService from 'services/PatientService';
 import dayjs from 'utils/dayjs';
 import { Link } from 'react-router-dom';
@@ -67,6 +66,7 @@ const PatientProgressTable = ({
     HUMAN_INTERVENTION: { status: 'Human Intervention', progressbar: 100 },
     EMERGENCY_SITUATION: { status: 'Emergency Situation', progressbar: 100 },
     OPT_OUT: { status: 'Opt-out', progressbar: 100 },
+    OPTOUT: { status: 'Opt-out', progressbar: 100 },
     DECLINED: { status: 'Declined', progressbar: 100 },
     FAILED: { status: 'Failed', progressbar: 100 },
   };

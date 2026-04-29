@@ -7,7 +7,6 @@ import {
   setAppointmentsRemindersOrder,
 } from 'redux/actions/Staff';
 import { makeSelectAppointmentsRemindersRequestData } from 'redux/selectors/Staff';
-import { DEFAULT_LIMIT } from 'services/StaffService';
 import { DEFAULT_PAGINATION_LIMIT, SET_DEFAULT_PAGINATION_LIMIT } from 'constants/ApiConstant';
 import { CalendarOutlined, ClockCircleOutlined, BellOutlined } from '@ant-design/icons';
 import utils from 'utils';
@@ -33,6 +32,7 @@ const AppointmentsRemindersTable = ({
 
   const handlePaginationSizeChange = (current, size) => {
     SET_DEFAULT_PAGINATION_LIMIT(size);
+    handlePaginationChange(1);
   };
 
   const filteredItems = useMemo(() => {
@@ -43,7 +43,8 @@ const AppointmentsRemindersTable = ({
     );
   }, [items, patientSearch]);
 
-  const effectiveCount = patientSearch.trim() ? filteredItems.length : count;
+  const totalCount = count || 0;
+  const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
 
   // Mobile Card Component
   const ReminderCard = ({ item }) => {
@@ -136,7 +137,7 @@ const AppointmentsRemindersTable = ({
                   </Col>
                 ))}
               </Row>
-              {effectiveCount > DEFAULT_PAGINATION_LIMIT && (
+              {totalCount > pageSize && (
                 <div style={{ marginTop: '16px', textAlign: 'center' }}>
                   <Space>
                     <Button
@@ -147,10 +148,10 @@ const AppointmentsRemindersTable = ({
                       Previous
                     </Button>
                     <Typography.Text>
-                      Page {page} of {Math.ceil(effectiveCount / DEFAULT_PAGINATION_LIMIT)}
+                      Page {page} of {totalPages}
                     </Typography.Text>
                     <Button
-                      disabled={page >= Math.ceil(effectiveCount / DEFAULT_PAGINATION_LIMIT)}
+                      disabled={page >= totalPages}
                       onClick={() => handlePaginationChange(page + 1)}
                       size="small"
                     >
@@ -174,8 +175,9 @@ const AppointmentsRemindersTable = ({
             onRow={onRow}
             onChange={handleChange}
             pagination={{
-              defaultPageSize: DEFAULT_PAGINATION_LIMIT,
-              total: effectiveCount,
+              defaultPageSize: pageSize,
+              pageSize,
+              total: totalCount,
               onChange: handlePaginationChange,
               onShowSizeChange: (current, size) => handlePaginationSizeChange(current, size),
               hideOnSinglePage: true,
@@ -239,7 +241,7 @@ const AppointmentsReminders = ({ id, field, children, columnMap, reminderType })
     ) {
       return React.cloneElement(child, {
         items,
-        pageSize: DEFAULT_LIMIT,
+        pageSize: DEFAULT_PAGINATION_LIMIT,
         loading,
         page,
         count,
