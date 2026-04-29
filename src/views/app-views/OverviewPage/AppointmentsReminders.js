@@ -71,15 +71,7 @@ const SERVER_DATETIME_INPUT_FORMATS = [
   'DD/MM/YYYY hh:mm A',
 ];
 
-const formatBackendDateTime = (date, time, datetimeIso, country) => {
-  if (datetimeIso) {
-    return formatDateTimeByCountry(
-      datetimeIso,
-      country,
-      'h:mm A',
-      SERVER_DATETIME_INPUT_FORMATS
-    );
-  }
+const formatBackendDateTime = (date, time, country) => {
   if (date && time) {
     return formatDateTimeByCountry(
       `${date} ${time}`,
@@ -318,7 +310,6 @@ const AppointmentsReminders = ({ title, startOpen }) => {
           const formattedReminderDateTime = formatBackendDateTime(
             row.reminder?.date,
             row.reminder?.time,
-            row.reminder?.datetime_iso,
             clinic?.country
           );
           if (!formattedReminderDateTime) {
@@ -378,12 +369,18 @@ const AppointmentsReminders = ({ title, startOpen }) => {
           dataIndex: ['appointment', 'date'],
           sorter: true,
           render: (_, row) => {
-            const formattedAppointmentDateTime = formatBackendDateTime(
-              row.appointment?.date,
-              row.appointment?.time,
-              row.appointment?.datetime_iso,
-              clinic?.country
-            );
+            const formattedAppointmentDateTime = row.appointment?.datetime_iso
+              ? formatDateTimeByCountry(
+                row.appointment.datetime_iso,
+                clinic?.country,
+                'h:mm A',
+                SERVER_DATETIME_INPUT_FORMATS
+              )
+              : formatBackendDateTime(
+                row.appointment?.date,
+                row.appointment?.time,
+                clinic?.country
+              );
             if (!formattedAppointmentDateTime) {
               return <div className="text-left text-uppercase"></div>;
             }
