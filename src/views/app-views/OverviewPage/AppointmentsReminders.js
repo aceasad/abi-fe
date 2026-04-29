@@ -33,8 +33,7 @@ import {
   reverseAppointmentReminderCancellation,
   rescheduleAppointmentReminder,
 } from 'redux/actions/Staff';
-import { formatDateByCountry, removeLeadingZeroFromTime } from 'utils/helpers';
-import dayjs from 'utils/dayjs';
+import { formatDateTimeByCountry } from 'utils/helpers';
 import { makeSelectClinic } from 'redux/selectors/Clinic';
 import { SearchOutlined } from '@ant-design/icons';
 
@@ -56,6 +55,40 @@ const isIsoDate = (str) => {
   }
   const d = new Date(str);
   return d.toISOString() === str;
+};
+
+const SERVER_DATETIME_INPUT_FORMATS = [
+  'YYYY-MM-DDTHH:mm',
+  'YYYY-MM-DDTHH:mm:ss',
+  'YYYY-MM-DDTHH:mm:ssZ',
+  'DD/MM/YYYY H:mm a',
+  'DD/MM/YYYY HH:mm a',
+  'DD/MM/YYYY h:mm a',
+  'DD/MM/YYYY hh:mm a',
+  'DD/MM/YYYY H:mm A',
+  'DD/MM/YYYY HH:mm A',
+  'DD/MM/YYYY h:mm A',
+  'DD/MM/YYYY hh:mm A',
+];
+
+const formatBackendDateTime = (date, time, datetimeIso, country) => {
+  if (datetimeIso) {
+    return formatDateTimeByCountry(
+      datetimeIso,
+      country,
+      'h:mm A',
+      SERVER_DATETIME_INPUT_FORMATS
+    );
+  }
+  if (date && time) {
+    return formatDateTimeByCountry(
+      `${date} ${time}`,
+      country,
+      'h:mm A',
+      SERVER_DATETIME_INPUT_FORMATS
+    );
+  }
+  return '';
 };
 
 const AppointmentsReminders = ({ title, startOpen }) => {
@@ -282,18 +315,17 @@ const AppointmentsReminders = ({ title, startOpen }) => {
         dataIndex: ['reminder', 'date'],
         sorter: true,
         render: (_, row) => {
-          if (!row.reminder?.date || !row.reminder?.time) {
+          const formattedReminderDateTime = formatBackendDateTime(
+            row.reminder?.date,
+            row.reminder?.time,
+            row.reminder?.datetime_iso,
+            clinic?.country
+          );
+          if (!formattedReminderDateTime) {
             return <div className="text-left text-uppercase"></div>;
           }
-          const formattedReminderDate = formatDateByCountry(
-            row.reminder.date,
-            clinic?.country,
-            ['DD/MM/YYYY', 'MM/DD/YYYY', 'YYYY-MM-DD']
-          );
           return (
-            <div className="text-left text-uppercase">{`${formattedReminderDate} ${removeLeadingZeroFromTime(
-              dayjs(row.reminder.time, ['h:mm A']).format('hh:mm A')
-            )}`}</div>
+            <div className="text-left text-uppercase">{formattedReminderDateTime}</div>
           );
         },
       },
@@ -346,18 +378,17 @@ const AppointmentsReminders = ({ title, startOpen }) => {
           dataIndex: ['appointment', 'date'],
           sorter: true,
           render: (_, row) => {
-            if (!row.appointment?.date || !row.appointment?.time) {
+            const formattedAppointmentDateTime = formatBackendDateTime(
+              row.appointment?.date,
+              row.appointment?.time,
+              row.appointment?.datetime_iso,
+              clinic?.country
+            );
+            if (!formattedAppointmentDateTime) {
               return <div className="text-left text-uppercase"></div>;
             }
-            const formattedAppointmentDate = formatDateByCountry(
-              row.appointment.date,
-              clinic?.country,
-              ['DD/MM/YYYY', 'MM/DD/YYYY', 'YYYY-MM-DD']
-            );
             return (
-              <div className="text-left text-uppercase">{`${formattedAppointmentDate} ${removeLeadingZeroFromTime(
-                dayjs(row.appointment.time, ['h:mm A']).format('hh:mm A')
-              )}`}</div>
+              <div className="text-left text-uppercase">{formattedAppointmentDateTime}</div>
             );
           },
         },
