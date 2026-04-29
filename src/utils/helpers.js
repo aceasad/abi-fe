@@ -279,15 +279,21 @@ export const removeLeadingZeroFromTime = (time) => {
   return time;
 };
 
-const US_COUNTRY_IDENTIFIERS = [
+const US_COUNTRY_IDENTIFIERS = new Set([
+  'us',
   'usa',
-  'united states',
+  'unitedstates',
   'america',
-  'united states of america',
-];
+  'unitedstatesofamerica',
+]);
 
-export const isUsCountry = (country = '') =>
-  US_COUNTRY_IDENTIFIERS.includes(String(country).trim().toLowerCase());
+export const isUsCountry = (country = '') => {
+  const normalizedCountry = String(country)
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z]/g, '');
+  return US_COUNTRY_IDENTIFIERS.has(normalizedCountry);
+};
 
 export const getDateFormatByCountry = (country = '') =>
   isUsCountry(country) ? 'MM/DD/YYYY' : 'DD/MM/YYYY';
