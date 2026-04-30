@@ -14,10 +14,9 @@ import Flex from 'components/shared-components/Flex';
 import RowWithMultipleColumns from 'components/util-components/Grid/RowWithMultipleColumns';
 import {
   formatDateByCountry,
+  formatTimeByCountry,
   RenderPredictionText,
-  removeLeadingZeroFromTime,
 } from 'utils/helpers';
-import dayjs from 'utils/dayjs';
 
 function PreviewModal({
   handleClose,
@@ -52,7 +51,11 @@ function PreviewModal({
   };
   const locationDisplay = getLocationDisplay();
   const footer = [];
-  if (!isLoading && new Date(appointment.datetime_iso) > new Date()) {
+  const appointmentDate = appointment
+    ? new Date(`${appointment.date?.split('/').reverse().join('-')}T${appointment.time?.replace(/\s*(am|pm)$/i, '')}`)
+    : null;
+
+  if (!isLoading && appointmentDate > new Date()) {
     footer.push(
       <Button
         key="submit"
@@ -68,7 +71,7 @@ function PreviewModal({
   if (
     !isLoading &&
     appointment.attended === null &&
-    new Date(appointment.datetime_iso) <= new Date()
+    appointmentDate <= new Date()
   ) {
     footer.push(
       <Button
@@ -125,9 +128,7 @@ function PreviewModal({
     },
     {
       label: formatMessage(messages.time),
-      value: removeLeadingZeroFromTime(
-        dayjs(appointment?.time, 'HH:mm a').format('hh:mm A')
-      ),
+      value: formatTimeByCountry(appointment?.time, clinic?.country),
     },
     ...(isMedbridge && locationDisplay
       ? [
