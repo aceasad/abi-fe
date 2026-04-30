@@ -172,7 +172,7 @@ const PatientForm = ({
                 primaryAction={() => {
                   handleSubmit();
                 }}
-                primaryDisabled={!isValid || !dirty || loading}
+                primaryDisabled={!dirty || loading}
               />
             </div>
             <Card className={isMobile ? 'p-2' : 'p-4'}>
@@ -514,7 +514,7 @@ const PatientForm = ({
                 handleSubmit();
               }}
               type="primary"
-              className={`floating-button ${!isValid || !dirty || loading || !isSaveVisible ? '' : 'active'
+              className={`floating-button ${!dirty || loading || !isSaveVisible ? '' : 'active'
                 }`}
             >
               {formatMessage(messages.save)}
