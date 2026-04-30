@@ -91,15 +91,28 @@ const formatTimeTo12Hour = (time) => {
   return `${hour12}:${minute} ${suffix}`;
 };
 
+const isUSCountry = (country) => {
+  if (!country) return false;
+  const normalizedCountry = String(country).trim().toLowerCase();
+  return (
+    normalizedCountry === 'us' ||
+    normalizedCountry === 'usa' ||
+    normalizedCountry === 'united states' ||
+    normalizedCountry === 'united states of america'
+  );
+};
+
 const formatDateAndTimeBySection = (section, options = {}) => {
-  const { convertTimeTo12Hour = false } = options;
+  const { convertTimeTo12Hour = false, convertDateToUS = false } = options;
   if (!section?.date || !section?.time) {
     return '';
   }
-  const formattedTime = convertTimeTo12Hour
-    ? formatTimeTo12Hour(section.time)
-    : section.time;
-  return formatUsDateWithRawTime(section.date, formattedTime);
+  const formattedDate = convertDateToUS ? section.date : section.date;
+  const formattedTime = convertTimeTo12Hour ? formatTimeTo12Hour(section.time) : section.time;
+  if (convertDateToUS) {
+    return formatUsDateWithRawTime(formattedDate, formattedTime);
+  }
+  return `${section.date} ${formattedTime}`;
 };
 
 const AppointmentsReminders = ({ title, startOpen }) => {
@@ -326,9 +339,13 @@ const AppointmentsReminders = ({ title, startOpen }) => {
         dataIndex: ['reminder', 'date'],
         sorter: true,
         render: (_, row) => {
+          const shouldUseUSFormatting = isUSCountry(clinic?.country);
           const formattedReminderDateTime = formatDateAndTimeBySection(
             row.reminder,
-            { convertTimeTo12Hour: true }
+            {
+              convertTimeTo12Hour: shouldUseUSFormatting,
+              convertDateToUS: shouldUseUSFormatting,
+            }
           );
           if (!formattedReminderDateTime) {
             return <div className="text-left text-uppercase"></div>;
@@ -387,9 +404,13 @@ const AppointmentsReminders = ({ title, startOpen }) => {
           dataIndex: ['appointment', 'date'],
           sorter: true,
           render: (_, row) => {
+            const shouldUseUSFormatting = isUSCountry(clinic?.country);
             const formattedAppointmentDateTime = formatDateAndTimeBySection(
               row.appointment,
-              { convertTimeTo12Hour: true }
+              {
+                convertTimeTo12Hour: shouldUseUSFormatting,
+                convertDateToUS: shouldUseUSFormatting,
+              }
             );
             if (!formattedAppointmentDateTime) {
               return <div className="text-left text-uppercase"></div>;
