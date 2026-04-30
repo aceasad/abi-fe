@@ -33,7 +33,6 @@ import {
   reverseAppointmentReminderCancellation,
   rescheduleAppointmentReminder,
 } from 'redux/actions/Staff';
-import { formatDateTimeByCountry } from 'utils/helpers';
 import { makeSelectClinic } from 'redux/selectors/Clinic';
 import { SearchOutlined } from '@ant-design/icons';
 
@@ -57,30 +56,63 @@ const isIsoDate = (str) => {
   return d.toISOString() === str;
 };
 
-const SERVER_DATETIME_INPUT_FORMATS = [
-  'YYYY-MM-DDTHH:mm',
-  'YYYY-MM-DDTHH:mm:ss',
-  'YYYY-MM-DDTHH:mm:ssZ',
-  'DD/MM/YYYY H:mm a',
-  'DD/MM/YYYY HH:mm a',
-  'DD/MM/YYYY h:mm a',
-  'DD/MM/YYYY hh:mm a',
-  'DD/MM/YYYY H:mm A',
-  'DD/MM/YYYY HH:mm A',
-  'DD/MM/YYYY h:mm A',
-  'DD/MM/YYYY hh:mm A',
-];
-
-const formatBackendDateTime = (date, time, country) => {
-  if (date && time) {
-    return formatDateTimeByCountry(
-      `${date} ${time}`,
-      country,
-      'h:mm A',
-      SERVER_DATETIME_INPUT_FORMATS
-    );
+const formatUsDateWithRawTime = (date, time) => {
+  if (!date || !time) return '';
+  const match = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(date);
+  if (match) {
+    const [, day, month, year] = match;
+    return `${month}/${day}/${year} ${time}`;
   }
-  return '';
+  // If the backend sends a different date format, preserve it.
+  return `${date} ${time}`;
+};
+
+const formatTimeTo12Hour = (time) => {
+  if (!time) return '';
+  const match = /^(\d{1,2}):(\d{2})(?:\s*([aApP][mM]))?$/.exec(
+    String(time).trim()
+  );
+  if (!match) return time;
+
+  const hour = Number(match[1]);
+  const minute = match[2];
+  const meridiem = match[3]?.toLowerCase();
+
+  if (meridiem && hour >= 1 && hour <= 12) {
+    return `${hour}:${minute} ${meridiem}`;
+  }
+
+  if (Number.isNaN(hour) || hour < 0 || hour > 23) {
+    return time;
+  }
+
+  const suffix = hour >= 12 ? 'pm' : 'am';
+  const hour12 = hour % 12 || 12;
+  return `${hour12}:${minute} ${suffix}`;
+};
+
+const isUSCountry = (country) => {
+  if (!country) return false;
+  const normalizedCountry = String(country).trim().toLowerCase();
+  return (
+    normalizedCountry === 'us' ||
+    normalizedCountry === 'usa' ||
+    normalizedCountry === 'united states' ||
+    normalizedCountry === 'united states of america'
+  );
+};
+
+const formatDateAndTimeBySection = (section, options = {}) => {
+  const { convertTimeTo12Hour = false, convertDateToUS = false } = options;
+  if (!section?.date || !section?.time) {
+    return '';
+  }
+  const formattedDate = convertDateToUS ? section.date : section.date;
+  const formattedTime = convertTimeTo12Hour ? formatTimeTo12Hour(section.time) : section.time;
+  if (convertDateToUS) {
+    return formatUsDateWithRawTime(formattedDate, formattedTime);
+  }
+  return `${section.date} ${formattedTime}`;
 };
 
 const AppointmentsReminders = ({ title, startOpen }) => {
@@ -307,10 +339,13 @@ const AppointmentsReminders = ({ title, startOpen }) => {
         dataIndex: ['reminder', 'date'],
         sorter: true,
         render: (_, row) => {
-          const formattedReminderDateTime = formatBackendDateTime(
-            row.reminder?.date,
-            row.reminder?.time,
-            clinic?.country
+          const shouldUseUSFormatting = isUSCountry(clinic?.country);
+          const formattedReminderDateTime = formatDateAndTimeBySection(
+            row.reminder,
+            {
+              convertTimeTo12Hour: shouldUseUSFormatting,
+              convertDateToUS: shouldUseUSFormatting,
+            }
           );
           if (!formattedReminderDateTime) {
             return <div className="text-left text-uppercase"></div>;
@@ -369,18 +404,14 @@ const AppointmentsReminders = ({ title, startOpen }) => {
           dataIndex: ['appointment', 'date'],
           sorter: true,
           render: (_, row) => {
-            const formattedAppointmentDateTime = row.appointment?.datetime_iso
-              ? formatDateTimeByCountry(
-                row.appointment.datetime_iso,
-                clinic?.country,
-                'h:mm A',
-                SERVER_DATETIME_INPUT_FORMATS
-              )
-              : formatBackendDateTime(
-                row.appointment?.date,
-                row.appointment?.time,
-                clinic?.country
-              );
+            const shouldUseUSFormatting = isUSCountry(clinic?.country);
+            const formattedAppointmentDateTime = formatDateAndTimeBySection(
+              row.appointment,
+              {
+                convertTimeTo12Hour: shouldUseUSFormatting,
+                convertDateToUS: shouldUseUSFormatting,
+              }
+            );
             if (!formattedAppointmentDateTime) {
               return <div className="text-left text-uppercase"></div>;
             }
