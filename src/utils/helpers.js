@@ -292,7 +292,13 @@ export const isUsCountry = (country = '') => {
     .trim()
     .toLowerCase()
     .replace(/[^a-z]/g, '');
-  return US_COUNTRY_IDENTIFIERS.has(normalizedCountry);
+  if (!normalizedCountry) return false;
+  if (US_COUNTRY_IDENTIFIERS.has(normalizedCountry)) return true;
+  return (
+    normalizedCountry.startsWith('us') ||
+    normalizedCountry.includes('unitedstates') ||
+    normalizedCountry.includes('america')
+  );
 };
 
 export const getDateFormatByCountry = (country = '') =>
@@ -307,12 +313,22 @@ export const formatDateByCountry = (
     return '';
   }
 
-  let parsedDate = dayjs(dateValue);
-  if (!parsedDate.isValid() && inputFormats.length) {
-    parsedDate = dayjs(dateValue, inputFormats, true);
+  let parsedDate = null;
+
+  // Try each input format strictly first to avoid ambiguous parsing
+  if (inputFormats.length) {
+    for (const fmt of inputFormats) {
+      const attempt = dayjs(dateValue, fmt, true);
+      if (attempt.isValid()) {
+        parsedDate = attempt;
+        break;
+      }
+    }
   }
-  if (!parsedDate.isValid() && inputFormats.length) {
-    parsedDate = dayjs(dateValue, inputFormats);
+
+  // Fall back to dayjs default parsing only if no strict format matched
+  if (!parsedDate || !parsedDate.isValid()) {
+    parsedDate = dayjs(dateValue);
   }
 
   return parsedDate.isValid()
@@ -343,5 +359,53 @@ export const formatDateTimeByCountry = (
 
   const formattedDate = parsedDateTime.format(getDateFormatByCountry(country));
   const formattedTime = parsedDateTime.format(timeFormat);
+  return `${formattedDate} ${formattedTime}`.trim();
+};
+
+export const formatTimeTo12Hour = (time) => {
+  if (!time) return '';
+  const match = /^(\d{1,2}):(\d{2})(?:\s*([aApP][mM]))?$/.exec(
+    String(time).trim()
+  );
+  if (!match) return time;
+
+  const hour = Number(match[1]);
+  const minute = match[2];
+  const meridiem = match[3]?.toLowerCase();
+
+  if (meridiem && hour >= 1 && hour <= 12) {
+    return `${hour}:${minute} ${meridiem}`;
+  }
+
+  if (Number.isNaN(hour) || hour < 0 || hour > 23) {
+    return time;
+  }
+
+  const suffix = hour >= 12 ? 'pm' : 'am';
+  const hour12 = hour % 12 || 12;
+  return `${hour12}:${minute} ${suffix}`;
+};
+
+export const formatTimeByCountry = (time, country = '') => {
+  if (!time) return '';
+  return isUsCountry(country) ? formatTimeTo12Hour(time) : time;
+};
+
+export const formatSectionDateTimeByCountry = (section, country = '') => {
+  if (!section?.date || !section?.time) {
+    return '';
+  }
+
+  const formattedDate = formatDateByCountry(section.date, country, [
+    'DD/MM/YYYY',
+    'D/M/YYYY',
+    'MM/DD/YYYY',
+    'M/D/YYYY',
+    'YYYY-MM-DD',
+  ]);
+  const formattedTime = isUsCountry(country)
+    ? formatTimeTo12Hour(section.time)
+    : section.time;
+
   return `${formattedDate} ${formattedTime}`.trim();
 };

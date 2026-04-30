@@ -29,7 +29,7 @@ export default defineMessages({
     defaultMessage: 'City',
   },
   postCode: {
-    id: `${scope}.input_label.address`,
+    id: `${scope}.input_label.post_code`,
     defaultMessage: 'Postcode',
   },
   country: {
