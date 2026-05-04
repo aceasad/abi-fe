@@ -1,4 +1,4 @@
-import { message } from 'antd';
+import { Modal } from 'antd';
 import store from 'redux/store';
 import { signOut } from 'redux/actions/Auth';
 
@@ -8,6 +8,10 @@ const WS_CLOSE_INTERNAL_ERROR = 1011;
 const WS_CLOSE_SERVICE_RESTART = 1012;
 /** Temporary overload/retry hint from server. */
 const WS_CLOSE_TRY_AGAIN_LATER = 1013;
+/** Unauthorized (custom app close code from backend). */
+const WS_CLOSE_UNAUTHORIZED = 4401;
+/** Forbidden / missing org access (custom app close code from backend). */
+const WS_CLOSE_FORBIDDEN = 4403;
 
 /** Abnormal closure (no close frame). */
 const WS_CLOSE_ABNORMAL = 1006;
@@ -37,6 +41,7 @@ class WebSocketClient {
     this._manualClose = false;
     /** True only when `connect` is invoked from the scheduled onclose reconnect. */
     this._scheduledReconnect = false;
+    this._reloginModalOpen = false;
   }
 
   fatalDisconnect = (userMessage) => {
@@ -66,8 +71,23 @@ class WebSocketClient {
       this.socketRef = null;
     }
 
-    message.warning(userMessage);
-    store.dispatch(signOut());
+    if (this._reloginModalOpen) return;
+    this._reloginModalOpen = true;
+
+    const goToLogin = () => {
+      this._reloginModalOpen = false;
+      store.dispatch(signOut());
+    };
+
+    Modal.warning({
+      title: 'Session expired',
+      content: userMessage,
+      okText: 'Go to login',
+      centered: true,
+      maskClosable: false,
+      keyboard: false,
+      onOk: goToLogin,
+    });
   };
 
   reconnectDelayMs = () => {
@@ -145,6 +165,19 @@ class WebSocketClient {
         reason: event.reason,
         reconnectAttempts: this.reconnectAttempts,
       });
+
+      // Authentication/authorization failures should not trigger reconnect loops.
+      if (event.code === WS_CLOSE_UNAUTHORIZED) {
+        this.fatalDisconnect('Your session has expired. Please sign in again.');
+        return;
+      }
+      if (event.code === WS_CLOSE_FORBIDDEN) {
+        this.fatalDisconnect(
+          'Your account no longer has access to live updates. Please sign in again.'
+        );
+        return;
+      }
+
       if (this.reconnectAttempts > MAX_RECONNECT_ATTEMPTS) {
         const hint =
           event.code === WS_CLOSE_ABNORMAL
