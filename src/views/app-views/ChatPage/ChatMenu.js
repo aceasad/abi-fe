@@ -23,7 +23,6 @@ import { makeSelectClinic } from 'redux/selectors/Clinic';
 import { useDebounce, useLazyLoad } from 'utils/hooks';
 import Scrollbars from 'react-custom-scrollbars';
 import { CHAT_FILTERS, MESSAGE_STATUS } from 'constants/ChatConstants';
-import { Option } from 'antd/lib/mentions';
 import dayjs from 'utils/dayjs';
 
 const ChatMenu = (props) => {
@@ -222,9 +221,9 @@ const ChatMenu = (props) => {
           style={{ width: '100%' }}
         >
           {CONVERSATION_FILTERS.map((item, index) => (
-            <Option key={index} value={item.value}>
+            <Select.Option key={index} value={item.value}>
               {item.label}
-            </Option>
+            </Select.Option>
           ))}
         </Select>
       </div>
