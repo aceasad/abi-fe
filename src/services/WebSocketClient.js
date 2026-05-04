@@ -1,7 +1,7 @@
 import { message } from 'antd';
 import store from 'redux/store';
 import { signOut } from 'redux/actions/Auth';
-import ROUTES from 'routes';
+import { ROUTES } from 'routes';
 
 /** Server-side ASGI failure (e.g. Redis in Channels) often maps to 1011. */
 const WS_CLOSE_INTERNAL_ERROR = 1011;
