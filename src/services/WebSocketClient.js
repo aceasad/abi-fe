@@ -4,6 +4,10 @@ import { signOut } from 'redux/actions/Auth';
 
 /** Server-side ASGI failure (e.g. Redis in Channels) often maps to 1011. */
 const WS_CLOSE_INTERNAL_ERROR = 1011;
+/** Server restart/redeploy. */
+const WS_CLOSE_SERVICE_RESTART = 1012;
+/** Temporary overload/retry hint from server. */
+const WS_CLOSE_TRY_AGAIN_LATER = 1013;
 
 /** Abnormal closure (no close frame). */
 const WS_CLOSE_ABNORMAL = 1006;
@@ -11,6 +15,7 @@ const WS_CLOSE_ABNORMAL = 1006;
 const MAX_RECONNECT_ATTEMPTS = 45;
 const BASE_RECONNECT_MS = 500;
 const MAX_RECONNECT_MS = 30000;
+const WS_LOG_PREFIX = '[WebSocketClient]';
 
 class WebSocketClient {
   static instance = null;
@@ -37,6 +42,11 @@ class WebSocketClient {
   fatalDisconnect = (userMessage) => {
     if (this._fatalSignOutDone) return;
     this._fatalSignOutDone = true;
+    console.warn(`${WS_LOG_PREFIX} fatalDisconnect`, {
+      reconnectAttempts: this.reconnectAttempts,
+      currentPath: this.currentPath,
+      userMessage,
+    });
 
     if (this.reconnectTimer) {
       clearTimeout(this.reconnectTimer);
@@ -68,11 +78,17 @@ class WebSocketClient {
   connect = (path, onopen = () => {}, onmessage = () => {}) => {
     // User-driven connect (route mount, token set): reset fatal + attempt budget.
     // Scheduled reconnect from onclose: keep attempt count so we can cap / sign out.
-    if (!this._scheduledReconnect) {
+    const wasScheduledReconnect = this._scheduledReconnect;
+    if (!wasScheduledReconnect) {
       this._fatalSignOutDone = false;
       this.reconnectAttempts = 0;
     }
     this._scheduledReconnect = false;
+    console.debug(`${WS_LOG_PREFIX} connect:start`, {
+      path,
+      scheduledReconnect: wasScheduledReconnect,
+      reconnectAttempts: this.reconnectAttempts,
+    });
 
     if (
       this.socketRef &&
@@ -84,15 +100,19 @@ class WebSocketClient {
 
     this.currentPath = path;
     this.socketRef = new WebSocket(path);
+    console.debug(`${WS_LOG_PREFIX} socket:new`, { path });
 
     this.socketRef.onopen = () => {
       this.reconnectAttempts = 0;
+      console.info(`${WS_LOG_PREFIX} onopen`, { path });
       onopen();
     };
 
     this.socketRef.onmessage = onmessage;
 
-    this.socketRef.onerror = () => {};
+    this.socketRef.onerror = (event) => {
+      console.warn(`${WS_LOG_PREFIX} onerror`, { path, event });
+    };
 
     this.socketRef.onclose = (event) => {
       if (this.reconnectTimer) {
@@ -102,21 +122,29 @@ class WebSocketClient {
 
       if (this._manualClose) {
         this._manualClose = false;
-        return;
-      }
-
-      if (event.code === WS_CLOSE_INTERNAL_ERROR) {
-        this.fatalDisconnect(
-          'Live connection failed due to a server error. Please sign in again.'
-        );
+        console.debug(`${WS_LOG_PREFIX} onclose:manual`, {
+          code: event.code,
+          reason: event.reason,
+        });
         return;
       }
 
       if (!this.isComponentMounted || this._fatalSignOutDone) {
+        console.debug(`${WS_LOG_PREFIX} onclose:skip-reconnect`, {
+          isComponentMounted: this.isComponentMounted,
+          fatalSignOutDone: this._fatalSignOutDone,
+          code: event.code,
+          reason: event.reason,
+        });
         return;
       }
 
       this.reconnectAttempts += 1;
+      console.warn(`${WS_LOG_PREFIX} onclose:reconnect`, {
+        code: event.code,
+        reason: event.reason,
+        reconnectAttempts: this.reconnectAttempts,
+      });
       if (this.reconnectAttempts > MAX_RECONNECT_ATTEMPTS) {
         const hint =
           event.code === WS_CLOSE_ABNORMAL
@@ -126,7 +154,21 @@ class WebSocketClient {
         return;
       }
 
-      const delay = this.reconnectDelayMs();
+      // During deploys/restarts (1012) or transient server errors (1011/1013),
+      // keep the user logged in and simply retry with backoff.
+      let delay = this.reconnectDelayMs();
+      if (
+        event.code === WS_CLOSE_INTERNAL_ERROR ||
+        event.code === WS_CLOSE_SERVICE_RESTART ||
+        event.code === WS_CLOSE_TRY_AGAIN_LATER
+      ) {
+        delay = Math.max(delay, 5000);
+      }
+      console.info(`${WS_LOG_PREFIX} reconnect:scheduled`, {
+        delayMs: delay,
+        code: event.code,
+        reason: event.reason,
+      });
       this.reconnectTimer = setTimeout(() => {
         this._scheduledReconnect = true;
         this.connect(path, onopen, onmessage);
@@ -145,6 +187,10 @@ class WebSocketClient {
   };
 
   closeConnection = () => {
+    console.debug(`${WS_LOG_PREFIX} closeConnection:start`, {
+      hasSocket: Boolean(this.socketRef),
+      readyState: this.socketRef?.readyState,
+    });
     if (this.reconnectTimer) {
       clearTimeout(this.reconnectTimer);
       this.reconnectTimer = null;
@@ -163,6 +209,7 @@ class WebSocketClient {
       }
     }
     this.socketRef = null;
+    console.debug(`${WS_LOG_PREFIX} closeConnection:done`);
   };
 
   sendMessage = (message) => this.socketRef.send(message);
