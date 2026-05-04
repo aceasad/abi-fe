@@ -1,6 +1,7 @@
-import { Modal } from 'antd';
+import { message } from 'antd';
 import store from 'redux/store';
 import { signOut } from 'redux/actions/Auth';
+import ROUTES from 'routes';
 
 /** Server-side ASGI failure (e.g. Redis in Channels) often maps to 1011. */
 const WS_CLOSE_INTERNAL_ERROR = 1011;
@@ -41,8 +42,46 @@ class WebSocketClient {
     this._manualClose = false;
     /** True only when `connect` is invoked from the scheduled onclose reconnect. */
     this._scheduledReconnect = false;
-    this._reloginModalOpen = false;
   }
+
+  extractTokenFromPath = (path = '') => {
+    try {
+      const parsed = new URL(path);
+      return parsed.searchParams.get('token') || '';
+    } catch (_err) {
+      return '';
+    }
+  };
+
+  decodeJwtPayload = (token = '') => {
+    try {
+      const parts = String(token).split('.');
+      if (parts.length < 2) return null;
+      const base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+      const padded = base64.padEnd(Math.ceil(base64.length / 4) * 4, '=');
+      return JSON.parse(atob(padded));
+    } catch (_err) {
+      return null;
+    }
+  };
+
+  isSocketTokenExpired = (path = '') => {
+    const token = this.extractTokenFromPath(path);
+    const payload = this.decodeJwtPayload(token);
+    const exp = Number(payload?.exp);
+    if (!exp) return false;
+    return Date.now() >= exp * 1000;
+  };
+
+  forceLoginRedirect = () => {
+    message.warning('Session expired, redirecting to login...');
+    store.dispatch(signOut());
+    if (window.location.pathname !== ROUTES.LOGIN) {
+      window.location.assign(ROUTES.LOGIN);
+      return;
+    }
+    window.location.reload();
+  };
 
   fatalDisconnect = (userMessage) => {
     if (this._fatalSignOutDone) return;
@@ -70,24 +109,8 @@ class WebSocketClient {
       }
       this.socketRef = null;
     }
-
-    if (this._reloginModalOpen) return;
-    this._reloginModalOpen = true;
-
-    const goToLogin = () => {
-      this._reloginModalOpen = false;
-      store.dispatch(signOut());
-    };
-
-    Modal.warning({
-      title: 'Session expired',
-      content: userMessage,
-      okText: 'Go to login',
-      centered: true,
-      maskClosable: false,
-      keyboard: false,
-      onOk: goToLogin,
-    });
+    console.warn(`${WS_LOG_PREFIX} forcing-login-redirect`, { userMessage });
+    this.forceLoginRedirect();
   };
 
   reconnectDelayMs = () => {
@@ -175,6 +198,13 @@ class WebSocketClient {
         this.fatalDisconnect(
           'Your account no longer has access to live updates. Please sign in again.'
         );
+        return;
+      }
+      if (
+        event.code === WS_CLOSE_ABNORMAL &&
+        this.isSocketTokenExpired(path)
+      ) {
+        this.fatalDisconnect('Your session has expired. Please sign in again.');
         return;
       }
 
