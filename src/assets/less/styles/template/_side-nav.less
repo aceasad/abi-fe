@@ -1,20 +1,76 @@
 .side-nav {
-    height: 100vh; 
     position: fixed;
-    top: 0;
+    top: 12px;
+    bottom: 12px;
+    left: 12px;
+    margin: 0;
+    box-sizing: border-box;
+    border: 1px solid #edf2f9;
     box-shadow: @side-nav-box-shadow;
     z-index: @zindex-modal - 1;
-
-    & when (@theme = light) {
-        background-color: @white;
-    }
+    background-color: white;
+    border-radius: 8px;
     
     .print ({
         display: none;
     }); 
 
-    &.side-nav-dark {
+    .side-nav-content {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .side-nav-header {
+        padding: 0;
+        margin: 0;
+    }
+
+    .side-nav-scroll-container {
+        flex: 1;
+        overflow: hidden;
+    }
+
+    .side-nav-menu {
+        height: 95%;
+        border-right: 0;
+
+        &.ant-menu-inline {
+            .ant-menu-item {
+                height: 60px;
+                line-height: 60px;
+            }
+        }
+    }
+
+    .side-nav-notification-badge {
+        margin-left: 10px;
+
+        .ant-badge-count {
+            background-color: #ff4d4f;
+        }
+    }
+
+    .sider-trigger {
+        position: absolute;
+        right: -12px;
+        top: 72px;
+        width: 24px;
+        height: 24px;
+        background-color: @white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, .15);
+        cursor: pointer;
+        z-index: 1;
+        color: @menu-dark-bg;
+    }
+
+    &.side-nav-dark .sider-trigger {
         background-color: @menu-dark-bg;
+        color: @white;
     }
 
     .hide-group-title {

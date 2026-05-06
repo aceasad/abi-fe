@@ -12,6 +12,7 @@ import { createWebsocketUrl, parseReceivedEvent } from 'utils/helpers';
 import { addOneMessage, resetChats } from 'redux/actions/Chats';
 import MassInviteModal from './MassInviteModal';
 import WebSocketClient from 'services/WebSocketClient';
+import authService from 'services/AuthService';
 import { useMarkConversationAsRead } from 'queries/shared';
 import { MESSAGE_STATUS } from 'constants/ChatConstants';
 import { API_BASE_URL } from 'configs/AppConfig';
@@ -56,11 +57,26 @@ const Chat = () => {
   }, []);
 
   useEffect(() => {
-    const socketUrl = createWebsocketUrl(token);
-    if (token) {
-      WebSocketClient.connect(socketUrl, () => { }, handleReceiveMessage);
-      WebSocketClient.waitForConnection();
-    }
+    if (!token) return undefined;
+    let cancelled = false;
+    WebSocketClient.connect({
+      getUrl: async () => {
+        if (cancelled) return '';
+        await authService.ensureFreshAccessTokenForSocket();
+        const fresh = authService.getToken();
+        if (!fresh?.access) throw new Error('Missing access token');
+        return createWebsocketUrl(fresh);
+      },
+      onopen: () => {},
+      onmessage: handleReceiveMessage,
+    });
+    WebSocketClient.waitForConnection();
+    return () => {
+      cancelled = true;
+      // Do not call closeConnection here: the mount effect cleanup already closes once
+      // on unmount. A second close would bump _connectGen twice and kill the next page’s
+      // socket before onopen. Token changes are handled by connect() replacing the socket.
+    };
   }, [token]);
 
   const [rasaHealthy, setRasaHealthy] = useState('');
