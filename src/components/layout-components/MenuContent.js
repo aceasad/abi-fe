@@ -165,17 +165,13 @@ const SideNavContent = ({
               </span>
               {menu.key === 'notifications' && unreadCount > 0 && (
                 <Badge
+                  className="side-nav-notification-badge"
                   count={unreadCount}
                   size="default"
-                  color="#ff4d4f"
-                  style={{
-                    marginLeft: '10px',
-                  }}
                 />
               )}
             </span>
           ),
-          style: { height: '60px', lineHeight: '60px' },
         };
       }
     });
@@ -190,19 +186,17 @@ const SideNavContent = ({
       label: formatMessage({ id: 'login_page.text.log_out' }),
       icon: <LogoutOutlined />,
       onClick: () => dispatch(signOut()),
-      style: { height: '60px', lineHeight: '60px' },
     },
   ];
 
   return (
     <Menu
-      theme={sideNavTheme === SIDE_NAV_LIGHT ? 'light' : 'dark'}
+      // theme={sideNavTheme === SIDE_NAV_LIGHT ? 'light' : 'dark'}
       mode="inline"
-      style={{ height: '100%', borderRight: 0 }}
       defaultSelectedKeys={[routeInfo?.key]}
       defaultOpenKeys={setDefaultOpen(routeInfo?.key)}
       selectedKeys={[routeInfo?.key]}
-      className={hideGroupTitle ? 'hide-group-title' : ''}
+      className={`side-nav-menu ${hideGroupTitle ? 'hide-group-title' : ''}`}
       items={menuItems}
       onClick={handleMenuClick}
     />
