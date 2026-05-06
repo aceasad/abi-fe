@@ -1,7 +1,6 @@
-import { message } from 'antd';
-import store from 'redux/store';
-import { signOut } from 'redux/actions/Auth';
-import { ROUTES } from 'routes';
+import { decodeJwtPayload } from 'utils/jwtAccess';
+import authService from './AuthService';
+import { teardownSession, registerWebSocketCloser } from './sessionTeardown';
 
 /** Server-side ASGI failure (e.g. Redis in Channels) often maps to 1011. */
 const WS_CLOSE_INTERNAL_ERROR = 1011;
@@ -16,11 +15,29 @@ const WS_CLOSE_FORBIDDEN = 4403;
 
 /** Abnormal closure (no close frame). */
 const WS_CLOSE_ABNORMAL = 1006;
+/** Protocol error. */
+const WS_CLOSE_PROTOCOL_ERROR = 1002;
+
+/** If the socket never reaches `open`, these closes often mean bad auth — refresh once, then give up. */
+const WS_UNOPENED_AUTH_RETRY_CODES = new Set([
+  WS_CLOSE_PROTOCOL_ERROR,
+  WS_CLOSE_ABNORMAL,
+]);
 
 const MAX_RECONNECT_ATTEMPTS = 45;
 const BASE_RECONNECT_MS = 500;
 const MAX_RECONNECT_MS = 30000;
 const WS_LOG_PREFIX = '[WebSocketClient]';
+
+/** Origin + path only (never log query — contains JWT). */
+const wsUrlForLog = (fullUrl) => {
+  try {
+    const u = new URL(fullUrl);
+    return `${u.protocol}//${u.host}${u.pathname}`;
+  } catch {
+    return '(invalid-url)';
+  }
+};
 
 class WebSocketClient {
   static instance = null;
@@ -40,8 +57,15 @@ class WebSocketClient {
     this.reconnectAttempts = 0;
     this._fatalSignOutDone = false;
     this._manualClose = false;
-    /** True only when `connect` is invoked from the scheduled onclose reconnect. */
-    this._scheduledReconnect = false;
+    this._wsContext = {
+      getUrl: async () => '',
+      onopen: () => {},
+      onmessage: () => {},
+    };
+    this._connectGen = 0;
+    this._consecutiveSocketHandshakeFailures = 0;
+
+    registerWebSocketCloser(() => this.closeConnection({ bumpGen: true }));
   }
 
   extractTokenFromPath = (path = '') => {
@@ -53,34 +77,12 @@ class WebSocketClient {
     }
   };
 
-  decodeJwtPayload = (token = '') => {
-    try {
-      const parts = String(token).split('.');
-      if (parts.length < 2) return null;
-      const base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
-      const padded = base64.padEnd(Math.ceil(base64.length / 4) * 4, '=');
-      return JSON.parse(atob(padded));
-    } catch (_err) {
-      return null;
-    }
-  };
-
   isSocketTokenExpired = (path = '') => {
     const token = this.extractTokenFromPath(path);
-    const payload = this.decodeJwtPayload(token);
+    const payload = decodeJwtPayload(token);
     const exp = Number(payload?.exp);
     if (!exp) return false;
     return Date.now() >= exp * 1000;
-  };
-
-  forceLoginRedirect = () => {
-    message.warning('Session expired, redirecting to login...');
-    store.dispatch(signOut());
-    if (window.location.pathname !== ROUTES.LOGIN) {
-      window.location.assign(ROUTES.LOGIN);
-      return;
-    }
-    window.location.reload();
   };
 
   fatalDisconnect = (userMessage) => {
@@ -88,29 +90,13 @@ class WebSocketClient {
     this._fatalSignOutDone = true;
     console.warn(`${WS_LOG_PREFIX} fatalDisconnect`, {
       reconnectAttempts: this.reconnectAttempts,
-      currentPath: this.currentPath,
+      endpoint: this.currentPath ? wsUrlForLog(this.currentPath) : null,
       userMessage,
     });
-
-    if (this.reconnectTimer) {
-      clearTimeout(this.reconnectTimer);
-      this.reconnectTimer = null;
-    }
-    if (this.socketRef) {
-      this.socketRef.onopen = null;
-      this.socketRef.onmessage = null;
-      this.socketRef.onerror = null;
-      this.socketRef.onclose = null;
-      if (
-        this.socketRef.readyState === WebSocket.OPEN ||
-        this.socketRef.readyState === WebSocket.CONNECTING
-      ) {
-        this.socketRef.close();
-      }
-      this.socketRef = null;
-    }
-    console.warn(`${WS_LOG_PREFIX} forcing-login-redirect`, { userMessage });
-    this.forceLoginRedirect();
+    teardownSession({
+      warningMessage: userMessage,
+      navigateToLogin: true,
+    });
   };
 
   reconnectDelayMs = () => {
@@ -118,18 +104,71 @@ class WebSocketClient {
     return Math.min(MAX_RECONNECT_MS, BASE_RECONNECT_MS * 2 ** exp);
   };
 
-  connect = (path, onopen = () => {}, onmessage = () => {}) => {
-    // User-driven connect (route mount, token set): reset fatal + attempt budget.
-    // Scheduled reconnect from onclose: keep attempt count so we can cap / sign out.
-    const wasScheduledReconnect = this._scheduledReconnect;
-    if (!wasScheduledReconnect) {
-      this._fatalSignOutDone = false;
-      this.reconnectAttempts = 0;
-    }
-    this._scheduledReconnect = false;
-    console.debug(`${WS_LOG_PREFIX} connect:start`, {
-      path,
-      scheduledReconnect: wasScheduledReconnect,
+  /**
+   * @param {Object} opts
+   * @param {() => Promise<string>} opts.getUrl - Resolves full ws/wss URL (may refresh access token).
+   * @param {() => void} [opts.onopen]
+   * @param {(event: MessageEvent) => void} [opts.onmessage]
+   */
+  connect = ({ getUrl, onopen = () => {}, onmessage = () => {} }) => {
+    this._connectGen += 1;
+    const gen = this._connectGen;
+    this._consecutiveSocketHandshakeFailures = 0;
+    console.info(`${WS_LOG_PREFIX} connect requested`, { connectGen: gen });
+    this._wsContext = { getUrl, onopen, onmessage };
+    this._fatalSignOutDone = false;
+    this.reconnectAttempts = 0;
+    this._startConnectPipeline(gen);
+  };
+
+  _startConnectPipeline = (gen) => {
+    console.info(`${WS_LOG_PREFIX} connect pipeline start`, { connectGen: gen });
+    (async () => {
+      let path;
+      try {
+        path = await this._wsContext.getUrl();
+      } catch (err) {
+        console.warn(`${WS_LOG_PREFIX} getUrl failed`, { connectGen: gen, err });
+        if (!this.isComponentMounted || this._fatalSignOutDone) return;
+        if (gen !== this._connectGen) return;
+        this.fatalDisconnect(
+          'Your session could not be restored. Please sign in again.'
+        );
+        return;
+      }
+
+      if (gen !== this._connectGen) {
+        console.info(`${WS_LOG_PREFIX} connect pipeline aborted (stale generation)`, {
+          connectGen: gen,
+          currentGen: this._connectGen,
+        });
+        return;
+      }
+      if (!path) {
+        console.info(`${WS_LOG_PREFIX} getUrl returned empty (cancelled unmount or skip)`, {
+          connectGen: gen,
+        });
+        return;
+      }
+      if (this._fatalSignOutDone || !this.isComponentMounted) {
+        console.info(`${WS_LOG_PREFIX} connect pipeline skip open`, {
+          connectGen: gen,
+          fatalSignOutDone: this._fatalSignOutDone,
+          isComponentMounted: this.isComponentMounted,
+        });
+        return;
+      }
+
+      this._openSocket(path, gen);
+    })();
+  };
+
+  _openSocket = (path, gen) => {
+    const endpoint = wsUrlForLog(path);
+    console.info(`${WS_LOG_PREFIX} opening socket`, {
+      endpoint,
+      connectGen: gen,
+      scheduledReconnect: this.reconnectAttempts > 0,
       reconnectAttempts: this.reconnectAttempts,
     });
 
@@ -138,23 +177,32 @@ class WebSocketClient {
       (this.socketRef.readyState === WebSocket.OPEN ||
         this.socketRef.readyState === WebSocket.CONNECTING)
     ) {
-      this.closeConnection();
+      this.closeConnection({ bumpGen: false });
     }
 
+    const { onopen, onmessage } = this._wsContext;
+    this._socketReachedOpen = false;
     this.currentPath = path;
     this.socketRef = new WebSocket(path);
-    console.debug(`${WS_LOG_PREFIX} socket:new`, { path });
+    console.info(`${WS_LOG_PREFIX} WebSocket constructed`, { endpoint, connectGen: gen });
 
     this.socketRef.onopen = () => {
+      if (gen !== this._connectGen) return;
+      this._socketReachedOpen = true;
+      this._consecutiveSocketHandshakeFailures = 0;
       this.reconnectAttempts = 0;
-      console.info(`${WS_LOG_PREFIX} onopen`, { path });
+      console.info(`${WS_LOG_PREFIX} onopen`, { endpoint, connectGen: gen });
       onopen();
     };
 
     this.socketRef.onmessage = onmessage;
 
     this.socketRef.onerror = (event) => {
-      console.warn(`${WS_LOG_PREFIX} onerror`, { path, event });
+      console.warn(`${WS_LOG_PREFIX} onerror (see following onclose code/reason)`, {
+        endpoint,
+        connectGen: gen,
+        event,
+      });
     };
 
     this.socketRef.onclose = (event) => {
@@ -182,14 +230,20 @@ class WebSocketClient {
         return;
       }
 
+      const reachedOpen = this._socketReachedOpen;
+      if (reachedOpen) {
+        this._consecutiveSocketHandshakeFailures = 0;
+      }
+
       this.reconnectAttempts += 1;
       console.warn(`${WS_LOG_PREFIX} onclose:reconnect`, {
+        endpoint: wsUrlForLog(path),
         code: event.code,
         reason: event.reason,
+        reachedOpen,
         reconnectAttempts: this.reconnectAttempts,
       });
 
-      // Authentication/authorization failures should not trigger reconnect loops.
       if (event.code === WS_CLOSE_UNAUTHORIZED) {
         this.fatalDisconnect('Your session has expired. Please sign in again.');
         return;
@@ -202,10 +256,25 @@ class WebSocketClient {
       }
       if (
         event.code === WS_CLOSE_ABNORMAL &&
-        this.isSocketTokenExpired(path)
+        this.isSocketTokenExpired(this.currentPath || path)
       ) {
         this.fatalDisconnect('Your session has expired. Please sign in again.');
         return;
+      }
+
+      if (!reachedOpen && WS_UNOPENED_AUTH_RETRY_CODES.has(event.code)) {
+        this._consecutiveSocketHandshakeFailures += 1;
+        console.warn(`${WS_LOG_PREFIX} onclose:handshake-never-opened`, {
+          code: event.code,
+          consecutiveHandshakeFailures: this._consecutiveSocketHandshakeFailures,
+        });
+        authService.markSocketHandshakeFailed();
+        if (this._consecutiveSocketHandshakeFailures >= 2) {
+          this.fatalDisconnect(
+            'Live updates could not be authenticated. Please sign in again.'
+          );
+          return;
+        }
       }
 
       if (this.reconnectAttempts > MAX_RECONNECT_ATTEMPTS) {
@@ -217,8 +286,6 @@ class WebSocketClient {
         return;
       }
 
-      // During deploys/restarts (1012) or transient server errors (1011/1013),
-      // keep the user logged in and simply retry with backoff.
       let delay = this.reconnectDelayMs();
       if (
         event.code === WS_CLOSE_INTERNAL_ERROR ||
@@ -227,14 +294,14 @@ class WebSocketClient {
       ) {
         delay = Math.max(delay, 5000);
       }
-      console.info(`${WS_LOG_PREFIX} reconnect:scheduled`, {
+      console.info(`${WS_LOG_PREFIX} reconnect:scheduled (will run getUrl + fresh token if needed)`, {
         delayMs: delay,
+        connectGen: this._connectGen,
         code: event.code,
         reason: event.reason,
       });
       this.reconnectTimer = setTimeout(() => {
-        this._scheduledReconnect = true;
-        this.connect(path, onopen, onmessage);
+        this._startConnectPipeline(this._connectGen);
       }, delay);
     };
   };
@@ -249,9 +316,16 @@ class WebSocketClient {
     }, 500);
   };
 
-  closeConnection = () => {
-    console.debug(`${WS_LOG_PREFIX} closeConnection:start`, {
-      hasSocket: Boolean(this.socketRef),
+  closeConnection = ({ bumpGen = true } = {}) => {
+    const prevGen = this._connectGen;
+    if (bumpGen) {
+      this._connectGen += 1;
+    }
+    console.info(`${WS_LOG_PREFIX} closeConnection`, {
+      bumpGen,
+      prevConnectGen: prevGen,
+      nextConnectGen: this._connectGen,
+      hadSocket: Boolean(this.socketRef),
       readyState: this.socketRef?.readyState,
     });
     if (this.reconnectTimer) {
@@ -272,7 +346,9 @@ class WebSocketClient {
       }
     }
     this.socketRef = null;
-    console.debug(`${WS_LOG_PREFIX} closeConnection:done`);
+    console.info(`${WS_LOG_PREFIX} closeConnection:done`, {
+      connectGen: this._connectGen,
+    });
   };
 
   sendMessage = (message) => this.socketRef.send(message);
@@ -280,4 +356,5 @@ class WebSocketClient {
   isConnected = () => this.state() === 1;
 }
 
-export default WebSocketClient.getInstance();
+const instance = WebSocketClient.getInstance();
+export default instance;
