@@ -41,6 +41,7 @@ import {
     fetchUnreadNotifications
 } from 'redux/actions/Notifications';
 import WebSocketClient from 'services/WebSocketClient';
+import authService from 'services/AuthService';
 import { API_BASE_URL } from 'configs/AppConfig';
 import utils from 'utils';
 import {
@@ -97,11 +98,24 @@ const Notification = () => {
     }, []);
 
     useEffect(() => {
-        const socketUrl = createWebsocketNotificationUrl(token);
-        if (token) {
-            WebSocketClient.connect(socketUrl, () => { }, handleReceiveMessage);
-            WebSocketClient.waitForConnection();
-        }
+        if (!token) return undefined;
+        let cancelled = false;
+        WebSocketClient.connect({
+            getUrl: async () => {
+                if (cancelled) return '';
+                await authService.ensureFreshAccessTokenForSocket();
+                const fresh = authService.getToken();
+                if (!fresh?.access) throw new Error('Missing access token');
+                return createWebsocketNotificationUrl(fresh);
+            },
+            onopen: () => { },
+            onmessage: handleReceiveMessage,
+        });
+        WebSocketClient.waitForConnection();
+        return () => {
+            cancelled = true;
+            // See ChatPage: avoid double closeConnection (mount cleanup already closes on unmount).
+        };
     }, [token]);
 
     // Load notifications from API on component mount

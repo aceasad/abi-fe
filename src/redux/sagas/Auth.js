@@ -18,16 +18,12 @@ import {
   authenticated,
   setUser,
   setPasswordChanged,
-  signOutSuccess,
   showLoading,
 } from '../actions/Auth';
-import { push } from 'connected-react-router';
-
 import AuthService from 'services/AuthService';
+import { teardownSession } from 'services/sessionTeardown';
 import clinicService from 'services/ClinicService';
-import { ROUTES } from 'routes';
 import messages from 'containers/Forms/LoginForm/messages';
-import { clearLocalStorage } from 'utils/localStorage';
 import changePasswordMessages from 'views/app-views/SettingsPage/messages';
 import { setClinic } from '../actions/Clinic';
 import { getMessageRequiringImmediateAttentionStatuses } from '../actions/Appointment';
@@ -65,9 +61,8 @@ export function* userFetch() {
 export function* signOut() {
   yield takeEvery(SIGNOUT, function* () {
     try {
-      yield put(signOutSuccess());
-      yield clearLocalStorage();
-      yield put(push(ROUTES.LOGIN));
+      console.info('[AuthSaga] SIGNOUT -> teardownSession');
+      yield call(teardownSession, { navigateToLogin: true });
     } catch (err) {
       //
     }
