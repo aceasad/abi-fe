@@ -15,9 +15,19 @@ const ChatContentFooter = ({ onSend }) => {
   const { name } = useSelector(state => state.auth.user);
 
   const handleSend = (values) => {
+    const messageText = values?.newMessage?.trim();
+    if (!messageText) {
+      return;
+    }
+
+    const shouldStampUserName =
+      !!chatInfo?.patient?.is_rasa_paused;
+    const finalMessage = shouldStampUserName && name
+      ? `${messageText} - ${name}`
+      : messageText;
+
     form.resetFields(['newMessage']);
-    values['newMessage'] = values['newMessage'] // + ' - ' + name
-    onSend(values);
+    onSend({ ...values, newMessage: finalMessage });
     textAreaRef.current.focus();
   };
   const textAreaRef = useRef(null);
