@@ -39,8 +39,8 @@ const PageHeaderComponent = ({
 PageHeaderComponent.defaultProps = {
   subtitle: null,
   disablePrimary: false,
-  handlePrimaryClick: () => {},
-  handleSecondaryClick: () => {},
+  handlePrimaryClick: () => { },
+  handleSecondaryClick: () => { },
 };
 
 export default PageHeaderComponent;

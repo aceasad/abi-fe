@@ -52,3 +52,18 @@ export const CHAT_FILTERS = {
   // LIKELY_TO_MISS_NEXT_APPOINTMENT: 'likely_to_miss_next_appointment',
   ALL: 'all',
 };
+
+export const FILTER_ATTRIBUTES = {
+  STATUS: 'status',
+  LOCATION: 'location',
+};
+
+// Mocked until backend exposes patient.location; reused by ConversationFilters
+// and by the client-side filter in ChatMenu so the UI visibly does something.
+export const MOCK_PATIENT_LOCATIONS = [
+  { value: 'sydney_cbd', label: 'Sydney CBD' },
+  { value: 'north_sydney', label: 'North Sydney' },
+  { value: 'bondi_junction', label: 'Bondi Junction' },
+  { value: 'parramatta', label: 'Parramatta' },
+  { value: 'chatswood', label: 'Chatswood' },
+];

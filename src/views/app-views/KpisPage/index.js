@@ -155,7 +155,7 @@ const KpisPage = () => {
   return (
     <div style={{ maxWidth: '100%', overflowX: 'hidden' }}>
       <div className="mb-4" style={{ paddingTop: isMobile ? 0 : '24px' }}>
-        <Typography.Title level={2} style={{ margin: 0, marginBottom: '16px' }}>
+        <Typography.Title level={2} style={{ margin: 0, marginBottom: '16px', fontSize: "24px", marginTop: "8px" }}>
           Key Performance Indicators
         </Typography.Title>
       </div>
