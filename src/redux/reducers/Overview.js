@@ -1,9 +1,9 @@
-import { m } from 'framer-motion';
 import { produce } from 'immer';
 import {
   SET_OVERVIEW_SUMMARY_DATA,
   SET_OVERVIEW_CLINICSTATS_DATA,
   SET_OVERVIEW_SUMMARY_DATA_LOADING,
+  SET_OVERVIEW_CLINICSTATS_DATA_LOADING,
 } from 'redux/constants/Overview';
 
 const initialState = {
@@ -44,7 +44,7 @@ const initialState = {
   not_updated: 0,
   booking_time_distribution: {
     morning: 0,
-    afternook: 0,
+    afternoon: 0,
     evening: 0,
     night: 0
   },
@@ -114,7 +114,6 @@ const chats = (state = initialState, action) =>
         draft.cancelled = action.payload.cancelled;
         draft.non_attended = action.payload.non_attended;
         draft.attended = action.payload.attended;
-        draft.non_attended = action.payload.non_attended;
         draft.booking_time_distribution = action.payload.booking_time_distribution;
         draft.walked_out = action.payload.walked_out;
         draft.quiet_sent_in = action.payload.quiet_sent_in;
@@ -129,6 +128,9 @@ const chats = (state = initialState, action) =>
         draft.engagement_rate = action.payload.engagement_rate;
         draft.booking_rate = action.payload.booking_rate;
         draft.percentage_changes = action.payload.percentage_changes;
+        break;
+      case SET_OVERVIEW_CLINICSTATS_DATA_LOADING:
+        draft.loading = action.payload;
         break;
       case SET_OVERVIEW_SUMMARY_DATA_LOADING:
         draft.loading = action.payload;
