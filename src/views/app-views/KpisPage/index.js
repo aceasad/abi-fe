@@ -5,7 +5,6 @@ import {
   Typography,
   Tabs,
   Card,
-  Layout,
   Button,
   Select,
   Grid,
@@ -160,10 +159,9 @@ const KpisPage = () => {
         </Typography.Title>
       </div>
 
-      <Layout>
-        {SHOW_KPIS && (
-          <>
-            {isMobile ? (
+      {SHOW_KPIS && (
+        <>
+          {isMobile ? (
               // Mobile/Tablet Layout
               <div style={{ marginBottom: '16px' }}>
                 <Row gutter={[12, 12]}>
@@ -256,9 +254,8 @@ const KpisPage = () => {
                 />
               </Col>
             </Row>
-          </>
-        )}
-      </Layout>
+        </>
+      )}
     </div>
   );
 };

@@ -366,7 +366,7 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
       <Row gutter={isMobile ? 12 : 16} style={{ marginTop: isMobile ? 12 : 0 }}>
         {/* Appointment Outcomes Pie Chart */}
         <Col xs={24} sm={24} md={12} lg={12} style={{ marginBottom: isMobile ? 12 : 0 }}>
-          <Card title="Appointment Outcomes" style={{ height: isMobile ? 'auto' : 425 }}>
+          <Card title="Appointment Outcomes" style={isMobile ? { height: 'auto' } : { minHeight: 425 }}>
             <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row' }}>
               <ResponsiveContainer height={isMobile ? 300 : 350}>
                 <PieChart>
@@ -413,7 +413,7 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
 
         {/* Intervention & Special Cases */}
         <Col xs={24} sm={24} md={12} lg={12}>
-          <Card title="Intervention & Special Cases" style={{ height: isMobile ? 'auto' : 425 }}>
+          <Card title="Intervention & Special Cases" style={isMobile ? { height: 'auto' } : { minHeight: 425 }}>
             <Row gutter={isMobile ? 8 : 16}>
               {interventionData.map((item, index) => {
                 const comparison = compareValues(item.value, item.previousValue);
