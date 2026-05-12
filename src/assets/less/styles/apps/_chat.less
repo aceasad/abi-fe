@@ -154,6 +154,15 @@
         }
     }
 
+    // The filter bar grows vertically as chips wrap, unlike the fixed-height
+    // search toolbar above it. Min-height keeps the row visually balanced when
+    // no filters are active.
+    .chat-menu-toolbar.chat-menu-filter-bar {
+        height: auto;
+        min-height: @chat-header-height;
+        padding: 10px 15px;
+    }
+
     .chat-menu-list {
         height: calc(100vh - @chat-header-height - @chat-footer-height - @layout-content-gutter - @header-height - 30px);
         overflow: auto;
@@ -197,6 +206,320 @@
                     text-overflow: ellipsis;
                     white-space: nowrap;
                 }
+            }
+        }
+    }
+}
+
+// Conversation filter UI (chip-based facet filters).
+// Lives inside .chat-menu-filter-bar in the sidebar; the dropdown panel
+// portals into the document body, so .conversation-filters-panel sits at the
+// top level rather than nested inside .chat-menu.
+.conversation-filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+
+    // Native <button> trigger avoids Ant Design default-btn hover CSS-in-JS (gray wash).
+    button.conversation-filters-trigger {
+        appearance: none;
+        cursor: pointer;
+        font-family: inherit;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        height: 30px;
+        padding: 0 12px;
+        font-size: 13px;
+        font-weight: @font-weight-semibold;
+        color: @primary-color;
+        background-color: fade(@primary-color, 8%);
+        // 1px transparent keeps width stable when the open-state border appears.
+        border: 1px solid transparent;
+        border-radius: @border-radius-base;
+        box-shadow: none;
+        transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+
+        & when (@theme = dark) {
+            background-color: fade(@primary-color, 14%);
+        }
+
+        .anticon {
+            font-size: 12px;
+            color: @primary-color;
+        }
+
+        &:hover {
+            color: @primary-color;
+            background-color: fade(@primary-color, 12%);
+            border-color: transparent;
+
+            .anticon {
+                color: @primary-color;
+            }
+        }
+
+        &:focus-visible {
+            outline: 2px solid fade(@primary-color, 45%);
+            outline-offset: 2px;
+        }
+
+        &:active {
+            color: @primary-color;
+            background-color: fade(@primary-color, 12%);
+            border-color: transparent;
+
+            .anticon {
+                color: @primary-color;
+            }
+        }
+
+        & when (@theme = dark) {
+
+            &:hover,
+            &:active {
+                background-color: fade(@primary-color, 19%);
+            }
+        }
+
+        // Dropdown visible: solid purple outline (hover keeps darker wash inside it).
+        &.conversation-filters-trigger-open {
+            color: @primary-color;
+            border-color: @primary-color;
+            box-shadow: none;
+
+            .anticon {
+                color: @primary-color;
+            }
+
+            &:hover,
+            &:active {
+                color: @primary-color;
+                background-color: fade(@primary-color, 12%);
+                border-color: @primary-color;
+
+                .anticon {
+                    color: @primary-color;
+                }
+            }
+        }
+
+        & when (@theme = dark) {
+            &.conversation-filters-trigger-open {
+
+                &:hover,
+                &:active {
+                    background-color: fade(@primary-color, 19%);
+                }
+            }
+        }
+
+        // Compact icon-only variant once at least one chip exists.
+        &.conversation-filters-trigger-compact {
+            width: 30px;
+            padding: 0;
+            justify-content: center;
+        }
+    }
+
+    .conversation-filters-clear.ant-btn-link {
+        padding: 0 6px;
+        height: 30px;
+        font-size: 12px;
+        font-weight: @font-weight-semibold;
+        color: @gray-light;
+
+        &:hover,
+        &:focus {
+            color: @primary-color;
+            background-color: transparent;
+        }
+    }
+
+    .conversation-filter-chip.ant-tag {
+        margin: 0;
+        height: 30px;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 0 10px;
+        font-size: 13px;
+        font-weight: @font-weight-semibold;
+        line-height: 1;
+        color: @primary-color;
+        background-color: fade(@primary-color, 10%);
+        border: 1px solid fade(@primary-color, 18%);
+        border-radius: @border-radius-base;
+        cursor: pointer;
+        transition: background-color 0.2s ease, border-color 0.2s ease;
+
+        & when (@theme = dark) {
+            background-color: fade(@primary-color, 18%);
+            border-color: fade(@primary-color, 32%);
+        }
+
+        &:hover {
+            background-color: fade(@primary-color, 16%);
+            border-color: fade(@primary-color, 32%);
+        }
+
+        .conversation-filter-chip-attribute {
+            color: fade(@primary-color, 75%);
+            font-weight: 400;
+        }
+
+        .conversation-filter-chip-separator {
+            opacity: 0.45;
+            margin: 0 1px;
+        }
+
+        .ant-tag-close-icon {
+            color: fade(@primary-color, 70%);
+            margin-left: 4px;
+            font-size: 11px;
+
+            &:hover {
+                color: @primary-color;
+            }
+        }
+    }
+}
+
+.conversation-filters-panel {
+    background: @white;
+    border-radius: @border-radius-base;
+    box-shadow: 0 8px 24px rgba(15, 70, 140, 0.12), 0 2px 6px rgba(15, 70, 140, 0.06);
+    overflow: hidden;
+    min-width: 240px;
+
+    & when (@theme = dark) {
+        background: @body-background;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .conversation-filters-panel-eyebrow {
+        padding: 12px 16px 4px;
+        font-size: 11px;
+        font-weight: @font-weight-semibold;
+        color: @gray-light;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+    }
+
+    .conversation-filters-panel-empty {
+        padding: 14px 16px;
+        font-size: 13px;
+        color: @gray-light;
+    }
+
+    .conversation-filters-panel-header {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 12px;
+        border-bottom: 1px solid @border-color-base;
+
+        .conversation-filters-panel-title {
+            font-size: 13px;
+            font-weight: @font-weight-semibold;
+            color: @gray-dark;
+        }
+
+        .ant-btn {
+            color: @gray-light;
+
+            &:hover,
+            &:focus {
+                color: @primary-color;
+                background-color: fade(@primary-color, 6%);
+            }
+        }
+    }
+
+    .conversation-filters-panel-list {
+        padding: 4px 0;
+        max-height: 280px;
+        overflow-y: auto;
+    }
+
+    .conversation-filters-attribute {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 16px;
+        cursor: pointer;
+        font-size: 14px;
+        color: @gray-dark;
+        transition: background-color 0.15s ease, color 0.15s ease;
+
+        .anticon {
+            font-size: 14px;
+            color: @gray-light;
+        }
+
+        &:hover {
+            color: @primary-color;
+            background-color: fade(@primary-color, 6%);
+
+            .anticon {
+                color: @primary-color;
+            }
+        }
+    }
+
+    .conversation-filters-option {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 16px;
+        cursor: pointer;
+        font-size: 14px;
+        color: @gray-dark;
+        transition: background-color 0.15s ease;
+
+        &:hover {
+            background-color: fade(@primary-color, 6%);
+        }
+
+        &.conversation-filters-option-active {
+            background-color: fade(@primary-color, 10%);
+            color: @primary-color;
+            font-weight: @font-weight-semibold;
+        }
+
+        .ant-checkbox-wrapper {
+            margin-right: 0;
+        }
+    }
+
+    .conversation-filters-panel-footer {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 8px;
+        padding: 10px 12px;
+        border-top: 1px solid @border-color-base;
+
+        .conversation-filters-panel-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            // The global `.ant-btn-primary` rule in index.css forces a 40px
+            // height with !important, so we must also use !important here to
+            // keep the Cancel (default) and Apply (primary) buttons aligned.
+            .ant-btn,
+            .ant-btn.ant-btn-primary {
+                height: 28px !important;
+                min-height: 28px !important;
+                padding: 0 12px !important;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                line-height: 1;
+                border-radius: @border-radius-base !important;
             }
         }
     }

@@ -16,19 +16,61 @@ class Utils {
    * @return {Object} object that contained the path string
    */
   static getRouteInfo(navTree, path) {
-    if (navTree.path === path) {
-      return navTree;
+    if (!path) {
+      return undefined;
     }
-    let route;
-    for (let p in navTree) {
-      if (navTree.hasOwnProperty(p) && typeof navTree[p] === 'object') {
-        route = this.getRouteInfo(navTree[p], path);
-        if (route) {
-          return route;
-        }
+    // Prefer an exact match first, then fall back to the deepest path that is a
+    // prefix of the current location. This keeps the sidebar menu item highlighted
+    // when the user is on a sub-route, e.g. /pages/conversation/123 should still
+    // highlight the "Conversation" nav item, and /pages/settings/edit-clinic
+    // should still highlight "Settings".
+    const exact = Utils._findRouteByPath(navTree, path, true);
+    if (exact) {
+      return exact;
+    }
+    return Utils._findRouteByPath(navTree, path, false);
+  }
+
+  static _findRouteByPath(navTree, path, exactOnly) {
+    if (!navTree || typeof navTree !== 'object') {
+      return undefined;
+    }
+
+    if (typeof navTree.path === 'string') {
+      if (navTree.path === path) {
+        return navTree;
+      }
+      if (!exactOnly && path.startsWith(`${navTree.path}/`)) {
+        return navTree;
       }
     }
-    return route;
+
+    let bestMatch;
+    for (const key in navTree) {
+      if (!navTree.hasOwnProperty(key)) {
+        continue;
+      }
+      const value = navTree[key];
+      if (!value || typeof value !== 'object') {
+        continue;
+      }
+      const candidate = Utils._findRouteByPath(value, path, exactOnly);
+      if (!candidate) {
+        continue;
+      }
+      if (exactOnly) {
+        return candidate;
+      }
+      // When doing a prefix match, prefer the most specific (longest) path so
+      // that nested nav entries win over their parents.
+      if (
+        !bestMatch ||
+        (candidate.path || '').length > (bestMatch.path || '').length
+      ) {
+        bestMatch = candidate;
+      }
+    }
+    return bestMatch;
   }
 
   /**

@@ -188,7 +188,7 @@ const ChatMenu = (props) => {
           onChange={searchOnChange}
         />
       </div>
-      <div className="chat-menu-toolbar">
+      <div className="chat-menu-toolbar chat-menu-filter-bar">
         <ConversationFilters
           value={activeFilters}
           onChange={setActiveFilters}

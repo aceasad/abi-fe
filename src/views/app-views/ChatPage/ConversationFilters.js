@@ -1,6 +1,11 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Button, Dropdown, Tag, Checkbox, Space } from 'antd';
-import { PlusOutlined, ArrowLeftOutlined, FilterOutlined } from '@ant-design/icons';
+import { Button, Dropdown, Tag, Radio } from 'antd';
+import {
+  PlusOutlined,
+  ArrowLeftOutlined,
+  FilterOutlined,
+  RightOutlined,
+} from '@ant-design/icons';
 import { useIntl } from 'react-intl';
 import messages from './messages';
 import {
@@ -9,13 +14,11 @@ import {
   MOCK_PATIENT_LOCATIONS,
 } from 'constants/ChatConstants';
 
-const MAX_CHIP_VALUES_PREVIEW = 2;
-
 const ConversationFilters = ({ value, onChange }) => {
   const { formatMessage } = useIntl();
   const [pickerOpen, setPickerOpen] = useState(false);
   const [editingAttribute, setEditingAttribute] = useState(null);
-  const [draftValues, setDraftValues] = useState([]);
+  const [draftValue, setDraftValue] = useState(null);
 
   const STATUS_OPTIONS = useMemo(
     () => [
@@ -62,7 +65,7 @@ const ConversationFilters = ({ value, onChange }) => {
 
   const resetPicker = () => {
     setEditingAttribute(null);
-    setDraftValues([]);
+    setDraftValue(null);
   };
 
   useEffect(() => {
@@ -73,25 +76,22 @@ const ConversationFilters = ({ value, onChange }) => {
 
   const openAttributeForEdit = (attributeId) => {
     const existing = value.find((f) => f.attribute === attributeId);
-    setDraftValues(existing ? [...existing.values] : []);
+    setDraftValue(existing && existing.values.length > 0 ? existing.values[0] : null);
     setEditingAttribute(attributeId);
     setPickerOpen(true);
   };
 
-  const toggleDraftValue = (optionValue) => {
-    setDraftValues((prev) =>
-      prev.includes(optionValue)
-        ? prev.filter((v) => v !== optionValue)
-        : [...prev, optionValue]
-    );
+  // Clicking the active option clears the selection; otherwise it becomes
+  // the single selected value. Only one value per attribute is allowed.
+  const selectDraftValue = (optionValue) => {
+    setDraftValue((prev) => (prev === optionValue ? null : optionValue));
   };
 
   const applyDraft = () => {
     const withoutCurrent = value.filter((f) => f.attribute !== editingAttribute);
-    const next =
-      draftValues.length > 0
-        ? [...withoutCurrent, { attribute: editingAttribute, values: draftValues }]
-        : withoutCurrent;
+    const next = draftValue
+      ? [...withoutCurrent, { attribute: editingAttribute, values: [draftValue] }]
+      : withoutCurrent;
     onChange(next);
     setPickerOpen(false);
   };
@@ -110,17 +110,9 @@ const ConversationFilters = ({ value, onChange }) => {
     return option ? option.label : optionValue;
   };
 
-  const getChipLabel = (filter) => {
-    const attrLabel = ATTRIBUTES[filter.attribute]?.label || filter.attribute;
-    const previewValues = filter.values
-      .slice(0, MAX_CHIP_VALUES_PREVIEW)
-      .map((v) => getOptionLabel(filter.attribute, v));
-    const overflow = filter.values.length - MAX_CHIP_VALUES_PREVIEW;
-    const valuesText =
-      overflow > 0
-        ? `${previewValues.join(', ')} +${overflow}`
-        : previewValues.join(', ');
-    return `${attrLabel}: ${valuesText}`;
+  const getChipValuesText = (filter) => {
+    if (!filter.values || filter.values.length === 0) return '';
+    return getOptionLabel(filter.attribute, filter.values[0]);
   };
 
   const renderAttributeList = () => {
@@ -131,41 +123,30 @@ const ConversationFilters = ({ value, onChange }) => {
 
     if (availableAttributes.length === 0) {
       return (
-        <div style={{ padding: '12px 16px', color: '#888', fontSize: 13 }}>
+        <div className="conversation-filters-panel-empty">
           {formatMessage(messages.allFilter)}
         </div>
       );
     }
 
     return (
-      <div style={{ padding: '4px 0', minWidth: 200 }}>
-        <div
-          style={{
-            padding: '8px 16px 4px',
-            fontSize: 12,
-            color: '#888',
-            textTransform: 'uppercase',
-            letterSpacing: 0.5,
-          }}
-        >
+      <>
+        <div className="conversation-filters-panel-eyebrow">
           {formatMessage(messages.addFilter)}
         </div>
-        {availableAttributes.map(([id, config]) => (
-          <div
-            key={id}
-            onClick={() => openAttributeForEdit(id)}
-            style={{
-              padding: '8px 16px',
-              cursor: 'pointer',
-              fontSize: 14,
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#f5f5f5')}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
-          >
-            {config.label}
-          </div>
-        ))}
-      </div>
+        <div className="conversation-filters-panel-list">
+          {availableAttributes.map(([id, config]) => (
+            <div
+              key={id}
+              className="conversation-filters-attribute"
+              onClick={() => openAttributeForEdit(id)}
+            >
+              <span style={{ flex: 1 }}>{config.label}</span>
+              <RightOutlined />
+            </div>
+          ))}
+        </div>
+      </>
     );
   };
 
@@ -175,93 +156,60 @@ const ConversationFilters = ({ value, onChange }) => {
     const options = config.getOptions();
 
     return (
-      <div style={{ minWidth: 240 }}>
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            padding: '8px 12px',
-            borderBottom: '1px solid #f0f0f0',
-            gap: 8,
-          }}
-        >
+      <>
+        <div className="conversation-filters-panel-header">
           <Button
             type="text"
             size="small"
             icon={<ArrowLeftOutlined />}
             onClick={resetPicker}
           />
-          <span style={{ fontWeight: 600, fontSize: 13 }}>{config.label}</span>
+          <span className="conversation-filters-panel-title">{config.label}</span>
         </div>
-        <div style={{ maxHeight: 260, overflowY: 'auto', padding: '4px 0' }}>
-          {options.map((option) => (
-            <div
-              key={option.value}
-              onClick={() => toggleDraftValue(option.value)}
-              style={{
-                padding: '6px 16px',
-                cursor: 'pointer',
-                fontSize: 14,
-                display: 'flex',
-                alignItems: 'center',
-                gap: 10,
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#f5f5f5')}
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.backgroundColor = 'transparent')
-              }
-            >
-              <Checkbox
-                checked={draftValues.includes(option.value)}
-                onClick={(e) => e.stopPropagation()}
-                onChange={() => toggleDraftValue(option.value)}
-              />
-              <span>{option.label}</span>
-            </div>
-          ))}
+        <div className="conversation-filters-panel-list">
+          {options.map((option) => {
+            const checked = draftValue === option.value;
+            return (
+              <div
+                key={option.value}
+                className={`conversation-filters-option${checked ? ' conversation-filters-option-active' : ''
+                  }`}
+                onClick={() => selectDraftValue(option.value)}
+              >
+                <Radio
+                  checked={checked}
+                  onClick={(e) => e.stopPropagation()}
+                  onChange={() => selectDraftValue(option.value)}
+                />
+                <span>{option.label}</span>
+              </div>
+            );
+          })}
         </div>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-            padding: '8px 12px',
-            borderTop: '1px solid #f0f0f0',
-            gap: 8,
-          }}
-        >
-          <Button size="small" onClick={() => setPickerOpen(false)}>
-            {formatMessage(messages.cancelButton)}
-          </Button>
-          <Button size="small" type="primary" onClick={applyDraft}>
-            {formatMessage(messages.applyFilter)}
-          </Button>
+        <div className="conversation-filters-panel-footer">
+          <div className="conversation-filters-panel-actions">
+            <Button size="small" onClick={() => setPickerOpen(false)}>
+              {formatMessage(messages.cancelButton)}
+            </Button>
+            <Button size="small" type="primary" onClick={applyDraft}>
+              {formatMessage(messages.applyFilter)}
+            </Button>
+          </div>
         </div>
-      </div>
+      </>
     );
   };
 
   const dropdownContent = (
-    <div
-      style={{
-        background: '#fff',
-        borderRadius: 6,
-        boxShadow: '0 6px 16px rgba(0, 0, 0, 0.08), 0 3px 6px rgba(0, 0, 0, 0.05)',
-        overflow: 'hidden',
-      }}
-    >
+    <div className="conversation-filters-panel">
       {editingAttribute ? renderValuePicker() : renderAttributeList()}
     </div>
   );
 
+  const hasFilters = value.length > 0;
+
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        alignItems: 'center',
-        gap: 6,
-      }}
-    >
+    <div className="conversation-filters">
       <Dropdown
         open={pickerOpen}
         onOpenChange={setPickerOpen}
@@ -269,48 +217,51 @@ const ConversationFilters = ({ value, onChange }) => {
         placement="bottomLeft"
         dropdownRender={() => dropdownContent}
       >
-        <Button
-          size="small"
-          icon={value.length === 0 ? <FilterOutlined /> : <PlusOutlined />}
+        <button
+          type="button"
+          className={[
+            'conversation-filters-trigger',
+            hasFilters ? 'conversation-filters-trigger-compact' : '',
+            pickerOpen ? 'conversation-filters-trigger-open' : '',
+          ]
+            .filter(Boolean)
+            .join(' ')}
           onClick={() => {
             if (!pickerOpen) {
               resetPicker();
             }
           }}
         >
-          {value.length === 0
-            ? formatMessage(messages.addFilter)
-            : null}
-        </Button>
+          {hasFilters ? <PlusOutlined /> : <FilterOutlined />}
+          {hasFilters ? null : formatMessage(messages.addFilter)}
+        </button>
       </Dropdown>
 
       {value.map((filter) => (
         <Tag
           key={filter.attribute}
+          className="conversation-filter-chip"
           closable
           onClose={(e) => {
             e.preventDefault();
             removeFilter(filter.attribute);
           }}
           onClick={() => openAttributeForEdit(filter.attribute)}
-          style={{
-            cursor: 'pointer',
-            margin: 0,
-            padding: '2px 8px',
-            fontSize: 13,
-            borderRadius: 4,
-          }}
         >
-          {getChipLabel(filter)}
+          <span className="conversation-filter-chip-attribute">
+            {ATTRIBUTES[filter.attribute]?.label || filter.attribute}
+          </span>
+          <span className="conversation-filter-chip-separator">·</span>
+          <span>{getChipValuesText(filter)}</span>
         </Tag>
       ))}
 
       {value.length > 1 && (
         <Button
+          className="conversation-filters-clear"
           type="link"
           size="small"
           onClick={clearAll}
-          style={{ padding: '0 4px', fontSize: 12 }}
         >
           {formatMessage(messages.clearAllFilters)}
         </Button>
