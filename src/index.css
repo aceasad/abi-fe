@@ -561,11 +561,29 @@ div.ant-divider,
   color: #5d4ebf !important;
 }
 
-.ant-menu-item:hover,
+/* Do not combine with `.ant-menu-item:hover` alone — same specificity as
+   `.ant-menu-item-selected:hover`, so it would override the selected background. */
 .ant-menu-item:not(.ant-menu-item-selected):hover {
   color: #5d4ebf !important;
   background-color: transparent !important;
   border-radius: 0 !important;
+}
+
+/* Sidebar / mobile drawer: stronger active tint + lighter hover for other items */
+.side-nav .side-nav-menu.ant-menu-inline .ant-menu-item.ant-menu-item-selected,
+.side-nav .side-nav-menu.ant-menu-inline .ant-menu-item.ant-menu-item-selected:hover,
+.side-nav .side-nav-menu.ant-menu-inline .ant-menu-item.ant-menu-item-selected:focus,
+.mobile-nav-menu .side-nav-menu.ant-menu-inline .ant-menu-item.ant-menu-item-selected,
+.mobile-nav-menu .side-nav-menu.ant-menu-inline .ant-menu-item.ant-menu-item-selected:hover,
+.mobile-nav-menu .side-nav-menu.ant-menu-inline .ant-menu-item.ant-menu-item-selected:focus {
+  color: #5d4ebf !important;
+  background-color: rgba(93, 78, 191, 0.14) !important;
+}
+
+.side-nav .side-nav-menu.ant-menu-inline .ant-menu-item:not(.ant-menu-item-selected):hover,
+.mobile-nav-menu .side-nav-menu.ant-menu-inline .ant-menu-item:not(.ant-menu-item-selected):hover {
+  color: #5d4ebf !important;
+  background-color: rgba(93, 78, 191, 0.06) !important;
 }
 
 .ant-menu-item:hover .ant-menu-item-icon,
