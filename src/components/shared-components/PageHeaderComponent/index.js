@@ -15,7 +15,7 @@ const PageHeaderComponent = ({
     <PageHeader
       className="p-0 mb-4"
       title={
-        <Typography.Title level={2} className="mb-0">
+        <Typography.Title level={3} className="mb-0">
           {title}
         </Typography.Title>
       }

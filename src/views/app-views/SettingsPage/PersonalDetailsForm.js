@@ -41,7 +41,7 @@ const PersonalDetailsForm = () => {
 
   return (
     <div className="p-2">
-      <Typography.Title level={2} className="mb-4">
+      <Typography.Title level={3} className="mb-4">
         {formatMessage(messages.personalDetailsTitle)}
       </Typography.Title>
       <Row>

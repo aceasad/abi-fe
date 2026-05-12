@@ -90,7 +90,7 @@ const Chat = () => {
         className="p-0 mb-4"
         title={
           isMobile ? (
-            <Typography.Title level={2} className="mb-0" style={{ fontSize: '20px' }}>
+            <Typography.Title level={3} className="mb-0" style={{ fontSize: '20px' }}>
               {`${formatMessage(messages.conversationsTitle)}${!rasaHealthy
                 ? ': Communication with Asa AI is down for maintenance'
                 : ''

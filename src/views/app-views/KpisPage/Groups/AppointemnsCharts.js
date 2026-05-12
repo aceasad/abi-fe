@@ -94,7 +94,7 @@ const AppointmentsCharts = () => {
         <Card
           className="height-100 d-flex flex-column justify-content-between"
           title={
-            <Typography.Title level={4} className="text-wrap">
+            <Typography.Title level={3} className="text-wrap">
               {formatMessage(messages.appointmentsPreferences)}
             </Typography.Title>
           }
