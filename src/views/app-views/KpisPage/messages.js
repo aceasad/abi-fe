@@ -79,6 +79,106 @@ export default defineMessages({
     id: `${scope}.clinicstats.decline`,
     defaultMessage: 'Declines',
   },
+  clinicStatsCommunicationFlow: {
+    id: `${scope}.clinicstats.communication_flow`,
+    defaultMessage: 'Patient communication flow',
+  },
+  clinicStatsBookingRate: {
+    id: `${scope}.clinicstats.booking_rate`,
+    defaultMessage: 'Booking rate',
+  },
+  clinicStatsFailedPrefix: {
+    id: `${scope}.clinicstats.failed_prefix`,
+    defaultMessage: 'Failed',
+  },
+  clinicStatsDeliveredPrefix: {
+    id: `${scope}.clinicstats.delivered_prefix`,
+    defaultMessage: 'Delivered',
+  },
+  clinicStatsFailedMessageDetail: {
+    id: `${scope}.clinicstats.failed_message_detail`,
+    defaultMessage: 'Message failed',
+  },
+  clinicStatsFailedUnengagedDetail: {
+    id: `${scope}.clinicstats.failed_unengaged_detail`,
+    defaultMessage: 'Unengaged',
+  },
+  clinicStatsAppointmentOutcomes: {
+    id: `${scope}.clinicstats.appointment_outcomes`,
+    defaultMessage: 'Appointment outcomes',
+  },
+  clinicStatsInterventionTitle: {
+    id: `${scope}.clinicstats.intervention_title`,
+    defaultMessage: 'Intervention & special cases',
+  },
+  clinicStatsEngagement: {
+    id: `${scope}.clinicstats.engagement`,
+    defaultMessage: 'Engagement',
+  },
+  clinicStatsAfterHours: {
+    id: `${scope}.clinicstats.after_hours`,
+    defaultMessage: 'After hours',
+  },
+  clinicStatsBookingsAfterHours: {
+    id: `${scope}.clinicstats.bookings_after_hours`,
+    defaultMessage: 'Bookings made after hours',
+  },
+  clinicStatsBookingsMade: {
+    id: `${scope}.clinicstats.bookings_made`,
+    defaultMessage: 'Bookings made',
+  },
+  clinicStatsPreviousPeriod: {
+    id: `${scope}.clinicstats.previous_period`,
+    defaultMessage: 'Previous period',
+  },
+  clinicStatsPriorBucketDetail: {
+    id: `${scope}.clinicstats.prior_bucket_detail`,
+    defaultMessage: 'Prior: morning {morning}, afternoon {afternoon}, evening {evening}, night {night}',
+  },
+  clinicStatsInterventionEmergency: {
+    id: `${scope}.clinicstats.intervention_emergency`,
+    defaultMessage: 'Emergency situation',
+  },
+  clinicStatsInterventionHuman: {
+    id: `${scope}.clinicstats.intervention_human`,
+    defaultMessage: 'Human intervention',
+  },
+  clinicStatsInterventionScreenedElsewhere: {
+    id: `${scope}.clinicstats.intervention_screened_elsewhere`,
+    defaultMessage: 'Screened elsewhere',
+  },
+  clinicStatsInterventionDeclined: {
+    id: `${scope}.clinicstats.intervention_declined`,
+    defaultMessage: 'Declined',
+  },
+  clinicStatsInterventionOptOut: {
+    id: `${scope}.clinicstats.intervention_opt_out`,
+    defaultMessage: 'Opt-out',
+  },
+  clinicStatsInterventionSnoozed: {
+    id: `${scope}.clinicstats.intervention_snoozed`,
+    defaultMessage: 'Snoozed',
+  },
+  clinicStatsPriorPatientsLabel: {
+    id: `${scope}.clinicstats.prior_patients_label`,
+    defaultMessage: 'Prior period (patients): {count}',
+  },
+  clinicStatsFlowInvited: {
+    id: `${scope}.clinicstats.flow_invited`,
+    defaultMessage: 'Invited',
+  },
+  clinicStatsFlowDelivered: {
+    id: `${scope}.clinicstats.flow_delivered`,
+    defaultMessage: 'Delivered',
+  },
+  clinicStatsFlowEngaged: {
+    id: `${scope}.clinicstats.flow_engaged`,
+    defaultMessage: 'Engaged',
+  },
+  clinicStatsFlowBooked: {
+    id: `${scope}.clinicstats.flow_booked`,
+    defaultMessage: 'Booked',
+  },
   bookingEfficiency: {
     id: `${scope}.booking.efficiency`,
     defaultMessage: 'Booking efficiency ',
