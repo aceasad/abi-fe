@@ -1,10 +1,12 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { useIntl } from 'react-intl';
 import { makeSelectClinicStatsData } from 'redux/selectors/Overview';
-import { Card, Row, Col, Typography } from 'antd';
+import { Card, Row, Col, Typography, Spin } from 'antd';
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, LabelList } from 'recharts';
 import { formatDateByCountry, getDateFormatByCountry } from 'utils/helpers';
 import dayjs from 'utils/dayjs';
+import messages from '../messages';
 
 const { Text } = Typography;
 
@@ -15,38 +17,53 @@ const displayValue = (value, isPercentage = false) => {
   if (isPercentage) return `${Number(value).toFixed(1)}%`;
   return value;
 };
-// Helper function to compare current and previous values
-const compareValues = (current, previous) => {
-  if (previous === undefined || previous === null || current === -1 || previous === 0) return null;
-  if (current > previous) return { type: 'increase', value: previous };
-  if (current < previous) return { type: 'decrease', value: previous };
-  return null;
-};
-
 // Helper function to format percentage change display with + for positive values
 const formatPercentageChangeDisplay = (value) => {
   if (value == null || isNaN(value)) return null;
-  const formattedValue = Number(value).toFixed(1);
-  return value < 0 ? `-${formattedValue}%` : `+${formattedValue}%`;
+  const clamped = Math.max(-100, Math.min(100, Number(value)));
+  const formattedValue = Math.abs(clamped).toFixed(1);
+  return clamped < 0 ? `-${formattedValue}%` : `+${formattedValue}%`;
+};
+const formatValueChangeDisplay = (value) => {
+  if (value == null || isNaN(value)) return null;
+  const num = Math.abs(Number(value));
+  return `+${num}`;
+};
+const calculatePercentChange = (currentValue, previousValue) => {
+  const current = Number(currentValue ?? 0);
+  const previous = Number(previousValue ?? 0);
+  if (!Number.isFinite(current) || !Number.isFinite(previous) || previous === 0) return null;
+  return ((current - previous) / previous) * 100;
+};
+const calculateValueChange = (currentValue, previousValue) => {
+  const current = Number(currentValue ?? 0);
+  const previous = Number(previousValue ?? 0);
+  if (!Number.isFinite(current) || !Number.isFinite(previous)) return null;
+  return current - previous;
 };
 
 const StatCard = ({ title, value, subtitle, color = '#000000', change = null, changeType = "percentage", style = {}, bare = false, isMobile = false }) => {
+  const changeIsObject = change != null && typeof change === 'object';
+  const changeNode = !changeIsObject && change != null ? (
+        <Text
+          type="secondary"
+          style={{
+            color: (changeType !== "decrease" && typeof change === 'number' && change > 0) ? '#10B981' : (changeType !== "increase" && typeof change === 'number' && change < 0) ? '#EF4444' : '#6B7280',
+            justifyContent: 'center',
+            fontSize: isMobile ? '12px' : '16px',
+          }}>
+          {changeType === "percentage"
+            ? formatPercentageChangeDisplay(change)
+            : formatValueChangeDisplay(change)}
+        </Text>
+      ) : null;
+
   const content = (
     <div style={{ display: 'flex', alignItems: "center", gap: '8px', flexWrap: isMobile ? 'wrap' : 'nowrap' }}>
       <div style={{ fontSize: isMobile ? '20px' : '28px', fontWeight: 'bold', color }}>
         {value}
       </div>
-      {change != null && (
-        <Text
-          type="secondary"
-          style={{
-            color: (changeType !== "decrease" && change > 0) ? '#10B981' : (changeType !== "increase" && change < 0) ? '#EF4444' : '#6B7280',
-            justifyContent: 'center',
-            fontSize: isMobile ? '12px' : '16px',
-          }}>
-          {changeType === "percentage" ? formatPercentageChangeDisplay(change) : change}
-        </Text>
-      )}
+      {changeNode}
     </div>
   );
   if (bare) {
@@ -66,6 +83,11 @@ const StatCard = ({ title, value, subtitle, color = '#000000', change = null, ch
           {title}
         </Text>
         {content}
+        {subtitle ? (
+          <Text type="secondary" style={{ display: 'block', fontSize: isMobile ? '10px' : '11px', marginTop: 4 }}>
+            {subtitle}
+          </Text>
+        ) : null}
       </div>
     );
   }
@@ -78,21 +100,25 @@ const StatCard = ({ title, value, subtitle, color = '#000000', change = null, ch
       styles={{ body: { padding: isMobile ? '12px' : '16px' } }}
     >
       {content}
+      {subtitle ? (
+        <Text type="secondary" style={{ display: 'block', fontSize: isMobile ? '11px' : '12px', marginTop: 8 }}>
+          {subtitle}
+        </Text>
+      ) : null}
     </Card>
   );
 };
 
 const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
+  const { formatMessage } = useIntl();
   const {
     engagement_rate,
     booking_rate,
     total_patients_added,
     total_patients_invited,
     total_patients_failed_message_status,
-    total_patients_sent_message_status,
     total_patients_engaged,
     total_patients_read_but_no_response,
-    open_conversations,
     bookings,
     reschedule,
     cancelled,
@@ -110,25 +136,10 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
     emergency_situation,
     human_intervention,
     already_screened,
-    percentage_changes
+    percentage_changes,
+    loading
   } = useSelector(makeSelectClinicStatsData);
 
-  // Console log percentage changes to verify backend data
-  console.log('Percentage Changes from Backend:', percentage_changes);
-  console.log('Detailed Percentage Changes:', {
-    pc_engagement_rate: percentage_changes?.pc_engagement_rate,
-    pc_booking_rate: percentage_changes?.pc_booking_rate,
-    pc_booking_time_distribution: percentage_changes?.pc_booking_time_distribution,
-    pc_failed_messages: percentage_changes?.pc_failed_messages,
-    pc_emergency_situation: percentage_changes?.pc_emergency_situation,
-    pc_human_intervention: percentage_changes?.pc_human_intervention,
-    pc_already_screened: percentage_changes?.pc_already_screened,
-    pc_declined: percentage_changes?.pc_declined,
-    pc_opt_out: percentage_changes?.pc_opt_out,
-    pc_snoozed: percentage_changes?.pc_snoozed
-  });
-
-  // Calculate after hours bookings (evening + night)
   const calculateAfterHoursBookings = () => {
     if (!booking_time_distribution) return -1;
     const evening = booking_time_distribution.evening ?? 0;
@@ -136,9 +147,19 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
     return evening + night;
   };
 
-  // Appointment outcomes - only use API data, show -1 for missing, filter out zero values
+  const priorBucketSubtitle =
+    percentage_changes?.pc_booking_time_distribution &&
+    typeof percentage_changes.pc_booking_time_distribution === 'object'
+      ? formatMessage(messages.clinicStatsPriorBucketDetail, {
+          morning: percentage_changes.pc_booking_time_distribution.morning ?? 0,
+          afternoon: percentage_changes.pc_booking_time_distribution.afternoon ?? 0,
+          evening: percentage_changes.pc_booking_time_distribution.evening ?? 0,
+          night: percentage_changes.pc_booking_time_distribution.night ?? 0,
+        })
+      : null;
+
   const appointmentOutcomes = [
-    { name: 'Bookings', value: bookings ?? -1, color: '#6366F1' },
+    { name: 'Scheduled', value: Math.max((bookings ?? 0) - (reschedule ?? 0), 0), color: '#6366F1' },
     { name: 'Attended', value: attended ?? -1, color: '#10B981' },
     { name: 'Not attended', value: non_attended ?? -1, color: '#F59E0B' },
     { name: 'Cancelled', value: cancelled ?? -1, color: '#EF4444' },
@@ -149,89 +170,119 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
     { name: 'Walked out', value: walked_out ?? -1, color: '#F97316' },
     { name: 'Not updated', value: not_updated ?? -1, color: '#64748B' }
   ].filter(item => item.value > 0);
-  // Intervention data with proper percentage change mapping
+
   const interventionData = [
     {
-      title: 'Emergency situation',
+      titleMessage: messages.clinicStatsInterventionEmergency,
       value: emergency_situation ?? -1,
-      previousValue: percentage_changes?.pc_emergency_situation
+      previousValue: percentage_changes?.pc_emergency_situation,
+      change: calculateValueChange(emergency_situation, percentage_changes?.pc_emergency_situation),
     },
     {
-      title: 'Human intervention',
+      titleMessage: messages.clinicStatsInterventionHuman,
       value: human_intervention ?? -1,
-      previousValue: percentage_changes?.pc_human_intervention
+      previousValue: percentage_changes?.pc_human_intervention,
+      change: calculateValueChange(human_intervention, percentage_changes?.pc_human_intervention),
     },
     {
-      title: 'Screened elsewhere',
+      titleMessage: messages.clinicStatsInterventionScreenedElsewhere,
       value: already_screened ?? -1,
-      previousValue: percentage_changes?.pc_already_screened
+      previousValue: percentage_changes?.pc_already_screened,
+      change: calculateValueChange(already_screened, percentage_changes?.pc_already_screened),
     },
     {
-      title: 'Declined',
+      titleMessage: messages.clinicStatsInterventionDeclined,
       value: declines ?? -1,
-      previousValue: percentage_changes?.pc_declined
+      previousValue: percentage_changes?.pc_declined,
+      change: calculateValueChange(declines, percentage_changes?.pc_declined),
     },
     {
-      title: 'Opt-out',
+      titleMessage: messages.clinicStatsInterventionOptOut,
       value: opt_out ?? -1,
-      previousValue: percentage_changes?.pc_opt_out
+      previousValue: percentage_changes?.pc_opt_out,
+      change: calculateValueChange(opt_out, percentage_changes?.pc_opt_out),
     },
     {
-      title: 'Snoozed',
+      titleMessage: messages.clinicStatsInterventionSnoozed,
       value: snoozed ?? -1,
-      previousValue: percentage_changes?.pc_snoozed
+      previousValue: percentage_changes?.pc_snoozed,
+      change: calculateValueChange(snoozed, percentage_changes?.pc_snoozed),
     }
   ];
+  const previousAfterHours =
+    (percentage_changes?.pc_booking_time_distribution?.evening ?? 0)
+    + (percentage_changes?.pc_booking_time_distribution?.night ?? 0);
+  const afterHoursChange = calculateValueChange(calculateAfterHoursBookings(), previousAfterHours);
+  const failedMessagesChange = calculateValueChange(
+    total_patients_failed_message_status,
+    percentage_changes?.pc_failed_messages
+  );
+  const deliveredUnengagedChange = calculateValueChange(
+    total_patients_read_but_no_response,
+    percentage_changes?.pc_delivered_unengaged
+  );
 
-  // Communication flow data - only use API data
   const communicationFlowData = [
-    { name: 'Invited', value: total_patients_added ?? -1 },
-    { name: 'Delivered', value: total_patients_invited ?? -1 },
-    { name: 'Engaged', value: total_patients_engaged ?? -1 },
-    { name: 'Booked', value: bookings ?? -1 }
+    { name: formatMessage(messages.clinicStatsFlowInvited), value: total_patients_added ?? -1 },
+    { name: formatMessage(messages.clinicStatsFlowDelivered), value: total_patients_invited ?? -1 },
+    { name: formatMessage(messages.clinicStatsFlowEngaged), value: total_patients_engaged ?? -1 },
+    { name: formatMessage(messages.clinicStatsFlowBooked), value: bookings ?? -1 }
   ];
   const mobileShortFormat = getDateFormatByCountry(country).replace('YYYY', 'YY');
 
-  return (
+  const failedMessageTitle = (
     <>
-      <Card title="Patient Communication Flow">
+      <span style={{ color: '#EF4444' }}>{formatMessage(messages.clinicStatsFailedPrefix)}</span>
+      {' — '}
+      {formatMessage(messages.clinicStatsFailedMessageDetail)}
+    </>
+  );
+  const deliveredUnengagedTitle = (
+    <>
+      <span style={{ color: '#EF4444' }}>{formatMessage(messages.clinicStatsDeliveredPrefix)}</span>
+      {' — '}
+      {formatMessage(messages.clinicStatsFailedUnengagedDetail)}
+    </>
+  );
+
+  return (
+    <Spin spinning={loading}>
+    <>
+      <Card title={formatMessage(messages.clinicStatsCommunicationFlow)}>
         {previousPeriod && !isMobile && (
           <Text type="secondary" style={{ position: "absolute", top: 20, left: 276 }}>
-            Previous period {formatDateByCountry(previousPeriod[0], country)} - {formatDateByCountry(previousPeriod[1], country)}
+            {formatMessage(messages.clinicStatsPreviousPeriod)}{' '}
+            {formatDateByCountry(previousPeriod[0], country)} - {formatDateByCountry(previousPeriod[1], country)}
           </Text>
         )}
 
         {previousPeriod && isMobile && (
           <Text type="secondary" style={{ display: 'block', marginBottom: '12px', fontSize: '12px' }}>
-            Previous: {dayjs(previousPeriod[0]).format(mobileShortFormat)} - {dayjs(previousPeriod[1]).format(mobileShortFormat)}
+            {formatMessage(messages.clinicStatsPreviousPeriod)}:{' '}
+            {dayjs(previousPeriod[0]).format(mobileShortFormat)} - {dayjs(previousPeriod[1]).format(mobileShortFormat)}
           </Text>
         )}
 
         <Row gutter={16}>
-          {/* LEFT COLUMN */}
           <Col xs={24} lg={18}>
-            {/* Top 4 StatCards */}
             <Row gutter={isMobile ? 8 : 16}>
               <Col xs={12} sm={6} md={6} lg={6}>
-                <StatCard title="Patients invited" value={displayValue(total_patients_added)} style={{ width: '100%', height: isMobile ? 80 : 100 }} isMobile={isMobile} />
+                <StatCard title={formatMessage(messages.clinicStatsPatientEnrolled)} value={displayValue(total_patients_added)} style={{ width: '100%', height: isMobile ? 80 : 100 }} isMobile={isMobile} />
               </Col>
               <Col xs={12} sm={6} md={6} lg={6}>
-                <StatCard title="Invites delivered" value={displayValue(total_patients_invited)} style={{ width: '100%', height: isMobile ? 80 : 100 }} isMobile={isMobile} />
+                <StatCard title={formatMessage(messages.clinicStatsInvitesRecieved)} value={displayValue(total_patients_invited)} style={{ width: '100%', height: isMobile ? 80 : 100 }} isMobile={isMobile} />
               </Col>
               <Col xs={12} sm={6} md={6} lg={6}>
-                <StatCard title="Patients engaged" value={displayValue(total_patients_engaged)} style={{ width: '100%', height: isMobile ? 80 : 100 }} isMobile={isMobile} />
+                <StatCard title={formatMessage(messages.clinicStatsOpenConversation)} value={displayValue(total_patients_engaged)} style={{ width: '100%', height: isMobile ? 80 : 100 }} isMobile={isMobile} />
               </Col>
               <Col xs={12} sm={6} md={6} lg={6}>
-                <StatCard title="Bookings made" value={displayValue(bookings)} style={{ width: '100%', height: isMobile ? 80 : 100 }} isMobile={isMobile} />
+                <StatCard title={formatMessage(messages.clinicStatsBookingsMade)} value={displayValue(bookings)} style={{ width: '100%', height: isMobile ? 80 : 100 }} isMobile={isMobile} />
               </Col>
             </Row>
 
-            {/* Graph + Engagement/AfterHours inside same Card */}
             <Card style={{ borderRadius: 8, marginTop: 16 }}>
               {isMobile ? (
-                // Mobile: Stack everything vertically
                 <>
-                  {/* Bar Chart */}
                   <div style={{ width: '100%', marginBottom: '16px' }}>
                     <ResponsiveContainer width="100%" height={175}>
                       <BarChart data={communicationFlowData} margin={{ top: 20, right: 10, left: 10, bottom: 0 }}>
@@ -242,14 +293,12 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
                     </ResponsiveContainer>
                   </div>
 
-                  {/* Engagement & After Hours stacked */}
                   <Row gutter={8}>
                     <Col span={12}>
                       <StatCard
-                        title="Engagement"
+                        title={formatMessage(messages.clinicStatsEngagement)}
                         value={displayValue(engagement_rate, true)}
-                        // change={percentage_changes?.pc_engagement_rate}
-                        change={null}
+                        change={percentage_changes?.pc_engagement_rate}
                         changeType="percentage"
                         bare
                         isMobile={isMobile}
@@ -257,10 +306,11 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
                     </Col>
                     <Col span={12}>
                       <StatCard
-                        title="After hours"
+                        title={formatMessage(messages.clinicStatsAfterHours)}
                         value={displayValue(calculateAfterHoursBookings())}
-                        change={percentage_changes?.pc_booking_time_distribution}
-                        changeType="percentage"
+                        change={afterHoursChange}
+                        subtitle={priorBucketSubtitle}
+                        changeType="value"
                         bare
                         isMobile={isMobile}
                       />
@@ -268,7 +318,6 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
                   </Row>
                 </>
               ) : (
-                // Desktop: Side by side
                 <div style={{
                   display: 'flex',
                   flexDirection: 'row',
@@ -276,7 +325,6 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
                   alignItems: 'flex-start',
                   height: '220px',
                 }}>
-                  {/* Bar Chart */}
                   <div style={{ flex: 1 }}>
                     <ResponsiveContainer width="100%" height={220}>
                       <BarChart data={communicationFlowData} margin={{ top: 20, right: 30, left: 20, bottom: 0 }}>
@@ -287,7 +335,6 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
                     </ResponsiveContainer>
                   </div>
 
-                  {/* Inline Engagement & After Hours (no card borders) */}
                   <div style={{
                     display: 'flex',
                     flexDirection: 'column',
@@ -298,10 +345,9 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
                   }}>
                     <div style={{ width: '100%', marginBottom: '20px' }}>
                       <StatCard
-                        title="Engagement"
+                        title={formatMessage(messages.clinicStatsEngagement)}
                         value={displayValue(engagement_rate, true)}
-                        // change={percentage_changes?.pc_engagement_rate}
-                        change={null}
+                        change={percentage_changes?.pc_engagement_rate}
                         changeType="percentage"
                         bare
                         isMobile={false}
@@ -309,10 +355,11 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
                     </div>
                     <div style={{ width: '100%' }}>
                       <StatCard
-                        title="Bookings made after hours"
+                        title={formatMessage(messages.clinicStatsBookingsAfterHours)}
                         value={displayValue(calculateAfterHoursBookings())}
-                        change={percentage_changes?.pc_booking_time_distribution}
-                        changeType="percentage"
+                        change={afterHoursChange}
+                        subtitle={priorBucketSubtitle}
+                        changeType="value"
                         bare
                         isMobile={false}
                       />
@@ -323,12 +370,11 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
             </Card>
           </Col>
 
-          {/* RIGHT COLUMN */}
           <Col xs={24} lg={6} style={{ marginTop: isMobile ? 12 : 0 }}>
             <Row gutter={isMobile ? 8 : 16}>
               <Col xs={24} sm={8} lg={24}>
                 <StatCard
-                  title="Booking rate"
+                  title={formatMessage(messages.clinicStatsBookingRate)}
                   value={displayValue(booking_rate, true)}
                   change={percentage_changes?.pc_booking_rate}
                   changeType="percentage"
@@ -338,22 +384,20 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
               </Col>
               <Col xs={24} sm={8} lg={24}>
                 <StatCard
-                  title={<><span style={{ color: "#EF4444" }}>Failed</span> - Message failed</>}
+                  title={failedMessageTitle}
                   value={displayValue(total_patients_failed_message_status)}
-                  // change={percentage_changes?.pc_failed_messages}
-                  change={null}
-                  changeType="percentage"
+                  change={failedMessagesChange}
+                  changeType="value"
                   style={{ width: '100%', height: isMobile ? 80 : 100, marginBottom: 16 }}
                   isMobile={isMobile}
                 />
               </Col>
               <Col xs={24} sm={8} lg={24}>
                 <StatCard
-                  title={<><span style={{ color: "#EF4444" }}>Failed</span> - Unengaged</>}
+                  title={deliveredUnengagedTitle}
                   value={displayValue(total_patients_read_but_no_response)}
-                  // change={percentage_changes?.pc_failed_messages}
-                  change={null}
-                  changeType="percentage"
+                  change={deliveredUnengagedChange}
+                  changeType="value"
                   style={{ width: '100%', height: isMobile ? 80 : 100 }}
                   isMobile={isMobile}
                 />
@@ -364,9 +408,8 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
       </Card>
 
       <Row gutter={isMobile ? 12 : 16} style={{ marginTop: isMobile ? 12 : 0 }}>
-        {/* Appointment Outcomes Pie Chart */}
         <Col xs={24} sm={24} md={12} lg={12} style={{ marginBottom: isMobile ? 12 : 0 }}>
-          <Card title="Appointment Outcomes" style={isMobile ? { height: 'auto' } : { minHeight: 425 }}>
+          <Card title={formatMessage(messages.clinicStatsAppointmentOutcomes)} style={isMobile ? { height: 'auto' } : { minHeight: 425 }}>
             <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row' }}>
               <ResponsiveContainer height={isMobile ? 300 : 350}>
                 <PieChart>
@@ -411,30 +454,28 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
           </Card>
         </Col>
 
-        {/* Intervention & Special Cases */}
         <Col xs={24} sm={24} md={12} lg={12}>
-          <Card title="Intervention & Special Cases" style={isMobile ? { height: 'auto' } : { minHeight: 425 }}>
+          <Card title={formatMessage(messages.clinicStatsInterventionTitle)} style={isMobile ? { height: 'auto' } : { minHeight: 425 }}>
             <Row gutter={isMobile ? 8 : 16}>
-              {interventionData.map((item, index) => {
-                const comparison = compareValues(item.value, item.previousValue);
-                return (
+              {interventionData.map((item, index) => (
                   <Col key={index} xs={12} sm={12} md={12} lg={12} style={{ marginBottom: isMobile ? 8 : 0 }}>
                     <StatCard
-                      title={item.title}
+                      title={formatMessage(item.titleMessage)}
                       value={item.value}
-                      change={comparison?.value}
-                      changeType={comparison?.type}
+                      change={item.change}
+                      subtitle={undefined}
+                      changeType="value"
                       style={{ width: '100%' }}
                       isMobile={isMobile}
                     />
                   </Col>
-                );
-              })}
+                ))}
             </Row>
           </Card>
         </Col>
       </Row>
     </>
+    </Spin>
   );
 };
 

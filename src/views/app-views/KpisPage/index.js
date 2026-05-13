@@ -3,23 +3,14 @@ import {
   Row,
   DatePicker,
   Typography,
-  Tabs,
-  Card,
   Button,
   Select,
   Grid,
-  Space,
 } from 'antd';
-import { PageHeader } from '@ant-design/pro-components';
 import React, { useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
 import messages from './messages';
-import GroupCollapse from './Groups/GroupCollapse';
-import Booking from './Groups/Booking';
-import Appointments from './Groups/Appointments';
-import AbiData from './Groups/AbiData';
-import Uptake from './Groups/Uptake';
 import ClinicStats from './Groups/ClinicStats';
 import { getOverviewClinicStatsData } from 'redux/actions/Overview';
 import { getCampaigns } from 'redux/actions/Patient';
@@ -69,6 +60,7 @@ const KpisPage = () => {
   ]);
 
   const [selectedCampaign, setSelectedCampaign] = useState(null);
+  const normalizedDateRange = Array.isArray(dateRange) ? dateRange : [];
 
   // Fetch campaigns on component mount
   useEffect(() => {
@@ -120,10 +112,10 @@ const KpisPage = () => {
 
   const handleDownload = async () => {
     try {
-      const start_time = dateRange[0] ? dateRange[0].format('YYYY-MM-DD') : undefined;
-      const end_time = dateRange[1] ? dateRange[1].format('YYYY-MM-DD') : undefined;
+      const start_time = normalizedDateRange[0] ? normalizedDateRange[0].format('YYYY-MM-DD') : undefined;
+      const end_time = normalizedDateRange[1] ? normalizedDateRange[1].format('YYYY-MM-DD') : undefined;
 
-      const filename = dateRange[0] && dateRange[1]
+      const filename = normalizedDateRange[0] && normalizedDateRange[1]
         ? `kpi-data-${start_time}-to-${end_time}${selectedCampaign ? `-campaign-${selectedCampaign}` : ''}.zip`
         : 'kpi-data-all-time.zip';
 
@@ -144,12 +136,12 @@ const KpisPage = () => {
 
   useEffect(() => {
     if (SHOW_KPIS) {
-      const start_time = dateRange[0] ? dateRange[0].format('YYYY-MM-DD') : null;
-      const end_time = dateRange[1] ? dateRange[1].format('YYYY-MM-DD') : null;
+      const start_time = normalizedDateRange[0] ? normalizedDateRange[0].format('YYYY-MM-DD') : null;
+      const end_time = normalizedDateRange[1] ? normalizedDateRange[1].format('YYYY-MM-DD') : null;
 
       dispatch(getOverviewClinicStatsData({ start_time, end_time, campaign_id: selectedCampaign }));
     }
-  }, [dispatch, dateRange, selectedCampaign]);
+  }, [dispatch, normalizedDateRange, selectedCampaign]);
 
   return (
     <div style={{ maxWidth: '100%', overflowX: 'hidden' }}>
