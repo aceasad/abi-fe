@@ -14,7 +14,7 @@ import {
   MOCK_PATIENT_LOCATIONS,
 } from 'constants/ChatConstants';
 
-const ConversationFilters = ({ value, onChange }) => {
+const ConversationFilters = ({ value, onChange, showPatientLocationFilter = true }) => {
   const { formatMessage } = useIntl();
   const [pickerOpen, setPickerOpen] = useState(false);
   const [editingAttribute, setEditingAttribute] = useState(null);
@@ -49,19 +49,21 @@ const ConversationFilters = ({ value, onChange }) => {
     [formatMessage]
   );
 
-  const ATTRIBUTES = useMemo(
-    () => ({
+  const ATTRIBUTES = useMemo(() => {
+    const attrs = {
       [FILTER_ATTRIBUTES.STATUS]: {
         label: formatMessage(messages.filterAttributeStatus),
         getOptions: () => STATUS_OPTIONS,
       },
-      [FILTER_ATTRIBUTES.LOCATION]: {
+    };
+    if (showPatientLocationFilter) {
+      attrs[FILTER_ATTRIBUTES.LOCATION] = {
         label: formatMessage(messages.filterAttributeLocation),
         getOptions: () => MOCK_PATIENT_LOCATIONS,
-      },
-    }),
-    [formatMessage, STATUS_OPTIONS]
-  );
+      };
+    }
+    return attrs;
+  }, [formatMessage, STATUS_OPTIONS, showPatientLocationFilter]);
 
   const resetPicker = () => {
     setEditingAttribute(null);

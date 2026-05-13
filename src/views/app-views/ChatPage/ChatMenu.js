@@ -72,12 +72,23 @@ const ChatMenu = (props) => {
     makeSelectAllChatsInfo
   );
   const clinic = useSelector(makeSelectClinic());
+  const { PASProvider } = useSelector((state) => state.auth.user || {});
+  const showPatientLocationFilter =
+    PASProvider?.toLowerCase() !== 'emis';
   const shortDateFormat = getDateFormatByCountry(clinic?.country).replace(
     'YYYY',
     'YY'
   );
 
   const [activeFilters, setActiveFilters] = useState([]);
+
+  useEffect(() => {
+    if (!showPatientLocationFilter) {
+      setActiveFilters((prev) =>
+        prev.filter((f) => f.attribute !== FILTER_ATTRIBUTES.LOCATION)
+      );
+    }
+  }, [showPatientLocationFilter]);
 
   // The existing backend filter param is a single string. When multiple status
   // values are selected we send the first one; the rest is a future migration
@@ -167,9 +178,9 @@ const ChatMenu = (props) => {
   // does not return patient.location, so we synthesize one via mockLocationFor.
   // Remove this block once the backend exposes patient.location and the search
   // endpoint accepts a location_id query param.
-  const locationFilter = activeFilters.find(
-    (f) => f.attribute === FILTER_ATTRIBUTES.LOCATION
-  );
+  const locationFilter = showPatientLocationFilter
+    ? activeFilters.find((f) => f.attribute === FILTER_ATTRIBUTES.LOCATION)
+    : null;
   const visibleItems = locationFilter
     ? items.filter((item) =>
       locationFilter.values.includes(mockLocationFor(item.patient.id))
@@ -192,6 +203,7 @@ const ChatMenu = (props) => {
         <ConversationFilters
           value={activeFilters}
           onChange={setActiveFilters}
+          showPatientLocationFilter={showPatientLocationFilter}
         />
       </div>
       <div className="chat-menu-list">
