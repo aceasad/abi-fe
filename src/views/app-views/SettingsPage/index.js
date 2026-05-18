@@ -124,7 +124,7 @@ const SettingsPage = (props) => {
   return (
     <div style={{ maxWidth: '100%', overflowX: 'hidden' }}>
       <div className="mb-4" style={{ paddingTop: isMobile ? 0 : '24px' }}>
-        <Typography.Title level={2} style={{ margin: 0, marginBottom: '16px' }}>
+        <Typography.Title level={3} style={{ margin: 0, marginBottom: '16px' }}>
           Settings
         </Typography.Title>
       </div>

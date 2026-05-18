@@ -157,7 +157,7 @@ const StaffList = ({ showCreate, editUser, seeAppointments }) => {
         <div className="mb-4">
           <Row gutter={16} align="middle" style={{ marginBottom: '16px' }}>
             <Col flex="auto">
-              <Typography.Title level={2} style={{ fontSize: '20px', margin: 0 }}>
+              <Typography.Title level={3} style={{ fontSize: '20px', margin: 0 }}>
                 {formatMessage(messages.staff)}
               </Typography.Title>
             </Col>
@@ -176,7 +176,7 @@ const StaffList = ({ showCreate, editUser, seeAppointments }) => {
         <div className="mb-4" style={{ paddingTop: '24px' }}>
           <Row gutter={16} align="middle" style={{ marginBottom: '16px' }}>
             <Col flex="auto">
-              <Typography.Title level={2} style={{ margin: 0 }}>
+              <Typography.Title level={3} style={{ margin: 0 }}>
                 {formatMessage(messages.staff)}
               </Typography.Title>
             </Col>

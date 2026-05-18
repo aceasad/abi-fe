@@ -130,7 +130,7 @@ const UserSettings = () => {
   return (
     <div className="p-2">
       <Flex justifyContent="between">
-        <Typography.Title level={2} className="mb-4">
+        <Typography.Title level={3} className="mb-4">
           {formatMessage(messages.title)}
         </Typography.Title>
         <Button

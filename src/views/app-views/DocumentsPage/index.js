@@ -358,7 +358,7 @@ const DocumentsPage = () => {
       <div className="mb-4" style={{ paddingTop: isMobile ? 0 : '24px', marginBottom: '16px' }}>
         {isMobile ? (
           <>
-            <Typography.Title level={2} style={{ margin: 0, marginBottom: '16px' }}>
+            <Typography.Title level={3} style={{ margin: 0, marginBottom: '16px' }}>
               Documents
             </Typography.Title>
             <Input
@@ -380,7 +380,7 @@ const DocumentsPage = () => {
         ) : (
           <Row gutter={16} align="middle">
             <Col flex="auto">
-              <Typography.Title level={2} style={{ margin: 0 }}>
+              <Typography.Title level={3} style={{ margin: 0 }}>
                 Documents
               </Typography.Title>
             </Col>

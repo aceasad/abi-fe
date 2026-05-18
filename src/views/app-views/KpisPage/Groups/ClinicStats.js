@@ -409,7 +409,7 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
 
       <Row gutter={isMobile ? 12 : 16} style={{ marginTop: isMobile ? 12 : 0 }}>
         <Col xs={24} sm={24} md={12} lg={12} style={{ marginBottom: isMobile ? 12 : 0 }}>
-          <Card title={formatMessage(messages.clinicStatsAppointmentOutcomes)} style={{ height: isMobile ? 'auto' : 425 }}>
+          <Card title={formatMessage(messages.clinicStatsAppointmentOutcomes)} style={isMobile ? { height: 'auto' } : { minHeight: 425 }}>
             <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row' }}>
               <ResponsiveContainer height={isMobile ? 300 : 350}>
                 <PieChart>
@@ -455,7 +455,7 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
         </Col>
 
         <Col xs={24} sm={24} md={12} lg={12}>
-          <Card title={formatMessage(messages.clinicStatsInterventionTitle)} style={{ height: isMobile ? 'auto' : 425 }}>
+          <Card title={formatMessage(messages.clinicStatsInterventionTitle)} style={isMobile ? { height: 'auto' } : { minHeight: 425 }}>
             <Row gutter={isMobile ? 8 : 16}>
               {interventionData.map((item, index) => (
                   <Col key={index} xs={12} sm={12} md={12} lg={12} style={{ marginBottom: isMobile ? 8 : 0 }}>

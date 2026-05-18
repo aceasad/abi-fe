@@ -16,7 +16,7 @@ const ClinicPage = ({ localization = true }) => {
     <>
       <PageHeader
         title={
-          <Typography.Title level={2} className="mb-0">
+          <Typography.Title level={3} className="mb-0">
             {localeString(localization, 'clinic_page.header.title')}
           </Typography.Title>
         }
