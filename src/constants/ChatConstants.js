@@ -58,12 +58,22 @@ export const FILTER_ATTRIBUTES = {
   LOCATION: 'location',
 };
 
-// Mocked until backend exposes patient.location; reused by ConversationFilters
-// and by the client-side filter in ChatMenu so the UI visibly does something.
-export const MOCK_PATIENT_LOCATIONS = [
-  { value: 'sydney_cbd', label: 'Sydney CBD' },
-  { value: 'north_sydney', label: 'North Sydney' },
-  { value: 'bondi_junction', label: 'Bondi Junction' },
-  { value: 'parramatta', label: 'Parramatta' },
-  { value: 'chatswood', label: 'Chatswood' },
-];
+export const getPatientLocationDescription = (homeLocation) => {
+  if (!homeLocation || typeof homeLocation !== 'object') {
+    return null;
+  }
+  return homeLocation.location_description || homeLocation.location_name || null;
+};
+
+export const buildPatientLocationFilterOptions = (conversations) => {
+  const descriptions = new Set();
+  for (const item of conversations) {
+    const description = getPatientLocationDescription(item?.patient?.home_location);
+    if (description) {
+      descriptions.add(description);
+    }
+  }
+  return Array.from(descriptions)
+    .sort((a, b) => a.localeCompare(b))
+    .map((description) => ({ value: description, label: description }));
+};

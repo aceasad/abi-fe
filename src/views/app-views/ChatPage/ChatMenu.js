@@ -23,19 +23,11 @@ import Scrollbars from 'react-custom-scrollbars';
 import {
   CHAT_FILTERS,
   FILTER_ATTRIBUTES,
-  MOCK_PATIENT_LOCATIONS,
+  buildPatientLocationFilterOptions,
+  getPatientLocationDescription,
 } from 'constants/ChatConstants';
 import dayjs from 'utils/dayjs';
 import ConversationFilters from './ConversationFilters';
-
-// MOCK: deterministically maps a patient id to one of the mocked locations
-// so the Location filter visibly narrows the list. Replace this once the
-// backend exposes patient.location on the chat info payload.
-const mockLocationFor = (patientId) => {
-  const id = Number(patientId) || 0;
-  const index = Math.abs(id) % MOCK_PATIENT_LOCATIONS.length;
-  return MOCK_PATIENT_LOCATIONS[index].value;
-};
 
 const ChatMenu = (props) => {
 
@@ -174,16 +166,19 @@ const ChatMenu = (props) => {
     }
   }, [items]);
 
-  // MOCK: client-side narrowing by the Location chip. The backend currently
-  // does not return patient.location, so we synthesize one via mockLocationFor.
-  // Remove this block once the backend exposes patient.location and the search
-  // endpoint accepts a location_id query param.
+  const patientLocationOptions = useMemo(
+    () => buildPatientLocationFilterOptions(items),
+    [items]
+  );
+
   const locationFilter = showPatientLocationFilter
     ? activeFilters.find((f) => f.attribute === FILTER_ATTRIBUTES.LOCATION)
     : null;
   const visibleItems = locationFilter
     ? items.filter((item) =>
-      locationFilter.values.includes(mockLocationFor(item.patient.id))
+      locationFilter.values.includes(
+        getPatientLocationDescription(item.patient?.home_location)
+      )
     )
     : items;
 
@@ -204,6 +199,7 @@ const ChatMenu = (props) => {
           value={activeFilters}
           onChange={setActiveFilters}
           showPatientLocationFilter={showPatientLocationFilter}
+          patientLocationOptions={patientLocationOptions}
         />
       </div>
       <div className="chat-menu-list">

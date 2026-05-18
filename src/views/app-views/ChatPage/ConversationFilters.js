@@ -7,15 +7,19 @@ import {
   RightOutlined,
 } from '@ant-design/icons';
 import { useIntl } from 'react-intl';
+import { useSelector } from 'react-redux';
 import messages from './messages';
-import {
-  CHAT_FILTERS,
-  FILTER_ATTRIBUTES,
-  MOCK_PATIENT_LOCATIONS,
-} from 'constants/ChatConstants';
+import { CHAT_FILTERS, FILTER_ATTRIBUTES } from 'constants/ChatConstants';
 
-const ConversationFilters = ({ value, onChange, showPatientLocationFilter = true }) => {
+const ConversationFilters = ({
+  value,
+  onChange,
+  showPatientLocationFilter = true,
+  patientLocationOptions = [],
+}) => {
   const { formatMessage } = useIntl();
+  const { PASProvider } = useSelector((state) => state.auth.user || {});
+  const isMedbridge = PASProvider?.toLowerCase() === 'medbridge';
   const [pickerOpen, setPickerOpen] = useState(false);
   const [editingAttribute, setEditingAttribute] = useState(null);
   const [draftValue, setDraftValue] = useState(null);
@@ -38,7 +42,11 @@ const ConversationFilters = ({ value, onChange, showPatientLocationFilter = true
       { value: CHAT_FILTERS.DECLINED, label: formatMessage(messages.inDeclinedFilter) },
       {
         value: CHAT_FILTERS.SCREENED_ELSEWHERE,
-        label: formatMessage(messages.inScreenedElsewhereFilter),
+        label: formatMessage(
+          isMedbridge
+            ? messages.inScreenedElsewhereFilterMedbridge
+            : messages.inScreenedElsewhereFilter
+        ),
       },
       { value: CHAT_FILTERS.INCOMPLETE, label: formatMessage(messages.inIncompleteFilter) },
       { value: CHAT_FILTERS.INVITED, label: formatMessage(messages.inInvitedFilter) },
@@ -46,7 +54,7 @@ const ConversationFilters = ({ value, onChange, showPatientLocationFilter = true
       { value: CHAT_FILTERS.SNOOZED, label: formatMessage(messages.inSnoozedFilter) },
       { value: CHAT_FILTERS.FAILED, label: formatMessage(messages.inFailedFilter) },
     ],
-    [formatMessage]
+    [formatMessage, isMedbridge]
   );
 
   const ATTRIBUTES = useMemo(() => {
@@ -56,14 +64,14 @@ const ConversationFilters = ({ value, onChange, showPatientLocationFilter = true
         getOptions: () => STATUS_OPTIONS,
       },
     };
-    if (showPatientLocationFilter) {
+    if (showPatientLocationFilter && patientLocationOptions.length > 0) {
       attrs[FILTER_ATTRIBUTES.LOCATION] = {
         label: formatMessage(messages.filterAttributeLocation),
-        getOptions: () => MOCK_PATIENT_LOCATIONS,
+        getOptions: () => patientLocationOptions,
       };
     }
     return attrs;
-  }, [formatMessage, STATUS_OPTIONS, showPatientLocationFilter]);
+  }, [formatMessage, STATUS_OPTIONS, showPatientLocationFilter, patientLocationOptions]);
 
   const resetPicker = () => {
     setEditingAttribute(null);
