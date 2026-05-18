@@ -128,6 +128,10 @@ export default defineMessages({
     id: `${scope}.filters.screenedelsewhere`,
     defaultMessage: 'Screened Elsewhere',
   },
+  inScreenedElsewhereFilterMedbridge: {
+    id: `${scope}.filters.screenedelsewhere_medbridge`,
+    defaultMessage: 'Study taken elsewhere',
+  },
   inFailedFilter: {
     id: `${scope}.filters.failed`,
     defaultMessage: 'Failed',

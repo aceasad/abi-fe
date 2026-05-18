@@ -111,6 +111,8 @@ const StatCard = ({ title, value, subtitle, color = '#000000', change = null, ch
 
 const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
   const { formatMessage } = useIntl();
+  const { PASProvider } = useSelector((state) => state.auth.user || {});
+  const isMedbridge = PASProvider?.toLowerCase() === 'medbridge';
   const {
     engagement_rate,
     booking_rate,
@@ -185,7 +187,9 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
       change: calculateValueChange(human_intervention, percentage_changes?.pc_human_intervention),
     },
     {
-      titleMessage: messages.clinicStatsInterventionScreenedElsewhere,
+      titleMessage: isMedbridge
+        ? messages.clinicStatsInterventionScreenedElsewhereMedbridge
+        : messages.clinicStatsInterventionScreenedElsewhere,
       value: already_screened ?? -1,
       previousValue: percentage_changes?.pc_already_screened,
       change: calculateValueChange(already_screened, percentage_changes?.pc_already_screened),
