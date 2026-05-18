@@ -85,7 +85,7 @@ const OverviewPage = () => {
   return (
     <>
       <div className="mb-4" style={{ paddingTop: isMobile ? 0 : '24px' }}>
-        <Typography.Title level={2} style={{ margin: 0, marginBottom: isMobile ? '16px' : 0 }}>
+        <Typography.Title level={3} style={{ marginTop: "8px", marginBottom: isMobile ? '16px' : 0 }}>
           {formatMessage(messages.title)}
         </Typography.Title>
       </div>

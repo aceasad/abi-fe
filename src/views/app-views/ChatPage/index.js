@@ -1,4 +1,4 @@
-import { Button, Typography, Grid } from 'antd';
+import { Typography, Grid } from 'antd';
 import { PageHeader } from '@ant-design/pro-components';
 import InnerAppLayout from 'layouts/inner-app-layout';
 import React, { useEffect, useState } from 'react';
@@ -10,7 +10,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { makeSelectLoginDetails } from 'redux/selectors/Auth';
 import { createWebsocketUrl, parseReceivedEvent } from 'utils/helpers';
 import { addOneMessage, resetChats } from 'redux/actions/Chats';
-import MassInviteModal from './MassInviteModal';
 import WebSocketClient from 'services/WebSocketClient';
 import authService from 'services/AuthService';
 import { useMarkConversationAsRead } from 'queries/shared';
@@ -44,8 +43,6 @@ const Chat = () => {
       mutate(parsedMessage.patient.id);
     }
   };
-
-  const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
     WebSocketClient.isComponentMounted = true;
@@ -93,7 +90,7 @@ const Chat = () => {
         className="p-0 mb-4"
         title={
           isMobile ? (
-            <Typography.Title level={2} className="mb-0" style={{ fontSize: '20px' }}>
+            <Typography.Title level={3} className="mb-0" style={{ fontSize: '20px' }}>
               {`${formatMessage(messages.conversationsTitle)}${!rasaHealthy
                 ? ': Communication with Asa AI is down for maintenance'
                 : ''
@@ -103,16 +100,6 @@ const Chat = () => {
             ''
           )
         }
-        extra={[
-          <Button
-            type="primary"
-            key="mass-invites-button"
-            onClick={() => setIsModalVisible(true)}
-            size={isMobile ? 'small' : 'middle'}
-          >
-            {isMobile ? 'Invite' : formatMessage(messages.conversationsMassInvites)}
-          </Button>,
-        ]}
       />
       <div className="chat">
         <InnerAppLayout
@@ -125,10 +112,6 @@ const Chat = () => {
           border
         />
       </div>
-      <MassInviteModal
-        isModalVisible={isModalVisible}
-        closeModal={setIsModalVisible}
-      />
     </>
   );
 };

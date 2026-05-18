@@ -59,7 +59,7 @@ const IndustryAverage = () => {
 
   return (
     <div className="p-2">
-      <Title level={2} className="mb-4">
+      <Title level={3} className="mb-4">
         {formatMessage(messages.title)}
       </Title>
       <Formik

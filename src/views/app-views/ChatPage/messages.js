@@ -184,4 +184,24 @@ export default defineMessages({
     id: `${scope}.filters.asked_question`,
     defaultMessage: 'Asked Question',
   },
+  addFilter: {
+    id: `${scope}.filters.add_filter`,
+    defaultMessage: 'Add filter',
+  },
+  filterAttributeStatus: {
+    id: `${scope}.filters.attribute.status`,
+    defaultMessage: 'Status',
+  },
+  filterAttributeLocation: {
+    id: `${scope}.filters.attribute.location`,
+    defaultMessage: 'Patient location',
+  },
+  clearAllFilters: {
+    id: `${scope}.filters.clear_all`,
+    defaultMessage: 'Clear all',
+  },
+  applyFilter: {
+    id: `${scope}.filters.apply`,
+    defaultMessage: 'Apply',
+  },
 });

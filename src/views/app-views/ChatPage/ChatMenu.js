@@ -1,7 +1,5 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { Badge, Input, Select } from 'antd';
-import AvatarStatus from 'components/shared-components/AvatarStatus';
-import { COLOR_1 } from 'constants/ChartConstant';
+import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
+import { Input } from 'antd';
 import { SearchOutlined, MessageOutlined, WhatsAppOutlined } from '@ant-design/icons';
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
 import { useIntl } from 'react-intl';
@@ -22,8 +20,22 @@ import { makeSelectAllChatsInfo } from 'redux/selectors/Chats';
 import { makeSelectClinic } from 'redux/selectors/Clinic';
 import { useDebounce, useLazyLoad } from 'utils/hooks';
 import Scrollbars from 'react-custom-scrollbars';
-import { CHAT_FILTERS, MESSAGE_STATUS } from 'constants/ChatConstants';
+import {
+  CHAT_FILTERS,
+  FILTER_ATTRIBUTES,
+  MOCK_PATIENT_LOCATIONS,
+} from 'constants/ChatConstants';
 import dayjs from 'utils/dayjs';
+import ConversationFilters from './ConversationFilters';
+
+// MOCK: deterministically maps a patient id to one of the mocked locations
+// so the Location filter visibly narrows the list. Replace this once the
+// backend exposes patient.location on the chat info payload.
+const mockLocationFor = (patientId) => {
+  const id = Number(patientId) || 0;
+  const index = Math.abs(id) % MOCK_PATIENT_LOCATIONS.length;
+  return MOCK_PATIENT_LOCATIONS[index].value;
+};
 
 const ChatMenu = (props) => {
 
@@ -60,100 +72,56 @@ const ChatMenu = (props) => {
     makeSelectAllChatsInfo
   );
   const clinic = useSelector(makeSelectClinic());
+  const { PASProvider } = useSelector((state) => state.auth.user || {});
+  const showPatientLocationFilter =
+    PASProvider?.toLowerCase() !== 'emis';
   const shortDateFormat = getDateFormatByCountry(clinic?.country).replace(
     'YYYY',
     'YY'
   );
 
-  const CONVERSATION_FILTERS = [
-    {
-      label: formatMessage(messages.allFilter),
-      value: CHAT_FILTERS.ALL,
-    },
-    {
-      label: formatMessage(messages.humanInterventionRequiredFilter),
-      value: CHAT_FILTERS.HUMAN_INTERVENTION_REQUIRED,
-    },
-    {
-      label: formatMessage(messages.inEmergencySituationFilter),
-      value: CHAT_FILTERS.IN_EMERGENCY_SITUATION,
-    },
-    {
-      label: formatMessage(messages.inDeclinedFilter),
-      value: CHAT_FILTERS.DECLINED,
-    },
-    {
-      label: formatMessage(messages.bookedFilter),
-      value: CHAT_FILTERS.BOOKED,
-    },
-    {
-      label: formatMessage(messages.rescheduleFilter),
-      value: CHAT_FILTERS.RESCHEDULED,
-    },
-    {
-      label: formatMessage(messages.cancelledFilter),
-      value: CHAT_FILTERS.CANCELLED,
-    },
-    {
-      label: formatMessage(messages.noResponseFilter),
-      value: CHAT_FILTERS.NO_RESPONSE,
-    },
-    {
-      label: formatMessage(messages.askedQuestionFilter),
-      value: CHAT_FILTERS.ASKED_QUESTION,
-    },
-    {
-      label: formatMessage(messages.inSnoozedFilter),
-      value: CHAT_FILTERS.SNOOZED,
-    },
-    {
-      label: formatMessage(messages.inRemindedFilter),
-      value: CHAT_FILTERS.REMINDED,
-    },
-    {
-      label: formatMessage(messages.inInvitedFilter),
-      value: CHAT_FILTERS.INVITED,
-    },
-    {
-      label: formatMessage(messages.inIncompleteFilter),
-      value: CHAT_FILTERS.INCOMPLETE,
-    },
-    {
-      label: formatMessage(messages.inScreenedElsewhereFilter),
-      value: CHAT_FILTERS.SCREENED_ELSEWHERE,
-    },
-    {
-      label: formatMessage(messages.inFailedFilter),
-      value: CHAT_FILTERS.FAILED,
-    }
-
-  ];
-
-  const [filter, setFilter] = useState(CONVERSATION_FILTERS[0].value);
+  const [activeFilters, setActiveFilters] = useState([]);
 
   useEffect(() => {
-    // this will trigger search when query changes
+    if (!showPatientLocationFilter) {
+      setActiveFilters((prev) =>
+        prev.filter((f) => f.attribute !== FILTER_ATTRIBUTES.LOCATION)
+      );
+    }
+  }, [showPatientLocationFilter]);
+
+  // The existing backend filter param is a single string. When multiple status
+  // values are selected we send the first one; the rest is a future migration
+  // (see plan: extend payload to { query, status, location_id }).
+  const statusFilter = useMemo(() => {
+    const statusEntry = activeFilters.find(
+      (f) => f.attribute === FILTER_ATTRIBUTES.STATUS
+    );
+    return statusEntry && statusEntry.values.length > 0
+      ? statusEntry.values[0]
+      : CHAT_FILTERS.ALL;
+  }, [activeFilters]);
+
+  useEffect(() => {
     if (query === debouncedSearch) {
       if (trimmedQuery) {
-        dispatch(searchConversations({ query: trimmedQuery, filter }));
+        dispatch(searchConversations({ query: trimmedQuery, filter: statusFilter }));
       } else {
-        // If query is empty, load all conversations
-        dispatch(getAllChatsInfo(filter));
+        dispatch(getAllChatsInfo(statusFilter));
       }
     }
-  }, [dispatch, query, filter, debouncedSearch]);
+  }, [dispatch, query, statusFilter, debouncedSearch]);
 
   useEffect(() => {
-    // this will trigger triggered data load
     if (props.triggerSearchConversations) {
       if (trimmedQuery) {
-        dispatch(searchConversations({ query: trimmedQuery, filter }));
+        dispatch(searchConversations({ query: trimmedQuery, filter: statusFilter }));
       } else {
-        dispatch(getAllChatsInfo(filter));
+        dispatch(getAllChatsInfo(statusFilter));
       }
       dispatch(clearTriggerSearchConversations());
     }
-  }, [dispatch, query, filter, props.triggerSearchConversations]);
+  }, [dispatch, query, statusFilter, props.triggerSearchConversations]);
 
   useEffect(() => {
     nextRef.current = next;
@@ -164,9 +132,9 @@ const ChatMenu = (props) => {
       if (isSearching) {
         return;
       }
-      dispatch(getMoreChatsInfo({ filter }));
+      dispatch(getMoreChatsInfo({ filter: statusFilter }));
     },
-    [dispatch, filter, isSearching]
+    [dispatch, statusFilter, isSearching]
   );
 
   useLazyLoad(
@@ -197,11 +165,6 @@ const ChatMenu = (props) => {
       );
   };
 
-  const handleFilterChange = (selected) => {
-    setFilter(selected);
-    setQuery('');
-  };
-
   useEffect(() => {
     if (scrollDown) {
       stopScroll();
@@ -211,33 +174,41 @@ const ChatMenu = (props) => {
     }
   }, [items]);
 
+  // MOCK: client-side narrowing by the Location chip. The backend currently
+  // does not return patient.location, so we synthesize one via mockLocationFor.
+  // Remove this block once the backend exposes patient.location and the search
+  // endpoint accepts a location_id query param.
+  const locationFilter = showPatientLocationFilter
+    ? activeFilters.find((f) => f.attribute === FILTER_ATTRIBUTES.LOCATION)
+    : null;
+  const visibleItems = locationFilter
+    ? items.filter((item) =>
+      locationFilter.values.includes(mockLocationFor(item.patient.id))
+    )
+    : items;
 
   return (
     <div className="chat-menu">
       <div className="chat-menu-toolbar">
-        <Select
-          value={filter}
-          onChange={handleFilterChange}
-          style={{ width: '100%' }}
-        >
-          {CONVERSATION_FILTERS.map((item, index) => (
-            <Select.Option key={index} value={item.value}>
-              {item.label}
-            </Select.Option>
-          ))}
-        </Select>
-      </div>
-      <div className="chat-menu-toolbar">
         <Input
+          style={{ width: '100%', maxWidth: '100%' }}
           placeholder={formatMessage(messages.searchPlaceholder)}
-          onChange={searchOnChange}
+          prefix={<SearchOutlined />}
+          allowClear
           value={query}
-          prefix={<SearchOutlined className="font-size-lg mr-2" />}
+          onChange={searchOnChange}
+        />
+      </div>
+      <div className="chat-menu-toolbar chat-menu-filter-bar">
+        <ConversationFilters
+          value={activeFilters}
+          onChange={setActiveFilters}
+          showPatientLocationFilter={showPatientLocationFilter}
         />
       </div>
       <div className="chat-menu-list">
         <Scrollbars id="chat-menu-scroll" ref={menuRef} autoHide={false}>
-          {items.map((item, index) => {
+          {visibleItems.map((item, index) => {
             const statusColor = getStatusColor(item.patient.conversation_status);
             const lastMessageText = item.last_message?.text || '';
             const lastMessageCreatedAt = item.last_message?.created_at;
@@ -247,7 +218,7 @@ const ChatMenu = (props) => {
                 key={`chat-item-${item.patient.id}${index}`}
                 onClick={() => openChat(item.patient.id)}
                 className={chatListItemStyle(
-                  items.length,
+                  visibleItems.length,
                   item.patient.id,
                   index,
                   currentChatID

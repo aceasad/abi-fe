@@ -18,6 +18,7 @@ import {
   NAV_TYPE_SIDE,
   NAV_TYPE_TOP,
 } from 'constants/ThemeConstant';
+import { APP_PAGES_PREFIX_PATH } from 'configs/AppConfig';
 import utils from 'utils';
 import { useThemeSwitcher } from 'react-css-theme-switcher';
 const { Content } = Layout;
@@ -39,6 +40,8 @@ export const AppLayout = ({ navCollapsed, navType, location, onMobileNavToggle, 
     }
     return navCollapsed ? SIDE_NAV_COLLAPSED_WIDTH : SIDE_NAV_WIDTH;
   };
+
+  const isKpisPage = location.pathname === `${APP_PAGES_PREFIX_PATH}/kpis`;
 
   const { status } = useThemeSwitcher();
 
@@ -83,7 +86,6 @@ export const AppLayout = ({ navCollapsed, navType, location, onMobileNavToggle, 
           <div
             className={`app-content ${isNavTop ? 'layout-top-nav' : ''}`}
             style={{
-              background: '#faf9f7',
               paddingTop: isMobile ? '70px' : '0'
             }}
           >
@@ -91,7 +93,7 @@ export const AppLayout = ({ navCollapsed, navType, location, onMobileNavToggle, 
               display={currentRouteInfo?.breadcrumb}
               title={currentRouteInfo?.title}
             />
-            <Content>
+            <Content style={isKpisPage ? { overflowY: 'visible' } : undefined}>
               <AppViews />
             </Content>
           </div>
