@@ -160,8 +160,21 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
         })
       : null;
 
+  const otherAppointmentOutcomeCounts =
+    (reschedule ?? 0)
+    + (attended ?? 0)
+    + (non_attended ?? 0)
+    + (cancelled ?? 0)
+    + (arrived ?? 0)
+    + (sent_in ?? 0)
+    + (quiet_sent_in ?? 0)
+    + (walked_out ?? 0)
+    + (not_updated ?? 0);
+
+  const scheduledOnlyCount = Math.max((bookings ?? 0) - otherAppointmentOutcomeCounts, 0);
+
   const appointmentOutcomes = [
-    { name: 'Scheduled', value: Math.max((bookings ?? 0) - (reschedule ?? 0), 0), color: '#6366F1' },
+    { name: 'Scheduled', value: scheduledOnlyCount, color: '#6366F1' },
     { name: 'Attended', value: attended ?? -1, color: '#10B981' },
     { name: 'Not attended', value: non_attended ?? -1, color: '#F59E0B' },
     { name: 'Cancelled', value: cancelled ?? -1, color: '#EF4444' },
