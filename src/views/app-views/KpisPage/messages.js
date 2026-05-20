@@ -147,6 +147,10 @@ export default defineMessages({
     id: `${scope}.clinicstats.intervention_screened_elsewhere`,
     defaultMessage: 'Screened elsewhere',
   },
+  clinicStatsInterventionScreenedElsewhereMedbridge: {
+    id: `${scope}.clinicstats.intervention_screened_elsewhere_medbridge`,
+    defaultMessage: 'Study taken elsewhere',
+  },
   clinicStatsInterventionDeclined: {
     id: `${scope}.clinicstats.intervention_declined`,
     defaultMessage: 'Declined',

@@ -214,8 +214,9 @@ const Notification = () => {
             style={{ height: '100%', backgroundColor: 'white', borderRadius: '8px' }}
             styles={{
                 header: {
-                    padding: isMobile ? '16px 16px' : '20px 24px',
-                    minHeight: isMobile ? '56px' : '64px'
+                    padding: isMobile ? '16px 16px' : '20px 16px 12px 16px',
+                    minHeight: isMobile ? '56px' : '12px',
+                    height: isMobile ? '56px' : '12px'
                 },
                 body: {
                     padding: notifications.length === 0 ? (isMobile ? '24px 16px' : '40px 24px') : (isMobile ? '12px 16px' : '16px 24px')
@@ -315,13 +316,13 @@ const Notification = () => {
     );
 
     return (
-        <div style={{ padding: isMobile ? '16px' : '24px', maxWidth: '100%', overflowX: 'hidden' }}>
+        <div style={{ padding: isMobile ? '16px' : '0px', maxWidth: '100%', overflowX: 'hidden' }}>
             <div className="mb-4" style={{ paddingTop: isMobile ? 0 : '24px' }}>
                 {isMobile ? (
                     // Mobile: Title and actions stacked
                     <>
                         <div style={{ marginBottom: '12px' }}>
-                            <Title level={2} style={{ margin: 0, fontSize: '20px' }}>
+                            <Title level={3} style={{ marginTop: "8px" }}>
                                 Notifications
                                 {unreadCount > 0 && (
                                     <Badge
@@ -351,7 +352,7 @@ const Notification = () => {
                     // Desktop/Tablet: Title and actions side by side
                     <Row gutter={16} align="middle">
                         <Col flex="auto">
-                            <Title level={2} style={{ margin: 0 }}>
+                            <Title level={3} style={{ marginTop: "8px" }}>
                                 Notifications
                                 {unreadCount > 0 && (
                                     <Badge

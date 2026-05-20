@@ -52,3 +52,28 @@ export const CHAT_FILTERS = {
   // LIKELY_TO_MISS_NEXT_APPOINTMENT: 'likely_to_miss_next_appointment',
   ALL: 'all',
 };
+
+export const FILTER_ATTRIBUTES = {
+  STATUS: 'status',
+  LOCATION: 'location',
+};
+
+export const getPatientLocationDescription = (homeLocation) => {
+  if (!homeLocation || typeof homeLocation !== 'object') {
+    return null;
+  }
+  return homeLocation.location_description || homeLocation.location_name || null;
+};
+
+export const buildPatientLocationFilterOptions = (conversations) => {
+  const descriptions = new Set();
+  for (const item of conversations) {
+    const description = getPatientLocationDescription(item?.patient?.home_location);
+    if (description) {
+      descriptions.add(description);
+    }
+  }
+  return Array.from(descriptions)
+    .sort((a, b) => a.localeCompare(b))
+    .map((description) => ({ value: description, label: description }));
+};

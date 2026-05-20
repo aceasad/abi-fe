@@ -294,7 +294,7 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
       {isMobile ? (
         // Mobile Layout
         <div className="mb-4">
-          <Typography.Title level={2} style={{ fontSize: '20px', marginBottom: '16px' }}>
+          <Typography.Title level={3} style={{ fontSize: '20px', marginBottom: '16px' }}>
             {formatMessage(messages.patientsTitle)}
           </Typography.Title>
           <form onSubmit={handleSearch} style={{ marginBottom: '12px', width: '100%' }}>
@@ -335,7 +335,7 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
         <div className="mb-4" style={{ paddingTop: '24px' }}>
           <Row gutter={16} align="middle" style={{ marginBottom: '16px' }}>
             <Col flex="auto">
-              <Typography.Title level={2} style={{ margin: 0 }}>
+              <Typography.Title level={3} style={{ margin: 0 }}>
                 {formatMessage(messages.patientsTitle)}
               </Typography.Title>
             </Col>

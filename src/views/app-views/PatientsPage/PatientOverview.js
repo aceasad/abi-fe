@@ -236,7 +236,7 @@ const PatientOverview = ({
         <Col xs={24} lg={17} style={{ marginTop: isMobile ? '16px' : 0 }}>
           {showMessages ? (
             <>
-              <Title level={2} className="ml-3 mr-4 mb-4">
+              <Title level={3} className="ml-3 mr-4 mb-4">
                 {formatMessage(messages.messages)}
               </Title>
               <div className="chat inner-app-layout">
@@ -268,7 +268,7 @@ const PatientOverview = ({
                 className={isMobile ? 'mb-4' : 'ml-3 mr-4 mb-4'}
                 style={{ flexWrap: isMobile ? 'wrap' : 'nowrap', gap: isMobile ? '12px' : 0 }}
               >
-                <Title level={2} className="mb-0" style={{ fontSize: isMobile ? '20px' : '28px' }}>
+                <Title level={3} className="mb-0" style={{ fontSize: isMobile ? '20px' : '28px' }}>
                   {formatMessage(messages.overviewTittle)}
                 </Title>
                 <Badge>

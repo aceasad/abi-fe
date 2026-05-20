@@ -1,5 +1,5 @@
 import { Card, Table, Button, Select, Grid, Space, Typography, Tag, Row, Col, Input } from 'antd';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import patientService from 'services/PatientService';
 import dayjs from 'utils/dayjs';
 import { Link } from 'react-router-dom';
@@ -31,12 +31,17 @@ const PatientProgressTable = ({
   });
   const [filterStatus, setFilterStatus] = useState(null); // Add new state for filter
   const clinic = useSelector(makeSelectClinic());
+  const { PASProvider } = useSelector((state) => state.auth.user || {});
+  const isMedbridge = PASProvider?.toLowerCase() === 'medbridge';
+  const screenedElsewhereLabel = isMedbridge
+    ? 'Study taken elsewhere'
+    : 'Screened Elsewhere';
   const [patientSearch, setPatientSearch] = useState('');
 
   const getProgressColor = (status) => {
     if (status === 'Rescheduled' || status === 'Booked' || status === 'Reminded') {
       return '#18D9C5'; // Green
-    } else if (status === 'Asked Question' || status === 'Rescheduling' || status === 'Cancelling' || status === 'Booking' || status === 'Invited' || status === 'Incomplete' || status === 'Screened Elsewhere') {
+    } else if (status === 'Asked Question' || status === 'Rescheduling' || status === 'Cancelling' || status === 'Booking' || status === 'Invited' || status === 'Incomplete' || status === screenedElsewhereLabel) {
       return '#FFBF00'; // Yellow
     } else if (status === 'Cancelled' || status === 'No Response' || status === 'Inactive' || status === 'Opt-out' || status === 'Declined' || status === 'Emergency Situation' || status === 'Human Intervention' || status === 'Snoozed') {
       return '#FF474C'; // Red
@@ -48,36 +53,42 @@ const PatientProgressTable = ({
     }
   };
 
-  const statusMapping = {
-    RESCHEDULING: { status: 'Rescheduling', progressbar: 20 },
-    CANCELLING: { status: 'Cancelling', progressbar: 20 },
-    BOOKING: { status: 'Booking', progressbar: 20 },
-    NO_RESPONSE: { status: 'No Response', progressbar: 50 },
-    BOOKED: { status: 'Booked', progressbar: 100 },
-    RESCHEDULED: { status: 'Rescheduled', progressbar: 100 },
-    CANCELLED: { status: 'Cancelled', progressbar: 100 },
-    INVITED: { status: 'Invited', progressbar: 100 },
-    ASKED_QUESTION: { status: 'Asked Question', progressbar: 100 },
-    INCOMPLETE: { status: 'Incomplete', progressbar: 100 },
-    REMINDED: { status: 'Reminded', progressbar: 100 },
-    SCREENED_ELSEWHERE: { status: 'Screened Elsewhere', progressbar: 100 },
-    INACTIVE: { status: 'Inactive', progressbar: 100 },
-    SNOOZED: { status: 'Snoozed', progressbar: 100 },
-    HUMAN_INTERVENTION: { status: 'Human Intervention', progressbar: 100 },
-    EMERGENCY_SITUATION: { status: 'Emergency Situation', progressbar: 100 },
-    OPT_OUT: { status: 'Opt-out', progressbar: 100 },
-    OPTOUT: { status: 'Opt-out', progressbar: 100 },
-    DECLINED: { status: 'Declined', progressbar: 100 },
-    FAILED: { status: 'Failed', progressbar: 100 },
-  };
+  const statusMapping = useMemo(
+    () => ({
+      RESCHEDULING: { status: 'Rescheduling', progressbar: 20 },
+      CANCELLING: { status: 'Cancelling', progressbar: 20 },
+      BOOKING: { status: 'Booking', progressbar: 20 },
+      NO_RESPONSE: { status: 'No Response', progressbar: 50 },
+      BOOKED: { status: 'Booked', progressbar: 100 },
+      RESCHEDULED: { status: 'Rescheduled', progressbar: 100 },
+      CANCELLED: { status: 'Cancelled', progressbar: 100 },
+      INVITED: { status: 'Invited', progressbar: 100 },
+      ASKED_QUESTION: { status: 'Asked Question', progressbar: 100 },
+      INCOMPLETE: { status: 'Incomplete', progressbar: 100 },
+      REMINDED: { status: 'Reminded', progressbar: 100 },
+      SCREENED_ELSEWHERE: { status: screenedElsewhereLabel, progressbar: 100 },
+      INACTIVE: { status: 'Inactive', progressbar: 100 },
+      SNOOZED: { status: 'Snoozed', progressbar: 100 },
+      HUMAN_INTERVENTION: { status: 'Human Intervention', progressbar: 100 },
+      EMERGENCY_SITUATION: { status: 'Emergency Situation', progressbar: 100 },
+      OPT_OUT: { status: 'Opt-out', progressbar: 100 },
+      OPTOUT: { status: 'Opt-out', progressbar: 100 },
+      DECLINED: { status: 'Declined', progressbar: 100 },
+      FAILED: { status: 'Failed', progressbar: 100 },
+    }),
+    [screenedElsewhereLabel]
+  );
 
-  const statusOptions = [
-    { value: 'ALL', label: 'All' },
-    ...Object.keys(statusMapping).map(key => ({
-      value: key,
-      label: statusMapping[key].status
-    }))
-  ];
+  const statusOptions = useMemo(
+    () => [
+      { value: 'ALL', label: 'All' },
+      ...Object.keys(statusMapping).map((key) => ({
+        value: key,
+        label: statusMapping[key].status,
+      })),
+    ],
+    [statusMapping]
+  );
 
   const columns = [
     {

@@ -111,6 +111,8 @@ const StatCard = ({ title, value, subtitle, color = '#000000', change = null, ch
 
 const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
   const { formatMessage } = useIntl();
+  const { PASProvider } = useSelector((state) => state.auth.user || {});
+  const isMedbridge = PASProvider?.toLowerCase() === 'medbridge';
   const {
     engagement_rate,
     booking_rate,
@@ -158,8 +160,21 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
         })
       : null;
 
+  const otherAppointmentOutcomeCounts =
+    (reschedule ?? 0)
+    + (attended ?? 0)
+    + (non_attended ?? 0)
+    + (cancelled ?? 0)
+    + (arrived ?? 0)
+    + (sent_in ?? 0)
+    + (quiet_sent_in ?? 0)
+    + (walked_out ?? 0)
+    + (not_updated ?? 0);
+
+  const scheduledOnlyCount = Math.max((bookings ?? 0) - otherAppointmentOutcomeCounts, 0);
+
   const appointmentOutcomes = [
-    { name: 'Scheduled', value: Math.max((bookings ?? 0) - (reschedule ?? 0), 0), color: '#6366F1' },
+    { name: 'Scheduled', value: scheduledOnlyCount, color: '#6366F1' },
     { name: 'Attended', value: attended ?? -1, color: '#10B981' },
     { name: 'Not attended', value: non_attended ?? -1, color: '#F59E0B' },
     { name: 'Cancelled', value: cancelled ?? -1, color: '#EF4444' },
@@ -185,7 +200,9 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
       change: calculateValueChange(human_intervention, percentage_changes?.pc_human_intervention),
     },
     {
-      titleMessage: messages.clinicStatsInterventionScreenedElsewhere,
+      titleMessage: isMedbridge
+        ? messages.clinicStatsInterventionScreenedElsewhereMedbridge
+        : messages.clinicStatsInterventionScreenedElsewhere,
       value: already_screened ?? -1,
       previousValue: percentage_changes?.pc_already_screened,
       change: calculateValueChange(already_screened, percentage_changes?.pc_already_screened),
@@ -409,7 +426,7 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
 
       <Row gutter={isMobile ? 12 : 16} style={{ marginTop: isMobile ? 12 : 0 }}>
         <Col xs={24} sm={24} md={12} lg={12} style={{ marginBottom: isMobile ? 12 : 0 }}>
-          <Card title={formatMessage(messages.clinicStatsAppointmentOutcomes)} style={{ height: isMobile ? 'auto' : 425 }}>
+          <Card title={formatMessage(messages.clinicStatsAppointmentOutcomes)} style={isMobile ? { height: 'auto' } : { minHeight: 425 }}>
             <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row' }}>
               <ResponsiveContainer height={isMobile ? 300 : 350}>
                 <PieChart>
@@ -455,7 +472,7 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
         </Col>
 
         <Col xs={24} sm={24} md={12} lg={12}>
-          <Card title={formatMessage(messages.clinicStatsInterventionTitle)} style={{ height: isMobile ? 'auto' : 425 }}>
+          <Card title={formatMessage(messages.clinicStatsInterventionTitle)} style={isMobile ? { height: 'auto' } : { minHeight: 425 }}>
             <Row gutter={isMobile ? 8 : 16}>
               {interventionData.map((item, index) => (
                   <Col key={index} xs={12} sm={12} md={12} lg={12} style={{ marginBottom: isMobile ? 8 : 0 }}>

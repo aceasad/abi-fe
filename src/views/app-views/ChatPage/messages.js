@@ -128,6 +128,10 @@ export default defineMessages({
     id: `${scope}.filters.screenedelsewhere`,
     defaultMessage: 'Screened Elsewhere',
   },
+  inScreenedElsewhereFilterMedbridge: {
+    id: `${scope}.filters.screenedelsewhere_medbridge`,
+    defaultMessage: 'Study taken elsewhere',
+  },
   inFailedFilter: {
     id: `${scope}.filters.failed`,
     defaultMessage: 'Failed',
@@ -183,5 +187,25 @@ export default defineMessages({
   askedQuestionFilter: {
     id: `${scope}.filters.asked_question`,
     defaultMessage: 'Asked Question',
+  },
+  addFilter: {
+    id: `${scope}.filters.add_filter`,
+    defaultMessage: 'Add filter',
+  },
+  filterAttributeStatus: {
+    id: `${scope}.filters.attribute.status`,
+    defaultMessage: 'Status',
+  },
+  filterAttributeLocation: {
+    id: `${scope}.filters.attribute.location`,
+    defaultMessage: 'Patient location',
+  },
+  clearAllFilters: {
+    id: `${scope}.filters.clear_all`,
+    defaultMessage: 'Clear all',
+  },
+  applyFilter: {
+    id: `${scope}.filters.apply`,
+    defaultMessage: 'Apply',
   },
 });

@@ -49,7 +49,7 @@ const AppointmentsPage = () => {
         className="p-0 mb-4"
         title={
           isMobile ? (
-            <Typography.Title level={2} className="mb-0">
+            <Typography.Title level={3} className="mb-0">
               {formatMessage({ id: 'appointments_page.title' })}
             </Typography.Title>
           ) : (
