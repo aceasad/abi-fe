@@ -154,22 +154,62 @@ const KpisPage = () => {
       {SHOW_KPIS && (
         <>
           {isMobile ? (
-              // Mobile/Tablet Layout
-              <div style={{ marginBottom: '16px' }}>
-                <Row gutter={[12, 12]}>
-                  <Col xs={24} sm={12}>
+            // Mobile/Tablet Layout
+            <div style={{ marginBottom: '16px' }}>
+              <Row gutter={[12, 12]}>
+                <Col xs={24} sm={12}>
+                  <RangePicker
+                    onChange={handleDateRangeChange}
+                    value={dateRange}
+                    format={datePickerFormat}
+                    disabledDate={(current) => current && current > dayjs().endOf('day')}
+                    style={{ width: '100%' }}
+                  />
+                </Col>
+                <Col xs={24} sm={12}>
+                  <Select
+                    placeholder="Select Campaign"
+                    style={{ width: '100%' }}
+                    value={selectedCampaign}
+                    onChange={handleCampaignChange}
+                    loading={campaignsLoading}
+                    allowClear
+                  >
+                    {campaigns && campaigns.map((campaign) => (
+                      <Option key={campaign.id} value={campaign.id}>
+                        {campaign.campaign_name}
+                      </Option>
+                    ))}
+                  </Select>
+                </Col>
+                <Col xs={24} sm={12}>
+                  <Button
+                    type="primary"
+                    icon={<DownloadOutlined />}
+                    onClick={handleDownload}
+                  >
+                    Export Data
+                  </Button>
+                </Col>
+              </Row>
+            </div>
+          ) : (
+            // Desktop/Tablet Layout
+            <Row justify="space-between" align="middle" style={{ marginBottom: '8px' }}>
+              <Col>
+                <Row gutter={16} align="middle">
+                  <Col>
                     <RangePicker
                       onChange={handleDateRangeChange}
                       value={dateRange}
                       format={datePickerFormat}
                       disabledDate={(current) => current && current > dayjs().endOf('day')}
-                      style={{ width: '100%' }}
                     />
                   </Col>
-                  <Col xs={24} sm={12}>
+                  <Col>
                     <Select
                       placeholder="Select Campaign"
-                      style={{ width: '100%' }}
+                      style={{ width: 200 }}
                       value={selectedCampaign}
                       onChange={handleCampaignChange}
                       loading={campaignsLoading}
@@ -182,70 +222,30 @@ const KpisPage = () => {
                       ))}
                     </Select>
                   </Col>
-                  <Col xs={24} sm={12}>
-                    <Button
-                      type="primary"
-                      icon={<DownloadOutlined />}
-                      onClick={handleDownload}
-                    >
-                      Export Data
-                    </Button>
-                  </Col>
                 </Row>
-              </div>
-            ) : (
-              // Desktop/Tablet Layout
-              <Row justify="space-between" align="middle" style={{ marginBottom: '16px' }}>
-                <Col>
-                  <Row gutter={16} align="middle">
-                    <Col>
-                      <RangePicker
-                        onChange={handleDateRangeChange}
-                        value={dateRange}
-                        format={datePickerFormat}
-                        disabledDate={(current) => current && current > dayjs().endOf('day')}
-                      />
-                    </Col>
-                    <Col>
-                      <Select
-                        placeholder="Select Campaign"
-                        style={{ width: 200 }}
-                        value={selectedCampaign}
-                        onChange={handleCampaignChange}
-                        loading={campaignsLoading}
-                        allowClear
-                      >
-                        {campaigns && campaigns.map((campaign) => (
-                          <Option key={campaign.id} value={campaign.id}>
-                            {campaign.campaign_name}
-                          </Option>
-                        ))}
-                      </Select>
-                    </Col>
-                  </Row>
-                </Col>
-                <Col>
-                  <Button
-                    type="primary"
-                    icon={<DownloadOutlined />}
-                    onClick={handleDownload}
-                  >
-                    Export Data
-                  </Button>
-                </Col>
-              </Row>
-            )}
-
-            <Row gutter={isMobile ? 12 : 48}>
-              <Col span={24} className="mt-4">
-                <ClinicStats
-                  title={formatMessage(messages.bookingTitle)}
-                  previousPeriod={previousPeriod}
-                  isMobile={isMobile}
-                  country={clinic?.country}
-                />
+              </Col>
+              <Col>
+                <Button
+                  type="primary"
+                  icon={<DownloadOutlined />}
+                  onClick={handleDownload}
+                >
+                  Export Data
+                </Button>
               </Col>
             </Row>
+          )}
+
+          <Row gutter={isMobile ? 12 : 12}>
+            <Col span={24}>
+              <ClinicStats
+                title={formatMessage(messages.bookingTitle)}
+                previousPeriod={previousPeriod}
+                isMobile={isMobile}
+                country={clinic?.country}
+              />
+            </Col>
+          </Row>
         </>
       )}
     </div>

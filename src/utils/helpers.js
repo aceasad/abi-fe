@@ -148,13 +148,23 @@ export const generateDividerMessage = (date, country = '') => {
   };
 };
 
+export const isDisplayableChatMessage = (message) =>
+  Boolean(message?.text?.trim());
+
 // hasMoreMessages - if there is more messages on BE for lazy load
 // If there is no more messages to load -> add date divider as first element
 export const addDividers = (messages, hasMoreMessages, country = '') => {
-  if (messages.length === 1) {
-    return [generateDividerMessage(messages[0].created_at, country), ...messages];
+  const displayableMessages = messages.filter(isDisplayableChatMessage);
+  if (!displayableMessages.length) {
+    return [];
   }
-  const added = messages.reduce((acc, item) => {
+  if (displayableMessages.length === 1) {
+    return [
+      generateDividerMessage(displayableMessages[0].created_at, country),
+      ...displayableMessages,
+    ];
+  }
+  const added = displayableMessages.reduce((acc, item) => {
     if (acc.length) {
       if (isSameDay(acc[acc.length - 1].created_at, item.created_at)) {
         return [...acc, item];
