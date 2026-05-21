@@ -12,6 +12,7 @@ import {
 import {
   getAllChatsInfo,
   getMoreChatsInfo,
+  getSingleChat,
   setConversationToRead,
   searchConversations,
   clearTriggerSearchConversations,
@@ -143,6 +144,9 @@ const ChatMenu = (props) => {
 
   const openChat = (id) => {
     dispatch(setConversationToRead(id));
+    if (currentChatID === id) {
+      dispatch(getSingleChat({ patientId: id }));
+    }
     history.push(`${match.url}/${id}`);
     // Close mobile drawer if the function is provided
     if (props.closeMobileDrawer) {

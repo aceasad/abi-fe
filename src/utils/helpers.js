@@ -139,15 +139,23 @@ export const formatMessagesTimestampDate = (timestamp, country = '') =>
   dayjs(timestamp).local().format(getDateFormatByCountry(country));
 
 export const generateDividerMessage = (date, country = '') => {
+  const formattedDate = formatMessagesTimestampDate(date, country);
   return {
-    created_at: formatMessagesTimestampDate(date, country),
+    created_at: formattedDate,
     type: MESSAGE_TYPE.DIVIDER,
-    id: 'divider',
+    id: `divider-${formattedDate}-${dayjs(date).valueOf()}`,
   };
 };
 
-export const isDisplayableChatMessage = (message) =>
-  Boolean(message?.text?.trim());
+export const isDisplayableChatMessage = (message) => {
+  if (!message || message.type === MESSAGE_TYPE.DIVIDER) {
+    return false;
+  }
+  return Boolean(message.text?.trim());
+};
+
+export const shouldRenderChatListItem = (message) =>
+  message?.type === MESSAGE_TYPE.DIVIDER || isDisplayableChatMessage(message);
 
 // hasMoreMessages - if there is more messages on BE for lazy load
 // If there is no more messages to load -> add date divider as first element

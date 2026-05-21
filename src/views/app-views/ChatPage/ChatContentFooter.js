@@ -58,6 +58,7 @@ const ChatContentFooter = ({ onSend }) => {
       <Form form={form} name="msgInput" onFinish={handleSend} className="w-100">
         <Form.Item name="newMessage" className="mb-0">
           <TextArea
+            className="chat-message-input"
             autoComplete="off"
             placeholder={generatePlaceholderText(
               isSocketOpen,
@@ -65,10 +66,6 @@ const ChatContentFooter = ({ onSend }) => {
               chatInfo?.patient.is_rasa_paused
             )}
             disabled={isDisabled}
-            style={{
-              height: '100px',
-              paddingRight: '50px',
-            }}
             onKeyDown={(e) => {
               if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
@@ -79,17 +76,13 @@ const ChatContentFooter = ({ onSend }) => {
           />
         </Form.Item>
         <Button
+          className="chat-send-button"
           shape="circle"
           type="primary"
           size="small"
           onClick={onSend}
           htmlType="submit"
           disabled={isDisabled}
-          style={{
-            position: 'absolute',
-            right: '100px',
-            bottom: '70px',
-          }}
         >
           <SendOutlined />
         </Button>
