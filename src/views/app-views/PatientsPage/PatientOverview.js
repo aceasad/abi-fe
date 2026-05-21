@@ -24,7 +24,6 @@ import { makeSelectPatientOverview } from 'redux/selectors/Patient';
 import Loading from 'components/shared-components/Loading';
 import { PATIENT_PAGE } from './index';
 import { formatDateByCountry, prepareFormData } from 'utils/helpers';
-import messages from './messages';
 import Conversation from '../ChatPage/Conversation';
 import PatientOverviewExistingConditions from './PatientOverviewExistingConditions';
 import PatientOverviewPreviousOperations from './PatientOverviewPreviousOperations';
@@ -70,28 +69,28 @@ const PatientOverview = ({
   const patientDetailsFields = {
     ...(!shouldHideDobAndGender
       ? {
-          date_of_birth: messages.dateOfBirth,
-          gender: messages.sex,
+          date_of_birth: "Date of birth",
+          gender: "Gender",
         }
       : {}),
-    ethnicity: messages.ethnicity,
-    height: messages.height,
-    weight: messages.weight,
-    phone_number: messages.phoneNumber,
-    email: messages.email,
-    street_number: messages.streetNumber,
-    street_name: messages.streetName,
-    area_of_living: messages.areaOfLiving,
-    city: messages.city,
-    post_code: messages.postCode,
-    country: messages.country,
-    material_status: messages.materialStatus,
-    number_of_dependants: messages.numberOfDependants,
-    employment: messages.employmentStatus,
-    education: messages.education,
-    insurance: messages.insurance,
-    last_appointment: messages.lastAppointment,
-    ...(isMedbridge ? { home_location: messages.homeLocation } : {}),
+    ethnicity: "Ethnicity",
+    height: "Height",
+    weight: "Weight",
+    phone_number: "Phone number",
+    email: "Email",
+    street_number: "Apartment/House",
+    street_name: "Street name",
+    area_of_living: "Area",
+    city: "City",
+    post_code: "Postcode",
+    country: "Country",
+    material_status: "Marital status",
+    number_of_dependants: "Number of dependants",
+    employment: "Employment status",
+    education: "Employment status",
+    insurance: "Insurance",
+    last_appointment: "Last appointment",
+    ...(isMedbridge ? { home_location: "Location" } : {}),
   };
 
   const getHomeLocationDisplay = (homeLocation) => {
@@ -140,7 +139,7 @@ const PatientOverview = ({
               <div className="text-primary cursor-pointer" onClick={showList}>
                 <LeftOutlined />
                 <Text underline className="text-primary ml-2">
-                  {messages.backToPatients}
+                  {"Back to patietnts"}
                 </Text>
               </div>
               <div
@@ -149,7 +148,7 @@ const PatientOverview = ({
               >
                 <EditOutlined />
                 <Text underline className="text-primary ml-2">
-                  {messages.editPatient}
+                  {"Edit patient"}
                 </Text>
               </div>
             </Flex>
@@ -235,7 +234,7 @@ const PatientOverview = ({
           {showMessages ? (
             <>
               <Title level={3} className="ml-3 mr-4 mb-4">
-                {messages.messages}
+                {"Messages"}
               </Title>
               <div className="chat inner-app-layout">
                 <div className="main-content">
@@ -250,7 +249,7 @@ const PatientOverview = ({
                       >
                         <LeftOutlined />
                         <Text className="ml-2">
-                          {messages.backToOverview}
+                          {"Back to patient overview"}
                         </Text>
                       </div>
                     )}
@@ -267,7 +266,7 @@ const PatientOverview = ({
                 style={{ flexWrap: isMobile ? 'wrap' : 'nowrap', gap: isMobile ? '12px' : 0 }}
               >
                 <Title level={3} className="mb-0" style={{ fontSize: isMobile ? '20px' : '28px' }}>
-                  {messages.overviewTittle}
+                  {"Patient overview"}
                 </Title>
                 <Badge>
                   <Button
@@ -276,7 +275,7 @@ const PatientOverview = ({
                     icon={<WhatsAppOutlined />}
                     size={isMobile ? 'small' : 'middle'}
                   >
-                    {!isMobile && <span>{messages.overviewButtonMessages}</span>}
+                    {!isMobile && <span>{"Messages"}</span>}
                     {isMobile && <span>Messages</span>}
                   </Button>
                 </Badge>

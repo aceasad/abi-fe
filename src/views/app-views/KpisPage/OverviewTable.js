@@ -1,6 +1,5 @@
 import React from 'react';
 import { Table, Card, Menu, Dropdown, Button, Typography } from 'antd';
-import messages from './messages';
 import { DownOutlined } from '@ant-design/icons';
 
 const dummyData = [
@@ -64,29 +63,29 @@ const OverviewTable = () => {
 
   const columns = [
     {
-      title: messages.tableColumnPatient,
+      title: "Patient",
       dataIndex: 'patient',
       key: 'patient',
     },
     {
-      title: messages.tableColumnAppointment,
+      title: "Appointment",
       dataIndex: 'appointment',
       key: 'appointment',
     },
     {
-      title: messages.tableColumnDate,
+      title: "Date",
       dataIndex: 'date',
       key: 'date',
     },
     {
-      title: messages.tableColumnTime,
+      title: "Time",
       key: 'time',
       dataIndex: 'time',
     },
     {
       title: () => (
         <div className="text-center">
-          {messages.tableColumnWhitelisted}
+          {"Whitelisted"}
         </div>
       ),
       key: 'whitelisted',
@@ -94,7 +93,7 @@ const OverviewTable = () => {
       render: (text) => <div className="text-center">{text}</div>,
     },
     {
-      title: messages.tableColumnStatus,
+      title: "Status",
       key: 'status',
       dataIndex: 'status',
     },
@@ -104,7 +103,7 @@ const OverviewTable = () => {
         <div className="text-right">
           <Dropdown menu={{ items: menuItems }} trigger={['click']} placement="bottomRight">
             <Button type="primary" ghost>
-              {messages.tableDropdownTitleContact}
+              {"Contact"}
               <DownOutlined />
             </Button>
           </Dropdown>
@@ -116,18 +115,18 @@ const OverviewTable = () => {
   const menuItems = [
     {
       key: "0",
-      label: messages.tableDropdownSeeAppointment,
+      label: "See appointment",
     },
     {
       key: "1",
-      label: messages.tableDropdownAiReachout,
+      label: "Message",
     },
   ];
 
   return (
     <>
       <Typography.Title level={2} className="mb-4">
-        {messages.tableTitle}
+        KPIs
       </Typography.Title>
       <Card>
         <Table columns={columns} dataSource={dummyData} />

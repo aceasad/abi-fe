@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { DEFAULT_SMALL_PAGINATION_LIMIT } from 'constants/ApiConstant';
 import { Card, Table, Typography } from 'antd';
-import messages from './messages';
 import {
   getExistingMedicalConditions,
   resetExistingMedicalConditions,
@@ -27,7 +26,7 @@ const PatientOverviewExistingConditions = ({ patientId }) => {
 
   const columnsHistory = [
     {
-      title: messages.columnTitleCondition,
+      title: "Condition",
       dataIndex: 'name',
     },
   ];
@@ -40,7 +39,7 @@ const PatientOverviewExistingConditions = ({ patientId }) => {
     <Card>
       <div className="mb-3">
         <Title level={4} className="mb-0">
-          {messages.cardTitleExistingConditions}
+          {"Existing medical conditions"}
         </Title>
       </div>
       <Table

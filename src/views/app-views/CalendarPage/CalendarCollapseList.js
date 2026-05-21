@@ -4,7 +4,6 @@ import { Collapse, List, Typography } from 'antd';
 import { makeSelectDoctorAppointments } from 'redux/selectors/Appointment';
 import StaffPanelItem from './StaffPanelItem';
 import { useDispatch, useSelector } from 'react-redux';
-import messages from './messages';
 import Loading from 'components/shared-components/Loading';
 import { getSingleAppointment } from 'redux/actions/Appointment';
 import AppointmentPreview from './AppointmentPreview';
@@ -95,7 +94,7 @@ const CalendarCollapseList = () => {
           <Collapse expandIconPosition="end" items={collapseItems} />
         )
       ) : (
-        <div>{messages.noAppointments}</div>
+        <div>{"No appointments for selected date"}</div>
       )}
       {activeAppointment && <AppointmentPreview handleClose={handleClose} />}
     </div>

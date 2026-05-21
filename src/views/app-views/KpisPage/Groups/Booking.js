@@ -1,7 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { makeSelectBookingData } from 'redux/selectors/Overview';
-import messages from '../messages';
 import OverviewCard from '../OverviewCard';
 import GroupRow from './GroupRow';
 import { MdAssignmentTurnedIn, MdShowChart } from 'react-icons/md';
@@ -18,8 +17,8 @@ const Booking = ({ title }) => {
         <GroupRow>
           <OverviewCard
             span={12}
-            title={messages.bookingAfterInvite}
-            tooltip={messages.bookingAfterInviteTooltip}
+            title={"Bookings made after sending invite"}
+            tooltip={"Bookings made after sending invite"}
             content={bookingMadeAfterInvite}
             styleTitle={title}
             icon={<MdAssignmentTurnedIn color="#ffffff" size="40" />}
@@ -27,8 +26,8 @@ const Booking = ({ title }) => {
           />
           <OverviewCard
             span={12}
-            title={messages.bookingInvitation}
-            tooltip={messages.bookingInvitationTooltip}
+            title={"Invitation rate"}
+            tooltip={"Invitation rate"}
             content={`${invitationRate}%`}
             styleTitle={title}
             icon={<MdShowChart color="#ffffff" size="40" />}

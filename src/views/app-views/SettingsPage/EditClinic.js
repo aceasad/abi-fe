@@ -5,7 +5,6 @@ import { makeSelectClinic } from 'redux/selectors/Clinic';
 import { getClinic } from 'redux/actions/Clinic';
 import Loading from 'components/shared-components/Loading';
 import { message } from 'antd';
-import messages from './messages';
 
 const EditClinic = () => {
   const dispatch = useDispatch();
@@ -14,13 +13,13 @@ const EditClinic = () => {
 
   const showSuccess = () =>
     message.success({
-      content: messages.update_success,
+      content: "Successfull!",
       duration: 2,
     });
 
   const showError = () =>
     message.error({
-      content: messages.update_error,
+      content: "Something went wrong",
       duration: 2,
     });
 

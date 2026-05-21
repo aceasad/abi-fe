@@ -1,7 +1,6 @@
 import Modal from 'antd/lib/modal/Modal';
 import React from 'react';
 import { useSelector } from 'react-redux';
-import messages from './messages';
 import { makeSelectSingleAppointmentLoading } from 'redux/selectors/Appointment';
 import { makeSelectClinic } from 'redux/selectors/Clinic';
 import { Typography } from 'antd';
@@ -19,15 +18,15 @@ const CancelAppointmentReminderModal = ({
 
   const listData = [
     {
-      label: messages.patient,
+      label: "Patient",
       value: appointment?.patient?.full_name,
     },
     {
-      label: messages.doctor,
+      label: "Doctor",
       value: `${appointment?.doctor?.full_name} (${appointment?.specialization})`,
     },
     {
-      label: messages.date,
+      label: "Date",
       value: formatDateByCountry(appointment?.date, clinic?.country, [
         'DD/MM/YYYY',
         'MM/DD/YYYY',
@@ -35,7 +34,7 @@ const CancelAppointmentReminderModal = ({
       ]),
     },
     {
-      label: messages.time,
+      label: "Time",
       value: appointment?.time,
     },
   ];
@@ -50,15 +49,15 @@ const CancelAppointmentReminderModal = ({
   return (
     <Modal
       open
-      cancelText={messages.cancel}
-      okText={messages.confirm}
-      title={messages.deleteAppointment}
+      cancelText={"Cancel"}
+      okText={"Confirm"}
+      title={"Delete appointment?"}
       onCancel={handleClose}
       okButtonProps={{ disabled: loading }}
       onOk={handleDelete}
     >
       <Typography.Paragraph type="secondary" strong>
-        {messages.deleteMessage}
+        {"Are you sure you want to delete this appointment?"}
       </Typography.Paragraph>
       {list}
     </Modal>

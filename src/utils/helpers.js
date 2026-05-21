@@ -4,7 +4,6 @@ import { MONTH_FORMAT_MM, YEAR_FORMAT_YYYY } from 'constants/DateConstant';
 import dayjs from './dayjs';
 import { NO_SHOW_SCORE_THRESHOLD } from './constants';
 import { Typography } from 'antd';
-import appointmentsPageMessages from 'views/app-views/AppointmentsPage/messages';
 import { getStaffDetails } from 'redux/actions/Staff';
 
 export const prepareFormData = (obj) =>
@@ -246,9 +245,9 @@ export const getNoShowScore = (data) => Number(data?.no_show_score || '0');
 
 export const RenderPredictionText = (data) => {
   const likelyToBeMissed =
-    appointmentsPageMessages.appointmentPredictionMissed;
+    "Likely to be missed";
   const likelyToBeAttended =
-    appointmentsPageMessages.appointmentPredictionAttended;
+    "Likely to be attended";
 
   const noShowScore = getNoShowScore(
     data && data.hasOwnProperty('no_show_score')

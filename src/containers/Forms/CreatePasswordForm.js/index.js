@@ -8,7 +8,6 @@ import { createPassword } from 'redux/actions/Auth';
 import { Formik, Field } from 'formik';
 import { createPasswordSchema } from 'utils/validations';
 import 'assets/sass/views/auth/login.scss';
-import messages from './messages';
 
 import { passwordMinLength } from 'constants/Validation';
 import FormField from 'components/custom-components/Form/FormField';
@@ -26,15 +25,15 @@ export const CreatePassowrdForm = () => {
   const ValidPasswordFormat = (
     <div>
       <div>
-        {interpolate(messages.minimumCharacters, { min: passwordMinLength })}
+        {interpolate("At least {min} characters", { min: passwordMinLength })}
       </div>
-      <div>{messages.upperAndLowerMixture}</div>
-      <div>{messages.lettersAndNumberMixture}</div>
-      <div>{messages.specialCharacters}</div>
-      <div>{messages.specialCharactersExcluded}</div>
-      <div>{messages.notCommonPassword}</div>
-      <div>{messages.notEntirelyNumeric}</div>
-      <div>{messages.notSimilarToPersonalInfo}</div>
+      <div>{"A mixture of both uppercase and lowercase letters"}</div>
+      <div>{"A mixture of letters and numbers"}</div>
+      <div>{"Inclusion of at least one special character, e.g., ! @ # ? ]"}</div>
+      <div>{"Note: do not use < or > in your password, as both can cause problems in Web browsers"}</div>
+      <div>{"Do not use a common password (for example: password, 12345678)."}</div>
+      <div>{"Your password cannot be entirely numeric."}</div>
+      <div>{"Your password must not be too similar to your personal information."}</div>
     </div>
   );
 
@@ -49,29 +48,29 @@ export const CreatePassowrdForm = () => {
         <Form layout="vertical" name="login-form">
           <Field
             component={FormField}
-            label={messages.passwordInputLabel}
+            label={"Password"}
             tooltipText={ValidPasswordFormat}
             name={'password'}
             prefix={<LockOutlined className="text-primary" />}
             secureField
             errorTexts={{
-              label: messages.passwordInputLabel,
+              label: "Password",
               minValue: passwordMinLength,
-              matchesLabel: messages.passwordValidFormat,
+              matchesLabel: "Password must be in valid format",
             }}
           />
           <Field
             component={FormField}
-            label={messages.passwordRepeatInputLabel}
+            label={"Repeat password"}
             tooltipText={ValidPasswordFormat}
             name={'passwordRepeat'}
             prefix={<LockOutlined className="text-primary" />}
             secureField
             errorTexts={{
-              label: messages.passwordRepeatInputLabel,
+              label: "Repeat password",
               minValue: passwordMinLength,
-              matchesLabel: messages.passwordValidFormat,
-              value: messages.passwordInputLabel,
+              matchesLabel: "Password must be in valid format",
+              value: "Password",
             }}
           />
 
@@ -84,7 +83,7 @@ export const CreatePassowrdForm = () => {
               loading={loading}
               onClick={() => handleSubmit(values)}
             >
-              {messages.createPassword}
+              {"Create password"}
             </Button>
           </Form.Item>
         </Form>

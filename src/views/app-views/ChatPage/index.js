@@ -4,7 +4,6 @@ import InnerAppLayout from 'layouts/inner-app-layout';
 import React, { useEffect, useState } from 'react';
 import ChatContent from './ChatContent';
 import ChatMenu from './ChatMenu';
-import messages from './messages';
 import { useDispatch, useSelector } from 'react-redux';
 import { makeSelectLoginDetails } from 'redux/selectors/Auth';
 import { createWebsocketUrl, parseReceivedEvent } from 'utils/helpers';
@@ -89,7 +88,7 @@ const Chat = () => {
         title={
           isMobile ? (
             <Typography.Title level={3} className="mb-0" style={{ fontSize: '20px' }}>
-              {`${messages.conversationsTitle}${!rasaHealthy
+              {`${"Conversations"}${!rasaHealthy
                 ? ': Communication with Asa AI is down for maintenance'
                 : ''
                 }`}

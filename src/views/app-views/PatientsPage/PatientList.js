@@ -38,7 +38,6 @@ import {
   setPatientSearch,
   deletePatient,
 } from 'redux/actions/Patient';
-import messages from './messages';
 import { DEFAULT_PAGINATION_LIMIT, SET_DEFAULT_PAGINATION_LIMIT } from 'constants/ApiConstant';
 import { makeSelectPatients } from 'redux/selectors/Patient';
 import { makeSelectClinic } from 'redux/selectors/Clinic';
@@ -109,24 +108,24 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
       // Clean up the URL
       window.URL.revokeObjectURL(url);
     } catch (error) {
-      message.error(messages.downloadError);
+      message.error('Failed to download');
     }
   };
   const tableColumns = [
     {
-      title: messages.firstName,
+      title: "First name",
       dataIndex: 'first_name',
       render: (firstName) => <span>{firstName}</span>,
       sorter: true,
     },
     {
-      title: messages.lastName,
+      title: "Last name",
       dataIndex: 'last_name',
       render: (lastName) => <span>{lastName}</span>,
       sorter: true,
     },
     {
-      title: messages.phoneNumber,
+      title: "Phone number",
       dataIndex: 'phone_number',
       render: (phoneNumber) => <span>{phoneNumber}</span>,
       sorter: true,
@@ -135,7 +134,7 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
     ...(isMedbridge
       ? [
           {
-            title: messages.homeLocation,
+            title: "Location",
             dataIndex: 'home_location',
             render: (homeLocation) => <span>{getHomeLocationDisplay(homeLocation)}</span>,
             responsive: ['lg'],
@@ -143,7 +142,7 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
         ]
       : []),
     {
-      title: messages.lastAppointment,
+      title: "Last appointment",
       dataIndex: 'last_appointment',
       render: (lastAppointment) => (
         <span>
@@ -170,7 +169,7 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
       render: (_, row) => (
         <div className="text-right">
           <Space>
-            <Tooltip title={messages.editPatient}>
+            <Tooltip title={"Edit patient"}>
               <Button
                 icon={<FormOutlined />}
                 onClick={(e) => {
@@ -180,7 +179,7 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
                 size="small"
               />
             </Tooltip>
-            <Tooltip title={messages.patientDelete}>
+            <Tooltip title={"Delete patient"}>
               <Button
                 icon={<DeleteOutlined />}
                 onClick={(e) => {
@@ -214,7 +213,7 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
 
   const afterDelete = () => {
     setPatientForDelete(null);
-    message.success(messages.patientDeleted);
+    message.success("Patient deleted");
   };
 
   const handleDelete = () => {
@@ -249,7 +248,7 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
 
         {isMedbridge && (
           <Typography.Text type="secondary" style={{ fontSize: '12px' }}>
-            {messages.homeLocation}: {getHomeLocationDisplay(patient.home_location)}
+            {"Location"}: {getHomeLocationDisplay(patient.home_location)}
           </Typography.Text>
         )}
         {patient.last_appointment && (
@@ -262,7 +261,7 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
         )}
 
         <Space style={{ width: '100%', justifyContent: 'flex-end', marginTop: '8px' }}>
-          <Tooltip title={messages.editPatient}>
+          <Tooltip title={"Edit patient"}>
             <Button
               icon={<FormOutlined />}
               onClick={(e) => {
@@ -272,7 +271,7 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
               size="small"
             />
           </Tooltip>
-          <Tooltip title={messages.patientDelete}>
+          <Tooltip title={"Delete patient"}>
             <Button
               icon={<DeleteOutlined />}
               onClick={(e) => {
@@ -294,11 +293,11 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
         // Mobile Layout
         <div className="mb-4">
           <Typography.Title level={3} style={{ fontSize: '20px', marginBottom: '16px' }}>
-            {messages.patientsTitle}
+            {"Patients"}
           </Typography.Title>
           <form onSubmit={handleSearch} style={{ marginBottom: '12px', width: '100%' }}>
             <Input
-              placeholder={messages.search}
+              placeholder={"Search"}
               prefix={<SearchOutlined />}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -306,7 +305,7 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
             />
           </form>
           <Space wrap size="small" style={{ width: '100%', display: 'flex', justifyContent: 'flex-start' }}>
-            <Tooltip title={messages.newPatient}>
+            <Tooltip title={"New patient"}>
               <Button
                 onClick={showCreate}
                 type="primary"
@@ -317,7 +316,7 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
               </Button>
             </Tooltip>
             <UploaderPatient onUploadComplete={handleUploadCompletion} />
-            <Tooltip title={messages.notonwhatsappPatient}>
+            <Tooltip title={"Unsuccessful Invites"}>
               <Button
                 onClick={downloadNotOnWhatsapp}
                 type="primary"
@@ -335,14 +334,14 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
           <Row gutter={16} align="middle" style={{ marginBottom: '16px' }}>
             <Col flex="auto">
               <Typography.Title level={3} style={{ margin: 0 }}>
-                {messages.patientsTitle}
+                {"Patients"}
               </Typography.Title>
             </Col>
             <Col>
               <Space size="middle">
                 <form onSubmit={handleSearch}>
                   <Input
-                    placeholder={messages.search}
+                    placeholder={"Search"}
                     prefix={<SearchOutlined />}
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
@@ -350,11 +349,11 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
                   />
                 </form>
                 <Button onClick={showCreate} type="primary">
-                  {messages.newPatient}
+                  {"New patient"}
                 </Button>
                 <UploaderPatient onUploadComplete={handleUploadCompletion} />
                 <Button onClick={downloadNotOnWhatsapp} type="primary">
-                  {messages.notonwhatsappPatient}
+                  {"Unsuccessful Invites"}
                 </Button>
               </Space>
             </Col>
@@ -426,14 +425,14 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
         </Card>
       )}
       <Modal
-        title={messages.deleteTitle}
-        description={interpolate(messages.deleteDescription, {
+        title={"Delete patient"}
+        description={interpolate("Are you sure you want to delete {label}?", {
           label: patientForDelete
             ? patientForDelete.first_name + ' ' + patientForDelete.last_name
             : '',
         })}
-        primaryAction={messages.delete}
-        secondaryAction={messages.cancel}
+        primaryAction={"Delete"}
+        secondaryAction={"Cancel"}
         visible={!!patientForDelete}
         handlePrimaryAction={handleDelete}
         handleSecondaryAction={() => setPatientForDelete(null)}

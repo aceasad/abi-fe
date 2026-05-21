@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { GENDER } from 'constants/UserConstants';
-import messages from './messages';
 import PatientForm from './PatientForm';
 import { getSinglePatient, editPatient } from 'redux/actions/Patient';
 import { makeSelectPatientSingle } from 'redux/selectors/Patient';
@@ -33,9 +32,9 @@ const UpdatePatient = ({ showList, patientId }) => {
   );
 
   const GENDER_CHOICES = [
-    { id: GENDER.MALE, name: messages.male },
-    { id: GENDER.FEMALE, name: messages.female },
-    { id: GENDER.OTHER, name: messages.other },
+    { id: GENDER.MALE, name: "Male" },
+    { id: GENDER.FEMALE, name: "Female" },
+    { id: GENDER.OTHER, name: "Other" },
   ];
 
   useEffect(() => {
@@ -55,7 +54,7 @@ const UpdatePatient = ({ showList, patientId }) => {
 
   const afterUpdate = () => {
     showList();
-    message.success(messages.patientUpdated);
+    message.success("Patient updated");
   };
 
   const handleSubmit = (values, setErrors, enableRedirect) => {
@@ -130,7 +129,7 @@ const UpdatePatient = ({ showList, patientId }) => {
       return (
         <PatientPASForm
           id={patientId}
-          title={messages.newPASPatient}
+          title={"New PAS patient"}
           showList={showList}
           handleSubmit={handleSubmit}
           loading={loading}
@@ -142,7 +141,7 @@ const UpdatePatient = ({ showList, patientId }) => {
     else {
       return (
         <PatientForm
-          title={messages.editPatient}
+          title={"Edit patient"}
           showList={showList}
           handleSubmit={handleSubmit}
           loading={loading}

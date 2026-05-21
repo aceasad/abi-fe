@@ -1,6 +1,5 @@
 import React from 'react';
 import StaffForm from './StaffForm';
-import messages from './messages';
 import { prepareFormData } from 'utils/helpers';
 import { useDispatch } from 'react-redux';
 import { message } from 'antd';
@@ -13,7 +12,7 @@ const CreateStaff = ({ showList }) => {
   const dispatch = useDispatch();
 
   const afterCreate = () => {
-    message.success(messages.staffCreated);
+    message.success("Staff created");
     showList();
   };
 
@@ -30,8 +29,8 @@ const CreateStaff = ({ showList }) => {
   };
 
   const GENDER_CHOICES = [
-    { id: GENDER.MALE, name: messages.male },
-    { id: GENDER.FEMALE, name: messages.female },
+    { id: GENDER.MALE, name: "Male" },
+    { id: GENDER.FEMALE, name: "Female" },
   ];
 
   return (
@@ -39,7 +38,7 @@ const CreateStaff = ({ showList }) => {
       showList={showList}
       handleSubmit={handleSubmit}
       genderChoices={GENDER_CHOICES}
-      label={messages.newStaff}
+      label={"New staff"}
       initialState={{
         first_name: '',
         last_name: '',

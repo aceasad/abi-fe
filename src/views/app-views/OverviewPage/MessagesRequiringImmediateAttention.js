@@ -13,7 +13,6 @@ import {
 import { CaretDownOutlined } from '@ant-design/icons';
 import { useDispatch } from 'react-redux';
 import MessagesRequiringImmediateAttentionTable from './MessagesRequiringImmediateAttentionTable';
-import overviewPageMessages from './messages';
 import {
   MESSAGES_REQUIRING_IMMEDIATE_ATTENTION,
   SCHEDULED,
@@ -96,7 +95,7 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
       }),
     },
     {
-      title: overviewPageMessages.columnTitlePatient,
+      title: "Patient",
       dataIndex: ['patient', 'full_name'],
       sorter: true,
       render: (_, row) => (
@@ -110,20 +109,20 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
         </Typography.Link>
       ),
       onCell: () => ({
-        'data-label': overviewPageMessages.columnTitlePatient,
+        'data-label': "Patient",
       }),
     },
     {
-      title: overviewPageMessages.columnTitleEvent,
+      title: "Event",
       dataIndex: ['message_requiring_immediate_attention_type', 'name'],
       sorter: true,
       render: (_, row) => _,
       onCell: () => ({
-        'data-label': overviewPageMessages.columnTitleEvent,
+        'data-label': "Event",
       }),
     },
     // {
-    //   title: overviewPageMessages.columnTitlePriority,
+    //   title: "Priority",
     //   dataIndex: ['priority', 'name'],
     //   sorter: true,
     //   render: (_, row) => (
@@ -136,11 +135,11 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
     //     </div>
     //   ),
     //   onCell: () => ({
-    //     'data-label': overviewPageMessages.columnTitlePriority,
+    //     'data-label': "Priority",
     //   }),
     // },
     {
-      title: overviewPageMessages.columnTitleStatus,
+      title: "Status",
       dataIndex: ['status', 'name'],
       sorter: true,
       render: (_, row) => (
@@ -155,7 +154,7 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
         </div>
       ),
       onCell: () => ({
-        'data-label': overviewPageMessages.columnTitleStatus,
+        'data-label': "Status",
       }),
     },
     {
@@ -168,7 +167,7 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
             placement="bottomRight"
           >
             <Button type="primary" ghost>
-              {overviewPageMessages.tableDropdownTitleActions}
+              {"Actions"}
               <DownOutlined />
             </Button>
           </Dropdown>
@@ -246,7 +245,7 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
     const items = [
       {
         key: "1",
-        label: overviewPageMessages.tableDropdownPatientInfo,
+        label: "Patient info",
         onClick: ({ domEvent }) => {
           domEvent.stopPropagation();
           goToPatientShowMessages({ id: row.patient.id });
@@ -257,7 +256,7 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
     if (row.appointment) {
       items.push({
         key: "0",
-        label: overviewPageMessages.tableDropdownAppointmentInfo,
+        label: "Appointment info",
         onClick: ({ domEvent }) => {
           domEvent.stopPropagation();
           setActiveAppointment({
@@ -272,7 +271,7 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
     if (row.pre_appointment_questionnaire) {
       items.push({
         key: "3",
-        label: overviewPageMessages.tableDropdownPreAppointmentQuestionnaireInfo,
+        label: "Pre-appointment question info",
         onClick: ({ domEvent }) => {
           domEvent.stopPropagation();
           setActivePreAppointmentQuestionnaire({
@@ -284,7 +283,7 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
 
     items.push({
       key: "2",
-      label: overviewPageMessages.tableDropdownUpdateMessageRequiringImmediateAttentionStatus,
+      label: "Change status",
       onClick: ({ domEvent }) => {
         domEvent.stopPropagation();
         showUpdateMessageRequiringImmediateAttentionStatusWrapper(

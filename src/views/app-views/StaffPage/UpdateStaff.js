@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import StaffForm from './StaffForm';
-import messages from './messages';
 import { prepareFormData } from 'utils/helpers';
 import { useDispatch, useSelector } from 'react-redux';
 import { message } from 'antd';
@@ -21,7 +20,7 @@ const UpdateStaff = ({ showList, staffId }) => {
   const { loading } = useSelector(makeSelectLoading());
 
   const afterUpdate = () => {
-    message.success(messages.staffUpdated);
+    message.success("Staff updated");
     showList();
   };
 
@@ -33,8 +32,8 @@ const UpdateStaff = ({ showList, staffId }) => {
   };
 
   const GENDER_CHOICES = [
-    { id: GENDER.MALE, name: messages.male },
-    { id: GENDER.FEMALE, name: messages.female },
+    { id: GENDER.MALE, name: "Male" },
+    { id: GENDER.FEMALE, name: "Female" },
   ];
 
   useEffect(() => {
@@ -67,7 +66,7 @@ const UpdateStaff = ({ showList, staffId }) => {
       showList={showList}
       handleSubmit={handleSubmit}
       genderChoices={GENDER_CHOICES}
-      label={messages.updateStaff}
+      label={"Update staff"}
       initialState={initialState}
     />
   );

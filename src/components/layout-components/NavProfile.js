@@ -10,7 +10,6 @@ import {
 } from '@ant-design/icons';
 import Icon from 'components/util-components/Icon';
 import { signOut } from 'redux/actions/Auth';
-import messages from 'containers/Forms/LoginForm/messages';
 
 const menuItem = [
   {
@@ -70,7 +69,7 @@ export const NavProfile = () => {
             <span>
               <LogoutOutlined className="mr-3" />
               <span className="font-weight-normal">
-                {messages.logOut}
+                {"Log out"}
               </span>
             </span>
           </Menu.Item>

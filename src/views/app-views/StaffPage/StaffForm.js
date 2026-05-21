@@ -1,7 +1,6 @@
 import PageHeaderComponent from 'components/shared-components/PageHeaderComponent';
 import { Formik, Field } from 'formik';
 import React, { useEffect } from 'react';
-import messages from './messages';
 import { Row, Col, Form, Card, Typography, Button, Space } from 'antd';
 import FormField from 'components/custom-components/Form/FormField';
 import FormDatePicker from 'components/custom-components/Form/FormDatePicker';
@@ -45,7 +44,7 @@ const StaffForm = ({
           <PageHeaderComponent
             title={label}
             handleSecondaryClick={showList}
-            // secondaryAction={messages.cancel}
+            // secondaryAction={"Cancel"}
             handlePrimaryClick={handleSubmit}
             disablePrimary={!dirty || !isValid || loading}
           />
@@ -59,16 +58,16 @@ const StaffForm = ({
               <Row justify="end" gutter={16}>
                 <Col xs={24} lg={6}>
                   <Title type="secondary" level={2} className="mt-4">
-                    {messages.personalDetails}
+                    {"Personal details"}
                   </Title>
                 </Col>
                 <Col xs={24} lg={6}>
                   <Field
                     component={FormField}
-                    label={messages.firstName}
+                    label={"First name"}
                     name="first_name"
                     errorTexts={{
-                      label: messages.firstName,
+                      label: "First name",
                     }}
                     // autoFocus
                   />
@@ -76,16 +75,16 @@ const StaffForm = ({
                 <Col xs={24} lg={6}>
                   <Field
                     component={FormField}
-                    label={messages.lastName}
+                    label={"Last name"}
                     name="last_name"
                     errorTexts={{
-                      label: messages.lastName,
+                      label: "Last name",
                     }}
                   />
                 </Col>
                 <Col xs={24} lg={6}>
                   <Field
-                    label={messages.dateOfBirth}
+                    label={"Date of birth"}
                     maxDate={new Date()}
                     disablePastDates
                     component={FormDatePicker}
@@ -101,17 +100,17 @@ const StaffForm = ({
                     options={ethnicities}
                     optionField="name"
                     defaultOption={values.ethnicity}
-                    label={messages.ethnicity}
+                    label={"Ethnicity"}
                   />
                 </Col>
                 {/* <ColumnField
                       span={12}
                       component={FormField}
-                      label={messages.phoneNumber}
+                      label={"Phone number"}
                       name="phone_number"
                       errorTexts={{
-                        label: messages.phoneNumber,
-                        matchesLabel: messages.phoneNumberFormat,
+                        label: "Phone number",
+                        matchesLabel: 'Phone must be in valid format',
                         maxValue: MAX,
                       }}
                       required
@@ -120,10 +119,10 @@ const StaffForm = ({
                 <Col xs={24} lg={6}>
                   <Field
                     component={FormField}
-                    label={messages.phoneNumber}
+                    label={"Phone number"}
                     name="phone_number"
                     errorTexts={{
-                      label: messages.phoneNumber,
+                      label: "Phone number",
                     }}
                   />
                 </Col>
@@ -133,7 +132,7 @@ const StaffForm = ({
                     component={FormRadio}
                     options={genderChoices}
                     optionField="name"
-                    label={messages.gender}
+                    label={"Gender"}
                   />
                 </Col>
               </Row>
@@ -145,7 +144,7 @@ const StaffForm = ({
                     options={specializations}
                     optionField="name"
                     defaultOption={values.specialization}
-                    label={messages.specialization}
+                    label={"Specialisation"}
                   />
                 </Col>
                 <Col xs={24} lg={6}>
@@ -155,24 +154,24 @@ const StaffForm = ({
                     options={seniorities}
                     optionField="name"
                     defaultOption={values.seniority}
-                    label={messages.seniority}
+                    label={"Seniority"}
                   />
                 </Col>
                 <Col span={24} className={'text-right'}>
                   <Space wrap>
                     <Button key="10" onClick={showList}>
-                      {messages.cancel}
+                      {"Cancel"}
                     </Button>
                     <Button
                       disabled={!isValid || !dirty || loading}
                       type="primary"
                       onClick={handleSubmit}
                     >
-                      {messages.submit}
+                      {"Save"}
                     </Button>
                   </Space>
 
-                  {/* secondaryAction={messages.cancel} */}
+                  {/* secondaryAction={"Cancel"} */}
                 </Col>
               </Row>
             </Form>

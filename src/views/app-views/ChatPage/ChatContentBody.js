@@ -9,7 +9,7 @@ import {
   formatMessagesTimestampMinutes,
   singleChatMessageStyle,
 } from 'utils/helpers';
-import messages from './messages'; // Import your messages
+ // Import your messages
 
 const ChatContentBody = ({
   messages: chatMessages,
@@ -339,7 +339,7 @@ const ChatContentBody = ({
               }
               style={{ marginLeft: '12px' }}
             >
-              {optOutLoading ? 'Updating...' : messages.optOut}
+              {optOutLoading ? 'Updating...' : "Opt-Out"}
             </Button>
           </div>
         )}

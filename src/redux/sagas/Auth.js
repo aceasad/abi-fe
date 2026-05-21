@@ -23,8 +23,6 @@ import {
 import AuthService from 'services/AuthService';
 import { teardownSession } from 'services/sessionTeardown';
 import clinicService from 'services/ClinicService';
-import messages from 'containers/Forms/LoginForm/messages';
-import changePasswordMessages from 'views/app-views/SettingsPage/messages';
 import { setClinic } from '../actions/Clinic';
 import { getMessageRequiringImmediateAttentionStatuses } from '../actions/Appointment';
 import { fetchUnreadNotifications } from '../actions/Notifications';
@@ -35,7 +33,7 @@ export function* signIn() {
       const data = yield call(AuthService.login, payload);
       yield put(authenticated(data));
     } catch (error) {
-      yield put(showAuthMessage(messages.invalidEmailOrPassword));
+      yield put(showAuthMessage("Invalid username or password"));
     }
   });
 }
@@ -103,7 +101,7 @@ export function* createUserPassword() {
         err?.response?.data?.detail ||
         err?.message;
       yield put(
-        showAuthMessage(backendError || messages.createPasswordError)
+        showAuthMessage(backendError || "Failed to create password, try again later")
       );
     } finally {
       yield put(showLoading(false));
@@ -122,7 +120,7 @@ export function* changeUserPassword() {
     } catch (err) {
       if (err?.response?.status === 409) {
         yield call(payload.setErrors, {
-          oldPassword: changePasswordMessages.invalidOldPassword,
+          oldPassword: "Invalid old password",
         });
       }
       yield payload.showError();

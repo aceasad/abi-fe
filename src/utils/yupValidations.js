@@ -1,26 +1,25 @@
 import * as Yup from 'yup';
-import messages from './messages';
 
 Yup.setLocale({
   mixed: {
-    required: messages.required,
-    oneOf: messages.oneOf,
+    required: "{label} is required",
+    oneOf: "{label} must match with {value}",
   },
   string: {
-    email: messages.email,
-    min: messages.min,
-    max: messages.max,
-    matches: messages.matches,
+    email: "{label} must be a valid email",
+    min: "{label} must be at least {minValue} characters",
+    max: "{label} must be max {maxValue} characters",
+    matches: "{matchesLabel}",
   },
   number: {
-    min: messages.greatherThan,
-    max: messages.lowerThan,
-    positive: messages.positiveNumber,
-    matches: messages.matches,
-    moreThan: messages.moreThanAnother,
+    min: "{label} must be greather than {minNumber}",
+    max: "{label} must be lower than {maxNumber}",
+    positive: "{label} must be positive number",
+    matches: "{matchesLabel}",
+    moreThan: "{thisLabel} must be greater than {anotherLabel}",
   },
   array: {
-    min: messages.emptyArray,
+    min: "Please select at least one option",
   },
 });
 

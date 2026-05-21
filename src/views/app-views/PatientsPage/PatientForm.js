@@ -10,7 +10,6 @@ import FormField from 'components/custom-components/Form/FormField';
 import FormDatePicker from 'components/custom-components/Form/FormDatePicker';
 import FormSelect from 'components/custom-components/Form/FormSelect';
 import ColumnField from 'components/custom-components/Form/ColumnField';
-import messages from './messages';
 import { makeSelectPatientDetails } from 'redux/selectors/Patient';
 import { patientSchema } from 'utils/validations';
 import { MAX } from 'constants/ClinicConstants';
@@ -56,7 +55,7 @@ const PatientForm = ({
   );
 
   const afterDelete = () => {
-    message.success(messages.operationTypeDeleted);
+    message.success("Operation type successfully deleted");
   };
 
   const handleSubmitWrapper = (values, { setErrors }) => {
@@ -73,12 +72,12 @@ const PatientForm = ({
 
   const deleteOperationType = ({ item, action }) => {
     Modal.confirm({
-      title: interpolate(messages.deleteOperationType, {
+      title: interpolate("Are you sure you want to delete {name} operation type? All patients operations bound with {name} would be deleted with this action.", {
         name: item.operation_type,
       }),
-      okText: messages.formConfirmationButton,
+      okText: "Confirm",
       okType: 'danger',
-      cancelText: messages.cancel,
+      cancelText: "Cancel",
       onOk() {
         dispatch(
           deleteOperationTypeFromOrganization({
@@ -100,11 +99,11 @@ const PatientForm = ({
   useEffect(() => {
     if (discardModalVisible)
       Modal.confirm({
-        title: messages.discardTitle,
-        content: messages.discardText,
-        okText: messages.discardButton,
+        title: "Changes not saved",
+        content: "If you leave this page all changes will be discarded.",
+        okText: "Discard changes",
         okType: 'danger',
-        cancelText: messages.cancel,
+        cancelText: "Cancel",
         onCancel() {
           setDiscardModalVisible(false);
         },
@@ -180,7 +179,7 @@ const PatientForm = ({
                   {!isMobile && (
                     <Col xs={24} lg={6}>
                       <Title type="secondary" level={2} className="mt-4">
-                        {messages.personalDetails}
+                        {"Personal details"}
                       </Title>
                     </Col>
                   )}
@@ -188,17 +187,17 @@ const PatientForm = ({
                   <Col xs={24} lg={18}>
                     {isMobile && (
                       <Title type="secondary" level={3} className="mb-3">
-                        {messages.personalDetails}
+                        {"Personal details"}
                       </Title>
                     )}
                     <Row gutter={isMobile ? 12 : 16}>
                       <ColumnField
                         span={isMobile && !isTablet ? 24 : 8}
                         component={FormField}
-                        label={messages.firstName}
+                        label={"First name"}
                         name="first_name"
                         errorTexts={{
-                          label: messages.firstName,
+                          label: "First name",
                           maxValue: MAX,
                         }}
                         required
@@ -206,10 +205,10 @@ const PatientForm = ({
                       <ColumnField
                         span={isMobile && !isTablet ? 24 : 8}
                         component={FormField}
-                        label={messages.lastName}
+                        label={"Last name"}
                         name="last_name"
                         errorTexts={{
-                          label: messages.lastName,
+                          label: "Last name",
                           maxValue: MAX,
                         }}
                         required
@@ -219,7 +218,7 @@ const PatientForm = ({
                         maxDate={new Date()}
                         component={FormDatePicker}
                         disablePastDates
-                        label={messages.dateOfBirth}
+                        label={"Date of birth"}
                         name="date_of_birth"
                         required
                       />
@@ -232,14 +231,14 @@ const PatientForm = ({
                         options={genderChoices}
                         optionField="name"
                         defaultOption={values.gender}
-                        label={messages.sex}
+                        label={"Gender"}
                         required
                       />
 
                       <ColumnField
                         span={isMobile && !isTablet ? 24 : 8}
                         component={FormField}
-                        label={messages.height}
+                        label={"Height"}
                         name="height"
                         type={'number'}
                         onKeyDown={filterNumberInput}
@@ -249,7 +248,7 @@ const PatientForm = ({
                       <ColumnField
                         span={isMobile && !isTablet ? 24 : 8}
                         component={FormField}
-                        label={messages.weight}
+                        label={"Weight"}
                         name="weight"
                         type={'number'}
                         onKeyDown={filterNumberInput}
@@ -265,7 +264,7 @@ const PatientForm = ({
                         options={ethnicities}
                         optionField="name"
                         defaultOption={values.ethnicity}
-                        label={messages.ethnicity}
+                        label={"Ethnicity"}
                       />
                     </Row>
                   </Col>
@@ -275,7 +274,7 @@ const PatientForm = ({
                   {!isMobile && (
                     <Col xs={24} lg={6}>
                       <Title type="secondary" level={2} className="mt-4">
-                        {messages.contactDetails}
+                        {"Address"}
                       </Title>
                     </Col>
                   )}
@@ -283,7 +282,7 @@ const PatientForm = ({
                   <Col xs={24} lg={18}>
                     {isMobile && (
                       <Title type="secondary" level={3} className="mb-3 mt-4">
-                        {messages.contactDetails}
+                        {"Address"}
                       </Title>
                     )}
                     <Row gutter={isMobile ? 12 : 16}>
@@ -294,7 +293,7 @@ const PatientForm = ({
                         options={COUNTRY_CODES}
                         optionField="name"
                         defaultOption={values.country_code}
-                        label={messages.countryCode}
+                        label={"Country code"}
                         showSearch
                         filterOption={(input, option) =>
                           `${option?.value ?? ''} ${option?.children ?? ''}`
@@ -302,8 +301,8 @@ const PatientForm = ({
                             .includes(input.toLowerCase())
                         }
                         errorTexts={{
-                          label: messages.countryCode,
-                          matchesLabel: messages.countryCodeFormat,
+                          label: "Country code",
+                          matchesLabel: "Country code must be in valid format",
                           maxValue: MAX,
                         }}
                         required
@@ -311,11 +310,11 @@ const PatientForm = ({
                       <ColumnField
                         span={isMobile && !isTablet ? 24 : 12}
                         component={FormField}
-                        label={messages.phoneNumber}
+                        label={"Phone number"}
                         name="phone_number"
                         errorTexts={{
-                          label: messages.phoneNumber,
-                          matchesLabel: messages.phoneNumberFormat,
+                          label: "Phone number",
+                          matchesLabel: "Phone must be in valid format",
                           maxValue: MAX,
                         }}
                         required
@@ -325,7 +324,7 @@ const PatientForm = ({
                       <ColumnField
                         span={isMobile && !isTablet ? 24 : 12}
                         component={FormField}
-                        label={messages.email}
+                        label={"Email"}
                         name="email"
                         required
                       />
@@ -337,7 +336,7 @@ const PatientForm = ({
                   {!isMobile && (
                     <Col xs={24} lg={6}>
                       <Title type="secondary" level={2} className="mt-4">
-                        {messages.addressDetails}
+                        {"Address details"}
                       </Title>
                     </Col>
                   )}
@@ -345,17 +344,17 @@ const PatientForm = ({
                   <Col xs={24} lg={18}>
                     {isMobile && (
                       <Title type="secondary" level={3} className="mb-3 mt-4">
-                        {messages.addressDetails}
+                        {"Address details"}
                       </Title>
                     )}
                     <Row gutter={isMobile ? 12 : 16}>
                       <ColumnField
                         span={isMobile && !isTablet ? 24 : 12}
                         component={FormField}
-                        label={messages.streetName}
+                        label={"Street name"}
                         name="street_name"
                         errorTexts={{
-                          label: messages.streetName,
+                          label: "Street name",
                           maxValue: 128,
                         }}
                         required
@@ -364,10 +363,10 @@ const PatientForm = ({
                       <ColumnField
                         span={isMobile && !isTablet ? 24 : 12}
                         component={FormField}
-                        label={messages.streetNumber}
+                        label={"Apartment/House"}
                         name="street_number"
                         errorTexts={{
-                          label: messages.streetNumber,
+                          label: "Apartment/House",
                           maxValue: 8,
                         }}
                         autoComplete="new-address"
@@ -377,20 +376,20 @@ const PatientForm = ({
                       <ColumnField
                         span={isMobile && !isTablet ? 24 : 12}
                         component={FormField}
-                        label={messages.areaOfLiving}
+                        label={"Area"}
                         name="area_of_living"
                         errorTexts={{
-                          label: messages.areaOfLiving,
+                          label: "Area",
                           maxValue: 128,
                         }}
                       />
                       <ColumnField
                         span={isMobile && !isTablet ? 24 : 12}
                         component={FormField}
-                        label={messages.city}
+                        label={"City"}
                         name="city"
                         errorTexts={{
-                          label: messages.city,
+                          label: "City",
                           maxValue: 64,
                         }}
                         required
@@ -400,10 +399,10 @@ const PatientForm = ({
                       <ColumnField
                         span={isMobile && !isTablet ? 24 : 12}
                         component={FormField}
-                        label={messages.postCode}
+                        label={"Postcode"}
                         name="post_code"
                         errorTexts={{
-                          label: messages.postCode,
+                          label: "Postcode",
                           maxValue: 16,
                         }}
                         required
@@ -411,10 +410,10 @@ const PatientForm = ({
                       <ColumnField
                         span={isMobile && !isTablet ? 24 : 12}
                         component={FormField}
-                        label={messages.country}
+                        label={"Country"}
                         name="country"
                         errorTexts={{
-                          label: messages.country,
+                          label: "Country",
                           maxValue: 64,
                         }}
                       />
@@ -426,7 +425,7 @@ const PatientForm = ({
                   {!isMobile && (
                     <Col xs={24} lg={6}>
                       <Title type="secondary" level={2} className="mt-4">
-                        {messages.otherDetails}
+                        {"Other details"}
                       </Title>
                     </Col>
                   )}
@@ -434,7 +433,7 @@ const PatientForm = ({
                   <Col xs={24} lg={18}>
                     {isMobile && (
                       <Title type="secondary" level={3} className="mb-3 mt-4">
-                        {messages.otherDetails}
+                        {"Other details"}
                       </Title>
                     )}
                     <Row gutter={isMobile ? 12 : 16}>
@@ -445,12 +444,12 @@ const PatientForm = ({
                         options={material_status}
                         optionField="name"
                         defaultOption={values.material_status}
-                        label={messages.materialStatus}
+                        label={"Marital status"}
                       />
                       <ColumnField
                         span={isMobile && !isTablet ? 24 : 12}
                         component={FormField}
-                        label={messages.numberOfDependants}
+                        label={"Number of dependants"}
                         name="number_of_dependants"
                         onKeyDown={filterNumberInput}
                         type={'number'}
@@ -465,7 +464,7 @@ const PatientForm = ({
                         options={employment}
                         optionField="name"
                         defaultOption={values.employment}
-                        label={messages.employmentStatus}
+                        label={"Employment status"}
                       />
                       <ColumnField
                         span={isMobile && !isTablet ? 24 : 12}
@@ -474,17 +473,17 @@ const PatientForm = ({
                         options={education}
                         optionField="name"
                         defaultOption={values.education}
-                        label={messages.education}
+                        label={"Employment status"}
                       />
                     </Row>
                     <Row gutter={isMobile ? 12 : 16}>
                       <Col xs={24} sm={isMobile && !isTablet ? 24 : 12}>
                         <Field
                           component={FormField}
-                          label={messages.insurance}
+                          label={"Insurance"}
                           name="insurance"
                           errorTexts={{
-                            label: messages.insurance,
+                            label: "Insurance",
                             maxValue: MAX,
                           }}
                         />
@@ -516,7 +515,7 @@ const PatientForm = ({
               className={`floating-button ${!dirty || loading || !isSaveVisible ? '' : 'active'
                 }`}
             >
-              {messages.save}
+              {"Save"}
             </Button>
           </>
         )}

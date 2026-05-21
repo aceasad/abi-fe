@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import Modal from 'antd/lib/modal/Modal';
 import { Field, Formik } from 'formik';
-import messages from './messages';
 import FormSelect from 'components/custom-components/Form/FormSelect';
 import Form from 'antd/lib/form/Form';
 import FormTextArea from 'components/custom-components/Form/FormTextArea';
@@ -65,7 +64,7 @@ const UpdateAppointmentCommunicationStatus = ({
   const loading = useSelector(makeSelectSingleAppointmentLoading());
 
   const afterCommunicationStatusUpdate = () => {
-    message.success(messages.communicationStatusUpdateSuccess);
+    message.success("Appointment communication status updated");
     if (updateCommunicationStatusFrom === FROM_STAFF_APPOINTMENTS) {
       // eslint-disable-next-line default-case
       switch (appointment_type) {
@@ -132,9 +131,9 @@ const UpdateAppointmentCommunicationStatus = ({
       {({ values, handleSubmit, isValid }) => (
         <Modal
           open
-          title={messages.updateCommunicationStatus}
-          okText={messages.update}
-          cancelText={messages.cancel}
+          title={"Communication status"}
+          okText={"Update"}
+          cancelText={"Cancel"}
           onCancel={handleClose}
           okButtonProps={{ disabled: !isValid || loading }}
           onOk={handleSubmit}
@@ -147,15 +146,15 @@ const UpdateAppointmentCommunicationStatus = ({
                 options={appointmentCommunicationStatuses}
                 defaultOption={values.communication_status}
                 optionField="name"
-                label={messages.communicationStatus}
-                errorTexts={{ label: messages.status }}
+                label={"Please set the communication status using the dropdown below"}
+                errorTexts={{ label: "Status" }}
                 required
               />
               <Field
                 component={FormTextArea}
                 name="communication_status_details"
                 rows={4}
-                label={messages.communicationStatusDetails}
+                label={"Communication details"}
               />
             </div>
           </Form>

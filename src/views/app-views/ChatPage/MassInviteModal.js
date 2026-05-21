@@ -9,7 +9,6 @@ import { Field, Formik } from 'formik';
 import React, { useState } from 'react';
 import { massInviteSchema } from 'utils/validations';
 import { GENDER } from 'constants/UserConstants';
-import messages from './messages';
 import {
   MASS_INVITE_MAX_AGE,
   MASS_INVITE_MIN_AGE,
@@ -36,9 +35,9 @@ const MassInviteModal = ({ isModalVisible, closeModal }) => {
   };
 
   const GENDER_CHOICES = [
-    { value: GENDER.MALE, label: messages.male },
-    { value: GENDER.FEMALE, label: messages.female },
-    { value: GENDER.OTHER, label: messages.other },
+    { value: GENDER.MALE, label: "Male" },
+    { value: GENDER.FEMALE, label: "Female" },
+    { value: GENDER.OTHER, label: "Other" },
   ];
 
   const [templates, setTemplates] = useState([]);
@@ -58,7 +57,7 @@ const MassInviteModal = ({ isModalVisible, closeModal }) => {
     };
 
     dispatch(sendMassInvite(obj));
-    message.success(messages.inviteSent);
+    message.success("Mass invite sent!");
     closeModal();
   };
 
@@ -71,14 +70,14 @@ const MassInviteModal = ({ isModalVisible, closeModal }) => {
     >
       {({ values, dirty, isValid, resetForm, handleSubmit }) => (
         <Modal
-          title={messages.massInvitesLabel}
+          title={"Mass invites"}
           open={isModalVisible}
           destroyOnHidden
           onCancel={() => closeModal()}
           afterClose={resetForm}
           footer={[
             <Button key="cancel-btn" onClick={() => closeModal()}>
-              {messages.cancelButton}
+              {"Cancel"}
             </Button>,
             <Button
               key="submit"
@@ -86,7 +85,7 @@ const MassInviteModal = ({ isModalVisible, closeModal }) => {
               disabled={!dirty || !isValid || !numberOfInvites}
               onClick={handleSubmit}
             >
-              {messages.sendButton}
+              {"Send"}
             </Button>,
           ]}
         >
@@ -99,12 +98,12 @@ const MassInviteModal = ({ isModalVisible, closeModal }) => {
               <Col xs={24} lg={12}>
                 <Field
                   component={FormNumberField}
-                  label={messages.ageFromLabel}
+                  label={"Age from"}
                   name="ageFrom"
-                  placeholder={messages.ageFromLabel}
+                  placeholder={"Age from"}
                   required
                   errorTexts={{
-                    label: messages.ageFromLabel,
+                    label: "Age from",
                     minNumber: MASS_INVITE_MIN_AGE,
                     maxNumber: MASS_INVITE_MAX_AGE,
                   }}
@@ -113,15 +112,15 @@ const MassInviteModal = ({ isModalVisible, closeModal }) => {
               <Col xs={24} lg={12}>
                 <Field
                   component={FormNumberField}
-                  label={messages.ageToLabel}
+                  label={"Age to"}
                   name="ageTo"
-                  placeholder={messages.ageToLabel}
+                  placeholder={"Age to"}
                   errorTexts={{
-                    label: messages.ageToLabel,
+                    label: "Age to",
                     minNumber: MASS_INVITE_MIN_AGE,
                     maxNumber: MASS_INVITE_MAX_AGE,
-                    thisLabel: messages.ageToLabel,
-                    anotherLabel: messages.ageFromLabel,
+                    thisLabel: "Age to",
+                    anotherLabel: "Age from",
                   }}
                   required
                 />
@@ -129,7 +128,7 @@ const MassInviteModal = ({ isModalVisible, closeModal }) => {
             </Row>
             <RowColumnField
               span={24}
-              label={messages.genderLabel}
+              label={"Gender"}
               name="gender"
               component={FormGroupCheckbox}
               options={GENDER_CHOICES}
@@ -144,7 +143,7 @@ const MassInviteModal = ({ isModalVisible, closeModal }) => {
             )}
             <RowColumnField
               span={24}
-              label={messages.appointmentTypeLabel}
+              label={"Appointment type"}
               name="appointmentType"
               component={FormSelect}
               options={appointmentTypes}
@@ -154,7 +153,7 @@ const MassInviteModal = ({ isModalVisible, closeModal }) => {
             />
             <RowColumnField
               span={24}
-              label={messages.templateLabel}
+              label={"Template"}
               name="template"
               component={FormSelect}
               options={templates}

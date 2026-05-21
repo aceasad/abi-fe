@@ -1,7 +1,6 @@
 import { Card, Col, Row, Typography } from 'antd';
 import { interpolate } from 'utils/interpolate';
 import React from 'react';
-import messages from '../messages';
 import {
   COLOR_1,
   COLOR_2,
@@ -21,13 +20,13 @@ const AppointmentsCharts = () => {
 
   const dataTimeOfDay = {
     labels: [
-      interpolate(messages.appointmentsChartMorning, {
+      interpolate("Morning", {
         value: preferences.byPeriod.morning,
       }),
-      interpolate(messages.appointmentsChartAfternoon, {
+      interpolate("Afternoon", {
         value: preferences.byPeriod.afternoon,
       }),
-      interpolate(messages.appointmentsChartEvening, {
+      interpolate("Evening", {
         value: preferences.byPeriod.evening,
       }),
     ],
@@ -43,25 +42,25 @@ const AppointmentsCharts = () => {
 
   const dataDayOfWeek = {
     labels: [
-      interpolate(messages.appointmentsChartMon, {
+      interpolate("Mon", {
         value: preferences.byDay.monday,
       }),
-      interpolate(messages.appointmentsChartTue, {
+      interpolate("Tue", {
         value: preferences.byDay.tuesday,
       }),
-      interpolate(messages.appointmentsChartWed, {
+      interpolate("Wed", {
         value: preferences.byDay.wednesday,
       }),
-      interpolate(messages.appointmentsChartThur, {
+      interpolate("Thur", {
         value: preferences.byDay.thursday,
       }),
-      interpolate(messages.appointmentsChartFri, {
+      interpolate("Fri", {
         value: preferences.byDay.friday,
       }),
-      interpolate(messages.appointmentsChartSat, {
+      interpolate("Sat", {
         value: preferences.byDay.saturday,
       }),
-      interpolate(messages.appointmentsChartSun, {
+      interpolate("Sun", {
         value: preferences.byDay.sunday,
       }),
     ],
@@ -94,7 +93,7 @@ const AppointmentsCharts = () => {
           className="height-100 d-flex flex-column justify-content-between"
           title={
             <Typography.Title level={4} className="text-wrap">
-              {messages.appointmentsPreferences}
+              {"Patient appointment preferences"}
             </Typography.Title>
           }
         >

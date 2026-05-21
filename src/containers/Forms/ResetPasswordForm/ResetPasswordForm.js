@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { interpolate } from 'utils/interpolate';
 import { Formik, Field } from 'formik';
 import { Button, Form } from 'antd';
-import messages from './messages';
 import { useDispatch, useSelector } from 'react-redux';
 import FormField from 'components/custom-components/Form/FormField';
 import { useHistory, useParams } from 'react-router-dom';
@@ -18,12 +17,12 @@ export const ValidPasswordFormat = () => {
   return (
     <div>
       <div>
-        {interpolate(messages.minimumCharacters, { min: passwordMinLength })}
+        {interpolate("At least {min} characters", { min: passwordMinLength })}
       </div>
-      <div>{messages.upperAndLowerMixture}</div>
-      <div>{messages.lettersAndNumberMixture}</div>
-      <div>{messages.specialCharacters}</div>
-      <div>{messages.specialCharactersExcluded}</div>
+      <div>{"A mixture of both uppercase and lowercase letters"}</div>
+      <div>{"A mixture of letters and numbers"}</div>
+      <div>{"Inclusion of at least one special character, e.g., ! @ # ? ]"}</div>
+      <div>{"Note: do not use < or > in your password, as both can cause problems in Web browsers"}</div>
     </div>
   );
 };
@@ -37,7 +36,7 @@ const ResetPasswordForm = () => {
 
   useEffect(() => {
     if (isReset) {
-      success(messages.passwordSuccessfullyChanged);
+      success("Password successfully changed.");
       history.push(ROUTES.LOGIN);
     }
   }, [isReset]);
@@ -56,24 +55,24 @@ const ResetPasswordForm = () => {
         {({ values, handleSubmit, dirty, isValid }) => (
           <Form layout="vertical" name="login-form">
             <Field
-              label={messages.passwordInputLabel}
+              label={"New Password"}
               component={FormField}
               name={'password'}
               tooltipText={ValidPasswordFormat}
               secureField
               errorTexts={{
-                label: messages.passwordInputLabel,
-                matchesLabel: messages.matches_password,
+                label: "New Password",
+                matchesLabel: "Password must be in valid format",
               }}
             />
             <Field
-              label={messages.passwordRepeatInputLabel}
+              label={"Confirm New Password"}
               component={FormField}
               name={'passwordRepeat'}
               secureField
               errorTexts={{
-                label: messages.passwordRepeatInputLabel,
-                value: messages.passwordInputLabel,
+                label: "Confirm New Password",
+                value: "New Password",
               }}
             />
             <Form.Item>
@@ -84,7 +83,7 @@ const ResetPasswordForm = () => {
                 block
                 disabled={!dirty || !isValid}
               >
-                {messages.confirmButton}
+                {"Confirm"}
               </Button>
             </Form.Item>
           </Form>

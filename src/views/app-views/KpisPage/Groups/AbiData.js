@@ -1,6 +1,5 @@
 import React from 'react';
 import OverviewCard from '../OverviewCard';
-import messages from '../messages';
 import GroupRow from './GroupRow';
 import { useSelector } from 'react-redux';
 import { makeSelectAsaData } from 'redux/selectors/Overview';
@@ -18,16 +17,16 @@ const AbiData = ({ title }) => {
         <GroupRow>
           <OverviewCard
             span={12}
-            title={messages.asaDataEfficiency}
-            tooltip={messages.asaEfficiencyTooltip}
+            title={"Asa efficiency"}
+            tooltip={"ASA efficiency"}
             content={`${asaEfficiency}x`}
             styleTitle={title}
             icon={<MdLoop color="#ffffff" size="40" />}
           />
           <OverviewCard
             span={12}
-            title={messages.asaDataRevenueSaved}
-            tooltip={messages.revenueSavedTooltip}
+            title={"Revenue saved due to Asa"}
+            tooltip={"Revenue saved due to ASA"}
             content={`£${revenueSaved.toLocaleString('en-US', {
               maximumFractionDigits: 0,
               minimumFractionDigits: 0,

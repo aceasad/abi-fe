@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { makeSelectStaff } from 'redux/selectors/Staff';
 import Appointments from './Appointments';
-import messages from '../PatientsPage/messages';
 import { HISTORY, SCHEDULED } from 'redux/reducers/Staff';
 import { getSingleAppointment } from 'redux/actions/Appointment';
 import AppointmentPreview from '../CalendarPage/AppointmentPreview';
@@ -69,36 +68,36 @@ const StaffAppointments = ({ staffId, showList }) => {
       />
       <Appointments field={SCHEDULED} id={staffId} columnMap={columnMap}>
         <Appointments.Table
-          title={messages.cardTitleScheduledAppointments}
+          title={"Scheduled appointments"}
           columns={[
             {
-              title: messages.columnTitleDate,
+              title: "Date",
               dataIndex: 'date',
               sorter: true,
             },
             {
-              title: messages.columnTitleTime,
+              title: "Time",
               dataIndex: 'time',
               sorter: false,
             },
             {
-              title: messages.columnTitlePatient,
+              title: "Patient",
               dataIndex: ['patient', 'full_name'],
               sorter: true,
             },
             {
-              title: messages.columnTitleType,
+              title: "Type",
               dataIndex: ['appointment_type', 'name'],
               sorter: true,
             },
             // {
-            //   title: messages.columnTitlePrediction,
+            //   title: "Prediction",
             //   dataIndex: 'no_show_score',
             //   sorter: true,
             //   render: RenderPredictionText,
             // },
             {
-              title: messages.columnTitleStatus,
+              title: "Status",
               dataIndex: ['status', 'name'],
               sorter: true,
               render: statusColor,
@@ -119,36 +118,36 @@ const StaffAppointments = ({ staffId, showList }) => {
       </Appointments>
       <Appointments field={HISTORY} id={staffId} columnMap={columnMap}>
         <Appointments.Table
-          title={messages.staffPastAppointments}
+          title={"Past appointments"}
           columns={[
             {
-              title: messages.columnTitleDate,
+              title: "Date",
               dataIndex: 'date',
               sorter: true,
             },
             {
-              title: messages.columnTitleTime,
+              title: "Time",
               dataIndex: 'time',
               sorter: false,
             },
             {
-              title: messages.columnTitlePatient,
+              title: "Patient",
               dataIndex: ['patient', 'full_name'],
               sorter: true,
             },
             {
-              title: messages.columnTitleType,
+              title: "Type",
               dataIndex: ['appointment_type', 'name'],
               sorter: true,
             },
             // {
-            //   title: messages.columnTitlePrediction,
+            //   title: "Prediction",
             //   dataIndex: 'no_show_score',
             //   sorter: true,
             //   render: RenderPredictionText,
             // },
             {
-              title: messages.columnTitleStatus,
+              title: "Status",
               dataIndex: ['status', 'name'],
               sorter: true,
               render: statusColor,

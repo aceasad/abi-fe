@@ -4,7 +4,6 @@ import ClinicForm from 'containers/Forms/ClinicForm/ClinicForm';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { signOut } from 'redux/actions/Auth';
-import messages from './messages';
 
 const ClinicPage = () => {
   const dispatch = useDispatch();
@@ -25,7 +24,7 @@ const ClinicPage = () => {
               dispatch(signOut());
             }}
           >
-            {messages.logout}
+            {"Logout"}
           </Button>,
         ]}
       />

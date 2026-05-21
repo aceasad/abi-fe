@@ -6,7 +6,6 @@ import { sendForgotPasswordEmail } from 'redux/actions/Auth';
 import { motion } from 'framer-motion';
 import { Field, Formik } from 'formik';
 import { useSelector } from 'react-redux';
-import messages from './messages';
 import { forgotPasswordSchema } from 'utils/validations';
 import { makeIsSendEmailUser } from 'redux/selectors/Auth';
 import { success } from 'components/shared-components/MessagesAlerts/index';
@@ -23,7 +22,7 @@ export const ForgotPasswordForm = ({ email, showMessage }) => {
 
   useEffect(() => {
     if (isSent) {
-      success(messages.successfulySentEmail);
+      success("Email sent successfully");
     }
   }, [isSent]);
 
@@ -46,13 +45,13 @@ export const ForgotPasswordForm = ({ email, showMessage }) => {
           <Form layout="vertical" name="login-form">
             <Field
               autoFocus
-              label={messages.emailInputLabel}
+              label={"Email Address"}
               component={FormField}
               type="email"
               name="email"
               prefix={<MailOutlined className="text-primary" />}
               errorTexts={{
-                label: messages.emailInputLabel,
+                label: "Email Address",
               }}
               value={values.email}
             />
@@ -64,12 +63,12 @@ export const ForgotPasswordForm = ({ email, showMessage }) => {
                 block
                 disabled={!isValid}
               >
-                {messages.confirmButton}
+                {"Confirm"}
               </Button>
             </Form.Item>
             <div className="text-center">
               <Link to={ROUTES.LOGIN}>
-                {messages.backToLogin}
+                {"Back to login"}
               </Link>
             </div>
           </Form>

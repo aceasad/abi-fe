@@ -1,7 +1,6 @@
 import { Row } from 'antd';
 import React from 'react';
 import OverviewCard from '../OverviewCard';
-import messages from '../messages';
 import AppointmentsCharts from './AppointemnsCharts';
 import GroupRow from './GroupRow';
 import { useSelector } from 'react-redux';
@@ -22,8 +21,8 @@ const Appointments = ({ title }) => {
           <Row gutter={16}>
             <OverviewCard
               span={12}
-              title={messages.appointmentsMissed}
-              tooltip={messages.appointmentsMissedTooltip}
+              title={"Missed appointments: Screening"}
+              tooltip={"Missed appointments: Screening"}
               content={missedAppointmentsScreening}
               styleTitle={title}
               icon={<MdAssignmentLate color="#ffffff" size="40" />}
@@ -31,8 +30,8 @@ const Appointments = ({ title }) => {
             />
             <OverviewCard
               span={12}
-              title={messages.appointmentsCostOfMissed}
-              tooltip={messages.appointmentsCostOfMissedTooltip}
+              title={"Cost of missed appointments"}
+              tooltip={"Cost of missed appointments"}
               content={`£${costOfMissedAppointments.toLocaleString('en-US', {
                 maximumFractionDigits: 0,
                 minimumFractionDigits: 0,

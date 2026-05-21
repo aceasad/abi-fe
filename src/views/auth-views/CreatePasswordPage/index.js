@@ -1,6 +1,5 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import messages from './messages';
 import AuthFormWrapper from 'components/layout-components/AuthFormWrapper';
 import CreatePassowrdForm from 'containers/Forms/CreatePasswordForm.js/index.js';
 import { makeSelectCurrentUser } from 'redux/selectors/Auth';
@@ -21,13 +20,13 @@ const LoginPage = (props) => {
         className="authentication-logout"
         onClick={() => dispatch(signOut())}
       >
-        {messages.logOut}
+        {"Log out"}
         <LogoutOutlined />
       </Button>
 
-      <AuthFormWrapper title={messages.createPasswordTitle}>
+      <AuthFormWrapper title={"Create password"}>
         {user.password_changed_status === PASSWORD_STATUSES.EXPIRED ? (
-          <p>{messages.passwordHasExpired}</p>
+          <p>{"Password has expired"}</p>
         ) : (
           <CreatePassowrdForm {...props} />
         )}

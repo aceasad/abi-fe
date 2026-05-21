@@ -1,7 +1,6 @@
 import { Button, Typography, Grid } from 'antd';
 import { PageHeader } from '@ant-design/pro-components';
 import React from 'react';
-import messages from './messages';
 import utils from 'utils';
 
 const { useBreakpoint } = Grid;
@@ -29,7 +28,7 @@ const PatientHeader = ({
       }
       extra={[
         <Button key="0" onClick={secondaryAction}>
-          {messages.cancel}
+          {"Cancel"}
         </Button>,
         <Button
           key="1"
@@ -37,7 +36,7 @@ const PatientHeader = ({
           onClick={primaryAction}
           disabled={primaryDisabled}
         >
-          {messages.save}
+          {"Save"}
         </Button>,
       ]}
     />

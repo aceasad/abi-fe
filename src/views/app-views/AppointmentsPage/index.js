@@ -7,7 +7,6 @@ import AppointmentFormWrapper from './AppointmentFormWrapper';
 import { useSelector } from 'react-redux';
 import { useSyncPasService } from 'queries/shared';
 import utils from 'utils';
-import messages from './messages';
 
 const { useBreakpoint } = Grid;
 

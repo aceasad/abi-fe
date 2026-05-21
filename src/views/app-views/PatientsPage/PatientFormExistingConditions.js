@@ -14,7 +14,6 @@ import {
 import Flex from 'components/shared-components/Flex';
 import { interpolate } from 'utils/interpolate';
 import React, { useState, useEffect, useRef } from 'react';
-import messages from './messages';
 import { DeleteFilled, CloseOutlined } from '@ant-design/icons';
 import Scrollbars from 'react-custom-scrollbars';
 import { useDebounce, useLazyLoad } from 'utils/hooks';
@@ -78,11 +77,11 @@ const PatientFormExistingConditions = ({ setFieldValue, id }) => {
 
   const afterCreate = (id) => {
     setConditions([{ id, name: text }, ...conditions]);
-    message.success(messages.newConditionCreated);
+    message.success("Condition created");
   };
 
   const afterError = () => {
-    message.error(messages.conditionAlreadyExists);
+    message.error("Condition with this name already exists");
   };
 
   const removeCondition = (id) => {
@@ -91,17 +90,17 @@ const PatientFormExistingConditions = ({ setFieldValue, id }) => {
 
   const deleteCondition = (id) => {
     removeCondition(id);
-    message.success(messages.medicalConditionDeleted);
+    message.success("Medical condition successfully deleted");
   };
 
   const handleDelete = (id) => {
     Modal.confirm({
-      title: interpolate(messages.deleteMedicalCondition, {
+      title: interpolate("Are you sure you want to delete \"{name}\" medical condition? All patients bound with \"{name}\" medical condition will be afected by this action.", {
         name: findOptionById(id)['name'],
       }),
-      okText: messages.formConfirmationButton,
+      okText: "Confirm",
       okType: 'danger',
-      cancelText: messages.cancel,
+      cancelText: "Cancel",
       onOk() {
         dispatch(
           deleteMedicalCondition({ data: id, afterDelete: deleteCondition })
@@ -205,7 +204,7 @@ const PatientFormExistingConditions = ({ setFieldValue, id }) => {
       <Row gutter={16}>
         <Col span={6}>
           <Title type="secondary" level={2} className="mt-4">
-            {messages.cardTitleExistingConditions}
+            {"Existing medical conditions"}
           </Title>
         </Col>
         <Col span={18}>
@@ -219,7 +218,7 @@ const PatientFormExistingConditions = ({ setFieldValue, id }) => {
                   <AutoComplete
                     value={text}
                     style={{ width: '100%' }}
-                    placeholder={messages.pressEnterToAdd}
+                    placeholder={"Press enter to add"}
                     onSearch={handleSearch}
                     onSelect={handleSelect}
                     onKeyDown={handleEnterPress}
@@ -245,7 +244,7 @@ const PatientFormExistingConditions = ({ setFieldValue, id }) => {
                   disabled={isFetching || !isFetched}
                   onClick={() => addCondition(text)}
                 >
-                  {messages.addNew}
+                  {"Add new"}
                 </Button>
               </Input.Group>
             </Form.Item>
@@ -253,7 +252,7 @@ const PatientFormExistingConditions = ({ setFieldValue, id }) => {
           <div>
             <div className="list-with-delete-header">
               <Typography.Text strong type="secondary">
-                {messages.columnTitleCondition}
+                {"Condition"}
               </Typography.Text>
             </div>
             <div className="list-with-delete-body-small">

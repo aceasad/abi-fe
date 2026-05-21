@@ -2,7 +2,6 @@ import { message } from 'antd';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import PreviewModal from './PreviewModal';
-import messages from './messages';
 import { deleteAppointment } from 'redux/actions/Appointment';
 import AppointmentFormWrapper from '../AppointmentsPage/AppointmentFormWrapper';
 import DeleteAppointmentModal from './DeleteAppointmentModal';
@@ -58,7 +57,7 @@ const AppointmentPreview = ({
     setShowChildModal({ modal: NESTED_MODAL.END_APPOINTMENT, data });
 
   const afterDelete = () => {
-    message.success(messages.appointmentDeleted);
+    message.success("Appointment deleted");
     handleClose();
   };
 

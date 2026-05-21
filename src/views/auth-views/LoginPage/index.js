@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import LoginForm from 'containers/Forms/LoginForm/LoginForm';
-import messages from './messages';
 import AuthFormWrapper from 'components/layout-components/AuthFormWrapper';
 import { API_BASE_URL } from 'configs/AppConfig';
 
@@ -36,7 +35,7 @@ const LoginPage = (props) => {
   return (
     <>
 
-      <AuthFormWrapper title={messages.loginTitle}>
+      <AuthFormWrapper title={"Log In"}>
         <LoginForm {...props} />
         <div style={{ textAlign: 'center' }}>
           <h3>{!apiHealthy ? 'API services are down for maintenance' : ''}</h3>

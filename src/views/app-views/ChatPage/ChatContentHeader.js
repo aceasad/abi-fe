@@ -11,7 +11,6 @@ import React, { Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { makeSelectSingleChatInfo } from 'redux/selectors/Chats';
-import messages from './messages';
 import { setPatientShowMessages } from 'redux/actions/Patient';
 import { ROUTES } from 'routes';
 
@@ -33,7 +32,7 @@ const ChatContentHeader = ({
   const menuOptions = [
     {
       Icon: UserOutlined,
-      message: messages.userInfo,
+      message: "Patient info",
       shouldDivide: false,
       onClick: (domEvent) => {
         return (id) => {

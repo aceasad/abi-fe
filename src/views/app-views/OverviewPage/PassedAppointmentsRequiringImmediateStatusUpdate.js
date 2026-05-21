@@ -12,8 +12,6 @@ import {
 import { CaretDownOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import Appointments from '../StaffPage/Appointments';
-import overviewPageMessages from './messages';
-import patientPageMessages from '../PatientsPage/messages';
 import {
   HISTORY_REQUIRING_IMMEDIATE_STATUS_UPDATE,
   SCHEDULED,
@@ -117,7 +115,7 @@ const PassedAppointmentsRequiringImmediateStatusUpdate = ({
     return [
       {
         key: "0",
-        label: overviewPageMessages.tableDropdownSeeAppointment,
+        label: "See appointment",
         onClick: ({ domEvent }) => {
           domEvent.stopPropagation();
           setActiveAppointment({
@@ -129,7 +127,7 @@ const PassedAppointmentsRequiringImmediateStatusUpdate = ({
       },
       {
         key: "1",
-        label: overviewPageMessages.tableDropdownAiReachout,
+        label: "Message",
         onClick: ({ domEvent }) => {
           domEvent.stopPropagation();
           goToPatientShowMessages({ id: row.patient.id });
@@ -137,7 +135,7 @@ const PassedAppointmentsRequiringImmediateStatusUpdate = ({
       },
       {
         key: "2",
-        label: overviewPageMessages.tableDropdownUpdateMessageRequiringImmediateAttentionStatus,
+        label: "Change status",
         onClick: ({ domEvent }) => {
           domEvent.stopPropagation();
           showUpdateAppointmentStatusWrapper(domEvent, row);
@@ -154,12 +152,12 @@ const PassedAppointmentsRequiringImmediateStatusUpdate = ({
     // },
     // (${row.doctor.seniority} ${row.doctor.specialization})
     {
-      title: patientPageMessages.columnTitlePatient,
+      title: "Patient",
       dataIndex: ['patient', 'full_name'],
       sorter: true,
     },
     {
-      title: patientPageMessages.columnTitleAppointment,
+      title: "Staff Member",
       dataIndex: ['doctor', 'full_name'],
       sorter: true,
       render: (_, row) => (
@@ -169,12 +167,12 @@ const PassedAppointmentsRequiringImmediateStatusUpdate = ({
       ),
     },
     {
-      title: patientPageMessages.columnTitleDate,
+      title: "Date",
       dataIndex: 'date',
       sorter: true,
     },
     {
-      title: patientPageMessages.columnTitleTime,
+      title: "Time",
       dataIndex: 'time',
       sorter: true,
       render: (_, row) => (
@@ -195,7 +193,7 @@ const PassedAppointmentsRequiringImmediateStatusUpdate = ({
             placement="bottomRight"
           >
             <Button type="primary" ghost>
-              {overviewPageMessages.tableDropdownTitleActions}
+              {"Actions"}
               <DownOutlined />
             </Button>
           </Dropdown>

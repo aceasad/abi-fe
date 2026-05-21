@@ -3,14 +3,13 @@ import UserSettingsFormModal from 'containers/Forms/UserSettings/UserSettingsFor
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { createUser } from 'redux/actions/User';
-import messages from './messages';
 import { userSchema } from 'utils/validations';
 
 function CreateUser({ closeModal }) {
   const dispatch = useDispatch();
 
   const afterCreate = () => {
-    message.success(messages.userCreated);
+    message.success("User Created");
     closeModal();
   };
 
@@ -20,7 +19,7 @@ function CreateUser({ closeModal }) {
 
   return (
     <UserSettingsFormModal
-      title={messages.createUser}
+      title={"Create a new user by entering their name, email address and password."}
       closeModal={closeModal}
       handleSubmit={handleSubmit}
       validationSchema={userSchema}

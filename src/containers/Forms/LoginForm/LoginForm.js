@@ -9,7 +9,6 @@ import { motion } from 'framer-motion';
 import { Formik, Field } from 'formik';
 import { loginSchema } from 'utils/validations';
 import 'assets/sass/views/auth/login.scss';
-import messages from './messages';
 import { ROUTES } from 'routes';
 import { passwordMinLength } from 'constants/Validation';
 import FormField from 'components/custom-components/Form/FormField';
@@ -76,7 +75,7 @@ export const LoginForm = () => {
 
   const PasswordLabel = ({ email }) => (
     <div className={'d-flex justify-content-between w-100 align-items-center'}>
-      <span>{messages.passwordInputLabel}</span>
+      <span>{"Password"}</span>
 
       <span
         className="authentication-label-link"
@@ -85,7 +84,7 @@ export const LoginForm = () => {
           event.preventDefault();
         }}
       >
-        {messages.forgotPasswordLink}
+        {"Forgot yout password?"}
       </span>
     </div>
   );
@@ -93,12 +92,12 @@ export const LoginForm = () => {
   const ValidPasswordFormat = (
     <div>
       <div>
-        {interpolate(messages.minimumCharacters, { min: passwordMinLength })}
+        {interpolate("At least {min} characters", { min: passwordMinLength })}
       </div>
-      <div>{messages.upperAndLowerMixture}</div>
-      <div>{messages.lettersAndNumberMixture}</div>
-      <div>{messages.specialCharacters}</div>
-      <div>{messages.specialCharactersExcluded}</div>
+      <div>{"A mixture of both uppercase and lowercase letters"}</div>
+      <div>{"A mixture of letters and numbers"}</div>
+      <div>{"Inclusion of at least one special character, e.g., ! @ # ? ]"}</div>
+      <div>{"Note: do not use < or > in your password, as both can cause problems in Web browsers"}</div>
     </div>
   );
 
@@ -125,11 +124,11 @@ export const LoginForm = () => {
         <Form layout="vertical" name="login-form">
           <Field
             component={FormField}
-            label={messages.emailInputLabel}
+            label={"Email Address"}
             name={'username'}
             prefix={<MailOutlined className="text-primary" />}
             errorTexts={{
-              label: messages.emailInputLabel,
+              label: "Email Address",
             }}
             autoFocus
           />
@@ -141,9 +140,9 @@ export const LoginForm = () => {
             prefix={<LockOutlined className="text-primary" />}
             secureField
             errorTexts={{
-              label: messages.passwordInputLabel,
+              label: "Password",
               minValue: passwordMinLength,
-              matchesLabel: messages.passwordValidFormat,
+              matchesLabel: "Password must be in valid format",
             }}
             labelBlock={true}
           />
@@ -160,7 +159,7 @@ export const LoginForm = () => {
               disabled={!dirty || !isValid || !submitEnable}
               loading={loading}
             >
-              {messages.loginButton}
+              {"Log In"}
             </Button>
           </Form.Item>
         </Form>

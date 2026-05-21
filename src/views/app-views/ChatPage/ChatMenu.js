@@ -4,7 +4,7 @@ import utils from 'utils';
 import { SearchOutlined, MessageOutlined, WhatsAppOutlined } from '@ant-design/icons';
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
 
-import messages from './messages';
+
 import {
   chatListItemStyle,
   getDateFormatByCountry,
@@ -192,7 +192,7 @@ const ChatMenu = (props) => {
       <div className="chat-menu-toolbar">
         <Input
           style={{ width: '100%' }}
-          placeholder={messages.searchPlaceholder}
+          placeholder={"Search"}
           prefix={<SearchOutlined />}
           allowClear
           size="middle"

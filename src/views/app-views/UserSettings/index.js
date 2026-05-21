@@ -10,7 +10,6 @@ import {
   Space,
 } from 'antd';
 import { FormOutlined, DeleteOutlined } from '@ant-design/icons';
-import messages from './messages';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteUser, getUsers, setUsersPage } from 'redux/actions/User';
 import { makeSelectUsers } from 'redux/selectors/Users';
@@ -38,21 +37,21 @@ const UserSettings = () => {
   const [activeForm, setActiveForm] = useState();
 
   const afterDelete = () => {
-    message.success(messages.userDeleted);
+    message.success("User Deleted");
   };
 
   const onDeleteError = () => {
-    message.error(messages.userDeleteError);
+    message.error("Failed to delete user. Please try again.");
   };
 
   const showDeleteConfirm = (element) => {
     confirm({
-      title: interpolate(messages.deleteConfirmation, {
+      title: interpolate("Are you sure you want to delete {user}?", {
         user: element.name,
       }),
-      okText: messages.formConfirmationButton,
+      okText: "Confirm",
       okType: 'danger',
-      cancelText: messages.formCancelButton,
+      cancelText: "Cancel",
       onOk() {
         dispatch(deleteUser({ id: element.id, afterDelete, onDeleteError }));
       },
@@ -80,12 +79,12 @@ const UserSettings = () => {
 
   const tableColumns = [
     {
-      title: messages.formName,
+      title: "Name",
       dataIndex: 'name',
       key: 'name',
     },
     {
-      title: messages.formEmail,
+      title: "Email",
       dataIndex: 'username',
       key: 'username',
     },
@@ -97,13 +96,13 @@ const UserSettings = () => {
           <Space>
             {elm.is_organization_owner && (
               <Text strong className="text-primary">
-                {messages.clinicAdmin}
+                {"clinic admin"}
               </Text>
             )}
 
             {!elm.is_organization_owner && (
               <>
-                <Tooltip title={messages.editUser}>
+                <Tooltip title={"Edit User"}>
                   <Button
                     icon={<FormOutlined />}
                     onClick={() =>
@@ -112,7 +111,7 @@ const UserSettings = () => {
                     size="small"
                   />
                 </Tooltip>
-                <Tooltip title={messages.deleteUser}>
+                <Tooltip title={"Delete User"}>
                   <Button
                     icon={<DeleteOutlined />}
                     onClick={() => showDeleteConfirm(elm)}
@@ -130,13 +129,13 @@ const UserSettings = () => {
     <div className="p-2">
       <Flex justifyContent="between">
         <Typography.Title level={3} className="mb-4">
-          {messages.title}
+          {"User Settings"}
         </Typography.Title>
         <Button
           type="primary"
           onClick={() => setActiveForm({ id: USER_FORM.CREATE })}
         >
-          {messages.buttonNew}
+          {"New User"}
         </Button>
       </Flex>
 

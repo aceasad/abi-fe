@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import AppointmentFormModal from './AppointmentFormModal';
-import messages from './messages';
 import { updateAppointmentValidationSchema } from 'utils/validations';
 import { message } from 'antd';
 import { prepareAppointmentData } from 'utils/helpers';
@@ -44,7 +43,7 @@ const UpdateAppointment = ({
   );
 
   const afterUpdate = () => {
-    message.success(messages.appointmentUpdated);
+    message.success("Appointment updated");
     if (updateFrom === FROM_STAFF_APPOINTMENTS) {
       // eslint-disable-next-line default-case
       switch (appointment_type) {
@@ -122,7 +121,7 @@ const UpdateAppointment = ({
 
   return (
     <AppointmentFormModal
-      title={messages.updateAppointmentTitle}
+      title={"Edit appointment"}
       initialState={initialState}
       validationSchema={updateAppointmentValidationSchema}
       isEditForm

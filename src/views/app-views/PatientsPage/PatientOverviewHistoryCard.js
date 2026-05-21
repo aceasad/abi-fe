@@ -4,7 +4,6 @@ import { makeSelectHistory } from 'redux/selectors/Patient';
 import { setAppointmentHistoryPage } from 'redux/actions/Patient';
 import { DEFAULT_SMALL_PAGINATION_LIMIT } from 'constants/ApiConstant';
 import { Card, Table, Typography, Grid, Space, Button, Tag } from 'antd';
-import messages from './messages';
 import { APPOINTMENT_HISTORY } from 'constants/ClinicConstants';
 import { CalendarOutlined, ClockCircleOutlined, UserOutlined, FileTextOutlined } from '@ant-design/icons';
 import utils from 'utils';
@@ -49,7 +48,7 @@ const PatientOverviewHistoryCard = ({ patient, showAppointment }) => {
 
   const columnsHistory = [
     {
-      title: messages.columnTitleDate,
+      title: "Date",
       dataIndex: 'date',
       render: (date) => formatDateByCountry(date, clinic?.country, [
         'DD/MM/YYYY',
@@ -58,26 +57,26 @@ const PatientOverviewHistoryCard = ({ patient, showAppointment }) => {
       ]),
     },
     {
-      title: messages.columnTitleTime,
+      title: "Time",
       dataIndex: 'time',
       render: (time) => removeLeadingZeroFromTime(dayjs(time, ['HH:mm', 'h:mm A']).format('hh:mm A')),
     },
     ...(!isMedbridge
       ? [
           {
-            title: messages.columnTitleDoctor,
+            title: "Doctor",
             dataIndex: ['doctor', 'full_name'],
             responsive: ['md'],
           },
         ]
       : []),
     {
-      title: messages.columnTitleType,
+      title: "Type",
       dataIndex: ['appointment_type', 'name'],
       responsive: ['lg'],
     },
     {
-      title: messages.columnTitleStatus,
+      title: "Status",
       dataIndex: ['status', 'name'],
       render: statusColor,
     },
@@ -144,7 +143,7 @@ const PatientOverviewHistoryCard = ({ patient, showAppointment }) => {
     <Card>
       <div className="mb-3">
         <Title level={4} className="mb-0" style={{ fontSize: isMobile ? '16px' : '20px' }}>
-          {messages.cardTitleAppointmentHistory}
+          {"Appointment history"}
         </Title>
       </div>
 

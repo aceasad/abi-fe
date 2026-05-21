@@ -1,6 +1,5 @@
 import React from 'react';
 import OverviewCard from '../OverviewCard';
-import messages from '../messages';
 import GroupRow from './GroupRow';
 import { useSelector } from 'react-redux';
 import { makeSelectUptakeData } from 'redux/selectors/Overview';
@@ -17,32 +16,32 @@ const Uptake = ({ title }) => {
       <GroupRow>
         <OverviewCard
           span={12}
-          title={messages.uptakeProportion}
-          tooltip={messages.uptakeProportionTooltip}
+          title={"Uptake"}
+          tooltip={"Uptake"}
           content={`${uptake}%`}
           styleTitle={title}
           icon={<MdSystemUpdateAlt color="#ffffff" size="40" />}
         />
         <OverviewCard
           span={12}
-          title={messages.uptakeAverage}
-          tooltip={messages.uptakeAverageTooltip}
+          title={"Uptake - country average"}
+          tooltip={"Uptake - country average"}
           content={`${uptakeAverage}%`}
           styleTitle={title}
           icon={<MdInsertChart color="#ffffff" size="40" />}
         />
         <OverviewCard
           span={12}
-          title={messages.uptakeCoverageProportion}
-          tooltip={messages.uptakeCoverageProportionTooltip}
+          title={"Coverage"}
+          tooltip={"Coverage"}
           content={`${coverage}%`}
           styleTitle={title}
           icon={<MdLooks color="#ffffff" size="40" />}
         />
         <OverviewCard
           span={12}
-          title={messages.uptakeCoverageAverage}
-          tooltip={messages.uptakeCoverageAverageTooltip}
+          title={"Coverage - country average"}
+          tooltip={"Coverage - country average"}
           content={`${coverageAverage}%`}
           styleTitle={title}
           icon={<MdInsertChart color="#ffffff" size="40" />}

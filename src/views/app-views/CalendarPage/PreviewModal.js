@@ -1,7 +1,5 @@
 import Modal from 'antd/lib/modal/Modal';
 import React, { useState } from 'react';
-import messages from './messages';
-import appointmentsPageMessages from '../AppointmentsPage/messages';
 import { CloseOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import Loading from 'components/shared-components/Loading';
 import { useSelector } from 'react-redux';
@@ -62,7 +60,7 @@ function PreviewModal({
           showCancel(appointment);
         }}
       >
-        {messages.cancelAppointment}
+        {"Cancel appointment"}
       </Button>
     );
   }
@@ -79,14 +77,14 @@ function PreviewModal({
           showEnd(appointment);
         }}
       >
-        {messages.endAppointment}
+        {"End appointment"}
       </Button>
     );
   }
 
   const detailsListData = [
     {
-      label: messages.patient,
+      label: "Patient",
       value: (
         <Typography.Text strong>
           {appointment?.patient?.full_name}
@@ -96,7 +94,7 @@ function PreviewModal({
     ...(!isMedbridge
       ? [
           {
-            label: messages.doctor,
+            label: "Doctor",
             value: (
               <>
                 <Typography.Text strong>
@@ -109,11 +107,11 @@ function PreviewModal({
         ]
       : []),
     {
-      label: messages.status,
+      label: "Status",
       value: appointment?.status?.name,
     },
     {
-      label: messages.date,
+      label: "Date",
       value: formatDateByCountry(appointment?.date, clinic?.country, [
         'DD/MM/YYYY',
         'MM/DD/YYYY',
@@ -121,27 +119,27 @@ function PreviewModal({
       ]),
     },
     {
-      label: messages.type,
+      label: "Type",
       value: appointment?.appointment_type?.name,
     },
     {
-      label: messages.time,
+      label: "Time",
       value: formatTimeByCountry(appointment?.time, clinic?.country),
     },
     ...(isMedbridge && locationDisplay
       ? [
           {
-            label: messages.location,
+            label: "Location",
             value: locationDisplay,
           },
         ]
       : []),
     // {
-    //   label: messages.appointmentPrice,
+    //   label: "Appointment price",
     //   value: `£${appointment?.price}`,
     // },
     // {
-    //   label: appointmentsPageMessages.appointmentPrediction,
+    //   label: "Prediction",
     //   value: RenderPredictionText(appointment),
     // },
   ];
@@ -164,7 +162,7 @@ function PreviewModal({
       closable={false}
       title={
         <Flex justifyContent="between">
-          {messages.appointmentDetails}
+          {"Appointment details"}
           <Space size="middle">
             {!isLoading && appointment.attended === null && (
               <>
@@ -193,7 +191,7 @@ function PreviewModal({
           {appointment.missing_reason && (
             <div>
               <Typography.Paragraph strong type="secondary" className="mb-2">
-                {messages.missingReason}
+                {"Why did the patient miss the appointment?"}
               </Typography.Paragraph>
               <Typography.Paragraph>
                 {appointment.missing_reason}
@@ -203,7 +201,7 @@ function PreviewModal({
           {appointment.missing_reason_details && (
             <div>
               <Typography.Paragraph strong type="secondary" className="mb-2">
-                {messages.details}
+                {"Details"}
               </Typography.Paragraph>
               <Typography.Paragraph>
                 {appointment.missing_reason_details}

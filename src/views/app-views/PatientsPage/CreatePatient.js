@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createPatient } from 'redux/actions/Patient';
 import { filterEmptyObjectFeilds } from 'utils/helpers';
-import messages from './messages';
 import PatientForm from './PatientForm';
 import PatientPASForm from './PatientPASForm';
 import { makeSelectPatientLoading } from 'redux/selectors/Patient';
@@ -19,14 +18,14 @@ const CreatePatient = ({ showList }) => {
   const normalizedPasProvider = PASProvider?.toLowerCase();
 
   const GENDER_CHOICES = [
-    { id: GENDER.MALE, name: messages.male },
-    { id: GENDER.FEMALE, name: messages.female },
-    { id: GENDER.OTHER, name: messages.other },
+    { id: GENDER.MALE, name: "Male" },
+    { id: GENDER.FEMALE, name: "Female" },
+    { id: GENDER.OTHER, name: "Other" },
   ];
 
   const afterCreate = () => {
     showList();
-    message.success(messages.patientCreated);
+    message.success("Patient created");
   };
 
   const handleSubmit = (values, setErrors, enableRedirect) => {
@@ -57,7 +56,7 @@ const CreatePatient = ({ showList }) => {
     if (isPasIntegrated) {
       return (
         <PatientPASForm
-          title={messages.newPASPatient}
+          title={"New PAS patient"}
           showList={showList}
           handleSubmit={handleSubmit}
           loading={loading}
@@ -83,7 +82,7 @@ const CreatePatient = ({ showList }) => {
     } else {
       return (
         <PatientForm
-          title={messages.newPatient}
+          title={"New patient"}
           showList={showList}
           handleSubmit={handleSubmit}
           loading={loading}

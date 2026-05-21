@@ -9,7 +9,6 @@ import {
 } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import messages from './messages';
 import ClinicStats from './Groups/ClinicStats';
 import { getOverviewClinicStatsData } from 'redux/actions/Overview';
 import { getCampaigns } from 'redux/actions/Patient';
@@ -237,7 +236,7 @@ const KpisPage = () => {
           <Row gutter={isMobile ? 12 : 12}>
             <Col span={24}>
               <ClinicStats
-                title={messages.bookingTitle}
+                title={"Booking"}
                 previousPeriod={previousPeriod}
                 isMobile={isMobile}
                 country={clinic?.country}

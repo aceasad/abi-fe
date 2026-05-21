@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import Modal from 'antd/lib/modal/Modal';
 import { Field, Formik } from 'formik';
-import messages from './messages';
 import FormRadio from 'components/custom-components/Form/FormRadio';
 import FormSelect from 'components/custom-components/Form/FormSelect';
 import Form from 'antd/lib/form/Form';
@@ -59,7 +58,7 @@ const EndAppointment = ({
   const loading = useSelector(makeSelectSingleAppointmentLoading());
 
   const afterEnd = () => {
-    message.success(messages.endSuccess);
+    message.success("Appointment ended");
     if (endFrom === FROM_STAFF_APPOINTMENTS) {
       // eslint-disable-next-line default-case
       switch (appointment_type) {
@@ -108,8 +107,8 @@ const EndAppointment = ({
   }, [dispatch, appointmentMissingReasons?.length]);
 
   const options = [
-    { id: true, name: messages.yes },
-    { id: false, name: messages.no },
+    { id: true, name: "Yes" },
+    { id: false, name: "No" },
   ];
 
   return (
@@ -125,15 +124,15 @@ const EndAppointment = ({
       {({ values, handleSubmit, isValid }) => (
         <Modal
           open
-          title={messages.endAppointment}
-          okText={messages.confirm}
-          cancelText={messages.cancel}
+          title={"End appointment"}
+          okText={"Confirm"}
+          cancelText={"Cancel"}
           onCancel={handleClose}
           okButtonProps={{ disabled: !isValid || loading }}
           onOk={handleSubmit}
         >
           <Form layout="vertical">
-            {messages.attendedQuestion}
+            {"Did patient attend the appointment?"}
             <Field
               name="attended"
               component={FormRadio}
@@ -148,15 +147,15 @@ const EndAppointment = ({
                   options={appointmentMissingReasons}
                   defaultOption={values.missing_reason}
                   optionField="name"
-                  label={messages.missingReason}
-                  errorTexts={{ label: messages.reason }}
+                  label={"Why did the patient miss the appointment?"}
+                  errorTexts={{ label: "Reason" }}
                   required
                 />
                 <Field
                   component={FormTextArea}
                   name="missing_reason_details"
                   rows={4}
-                  label={messages.missingReasonDetails}
+                  label={"Missing details"}
                 />
               </div>
             )}

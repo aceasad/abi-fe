@@ -1,7 +1,6 @@
 import { SendOutlined } from '@ant-design/icons';
 import { Button, Form, Input } from 'antd';
 import React, { useMemo, useRef } from 'react';
-import messages from './messages';
 import { useSelector } from 'react-redux';
 import { makeSelectSingleChatInfo } from 'redux/selectors/Chats';
 import WebSocketClient from 'services/WebSocketClient';
@@ -39,11 +38,11 @@ const ChatContentFooter = ({ onSend }) => {
     isRasaPaused
   ) => {
     if (!isRasaPaused) {
-      return messages.pauseRasaPlaceholder;
+      return "Please pause Asa to send a message";
     } else if (!(isSocketOpen && !!isSendEnabled)) {
-      return messages.chatDisabledPlaceholder;
+      return "Last message was more than 24 hours ago";
     } else {
-      return messages.typeAMessagePlaceholder;
+      return "Type a message...";
     }
   };
 

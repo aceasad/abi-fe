@@ -11,7 +11,6 @@ import {
   Typography,
 } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
-import messages from './messages';
 import { DeleteFilled, CloseOutlined } from '@ant-design/icons';
 import Scrollbars from 'react-custom-scrollbars';
 import dayjs from 'utils/dayjs';
@@ -141,7 +140,7 @@ const PatientFormPreviousOperationss = ({
   };
 
   const afterAdd = () => {
-    message.success(messages.operationTypeAdded);
+    message.success("Operation type successfully created");
     setSearch('');
   };
 
@@ -241,7 +240,7 @@ const PatientFormPreviousOperationss = ({
       <Row gutter={16}>
         <Col span={6}>
           <Title type="secondary" level={2} className="mt-4">
-            {messages.cardTitlePreviousOperatins}
+            {"Previous operations"}
           </Title>
         </Col>
         <Col span={18}>
@@ -259,7 +258,7 @@ const PatientFormPreviousOperationss = ({
                     }}
                     onSelect={handleSelect}
                     onSearch={setSearch}
-                    placeholder={messages.pressEnterToAdd}
+                    placeholder={"Press enter to add"}
                     onKeyDown={handleEnterPress}
                     backfill
                   >
@@ -283,7 +282,7 @@ const PatientFormPreviousOperationss = ({
                   onClick={() => handleSelect(search)}
                   disabled={isFetching || !isFetched}
                 >
-                  {messages.addNew}
+                  {"Add new"}
                 </Button>
               </Input.Group>
             </Form.Item>
@@ -292,12 +291,12 @@ const PatientFormPreviousOperationss = ({
             <Row className="list-with-delete-header">
               <Col span={16}>
                 <Typography.Text strong type="secondary">
-                  {messages.columnTitleOperation}
+                  {"Operation"}
                 </Typography.Text>
               </Col>
               <Col span={8}>
                 <Typography.Text strong type="secondary">
-                  {messages.columnTitleTimeOfSurgery}
+                  {"Time of surgery"}
                 </Typography.Text>
               </Col>
             </Row>

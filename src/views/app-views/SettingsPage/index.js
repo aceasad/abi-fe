@@ -9,7 +9,6 @@ import { Card, Layout, Menu, Typography, Grid, Select } from 'antd';
 import { Link, Redirect, Route, Switch, useHistory } from 'react-router-dom';
 import EditClinic from './EditClinic';
 import ProfileSettings from './ProfileSettings';
-import messages from './messages';
 import IndustryAverage from '../IndustryAveragePage';
 import UserSettings from '../UserSettings';
 import { useSelector } from 'react-redux';
@@ -27,25 +26,25 @@ const SettingOption = ({ match, location, isOrganizationOwner, isMobile, isTable
     {
       key: `${match.url}/edit-clinic`,
       icon: <FormOutlined />,
-      label: messages.editClinicMenuLabel,
+      label: "Edit Clinic",
       path: 'edit-clinic'
     },
     {
       key: `${match.url}/profile-settings`,
       icon: <LockOutlined />,
-      label: messages.profileSettingsTitle,
+      label: "Profile Settings",
       path: 'profile-settings'
     },
     ...(isOrganizationOwner ? [{
       key: `${match.url}/user-settings`,
       icon: <TeamOutlined />,
-      label: messages.userSettings,
+      label: "User Settings",
       path: 'user-settings'
     }] : []),
     {
       key: `${match.url}/industry-average`,
       icon: <BarChartOutlined />,
-      label: messages.industryAverageMenuLabel,
+      label: "Industry Average",
       path: 'industry-average'
     },
   ];

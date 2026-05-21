@@ -1,7 +1,6 @@
 import React from 'react';
 import { interpolate } from 'utils/interpolate';
 import { Form, Select } from 'antd';
-import messages from 'views/app-views/StaffPage/messages';
 
 const { Option } = Select;
 
@@ -23,7 +22,7 @@ const FormSelect = ({
   filterOption,
 }) => {
 
-  const placeholderText = placeholder || messages.selectOption;
+  const placeholderText = placeholder || "Select option";
 
   const handleSelected = (value) => {
     setFieldValue(field.name, value);

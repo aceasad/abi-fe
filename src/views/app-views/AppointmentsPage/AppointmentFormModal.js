@@ -12,8 +12,6 @@ import {
   searchPatients,
   resetPatientsAutocomplete,
 } from 'redux/actions/Appointment';
-import messages from './messages';
-import calendarMessages from '../CalendarPage/messages';
 import Loading from 'components/shared-components/Loading';
 import FormAutocomplete from 'components/custom-components/Form/FormAutocomplete';
 import { useDebounce } from 'utils/hooks';
@@ -101,7 +99,7 @@ const AppointmentFormModal = ({
                 event.preventDefault();
               }}
             >
-              {messages.cancelButton}
+              {"Cancel"}
             </Button>,
             <Button
               key="submit"
@@ -110,7 +108,7 @@ const AppointmentFormModal = ({
               htmlType="submit"
               disabled={!dirty || !isValid || loading}
             >
-              {messages.saveButton}
+              {"Save"}
             </Button>,
           ]}
         >
@@ -126,10 +124,10 @@ const AppointmentFormModal = ({
                 <Col xs={20}>
                   <Field
                     component={FormAutocomplete}
-                    label={messages.patientLabel}
+                    label={"Patient"}
                     name="patient"
                     required
-                    placeholder={messages.searchPlaceholder}
+                    placeholder={"Search..."}
                     setQuery={setQuery}
                     options={patients}
                     optionField="full_name"
@@ -162,7 +160,7 @@ const AppointmentFormModal = ({
               </Row>
               {isPasIntegrated ? (<></>) : (<RowColumnField
                 span={24}
-                label={messages.doctorLabel}
+                label={"Doctor"}
                 name="doctor"
                 component={FormSelect}
                 options={doctors}
@@ -174,7 +172,7 @@ const AppointmentFormModal = ({
                 <Col xs={24} lg={12}>
                   {isPasIntegrated ? (
                     <Field
-                      label={messages.appointmentTypeLabel}
+                      label={"Appointment type"}
                       name="appointmentType"
                       component={FormSelect}
                       options={appointmentTypes}
@@ -186,7 +184,7 @@ const AppointmentFormModal = ({
                     />
                   ) : (
                     <Field
-                      label={messages.appointmentTypeLabel}
+                      label={"Appointment type"}
                       name="appointmentType"
                       component={FormSelect}
                       options={appointmentTypes}
@@ -205,9 +203,9 @@ const AppointmentFormModal = ({
                   >
                     <Field
                       component={FormNumberField}
-                      label={messages.priceLabel}
+                      label={"Price"}
                       name="price"
-                      placeholder={messages.priceLabel}
+                      placeholder={"Price"}
                       required
                       decimals={2}
                     />
@@ -220,7 +218,7 @@ const AppointmentFormModal = ({
                   <Col xs={24} lg={12}>
                     <Field
                       component={PASFormDatePicker}
-                      label={messages.dateLabel}
+                      label={"Date"}
                       name="date"
                       showDefaultDate={isEditForm}
                       required
@@ -229,7 +227,7 @@ const AppointmentFormModal = ({
                   <Col xs={24} lg={12}>
                     <Field
                       component={PASFormTimePicker}
-                      label={messages.timeLabel}
+                      label={"Time"}
                       name="time"
                       required
                       showDefaultTime={isEditForm}
@@ -239,7 +237,7 @@ const AppointmentFormModal = ({
                   <Col xs={24} lg={12}>
                     <Field
                       component={FormDatePicker}
-                      label={messages.dateLabel}
+                      label={"Date"}
                       name="date"
                       showDefaultDate={isEditForm}
                       required
@@ -248,7 +246,7 @@ const AppointmentFormModal = ({
                   <Col xs={24} lg={12}>
                     <Field
                       component={TimeslotTimePicker}
-                      label={messages.timeLabel}
+                      label={"Time"}
                       name="time"
                       required
                       showDefaultTime={isEditForm}
@@ -259,7 +257,7 @@ const AppointmentFormModal = ({
               {isEditForm && (
                 <RowColumnField
                   span={24}
-                  label={messages.appointmentStatus}
+                  label={"Appointment status"}
                   name="status"
                   component={FormSelect}
                   options={appointmentStatuses}
@@ -271,7 +269,7 @@ const AppointmentFormModal = ({
               {isEditForm && (
                 <RowColumnField
                   span={24}
-                  label={messages.appointmentCommunicationStatus}
+                  label={"Appointment communication status"}
                   name="communication_status"
                   component={FormSelect}
                   options={appointmentCommunicationStatuses}
@@ -285,13 +283,13 @@ const AppointmentFormModal = ({
                   component={FormTextArea}
                   name="communication_status_details"
                   rows={2}
-                  label={messages.appointmentCommunicationStatusDetails}
+                  label={"Appointment communication status details"}
                 />
               )}
               {isEditForm && values.status === not_attended_status && (
                 <RowColumnField
                   span={24}
-                  label={messages.appointmentMissingReason}
+                  label={"Appointment missing reason"}
                   name="missing_reason"
                   component={FormSelect}
                   options={appointmentMissingReasons}
@@ -305,13 +303,13 @@ const AppointmentFormModal = ({
                   component={FormTextArea}
                   name="missing_reason_details"
                   rows={2}
-                  label={calendarMessages.missingReasonDetails}
+                  label={"Missing details"}
                 />
               )}
               {isEditForm && values.status === cancelled_status && (
                 <RowColumnField
                   span={24}
-                  label={messages.appointmentCancellationReason}
+                  label={"Appointment cancellation reason"}
                   name="cancellation_reason"
                   component={FormSelect}
                   options={appointmentCancellationReasons}
@@ -325,7 +323,7 @@ const AppointmentFormModal = ({
                   component={FormTextArea}
                   name="cancellation_reason_details"
                   rows={2}
-                  label={calendarMessages.cancellationReasonDetails}
+                  label={"Cancellation details"}
                 />
               )}
             </Form>
