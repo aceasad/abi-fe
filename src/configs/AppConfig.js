@@ -26,7 +26,6 @@ export const CAPTCHA_CLIENT_KEY_V2 = env.CAPTCHA_CLIENT_KEY_V2;
 export const THEME_CONFIG = {
   navCollapsed: false,
   sideNavTheme: SIDE_NAV_LIGHT,
-  locale: 'en',
   navType: NAV_TYPE_SIDE,
   topNavColor: '#3e82f7',
   headerNavColor: '#5d4ebf', // Original was ''

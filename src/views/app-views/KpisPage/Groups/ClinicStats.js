@@ -1,6 +1,6 @@
 import React from 'react';
+import { interpolate } from 'utils/interpolate';
 import { useSelector } from 'react-redux';
-import { useIntl } from 'react-intl';
 import { makeSelectClinicStatsData } from 'redux/selectors/Overview';
 import { Card, Row, Col, Typography, Spin } from 'antd';
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, LabelList } from 'recharts';
@@ -110,7 +110,6 @@ const StatCard = ({ title, value, subtitle, color = '#000000', change = null, ch
 };
 
 const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
-  const { formatMessage } = useIntl();
   const { PASProvider } = useSelector((state) => state.auth.user || {});
   const isMedbridge = PASProvider?.toLowerCase() === 'medbridge';
   const {
@@ -152,7 +151,7 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
   const priorBucketSubtitle =
     percentage_changes?.pc_booking_time_distribution &&
     typeof percentage_changes.pc_booking_time_distribution === 'object'
-      ? formatMessage(messages.clinicStatsPriorBucketDetail, {
+      ? interpolate(messages.clinicStatsPriorBucketDetail, {
           morning: percentage_changes.pc_booking_time_distribution.morning ?? 0,
           afternoon: percentage_changes.pc_booking_time_distribution.afternoon ?? 0,
           evening: percentage_changes.pc_booking_time_distribution.evening ?? 0,
@@ -240,42 +239,42 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
   );
 
   const communicationFlowData = [
-    { name: formatMessage(messages.clinicStatsFlowInvited), value: total_patients_added ?? -1 },
-    { name: formatMessage(messages.clinicStatsFlowDelivered), value: total_patients_invited ?? -1 },
-    { name: formatMessage(messages.clinicStatsFlowEngaged), value: total_patients_engaged ?? -1 },
-    { name: formatMessage(messages.clinicStatsFlowBooked), value: bookings ?? -1 }
+    { name: messages.clinicStatsFlowInvited, value: total_patients_added ?? -1 },
+    { name: messages.clinicStatsFlowDelivered, value: total_patients_invited ?? -1 },
+    { name: messages.clinicStatsFlowEngaged, value: total_patients_engaged ?? -1 },
+    { name: messages.clinicStatsFlowBooked, value: bookings ?? -1 }
   ];
   const mobileShortFormat = getDateFormatByCountry(country).replace('YYYY', 'YY');
 
   const failedMessageTitle = (
     <>
-      <span style={{ color: '#EF4444' }}>{formatMessage(messages.clinicStatsFailedPrefix)}</span>
+      <span style={{ color: '#EF4444' }}>{messages.clinicStatsFailedPrefix}</span>
       {' — '}
-      {formatMessage(messages.clinicStatsFailedMessageDetail)}
+      {messages.clinicStatsFailedMessageDetail}
     </>
   );
   const deliveredUnengagedTitle = (
     <>
-      <span style={{ color: '#EF4444' }}>{formatMessage(messages.clinicStatsDeliveredPrefix)}</span>
+      <span style={{ color: '#EF4444' }}>{messages.clinicStatsDeliveredPrefix}</span>
       {' — '}
-      {formatMessage(messages.clinicStatsFailedUnengagedDetail)}
+      {messages.clinicStatsFailedUnengagedDetail}
     </>
   );
 
   return (
     <Spin spinning={loading}>
     <>
-      <Card title={formatMessage(messages.clinicStatsCommunicationFlow)}>
+      <Card title={messages.clinicStatsCommunicationFlow}>
         {previousPeriod && !isMobile && (
           <Text type="secondary" style={{ position: "absolute", top: 20, left: 276 }}>
-            {formatMessage(messages.clinicStatsPreviousPeriod)}{' '}
+            {messages.clinicStatsPreviousPeriod}{' '}
             {formatDateByCountry(previousPeriod[0], country)} - {formatDateByCountry(previousPeriod[1], country)}
           </Text>
         )}
 
         {previousPeriod && isMobile && (
           <Text type="secondary" style={{ display: 'block', marginBottom: '12px', fontSize: '12px' }}>
-            {formatMessage(messages.clinicStatsPreviousPeriod)}:{' '}
+            {messages.clinicStatsPreviousPeriod}:{' '}
             {dayjs(previousPeriod[0]).format(mobileShortFormat)} - {dayjs(previousPeriod[1]).format(mobileShortFormat)}
           </Text>
         )}
@@ -284,16 +283,16 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
           <Col xs={24} lg={18}>
             <Row gutter={isMobile ? 8 : 16}>
               <Col xs={12} sm={6} md={6} lg={6}>
-                <StatCard title={formatMessage(messages.clinicStatsPatientEnrolled)} value={displayValue(total_patients_added)} style={{ width: '100%', height: isMobile ? 80 : 100 }} isMobile={isMobile} />
+                <StatCard title={messages.clinicStatsPatientEnrolled} value={displayValue(total_patients_added)} style={{ width: '100%', height: isMobile ? 80 : 100 }} isMobile={isMobile} />
               </Col>
               <Col xs={12} sm={6} md={6} lg={6}>
-                <StatCard title={formatMessage(messages.clinicStatsInvitesRecieved)} value={displayValue(total_patients_invited)} style={{ width: '100%', height: isMobile ? 80 : 100 }} isMobile={isMobile} />
+                <StatCard title={messages.clinicStatsInvitesRecieved} value={displayValue(total_patients_invited)} style={{ width: '100%', height: isMobile ? 80 : 100 }} isMobile={isMobile} />
               </Col>
               <Col xs={12} sm={6} md={6} lg={6}>
-                <StatCard title={formatMessage(messages.clinicStatsOpenConversation)} value={displayValue(total_patients_engaged)} style={{ width: '100%', height: isMobile ? 80 : 100 }} isMobile={isMobile} />
+                <StatCard title={messages.clinicStatsOpenConversation} value={displayValue(total_patients_engaged)} style={{ width: '100%', height: isMobile ? 80 : 100 }} isMobile={isMobile} />
               </Col>
               <Col xs={12} sm={6} md={6} lg={6}>
-                <StatCard title={formatMessage(messages.clinicStatsBookingsMade)} value={displayValue(bookings)} style={{ width: '100%', height: isMobile ? 80 : 100 }} isMobile={isMobile} />
+                <StatCard title={messages.clinicStatsBookingsMade} value={displayValue(bookings)} style={{ width: '100%', height: isMobile ? 80 : 100 }} isMobile={isMobile} />
               </Col>
             </Row>
 
@@ -313,7 +312,7 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
                   <Row gutter={8}>
                     <Col span={12}>
                       <StatCard
-                        title={formatMessage(messages.clinicStatsEngagement)}
+                        title={messages.clinicStatsEngagement}
                         value={displayValue(engagement_rate, true)}
                         change={percentage_changes?.pc_engagement_rate}
                         changeType="percentage"
@@ -323,7 +322,7 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
                     </Col>
                     <Col span={12}>
                       <StatCard
-                        title={formatMessage(messages.clinicStatsAfterHours)}
+                        title={messages.clinicStatsAfterHours}
                         value={displayValue(calculateAfterHoursBookings())}
                         change={afterHoursChange}
                         subtitle={priorBucketSubtitle}
@@ -362,7 +361,7 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
                   }}>
                     <div style={{ width: '100%', marginBottom: '20px' }}>
                       <StatCard
-                        title={formatMessage(messages.clinicStatsEngagement)}
+                        title={messages.clinicStatsEngagement}
                         value={displayValue(engagement_rate, true)}
                         change={percentage_changes?.pc_engagement_rate}
                         changeType="percentage"
@@ -372,7 +371,7 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
                     </div>
                     <div style={{ width: '100%' }}>
                       <StatCard
-                        title={formatMessage(messages.clinicStatsBookingsAfterHours)}
+                        title={messages.clinicStatsBookingsAfterHours}
                         value={displayValue(calculateAfterHoursBookings())}
                         change={afterHoursChange}
                         subtitle={priorBucketSubtitle}
@@ -391,7 +390,7 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
             <Row gutter={isMobile ? 8 : 16}>
               <Col xs={24} sm={8} lg={24}>
                 <StatCard
-                  title={formatMessage(messages.clinicStatsBookingRate)}
+                  title={messages.clinicStatsBookingRate}
                   value={displayValue(booking_rate, true)}
                   change={percentage_changes?.pc_booking_rate}
                   changeType="percentage"
@@ -426,7 +425,7 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
 
       <Row gutter={isMobile ? 12 : 16} style={{ marginTop: isMobile ? 12 : 0 }}>
         <Col xs={24} sm={24} md={12} lg={12} style={{ marginBottom: isMobile ? 12 : 0 }}>
-          <Card title={formatMessage(messages.clinicStatsAppointmentOutcomes)} style={isMobile ? { height: 'auto' } : { minHeight: 425 }}>
+          <Card title={messages.clinicStatsAppointmentOutcomes} style={isMobile ? { height: 'auto' } : { minHeight: 425 }}>
             <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row' }}>
               <ResponsiveContainer height={isMobile ? 300 : 350}>
                 <PieChart>
@@ -472,12 +471,12 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
         </Col>
 
         <Col xs={24} sm={24} md={12} lg={12}>
-          <Card title={formatMessage(messages.clinicStatsInterventionTitle)} style={isMobile ? { height: 'auto' } : { minHeight: 425 }}>
+          <Card title={messages.clinicStatsInterventionTitle} style={isMobile ? { height: 'auto' } : { minHeight: 425 }}>
             <Row gutter={isMobile ? 8 : 16}>
               {interventionData.map((item, index) => (
                   <Col key={index} xs={12} sm={12} md={12} lg={12} style={{ marginBottom: isMobile ? 8 : 0 }}>
                     <StatCard
-                      title={formatMessage(item.titleMessage)}
+                      title={item.titleMessage}
                       value={item.value}
                       change={item.change}
                       subtitle={undefined}

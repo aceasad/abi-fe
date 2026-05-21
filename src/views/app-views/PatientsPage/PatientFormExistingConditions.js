@@ -12,8 +12,8 @@ import {
   Modal,
 } from 'antd';
 import Flex from 'components/shared-components/Flex';
+import { interpolate } from 'utils/interpolate';
 import React, { useState, useEffect, useRef } from 'react';
-import { useIntl } from 'react-intl';
 import messages from './messages';
 import { DeleteFilled, CloseOutlined } from '@ant-design/icons';
 import Scrollbars from 'react-custom-scrollbars';
@@ -39,7 +39,6 @@ const { Title } = Typography;
 const { Option } = Select;
 
 const PatientFormExistingConditions = ({ setFieldValue, id }) => {
-  const { formatMessage } = useIntl();
   const dispatch = useDispatch();
 
   const { organization } = useSelector(makeSelectCurrentUser());
@@ -79,11 +78,11 @@ const PatientFormExistingConditions = ({ setFieldValue, id }) => {
 
   const afterCreate = (id) => {
     setConditions([{ id, name: text }, ...conditions]);
-    message.success(formatMessage(messages.newConditionCreated));
+    message.success(messages.newConditionCreated);
   };
 
   const afterError = () => {
-    message.error(formatMessage(messages.conditionAlreadyExists));
+    message.error(messages.conditionAlreadyExists);
   };
 
   const removeCondition = (id) => {
@@ -92,17 +91,17 @@ const PatientFormExistingConditions = ({ setFieldValue, id }) => {
 
   const deleteCondition = (id) => {
     removeCondition(id);
-    message.success(formatMessage(messages.medicalConditionDeleted));
+    message.success(messages.medicalConditionDeleted);
   };
 
   const handleDelete = (id) => {
     Modal.confirm({
-      title: formatMessage(messages.deleteMedicalCondition, {
+      title: interpolate(messages.deleteMedicalCondition, {
         name: findOptionById(id)['name'],
       }),
-      okText: formatMessage(messages.formConfirmationButton),
+      okText: messages.formConfirmationButton,
       okType: 'danger',
-      cancelText: formatMessage(messages.cancel),
+      cancelText: messages.cancel,
       onOk() {
         dispatch(
           deleteMedicalCondition({ data: id, afterDelete: deleteCondition })
@@ -206,7 +205,7 @@ const PatientFormExistingConditions = ({ setFieldValue, id }) => {
       <Row gutter={16}>
         <Col span={6}>
           <Title type="secondary" level={2} className="mt-4">
-            {formatMessage(messages.cardTitleExistingConditions)}
+            {messages.cardTitleExistingConditions}
           </Title>
         </Col>
         <Col span={18}>
@@ -220,7 +219,7 @@ const PatientFormExistingConditions = ({ setFieldValue, id }) => {
                   <AutoComplete
                     value={text}
                     style={{ width: '100%' }}
-                    placeholder={formatMessage(messages.pressEnterToAdd)}
+                    placeholder={messages.pressEnterToAdd}
                     onSearch={handleSearch}
                     onSelect={handleSelect}
                     onKeyDown={handleEnterPress}
@@ -246,7 +245,7 @@ const PatientFormExistingConditions = ({ setFieldValue, id }) => {
                   disabled={isFetching || !isFetched}
                   onClick={() => addCondition(text)}
                 >
-                  {formatMessage(messages.addNew)}
+                  {messages.addNew}
                 </Button>
               </Input.Group>
             </Form.Item>
@@ -254,7 +253,7 @@ const PatientFormExistingConditions = ({ setFieldValue, id }) => {
           <div>
             <div className="list-with-delete-header">
               <Typography.Text strong type="secondary">
-                {formatMessage(messages.columnTitleCondition)}
+                {messages.columnTitleCondition}
               </Typography.Text>
             </div>
             <div className="list-with-delete-body-small">

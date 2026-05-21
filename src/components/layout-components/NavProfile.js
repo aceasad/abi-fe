@@ -10,7 +10,6 @@ import {
 } from '@ant-design/icons';
 import Icon from 'components/util-components/Icon';
 import { signOut } from 'redux/actions/Auth';
-import { useIntl } from 'react-intl';
 import messages from 'containers/Forms/LoginForm/messages';
 
 const menuItem = [
@@ -39,7 +38,6 @@ const menuItem = [
 
 export const NavProfile = () => {
   const dispatch = useDispatch();
-  const { formatMessage } = useIntl();
 
   const profileImg = '/img/avatars/thumb-1.jpg';
   const profileMenu = (
@@ -72,7 +70,7 @@ export const NavProfile = () => {
             <span>
               <LogoutOutlined className="mr-3" />
               <span className="font-weight-normal">
-                {formatMessage(messages.logOut)}
+                {messages.logOut}
               </span>
             </span>
           </Menu.Item>

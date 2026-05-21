@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { interpolate } from 'utils/interpolate';
 import {
   Table,
   Tooltip,
@@ -9,7 +10,6 @@ import {
   Space,
 } from 'antd';
 import { FormOutlined, DeleteOutlined } from '@ant-design/icons';
-import { useIntl } from 'react-intl';
 import messages from './messages';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteUser, getUsers, setUsersPage } from 'redux/actions/User';
@@ -28,7 +28,6 @@ const USER_FORM = {
 };
 
 const UserSettings = () => {
-  const { formatMessage } = useIntl();
   const dispatch = useDispatch();
   const { users, page, count, loading } = useSelector(makeSelectUsers());
 
@@ -39,21 +38,21 @@ const UserSettings = () => {
   const [activeForm, setActiveForm] = useState();
 
   const afterDelete = () => {
-    message.success(formatMessage(messages.userDeleted));
+    message.success(messages.userDeleted);
   };
 
   const onDeleteError = () => {
-    message.error(formatMessage(messages.userDeleteError));
+    message.error(messages.userDeleteError);
   };
 
   const showDeleteConfirm = (element) => {
     confirm({
-      title: formatMessage(messages.deleteConfirmation, {
+      title: interpolate(messages.deleteConfirmation, {
         user: element.name,
       }),
-      okText: formatMessage(messages.formConfirmationButton),
+      okText: messages.formConfirmationButton,
       okType: 'danger',
-      cancelText: formatMessage(messages.formCancelButton),
+      cancelText: messages.formCancelButton,
       onOk() {
         dispatch(deleteUser({ id: element.id, afterDelete, onDeleteError }));
       },
@@ -81,12 +80,12 @@ const UserSettings = () => {
 
   const tableColumns = [
     {
-      title: formatMessage(messages.formName),
+      title: messages.formName,
       dataIndex: 'name',
       key: 'name',
     },
     {
-      title: formatMessage(messages.formEmail),
+      title: messages.formEmail,
       dataIndex: 'username',
       key: 'username',
     },
@@ -98,13 +97,13 @@ const UserSettings = () => {
           <Space>
             {elm.is_organization_owner && (
               <Text strong className="text-primary">
-                {formatMessage(messages.clinicAdmin)}
+                {messages.clinicAdmin}
               </Text>
             )}
 
             {!elm.is_organization_owner && (
               <>
-                <Tooltip title={formatMessage(messages.editUser)}>
+                <Tooltip title={messages.editUser}>
                   <Button
                     icon={<FormOutlined />}
                     onClick={() =>
@@ -113,7 +112,7 @@ const UserSettings = () => {
                     size="small"
                   />
                 </Tooltip>
-                <Tooltip title={formatMessage(messages.deleteUser)}>
+                <Tooltip title={messages.deleteUser}>
                   <Button
                     icon={<DeleteOutlined />}
                     onClick={() => showDeleteConfirm(elm)}
@@ -131,13 +130,13 @@ const UserSettings = () => {
     <div className="p-2">
       <Flex justifyContent="between">
         <Typography.Title level={3} className="mb-4">
-          {formatMessage(messages.title)}
+          {messages.title}
         </Typography.Title>
         <Button
           type="primary"
           onClick={() => setActiveForm({ id: USER_FORM.CREATE })}
         >
-          {formatMessage(messages.buttonNew)}
+          {messages.buttonNew}
         </Button>
       </Flex>
 

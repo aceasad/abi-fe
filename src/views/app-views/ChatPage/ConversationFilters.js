@@ -6,7 +6,6 @@ import {
   FilterOutlined,
   RightOutlined,
 } from '@ant-design/icons';
-import { useIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
 import messages from './messages';
 import { CHAT_FILTERS, FILTER_ATTRIBUTES } from 'constants/ChatConstants';
@@ -17,7 +16,6 @@ const ConversationFilters = ({
   showPatientLocationFilter = true,
   patientLocationOptions = [],
 }) => {
-  const { formatMessage } = useIntl();
   const { PASProvider } = useSelector((state) => state.auth.user || {});
   const isMedbridge = PASProvider?.toLowerCase() === 'medbridge';
   const [pickerOpen, setPickerOpen] = useState(false);
@@ -26,52 +24,50 @@ const ConversationFilters = ({
 
   const STATUS_OPTIONS = useMemo(
     () => [
-      { value: CHAT_FILTERS.BOOKED, label: formatMessage(messages.bookedFilter) },
-      { value: CHAT_FILTERS.RESCHEDULED, label: formatMessage(messages.rescheduleFilter) },
-      { value: CHAT_FILTERS.CANCELLED, label: formatMessage(messages.cancelledFilter) },
-      { value: CHAT_FILTERS.NO_RESPONSE, label: formatMessage(messages.noResponseFilter) },
-      { value: CHAT_FILTERS.ASKED_QUESTION, label: formatMessage(messages.askedQuestionFilter) },
+      { value: CHAT_FILTERS.BOOKED, label: messages.bookedFilter },
+      { value: CHAT_FILTERS.RESCHEDULED, label: messages.rescheduleFilter },
+      { value: CHAT_FILTERS.CANCELLED, label: messages.cancelledFilter },
+      { value: CHAT_FILTERS.NO_RESPONSE, label: messages.noResponseFilter },
+      { value: CHAT_FILTERS.ASKED_QUESTION, label: messages.askedQuestionFilter },
       {
         value: CHAT_FILTERS.HUMAN_INTERVENTION_REQUIRED,
-        label: formatMessage(messages.humanInterventionRequiredFilter),
+        label: messages.humanInterventionRequiredFilter,
       },
       {
         value: CHAT_FILTERS.IN_EMERGENCY_SITUATION,
-        label: formatMessage(messages.inEmergencySituationFilter),
+        label: messages.inEmergencySituationFilter,
       },
-      { value: CHAT_FILTERS.DECLINED, label: formatMessage(messages.inDeclinedFilter) },
+      { value: CHAT_FILTERS.DECLINED, label: messages.inDeclinedFilter },
       {
         value: CHAT_FILTERS.SCREENED_ELSEWHERE,
-        label: formatMessage(
-          isMedbridge
-            ? messages.inScreenedElsewhereFilterMedbridge
-            : messages.inScreenedElsewhereFilter
-        ),
+        label: isMedbridge
+          ? messages.inScreenedElsewhereFilterMedbridge
+          : messages.inScreenedElsewhereFilter,
       },
-      { value: CHAT_FILTERS.INCOMPLETE, label: formatMessage(messages.inIncompleteFilter) },
-      { value: CHAT_FILTERS.INVITED, label: formatMessage(messages.inInvitedFilter) },
-      { value: CHAT_FILTERS.REMINDED, label: formatMessage(messages.inRemindedFilter) },
-      { value: CHAT_FILTERS.SNOOZED, label: formatMessage(messages.inSnoozedFilter) },
-      { value: CHAT_FILTERS.FAILED, label: formatMessage(messages.inFailedFilter) },
+      { value: CHAT_FILTERS.INCOMPLETE, label: messages.inIncompleteFilter },
+      { value: CHAT_FILTERS.INVITED, label: messages.inInvitedFilter },
+      { value: CHAT_FILTERS.REMINDED, label: messages.inRemindedFilter },
+      { value: CHAT_FILTERS.SNOOZED, label: messages.inSnoozedFilter },
+      { value: CHAT_FILTERS.FAILED, label: messages.inFailedFilter },
     ],
-    [formatMessage, isMedbridge]
+    [isMedbridge]
   );
 
   const ATTRIBUTES = useMemo(() => {
     const attrs = {
       [FILTER_ATTRIBUTES.STATUS]: {
-        label: formatMessage(messages.filterAttributeStatus),
+        label: messages.filterAttributeStatus,
         getOptions: () => STATUS_OPTIONS,
       },
     };
     if (showPatientLocationFilter && patientLocationOptions.length > 0) {
       attrs[FILTER_ATTRIBUTES.LOCATION] = {
-        label: formatMessage(messages.filterAttributeLocation),
+        label: messages.filterAttributeLocation,
         getOptions: () => patientLocationOptions,
       };
     }
     return attrs;
-  }, [formatMessage, STATUS_OPTIONS, showPatientLocationFilter, patientLocationOptions]);
+  }, [STATUS_OPTIONS, showPatientLocationFilter, patientLocationOptions]);
 
   const resetPicker = () => {
     setEditingAttribute(null);
@@ -134,7 +130,7 @@ const ConversationFilters = ({
     if (availableAttributes.length === 0) {
       return (
         <div className="conversation-filters-panel-empty">
-          {formatMessage(messages.allFilter)}
+          {messages.allFilter}
         </div>
       );
     }
@@ -142,7 +138,7 @@ const ConversationFilters = ({
     return (
       <>
         <div className="conversation-filters-panel-eyebrow">
-          {formatMessage(messages.addFilter)}
+          {messages.addFilter}
         </div>
         <div className="conversation-filters-panel-list">
           {availableAttributes.map(([id, config]) => (
@@ -199,10 +195,10 @@ const ConversationFilters = ({
         <div className="conversation-filters-panel-footer">
           <div className="conversation-filters-panel-actions">
             <Button size="small" onClick={() => setPickerOpen(false)}>
-              {formatMessage(messages.cancelButton)}
+              {messages.cancelButton}
             </Button>
             <Button size="small" type="primary" onClick={applyDraft}>
-              {formatMessage(messages.applyFilter)}
+              {messages.applyFilter}
             </Button>
           </div>
         </div>
@@ -243,7 +239,7 @@ const ConversationFilters = ({
           }}
         >
           {hasFilters ? <PlusOutlined /> : <FilterOutlined />}
-          {hasFilters ? null : formatMessage(messages.addFilter)}
+          {hasFilters ? null : messages.addFilter}
         </button>
       </Dropdown>
 
@@ -273,7 +269,7 @@ const ConversationFilters = ({
           size="small"
           onClick={clearAll}
         >
-          {formatMessage(messages.clearAllFilters)}
+          {messages.clearAllFilters}
         </Button>
       )}
     </div>

@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useIntl } from 'react-intl';
 import { Collapse, List, Typography } from 'antd';
 
 import { makeSelectDoctorAppointments } from 'redux/selectors/Appointment';
@@ -17,8 +16,6 @@ const CalendarCollapseList = () => {
   const { doctorAppointments, loading } = useSelector(
     makeSelectDoctorAppointments()
   );
-
-  const { formatMessage } = useIntl();
 
   const [activeAppointment, setActiveAppointment] = useState(null);
   const { isPasIntegrated, PASProvider } = useSelector((state) => state.auth.user || {});
@@ -98,7 +95,7 @@ const CalendarCollapseList = () => {
           <Collapse expandIconPosition="end" items={collapseItems} />
         )
       ) : (
-        <div>{formatMessage(messages.noAppointments)}</div>
+        <div>{messages.noAppointments}</div>
       )}
       {activeAppointment && <AppointmentPreview handleClose={handleClose} />}
     </div>

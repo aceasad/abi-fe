@@ -8,7 +8,6 @@ import {
 import { Menu } from 'antd';
 import EllipsisDropdown from 'components/shared-components/EllipsisDropdown';
 import React, { Fragment } from 'react';
-import { useIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { makeSelectSingleChatInfo } from 'redux/selectors/Chats';
@@ -22,7 +21,6 @@ const ChatContentHeader = ({
   isMenuVisible,
   BackAction,
 }) => {
-  const { formatMessage } = useIntl();
   const dispatch = useDispatch();
   const { chatInfo } = useSelector(makeSelectSingleChatInfo);
 
@@ -50,7 +48,7 @@ const ChatContentHeader = ({
     const menuItems = menuOptions.map((menu, index) => ({
       key: index.toString(),
       icon: <menu.Icon />,
-      label: formatMessage(menu.message),
+      label: menu.message,
       onClick: menu.onClick ? ({ domEvent }) => menu.onClick(domEvent)(patient_id) : null,
     }));
 

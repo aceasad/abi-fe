@@ -1,6 +1,5 @@
 import React from 'react';
 import { Table, Card, Menu, Dropdown, Button, Typography } from 'antd';
-import { useIntl } from 'react-intl';
 import messages from './messages';
 import { DownOutlined } from '@ant-design/icons';
 
@@ -62,33 +61,32 @@ const dummyData = [
 ];
 
 const OverviewTable = () => {
-  const { formatMessage } = useIntl();
 
   const columns = [
     {
-      title: formatMessage(messages.tableColumnPatient),
+      title: messages.tableColumnPatient,
       dataIndex: 'patient',
       key: 'patient',
     },
     {
-      title: formatMessage(messages.tableColumnAppointment),
+      title: messages.tableColumnAppointment,
       dataIndex: 'appointment',
       key: 'appointment',
     },
     {
-      title: formatMessage(messages.tableColumnDate),
+      title: messages.tableColumnDate,
       dataIndex: 'date',
       key: 'date',
     },
     {
-      title: formatMessage(messages.tableColumnTime),
+      title: messages.tableColumnTime,
       key: 'time',
       dataIndex: 'time',
     },
     {
       title: () => (
         <div className="text-center">
-          {formatMessage(messages.tableColumnWhitelisted)}
+          {messages.tableColumnWhitelisted}
         </div>
       ),
       key: 'whitelisted',
@@ -96,7 +94,7 @@ const OverviewTable = () => {
       render: (text) => <div className="text-center">{text}</div>,
     },
     {
-      title: formatMessage(messages.tableColumnStatus),
+      title: messages.tableColumnStatus,
       key: 'status',
       dataIndex: 'status',
     },
@@ -106,7 +104,7 @@ const OverviewTable = () => {
         <div className="text-right">
           <Dropdown menu={{ items: menuItems }} trigger={['click']} placement="bottomRight">
             <Button type="primary" ghost>
-              {formatMessage(messages.tableDropdownTitleContact)}
+              {messages.tableDropdownTitleContact}
               <DownOutlined />
             </Button>
           </Dropdown>
@@ -118,18 +116,18 @@ const OverviewTable = () => {
   const menuItems = [
     {
       key: "0",
-      label: formatMessage(messages.tableDropdownSeeAppointment),
+      label: messages.tableDropdownSeeAppointment,
     },
     {
       key: "1",
-      label: formatMessage(messages.tableDropdownAiReachout),
+      label: messages.tableDropdownAiReachout,
     },
   ];
 
   return (
     <>
       <Typography.Title level={2} className="mb-2">
-        {formatMessage(messages.tableTitle)}
+        {messages.tableTitle}
       </Typography.Title>
       <Card className="mt-0">
         <Table columns={columns} dataSource={dummyData} />

@@ -10,7 +10,6 @@ import React, { useState } from 'react';
 import { massInviteSchema } from 'utils/validations';
 import { GENDER } from 'constants/UserConstants';
 import messages from './messages';
-import { useIntl } from 'react-intl';
 import {
   MASS_INVITE_MAX_AGE,
   MASS_INVITE_MIN_AGE,
@@ -26,7 +25,6 @@ import {
 } from 'queries/shared';
 
 const MassInviteModal = ({ isModalVisible, closeModal }) => {
-  const { formatMessage } = useIntl();
 
   const dispatch = useDispatch();
   const initialState = {
@@ -38,9 +36,9 @@ const MassInviteModal = ({ isModalVisible, closeModal }) => {
   };
 
   const GENDER_CHOICES = [
-    { value: GENDER.MALE, label: formatMessage(messages.male) },
-    { value: GENDER.FEMALE, label: formatMessage(messages.female) },
-    { value: GENDER.OTHER, label: formatMessage(messages.other) },
+    { value: GENDER.MALE, label: messages.male },
+    { value: GENDER.FEMALE, label: messages.female },
+    { value: GENDER.OTHER, label: messages.other },
   ];
 
   const [templates, setTemplates] = useState([]);
@@ -60,7 +58,7 @@ const MassInviteModal = ({ isModalVisible, closeModal }) => {
     };
 
     dispatch(sendMassInvite(obj));
-    message.success(formatMessage(messages.inviteSent));
+    message.success(messages.inviteSent);
     closeModal();
   };
 
@@ -73,14 +71,14 @@ const MassInviteModal = ({ isModalVisible, closeModal }) => {
     >
       {({ values, dirty, isValid, resetForm, handleSubmit }) => (
         <Modal
-          title={formatMessage(messages.massInvitesLabel)}
+          title={messages.massInvitesLabel}
           open={isModalVisible}
           destroyOnHidden
           onCancel={() => closeModal()}
           afterClose={resetForm}
           footer={[
             <Button key="cancel-btn" onClick={() => closeModal()}>
-              {formatMessage(messages.cancelButton)}
+              {messages.cancelButton}
             </Button>,
             <Button
               key="submit"
@@ -88,7 +86,7 @@ const MassInviteModal = ({ isModalVisible, closeModal }) => {
               disabled={!dirty || !isValid || !numberOfInvites}
               onClick={handleSubmit}
             >
-              {formatMessage(messages.sendButton)}
+              {messages.sendButton}
             </Button>,
           ]}
         >
@@ -101,12 +99,12 @@ const MassInviteModal = ({ isModalVisible, closeModal }) => {
               <Col xs={24} lg={12}>
                 <Field
                   component={FormNumberField}
-                  label={formatMessage(messages.ageFromLabel)}
+                  label={messages.ageFromLabel}
                   name="ageFrom"
-                  placeholder={formatMessage(messages.ageFromLabel)}
+                  placeholder={messages.ageFromLabel}
                   required
                   errorTexts={{
-                    label: formatMessage(messages.ageFromLabel),
+                    label: messages.ageFromLabel,
                     minNumber: MASS_INVITE_MIN_AGE,
                     maxNumber: MASS_INVITE_MAX_AGE,
                   }}
@@ -115,15 +113,15 @@ const MassInviteModal = ({ isModalVisible, closeModal }) => {
               <Col xs={24} lg={12}>
                 <Field
                   component={FormNumberField}
-                  label={formatMessage(messages.ageToLabel)}
+                  label={messages.ageToLabel}
                   name="ageTo"
-                  placeholder={formatMessage(messages.ageToLabel)}
+                  placeholder={messages.ageToLabel}
                   errorTexts={{
-                    label: formatMessage(messages.ageToLabel),
+                    label: messages.ageToLabel,
                     minNumber: MASS_INVITE_MIN_AGE,
                     maxNumber: MASS_INVITE_MAX_AGE,
-                    thisLabel: formatMessage(messages.ageToLabel),
-                    anotherLabel: formatMessage(messages.ageFromLabel),
+                    thisLabel: messages.ageToLabel,
+                    anotherLabel: messages.ageFromLabel,
                   }}
                   required
                 />
@@ -131,7 +129,7 @@ const MassInviteModal = ({ isModalVisible, closeModal }) => {
             </Row>
             <RowColumnField
               span={24}
-              label={formatMessage(messages.genderLabel)}
+              label={messages.genderLabel}
               name="gender"
               component={FormGroupCheckbox}
               options={GENDER_CHOICES}
@@ -146,7 +144,7 @@ const MassInviteModal = ({ isModalVisible, closeModal }) => {
             )}
             <RowColumnField
               span={24}
-              label={formatMessage(messages.appointmentTypeLabel)}
+              label={messages.appointmentTypeLabel}
               name="appointmentType"
               component={FormSelect}
               options={appointmentTypes}
@@ -156,7 +154,7 @@ const MassInviteModal = ({ isModalVisible, closeModal }) => {
             />
             <RowColumnField
               span={24}
-              label={formatMessage(messages.templateLabel)}
+              label={messages.templateLabel}
               name="template"
               component={FormSelect}
               options={templates}

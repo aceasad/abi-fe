@@ -1,4 +1,5 @@
 import React from 'react';
+import { interpolate } from 'utils/interpolate';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Form } from 'antd';
 import { LockOutlined } from '@ant-design/icons';
@@ -8,7 +9,6 @@ import { Formik, Field } from 'formik';
 import { createPasswordSchema } from 'utils/validations';
 import 'assets/sass/views/auth/login.scss';
 import messages from './messages';
-import { useIntl } from 'react-intl';
 
 import { passwordMinLength } from 'constants/Validation';
 import FormField from 'components/custom-components/Form/FormField';
@@ -18,7 +18,6 @@ export const CreatePassowrdForm = () => {
   const dispatch = useDispatch();
 
   const { loading } = useSelector(makeSelectLoginDetails());
-  const { formatMessage } = useIntl();
 
   const onCreatePassword = (values) => {
     dispatch(createPassword(values));
@@ -27,15 +26,15 @@ export const CreatePassowrdForm = () => {
   const ValidPasswordFormat = (
     <div>
       <div>
-        {formatMessage(messages.minimumCharacters, { min: passwordMinLength })}
+        {interpolate(messages.minimumCharacters, { min: passwordMinLength })}
       </div>
-      <div>{formatMessage(messages.upperAndLowerMixture)}</div>
-      <div>{formatMessage(messages.lettersAndNumberMixture)}</div>
-      <div>{formatMessage(messages.specialCharacters)}</div>
-      <div>{formatMessage(messages.specialCharactersExcluded)}</div>
-      <div>{formatMessage(messages.notCommonPassword)}</div>
-      <div>{formatMessage(messages.notEntirelyNumeric)}</div>
-      <div>{formatMessage(messages.notSimilarToPersonalInfo)}</div>
+      <div>{messages.upperAndLowerMixture}</div>
+      <div>{messages.lettersAndNumberMixture}</div>
+      <div>{messages.specialCharacters}</div>
+      <div>{messages.specialCharactersExcluded}</div>
+      <div>{messages.notCommonPassword}</div>
+      <div>{messages.notEntirelyNumeric}</div>
+      <div>{messages.notSimilarToPersonalInfo}</div>
     </div>
   );
 
@@ -50,29 +49,29 @@ export const CreatePassowrdForm = () => {
         <Form layout="vertical" name="login-form">
           <Field
             component={FormField}
-            label={formatMessage(messages.passwordInputLabel)}
+            label={messages.passwordInputLabel}
             tooltipText={ValidPasswordFormat}
             name={'password'}
             prefix={<LockOutlined className="text-primary" />}
             secureField
             errorTexts={{
-              label: formatMessage(messages.passwordInputLabel),
+              label: messages.passwordInputLabel,
               minValue: passwordMinLength,
-              matchesLabel: formatMessage(messages.passwordValidFormat),
+              matchesLabel: messages.passwordValidFormat,
             }}
           />
           <Field
             component={FormField}
-            label={formatMessage(messages.passwordRepeatInputLabel)}
+            label={messages.passwordRepeatInputLabel}
             tooltipText={ValidPasswordFormat}
             name={'passwordRepeat'}
             prefix={<LockOutlined className="text-primary" />}
             secureField
             errorTexts={{
-              label: formatMessage(messages.passwordRepeatInputLabel),
+              label: messages.passwordRepeatInputLabel,
               minValue: passwordMinLength,
-              matchesLabel: formatMessage(messages.passwordValidFormat),
-              value: formatMessage(messages.passwordInputLabel),
+              matchesLabel: messages.passwordValidFormat,
+              value: messages.passwordInputLabel,
             }}
           />
 
@@ -85,7 +84,7 @@ export const CreatePassowrdForm = () => {
               loading={loading}
               onClick={() => handleSubmit(values)}
             >
-              {formatMessage(messages.createPassword)}
+              {messages.createPassword}
             </Button>
           </Form.Item>
         </Form>

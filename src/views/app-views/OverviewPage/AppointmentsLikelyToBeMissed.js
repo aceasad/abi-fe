@@ -10,7 +10,6 @@ import {
   Dropdown,
 } from 'antd';
 import { CaretDownOutlined } from '@ant-design/icons';
-import { useIntl } from 'react-intl';
 import { useDispatch } from 'react-redux';
 import Appointments from '../StaffPage/Appointments';
 import overviewPageMessages from '../OverviewPage/messages';
@@ -52,7 +51,6 @@ export const NESTED_MODAL = {
 
 const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
   const history = useHistory();
-  const { formatMessage } = useIntl();
   const dispatch = useDispatch();
 
   const [activeAppointment, setActiveAppointment] = useState(null);
@@ -107,7 +105,7 @@ const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
     return [
       {
         key: "0",
-        label: formatMessage(overviewPageMessages.tableDropdownSeeAppointment),
+        label: overviewPageMessages.tableDropdownSeeAppointment,
         onClick: ({ domEvent }) => {
           domEvent.stopPropagation();
           setActiveAppointment({
@@ -120,7 +118,7 @@ const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
       },
       {
         key: "1",
-        label: formatMessage(overviewPageMessages.tableDropdownAiReachout),
+        label: overviewPageMessages.tableDropdownAiReachout,
         onClick: ({ domEvent }) => {
           domEvent.stopPropagation();
           goToPatientShowMessages({ id: row.patient.id });
@@ -137,12 +135,12 @@ const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
     // },
     // (${row.doctor.seniority} ${row.doctor.specialization})
     {
-      title: formatMessage(patientPageMessages.columnTitlePatient),
+      title: patientPageMessages.columnTitlePatient,
       dataIndex: ['patient', 'full_name'],
       sorter: true,
     },
     {
-      title: formatMessage(patientPageMessages.columnTitleAppointment),
+      title: patientPageMessages.columnTitleAppointment,
       sorter: true,
       dataIndex: ['doctor', 'full_name'],
       render: (_, row) => (
@@ -152,12 +150,12 @@ const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
       ),
     },
     {
-      title: formatMessage(patientPageMessages.columnTitleDate),
+      title: patientPageMessages.columnTitleDate,
       dataIndex: 'date',
       sorter: true,
     },
     {
-      title: formatMessage(patientPageMessages.columnTitleTime),
+      title: patientPageMessages.columnTitleTime,
       dataIndex: 'time',
       sorter: true,
       render: (_, row) => (
@@ -169,7 +167,7 @@ const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
       ),
     },
     {
-      title: formatMessage(patientPageMessages.columnTitleCommunicationStatus),
+      title: patientPageMessages.columnTitleCommunicationStatus,
       dataIndex: ['communication_status', 'name'],
       sorter: true,
       render: (_, row) => (
@@ -184,12 +182,12 @@ const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
       ),
     },
     {
-      title: formatMessage(patientPageMessages.columnTitleStatus),
+      title: patientPageMessages.columnTitleStatus,
       dataIndex: ['status', 'name'],
       sorter: true,
     },
     {
-      title: formatMessage(patientPageMessages.columnTitleWhitelisted),
+      title: patientPageMessages.columnTitleWhitelisted,
       dataIndex: ['patient', 'whitelisted'],
       sorter: true,
       render: (_, row) => (
@@ -208,7 +206,7 @@ const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
             placement="bottomRight"
           >
             <Button type="primary" ghost>
-              {formatMessage(overviewPageMessages.tableDropdownTitleContact)}
+              {overviewPageMessages.tableDropdownTitleContact}
               <DownOutlined />
             </Button>
           </Dropdown>
@@ -222,9 +220,8 @@ const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
     //     <div className="text-right">
     //       <Space>
     //         <Tooltip
-    //           title={formatMessage(
-    //             patientPageMessages.columnTitleReachOutToPatient
-    //           )}
+    //           title={//             patientPageMessages.columnTitleReachOutToPatient
+    //}
     //         >
     //           <Button
     //             icon={<WhatsAppOutlined />}

@@ -1,4 +1,3 @@
-import { useIntl } from 'react-intl';
 import { WS_CHAT_URL, WS_NOTIFICATION_URL } from 'constants/ApiConstant';
 import { MESSAGE_TYPE, MESSAGE_STATUS } from 'constants/ChatConstants';
 import { MONTH_FORMAT_MM, YEAR_FORMAT_YYYY } from 'constants/DateConstant';
@@ -246,14 +245,10 @@ export const updateConversation = (conversation, newMessagePayload) => {
 export const getNoShowScore = (data) => Number(data?.no_show_score || '0');
 
 export const RenderPredictionText = (data) => {
-  const { formatMessage } = useIntl();
-
-  const likelyToBeMissed = formatMessage(
-    appointmentsPageMessages.appointmentPredictionMissed
-  );
-  const likelyToBeAttended = formatMessage(
-    appointmentsPageMessages.appointmentPredictionAttended
-  );
+  const likelyToBeMissed =
+    appointmentsPageMessages.appointmentPredictionMissed;
+  const likelyToBeAttended =
+    appointmentsPageMessages.appointmentPredictionAttended;
 
   const noShowScore = getNoShowScore(
     data && data.hasOwnProperty('no_show_score')

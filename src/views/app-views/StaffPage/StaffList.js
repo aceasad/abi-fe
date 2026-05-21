@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useIntl } from 'react-intl';
+import { interpolate } from 'utils/interpolate';
 import { useDispatch, useSelector } from 'react-redux';
 import CardComponent from 'components/shared-components/Card';
 import { setStaffPage, getStaff } from 'redux/actions/Staff';
@@ -33,8 +33,6 @@ const StaffList = ({ showCreate, editUser, seeAppointments }) => {
   const screens = utils.getBreakPoint(useBreakpoint());
   const isMobile = !screens.includes('lg');
 
-  const { formatMessage } = useIntl();
-
   useEffect(() => {
     dispatch(getStaff());
   }, []);
@@ -45,7 +43,7 @@ const StaffList = ({ showCreate, editUser, seeAppointments }) => {
 
   const afterDelete = () => {
     setStaffForDelete(null);
-    message.success(formatMessage(messages.deletedSuccess));
+    message.success(messages.deletedSuccess);
   };
 
   const handleDelete = () => {
@@ -158,7 +156,7 @@ const StaffList = ({ showCreate, editUser, seeAppointments }) => {
           <Row gutter={16} align="middle" style={{ marginBottom: '16px' }}>
             <Col flex="auto">
               <Typography.Title level={3} style={{ fontSize: '20px', margin: 0 }}>
-                {formatMessage(messages.staff)}
+                {messages.staff}
               </Typography.Title>
             </Col>
             <Col>
@@ -177,12 +175,12 @@ const StaffList = ({ showCreate, editUser, seeAppointments }) => {
           <Row gutter={16} align="middle" style={{ marginBottom: '16px' }}>
             <Col flex="auto">
               <Typography.Title level={3} style={{ margin: 0 }}>
-                {formatMessage(messages.staff)}
+                {messages.staff}
               </Typography.Title>
             </Col>
             <Col>
               <Button type="primary" onClick={showCreate}>
-                {formatMessage(messages.addNewStaff)}
+                {messages.addNewStaff}
               </Button>
             </Col>
           </Row>
@@ -234,7 +232,7 @@ const StaffList = ({ showCreate, editUser, seeAppointments }) => {
                         title={staffItem.first_name + ' ' + staffItem.last_name}
                         description={''}
                         avatar={staffItem.profile_picture}
-                        action={formatMessage(messages.seeAppointments)}
+                        action={messages.seeAppointments}
                         Options={() => (
                           <StaffCardOptions
                             handleMenuClick={({ key }) =>
@@ -252,7 +250,7 @@ const StaffList = ({ showCreate, editUser, seeAppointments }) => {
                           staffItem.seniority + ' ' + staffItem.specialization
                         }
                         avatar={staffItem.profile_picture}
-                        action={formatMessage(messages.seeAppointments)}
+                        action={messages.seeAppointments}
                         Options={() => (
                           <StaffCardOptions
                             handleMenuClick={({ key }) =>
@@ -277,12 +275,12 @@ const StaffList = ({ showCreate, editUser, seeAppointments }) => {
       )}
 
       <Modal
-        title={formatMessage(messages.deleteTitle)}
-        description={formatMessage(messages.deleteDescription, {
+        title={messages.deleteTitle}
+        description={interpolate(messages.deleteDescription, {
           label: getStaffFirstAndLastName(),
         })}
-        primaryAction={formatMessage(messages.delete)}
-        secondaryAction={formatMessage(messages.cancel)}
+        primaryAction={messages.delete}
+        secondaryAction={messages.cancel}
         open={staffForDelete}
         handlePrimaryAction={handleDelete}
         handleSecondaryAction={() => setStaffForDelete(null)}

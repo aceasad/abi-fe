@@ -1,6 +1,5 @@
 import { Collapse, Typography } from 'antd';
 import React, { useState } from 'react';
-import { useIntl } from 'react-intl';
 
 import { DownOutlined } from '@ant-design/icons';
 import Flex from 'components/shared-components/Flex';
@@ -18,7 +17,6 @@ const CollapseHeader = ({ title, isOpen }) => (
 );
 
 const GroupCollapse = ({ title, group, startOpen }) => {
-  const { formatMessage } = useIntl();
   const [isCollapseOpen, setIsCollapseOpen] = useState(startOpen);
 
   return (

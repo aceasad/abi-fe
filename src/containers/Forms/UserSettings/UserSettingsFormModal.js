@@ -5,7 +5,6 @@ import FormField from 'components/custom-components/Form/FormField';
 import { Field, Formik } from 'formik';
 import React from 'react';
 import { ValidPasswordFormat } from '../ResetPasswordForm/ResetPasswordForm';
-import { useIntl } from 'react-intl';
 import messages from '../../../views/app-views/UserSettings/messages';
 import { passwordMinLength } from 'constants/Validation';
 import { useSelector } from 'react-redux';
@@ -20,7 +19,6 @@ const UserSettingsFormModal = ({
   loadginData = false,
   validationSchema,
 }) => {
-  const { formatMessage } = useIntl();
 
   const loading = useSelector(makeSelectSingleUserLoading());
 
@@ -45,7 +43,7 @@ const UserSettingsFormModal = ({
                 event.preventDefault();
               }}
             >
-              {formatMessage(messages.formCancelButton)}
+              {messages.formCancelButton}
             </Button>,
             <Button
               key="submit"
@@ -54,7 +52,7 @@ const UserSettingsFormModal = ({
               htmlType="submit"
               disabled={!dirty || !isValid || loading}
             >
-              {formatMessage(messages.formConfirmationButton)}
+              {messages.formConfirmationButton}
             </Button>,
           ]}
         >
@@ -63,38 +61,38 @@ const UserSettingsFormModal = ({
           ) : (
             <Form layout="vertical" name="login-form">
               <Field
-                label={formatMessage(messages.formName)}
+                label={messages.formName}
                 component={FormField}
                 name="name"
                 autoFocus
               />
               <Field
-                label={formatMessage(messages.formEmail)}
+                label={messages.formEmail}
                 component={FormField}
                 name="username"
               />
               <Field
-                label={formatMessage(messages.formPassword)}
+                label={messages.formPassword}
                 component={FormField}
                 name="password"
                 tooltipText={ValidPasswordFormat}
                 secureField
                 errorTexts={{
-                  label: formatMessage(messages.formPassword),
+                  label: messages.formPassword,
                   minValue: passwordMinLength,
-                  matchesLabel: formatMessage(messages.passwordValidFormat),
+                  matchesLabel: messages.passwordValidFormat,
                 }}
               />
               <Field
-                label={formatMessage(messages.formConfirmPassword)}
+                label={messages.formConfirmPassword}
                 component={FormField}
                 name="confirmPassword"
                 secureField
                 errorTexts={{
-                  label: formatMessage(messages.formConfirmPassword),
+                  label: messages.formConfirmPassword,
                   minValue: passwordMinLength,
-                  matchesLabel: formatMessage(messages.passwordValidFormat),
-                  value: formatMessage(messages.formPassword),
+                  matchesLabel: messages.passwordValidFormat,
+                  value: messages.formPassword,
                 }}
               />
             </Form>

@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { DEFAULT_SMALL_PAGINATION_LIMIT } from 'constants/ApiConstant';
 import { Card, Table, Typography } from 'antd';
 import messages from './messages';
-import { useIntl } from 'react-intl';
 import {
   getExistingMedicalConditions,
   resetExistingMedicalConditions,
@@ -16,7 +15,6 @@ const { Title } = Typography;
 
 const PatientOverviewExistingConditions = ({ patientId }) => {
   const dispatch = useDispatch();
-  const { formatMessage } = useIntl();
 
   const { items, loading, count, page } = useSelector(
     makeSelectExistingMedicalConditions()
@@ -29,7 +27,7 @@ const PatientOverviewExistingConditions = ({ patientId }) => {
 
   const columnsHistory = [
     {
-      title: formatMessage(messages.columnTitleCondition),
+      title: messages.columnTitleCondition,
       dataIndex: 'name',
     },
   ];
@@ -42,7 +40,7 @@ const PatientOverviewExistingConditions = ({ patientId }) => {
     <Card>
       <div className="mb-3">
         <Title level={4} className="mb-0">
-          {formatMessage(messages.cardTitleExistingConditions)}
+          {messages.cardTitleExistingConditions}
         </Title>
       </div>
       <Table

@@ -2,7 +2,6 @@ import { Button, Grid, Typography, Space, Modal, Row, Col } from 'antd';
 import { PageHeader } from '@ant-design/pro-components';
 import React, { useState } from 'react';
 import CalendarPage from '../CalendarPage';
-import { useIntl } from 'react-intl';
 import CreateAppointment from './CreateAppointment';
 import AppointmentFormWrapper from './AppointmentFormWrapper';
 import { useSelector } from 'react-redux';
@@ -13,7 +12,6 @@ import messages from './messages';
 const { useBreakpoint } = Grid;
 
 const AppointmentsPage = () => {
-  const { formatMessage } = useIntl();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isPASModalVisible, setPASIsModalVisible] = useState(false);
 
@@ -50,7 +48,7 @@ const AppointmentsPage = () => {
         title={
           isMobile ? (
             <Typography.Title level={3} className="mb-0">
-              {formatMessage({ id: 'appointments_page.title' })}
+              Appointments
             </Typography.Title>
           ) : (
             ''
@@ -59,15 +57,13 @@ const AppointmentsPage = () => {
         extra={[
           <Space key="0">
             {/* <Button type="primary" onClick={() => setIsModalVisible(true)}>
-              {formatMessage({
+              {interpolate({
                 id: 'appointments_page.button.new_appointment',
               })}
             </Button> */}
             {isPasIntegrated ? (
               <Button type="primary" onClick={() => setPASIsModalVisible(true)}>
-                {formatMessage({
-                  id: 'appointments_page.button.sync_process',
-                })}
+                Sync with Health System
               </Button>) : (<></>)}
 
           </Space>,

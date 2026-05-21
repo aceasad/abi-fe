@@ -1,7 +1,6 @@
 import { SendOutlined } from '@ant-design/icons';
 import { Button, Form, Input } from 'antd';
 import React, { useMemo, useRef } from 'react';
-import { useIntl } from 'react-intl';
 import messages from './messages';
 import { useSelector } from 'react-redux';
 import { makeSelectSingleChatInfo } from 'redux/selectors/Chats';
@@ -10,7 +9,6 @@ import WebSocketClient from 'services/WebSocketClient';
 const { TextArea } = Input;
 
 const ChatContentFooter = ({ onSend }) => {
-  const { formatMessage } = useIntl();
   const [form] = Form.useForm();
   const { name } = useSelector(state => state.auth.user);
 
@@ -41,11 +39,11 @@ const ChatContentFooter = ({ onSend }) => {
     isRasaPaused
   ) => {
     if (!isRasaPaused) {
-      return formatMessage(messages.pauseRasaPlaceholder);
+      return messages.pauseRasaPlaceholder;
     } else if (!(isSocketOpen && !!isSendEnabled)) {
-      return formatMessage(messages.chatDisabledPlaceholder);
+      return messages.chatDisabledPlaceholder;
     } else {
-      return formatMessage(messages.typeAMessagePlaceholder);
+      return messages.typeAMessagePlaceholder;
     }
   };
 

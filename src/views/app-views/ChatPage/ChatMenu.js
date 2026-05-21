@@ -3,7 +3,7 @@ import { Grid, Input } from 'antd';
 import utils from 'utils';
 import { SearchOutlined, MessageOutlined, WhatsAppOutlined } from '@ant-design/icons';
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
-import { useIntl } from 'react-intl';
+
 import messages from './messages';
 import {
   chatListItemStyle,
@@ -50,7 +50,7 @@ const ChatMenu = (props) => {
   const history = useHistory();
   const location = useLocation();
   const match = useRouteMatch();
-  const { formatMessage } = useIntl();
+
   const dispatch = useDispatch();
   const screens = utils.getBreakPoint(useBreakpoint());
   const isMobile = props.isMobile ?? !screens.includes('lg');
@@ -192,7 +192,7 @@ const ChatMenu = (props) => {
       <div className="chat-menu-toolbar">
         <Input
           style={{ width: '100%' }}
-          placeholder={formatMessage(messages.searchPlaceholder)}
+          placeholder={messages.searchPlaceholder}
           prefix={<SearchOutlined />}
           allowClear
           size="middle"

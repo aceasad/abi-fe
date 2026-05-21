@@ -5,7 +5,6 @@ import { setAppointmentHistoryPage } from 'redux/actions/Patient';
 import { DEFAULT_SMALL_PAGINATION_LIMIT } from 'constants/ApiConstant';
 import { Card, Table, Typography, Grid, Space, Button, Tag } from 'antd';
 import messages from './messages';
-import { useIntl } from 'react-intl';
 import { APPOINTMENT_HISTORY } from 'constants/ClinicConstants';
 import { CalendarOutlined, ClockCircleOutlined, UserOutlined, FileTextOutlined } from '@ant-design/icons';
 import utils from 'utils';
@@ -39,7 +38,6 @@ export const statusColor = (status) => {
 
 const PatientOverviewHistoryCard = ({ patient, showAppointment }) => {
   const dispatch = useDispatch();
-  const { formatMessage } = useIntl();
   const screens = utils.getBreakPoint(useBreakpoint());
   const isMobile = !screens.includes('lg');
 
@@ -51,7 +49,7 @@ const PatientOverviewHistoryCard = ({ patient, showAppointment }) => {
 
   const columnsHistory = [
     {
-      title: formatMessage(messages.columnTitleDate),
+      title: messages.columnTitleDate,
       dataIndex: 'date',
       render: (date) => formatDateByCountry(date, clinic?.country, [
         'DD/MM/YYYY',
@@ -60,26 +58,26 @@ const PatientOverviewHistoryCard = ({ patient, showAppointment }) => {
       ]),
     },
     {
-      title: formatMessage(messages.columnTitleTime),
+      title: messages.columnTitleTime,
       dataIndex: 'time',
       render: (time) => removeLeadingZeroFromTime(dayjs(time, ['HH:mm', 'h:mm A']).format('hh:mm A')),
     },
     ...(!isMedbridge
       ? [
           {
-            title: formatMessage(messages.columnTitleDoctor),
+            title: messages.columnTitleDoctor,
             dataIndex: ['doctor', 'full_name'],
             responsive: ['md'],
           },
         ]
       : []),
     {
-      title: formatMessage(messages.columnTitleType),
+      title: messages.columnTitleType,
       dataIndex: ['appointment_type', 'name'],
       responsive: ['lg'],
     },
     {
-      title: formatMessage(messages.columnTitleStatus),
+      title: messages.columnTitleStatus,
       dataIndex: ['status', 'name'],
       render: statusColor,
     },
@@ -146,7 +144,7 @@ const PatientOverviewHistoryCard = ({ patient, showAppointment }) => {
     <Card>
       <div className="mb-3">
         <Title level={4} className="mb-0" style={{ fontSize: isMobile ? '16px' : '20px' }}>
-          {formatMessage(messages.cardTitleAppointmentHistory)}
+          {messages.cardTitleAppointmentHistory}
         </Title>
       </div>
 

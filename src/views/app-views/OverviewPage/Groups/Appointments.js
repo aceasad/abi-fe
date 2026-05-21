@@ -1,6 +1,5 @@
 import { Row } from 'antd';
 import React from 'react';
-import { useIntl } from 'react-intl';
 import OverviewCard from '../OverviewCard';
 import messages from '../messages';
 import AppointmentsCharts from './AppointemnsCharts';
@@ -11,7 +10,6 @@ import { MdAssignmentLate, MdMoneyOff } from 'react-icons/md';
 import PoundCrossedOut from '../../../../components/icons/PoundCrossedOut.js';
 
 const Appointments = ({ title }) => {
-  const { formatMessage } = useIntl();
   const {
     missedAppointmentsScreening,
     costOfMissedAppointments,
@@ -24,8 +22,8 @@ const Appointments = ({ title }) => {
           <Row gutter={16}>
             <OverviewCard
               span={12}
-              title={formatMessage(messages.appointmentsMissed)}
-              tooltip={formatMessage(messages.appointmentsMissedTooltip)}
+              title={messages.appointmentsMissed}
+              tooltip={messages.appointmentsMissedTooltip}
               content={missedAppointmentsScreening}
               styleTitle={title}
               icon={<MdAssignmentLate color="#ffffff" size="40" />}
@@ -33,8 +31,8 @@ const Appointments = ({ title }) => {
             />
             <OverviewCard
               span={12}
-              title={formatMessage(messages.appointmentsCostOfMissed)}
-              tooltip={formatMessage(messages.appointmentsCostOfMissedTooltip)}
+              title={messages.appointmentsCostOfMissed}
+              tooltip={messages.appointmentsCostOfMissedTooltip}
               content={`£${costOfMissedAppointments.toLocaleString('en-US', {
                 maximumFractionDigits: 0,
                 minimumFractionDigits: 0,

@@ -1,15 +1,11 @@
 import React from 'react';
 import { Badge, Col, Row, Space, Typography, Tooltip } from 'antd';
-import { useIntl } from 'react-intl';
 import { NO_SHOW_SCORE_THRESHOLD } from 'utils/constants';
 import { getNoShowScore, removeLeadingZeroFromTime } from 'utils/helpers';
 
 const StaffPanelItem = ({ data }) => {
-  const { formatMessage } = useIntl();
-  const likelyToMiss = formatMessage({ id: 'appointments_page.tooltip.miss' });
-  const likelyToAttend = formatMessage({
-    id: 'appointments_page.tooltip.attend',
-  });
+  const likelyToMiss = 'Likely to miss an appointment';
+  const likelyToAttend = 'Likely to attend an appointment';
 
   const noShowScore = getNoShowScore(data);
 

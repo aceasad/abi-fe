@@ -3,7 +3,6 @@ import { Formik } from 'formik';
 import { Button, Form, Row, Col, Typography, message } from 'antd';
 import messages from './messages';
 import { useDispatch } from 'react-redux';
-import { useIntl } from 'react-intl';
 import {
   updateIndustryAverage,
   getIndustryAverage,
@@ -24,12 +23,11 @@ const { Title } = Typography;
 
 const IndustryAverage = () => {
   const dispatch = useDispatch();
-  const { formatMessage } = useIntl();
   const industryAverage = useSelector(industryAverageSelector());
   const laoding = useSelector(makeSelectIndustryAverageLoading());
 
   const afterUpdate = () => {
-    message.success(formatMessage(messages.save_or_updated));
+    message.success(messages.save_or_updated);
   };
 
   const handleSubmit = useCallback(
@@ -60,7 +58,7 @@ const IndustryAverage = () => {
   return (
     <div className="p-2">
       <Title level={3} className="mb-4">
-        {formatMessage(messages.title)}
+        {messages.title}
       </Title>
       <Formik
         enableReinitialize
@@ -76,14 +74,14 @@ const IndustryAverage = () => {
                   span={24}
                   style={{ width: '100%' }}
                   component={FormNumberField}
-                  label={formatMessage(messages.average_appointment_cost)}
+                  label={messages.average_appointment_cost}
                   name={'average_appointment_cost'}
                   min={0}
                   onKeyDown={filterNumberInput}
                   step={0.1}
                   decimals={1}
                   errorTexts={{
-                    label: formatMessage(messages.average_appointment_cost),
+                    label: messages.average_appointment_cost,
                     maxValue: maxDigits,
                   }}
                 />
@@ -91,14 +89,14 @@ const IndustryAverage = () => {
                   span={24}
                   style={{ width: '100%' }}
                   component={FormNumberField}
-                  label={formatMessage(messages.cost_of_missed_appointments)}
+                  label={messages.cost_of_missed_appointments}
                   name={'cost_of_missed_appointments'}
                   min={0}
                   onKeyDown={filterNumberInput}
                   step={0.1}
                   decimals={1}
                   errorTexts={{
-                    label: formatMessage(messages.cost_of_missed_appointments),
+                    label: messages.cost_of_missed_appointments,
                     maxValue: maxDigits,
                   }}
                 />
@@ -106,14 +104,14 @@ const IndustryAverage = () => {
                   span={24}
                   style={{ width: '100%' }}
                   component={FormNumberField}
-                  label={formatMessage(messages.did_not_attend)}
+                  label={messages.did_not_attend}
                   name={'did_not_attend'}
                   min={0}
                   onKeyDown={filterNumberInput}
                   step={0.1}
                   decimals={1}
                   errorTexts={{
-                    label: formatMessage(messages.did_not_attend),
+                    label: messages.did_not_attend,
                     maxValue: maxDigits,
                   }}
                 />
@@ -121,14 +119,14 @@ const IndustryAverage = () => {
                   span={24}
                   style={{ width: '100%' }}
                   component={FormNumberField}
-                  label={formatMessage(messages.uptake)}
+                  label={messages.uptake}
                   name={'uptake'}
                   min={0}
                   onKeyDown={filterNumberInput}
                   step={0.1}
                   decimals={1}
                   errorTexts={{
-                    label: formatMessage(messages.uptake),
+                    label: messages.uptake,
                     maxValue: maxDigits,
                   }}
                 />
@@ -136,14 +134,14 @@ const IndustryAverage = () => {
                   span={24}
                   style={{ width: '100%' }}
                   component={FormNumberField}
-                  label={formatMessage(messages.coverage)}
+                  label={messages.coverage}
                   name={'coverage'}
                   min={0}
                   onKeyDown={filterNumberInput}
                   step={0.1}
                   decimals={1}
                   errorTexts={{
-                    label: formatMessage(messages.coverage),
+                    label: messages.coverage,
                     maxValue: maxDigits,
                   }}
                 />
@@ -160,18 +158,14 @@ const IndustryAverage = () => {
                   span={24}
                   style={{ width: '100%' }}
                   component={FormNumberField}
-                  label={formatMessage(
-                    messages.number_of_women_screened_after_sending_invites
-                  )}
+                  label={messages.number_of_women_screened_after_sending_invites}
                   name={'number_of_women_screened_after_invite'}
                   min={0}
                   onKeyDown={filterNumberInput}
                   step={0.1}
                   decimals={1}
                   errorTexts={{
-                    label: formatMessage(
-                      messages.number_of_women_screened_after_sending_invites
-                    ),
+                    label: messages.number_of_women_screened_after_sending_invites,
                     maxValue: maxDigits,
                   }}
                 />
@@ -179,18 +173,14 @@ const IndustryAverage = () => {
                   span={24}
                   style={{ width: '100%' }}
                   component={FormNumberField}
-                  label={formatMessage(
-                    messages.number_of_women_eligible_for_screening
-                  )}
+                  label={messages.number_of_women_eligible_for_screening}
                   name={'number_of_women_eligible_for_screen'}
                   min={0}
                   onKeyDown={filterNumberInput}
                   step={0.1}
                   decimals={1}
                   errorTexts={{
-                    label: formatMessage(
-                      messages.number_of_women_eligible_for_screening
-                    ),
+                    label: messages.number_of_women_eligible_for_screening,
                     maxValue: maxDigits,
                   }}
                 />
@@ -198,18 +188,14 @@ const IndustryAverage = () => {
                   span={24}
                   style={{ width: '100%' }}
                   component={FormNumberField}
-                  label={formatMessage(
-                    messages.number_of_women_screened_in_the_past_3_years
-                  )}
+                  label={messages.number_of_women_screened_in_the_past_3_years}
                   name={'number_of_women_screened_in_past_3_y'}
                   min={0}
                   onKeyDown={filterNumberInput}
                   step={0.1}
                   decimals={1}
                   errorTexts={{
-                    label: formatMessage(
-                      messages.number_of_women_screened_in_the_past_3_years
-                    ),
+                    label: messages.number_of_women_screened_in_the_past_3_years,
                     maxValue: maxDigits,
                   }}
                 />
@@ -222,7 +208,7 @@ const IndustryAverage = () => {
                 disabled={!dirty || !isValid || laoding}
                 onClick={handleSubmit}
               >
-                {formatMessage(messages.save)}
+                {messages.save}
               </Button>
             </Form.Item>
           </Form>

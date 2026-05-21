@@ -1,6 +1,5 @@
 import { message } from 'antd';
 import React, { useState } from 'react';
-import { useIntl } from 'react-intl';
 import { useDispatch } from 'react-redux';
 import PreviewModal from './PreviewModal';
 import messages from './messages';
@@ -31,7 +30,6 @@ const AppointmentPreview = ({
   appointment,
 }) => {
   const dispatch = useDispatch();
-  const { formatMessage } = useIntl();
 
   const [showChildModal, setShowChildModal] = useState({
     modal: NESTED_MODAL.NONE,
@@ -60,7 +58,7 @@ const AppointmentPreview = ({
     setShowChildModal({ modal: NESTED_MODAL.END_APPOINTMENT, data });
 
   const afterDelete = () => {
-    message.success(formatMessage(messages.appointmentDeleted));
+    message.success(messages.appointmentDeleted);
     handleClose();
   };
 

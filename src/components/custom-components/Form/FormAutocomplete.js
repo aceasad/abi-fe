@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
+import { interpolate } from 'utils/interpolate';
 import { Form, AutoComplete, Select } from 'antd';
-import { useIntl } from 'react-intl';
 import MiniLoader from 'components/shared-components/Loading/MiniLoader';
 
 const { Option } = Select;
@@ -19,7 +19,6 @@ const FormAutocomplete = ({
   loading,
   ...props
 }) => {
-  const { formatMessage } = useIntl();
 
   const [text, setText] = useState(defaultValue ? defaultValue : '');
 
@@ -34,7 +33,7 @@ const FormAutocomplete = ({
   };
 
   const defaultErrorMessage = () =>
-    formatMessage(errors[field.name], {
+    interpolate(errors[field.name], {
       label,
     });
 
@@ -46,7 +45,7 @@ const FormAutocomplete = ({
   const showError = () =>
     hasError &&
     (errorTexts
-      ? formatMessage(errors[field.name], errorTexts)
+      ? interpolate(errors[field.name], errorTexts)
       : defaultErrorMessage());
 
   return (

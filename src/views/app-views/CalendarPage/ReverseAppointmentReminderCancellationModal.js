@@ -1,6 +1,5 @@
 import Modal from 'antd/lib/modal/Modal';
 import React from 'react';
-import { useIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
 import messages from './messages';
 import { makeSelectSingleAppointmentLoading } from 'redux/selectors/Appointment';
@@ -14,22 +13,21 @@ const ReverseAppointmentReminderCancellationModal = ({
   handleDelete,
   appointment,
 }) => {
-  const { formatMessage } = useIntl();
 
   const loading = useSelector(makeSelectSingleAppointmentLoading());
   const clinic = useSelector(makeSelectClinic());
 
   const listData = [
     {
-      label: formatMessage(messages.patient),
+      label: messages.patient,
       value: appointment?.patient?.full_name,
     },
     {
-      label: formatMessage(messages.doctor),
+      label: messages.doctor,
       value: `${appointment?.doctor?.full_name} (${appointment?.specialization})`,
     },
     {
-      label: formatMessage(messages.date),
+      label: messages.date,
       value: formatDateByCountry(appointment?.date, clinic?.country, [
         'DD/MM/YYYY',
         'MM/DD/YYYY',
@@ -37,7 +35,7 @@ const ReverseAppointmentReminderCancellationModal = ({
       ]),
     },
     {
-      label: formatMessage(messages.time),
+      label: messages.time,
       value: appointment?.time,
     },
   ];
@@ -52,15 +50,15 @@ const ReverseAppointmentReminderCancellationModal = ({
   return (
     <Modal
       open
-      cancelText={formatMessage(messages.cancel)}
-      okText={formatMessage(messages.confirm)}
-      title={formatMessage(messages.deleteAppointment)}
+      cancelText={messages.cancel}
+      okText={messages.confirm}
+      title={messages.deleteAppointment}
       onCancel={handleClose}
       okButtonProps={{ disabled: loading }}
       onOk={handleDelete}
     >
       <Typography.Paragraph type="secondary" strong>
-        {formatMessage(messages.deleteMessage)}
+        {messages.deleteMessage}
       </Typography.Paragraph>
       {list}
     </Modal>

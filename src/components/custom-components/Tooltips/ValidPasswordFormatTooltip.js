@@ -1,19 +1,18 @@
 import React from 'react';
+import { interpolate } from 'utils/interpolate';
 import messages from './messages';
-import { useIntl } from 'react-intl';
 import { passwordMinLength } from 'constants/Validation';
 
 const ValidPasswordFormatTooltip = () => {
-  const { formatMessage } = useIntl();
   return (
     <div>
       <div>
-        {formatMessage(messages.minimumCharacters, { min: passwordMinLength })}
+        {interpolate(messages.minimumCharacters, { min: passwordMinLength })}
       </div>
-      <div>{formatMessage(messages.upperAndLowerMixture)}</div>
-      <div>{formatMessage(messages.lettersAndNumberMixture)}</div>
-      <div>{formatMessage(messages.specialCharacters)}</div>
-      <div>{formatMessage(messages.specialCharactersExcluded)}</div>
+      <div>{messages.upperAndLowerMixture}</div>
+      <div>{messages.lettersAndNumberMixture}</div>
+      <div>{messages.specialCharacters}</div>
+      <div>{messages.specialCharactersExcluded}</div>
     </div>
   );
 };

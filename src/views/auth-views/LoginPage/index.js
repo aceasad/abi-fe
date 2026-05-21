@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import LoginForm from 'containers/Forms/LoginForm/LoginForm';
 import messages from './messages';
-import { useIntl } from 'react-intl';
 import AuthFormWrapper from 'components/layout-components/AuthFormWrapper';
 import { API_BASE_URL } from 'configs/AppConfig';
 
 const LoginPage = (props) => {
-  const { formatMessage } = useIntl();
 
   const [apiHealthy, setApiHealthy] = useState('');
   const [rasaHealthy, setRasaHealthy] = useState('');
@@ -38,7 +36,7 @@ const LoginPage = (props) => {
   return (
     <>
 
-      <AuthFormWrapper title={formatMessage(messages.loginTitle)}>
+      <AuthFormWrapper title={messages.loginTitle}>
         <LoginForm {...props} />
         <div style={{ textAlign: 'center' }}>
           <h3>{!apiHealthy ? 'API services are down for maintenance' : ''}</h3>

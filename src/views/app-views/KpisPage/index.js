@@ -8,7 +8,6 @@ import {
   Grid,
 } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { useIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
 import messages from './messages';
 import ClinicStats from './Groups/ClinicStats';
@@ -38,7 +37,6 @@ const downloadKpiData = async (start_time, end_time, campaign_id) => {
 };
 
 const KpisPage = () => {
-  const { formatMessage } = useIntl();
   const dispatch = useDispatch();
   const campaignsSelector = useSelector(makeSelectCampaigns());
   const clinic = useSelector(makeSelectClinic());
@@ -239,7 +237,7 @@ const KpisPage = () => {
           <Row gutter={isMobile ? 12 : 12}>
             <Col span={24}>
               <ClinicStats
-                title={formatMessage(messages.bookingTitle)}
+                title={messages.bookingTitle}
                 previousPeriod={previousPeriod}
                 isMobile={isMobile}
                 country={clinic?.country}

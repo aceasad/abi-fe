@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { useIntl } from 'react-intl';
+import { interpolate } from 'utils/interpolate';
 import { useDispatch, useSelector } from 'react-redux';
 import { Field, Formik } from 'formik';
 import { Button, Card, Col, message, Row, Typography, Modal, Grid } from 'antd';
@@ -50,7 +50,6 @@ const PatientPASForm = ({
   id,
   pasProvider,
 }) => {
-  const { formatMessage } = useIntl();
   const headerRef = useRef(null);
   const [isSaveVisible, setIsSaveVisible] = useState(false);
   const dispatch = useDispatch();
@@ -70,15 +69,13 @@ const PatientPASForm = ({
   );
 
   const afterDelete = () => {
-    message.success(formatMessage(messages.operationTypeDeleted));
+    message.success(messages.operationTypeDeleted);
   };
 
   const handleSubmitWrapper = (values, { setErrors }) => {
     if (isMedbridge && !values.appointment_type) {
       setErrors({
-        appointment_type: formatMessage
-          ? formatMessage(messages.appointmentType)
-          : 'Appointment type is required',
+        appointment_type: messages.appointmentType,
       });
       return;
     }
@@ -137,12 +134,12 @@ const PatientPASForm = ({
 
   const deleteOperationType = ({ item, action }) => {
     Modal.confirm({
-      title: formatMessage(messages.deleteOperationType, {
+      title: interpolate(messages.deleteOperationType, {
         name: item.operation_type,
       }),
-      okText: formatMessage(messages.formConfirmationButton),
+      okText: messages.formConfirmationButton,
       okType: 'danger',
-      cancelText: formatMessage(messages.cancel),
+      cancelText: messages.cancel,
       onOk() {
         dispatch(
           deleteOperationTypeFromOrganization({
@@ -164,11 +161,11 @@ const PatientPASForm = ({
   useEffect(() => {
     if (discardModalVisible)
       Modal.confirm({
-        title: formatMessage(messages.discardTitle),
-        content: formatMessage(messages.discardText),
-        okText: formatMessage(messages.discardButton),
+        title: messages.discardTitle,
+        content: messages.discardText,
+        okText: messages.discardButton,
         okType: 'danger',
-        cancelText: formatMessage(messages.cancel),
+        cancelText: messages.cancel,
         onCancel() {
           setDiscardModalVisible(false);
         },
@@ -268,7 +265,7 @@ const PatientPASForm = ({
                   {!isMobile && (
                     <Col xs={24} lg={6}>
                       <Title type="secondary" level={2} className="mt-4">
-                        {formatMessage(messages.personalDetails)}
+                        {messages.personalDetails}
                       </Title>
                     </Col>
                   )}
@@ -276,17 +273,17 @@ const PatientPASForm = ({
                   <Col xs={24} lg={18}>
                     {isMobile && (
                       <Title type="secondary" level={3} className="mb-3">
-                        {formatMessage(messages.personalDetails)}
+                        {messages.personalDetails}
                       </Title>
                     )}
                     <Row gutter={isMobile ? 12 : 16}>
                       <ColumnField
                         span={isMobile && !isTablet ? 24 : 8}
                         component={FormField}
-                        label={formatMessage(messages.firstName)}
+                        label={messages.firstName}
                         name="first_name"
                         errorTexts={{
-                          label: formatMessage(messages.firstName),
+                          label: messages.firstName,
                           maxValue: MAX,
                         }}
                         required
@@ -294,10 +291,10 @@ const PatientPASForm = ({
                       <ColumnField
                         span={isMobile && !isTablet ? 24 : 8}
                         component={FormField}
-                        label={formatMessage(messages.lastName)}
+                        label={messages.lastName}
                         name="last_name"
                         errorTexts={{
-                          label: formatMessage(messages.lastName),
+                          label: messages.lastName,
                           maxValue: MAX,
                         }}
                         required
@@ -305,13 +302,11 @@ const PatientPASForm = ({
                       <ColumnField
                         span={isMobile && !isTablet ? 24 : 8}
                         component={FormField}
-                        label={formatMessage(messages.patientIdent)}
+                        label={messages.patientIdent}
                         name="ExternalIdentificationNumber"
                         errorTexts={{
-                          label: formatMessage(messages.patientIdent),
-                          matchesLabel: formatMessage(
-                            messages.patientIdentFormat
-                          ),
+                          label: messages.patientIdent,
+                          matchesLabel: messages.patientIdentFormat,
                           maxValue: NHS_MAX,
                         }}
                         required
@@ -321,10 +316,10 @@ const PatientPASForm = ({
                           <ColumnField
                             span={isMobile && !isTablet ? 24 : 8}
                             component={FormField}
-                            label={formatMessage(messages.caseId)}
+                            label={messages.caseId}
                             name="case_id"
                             errorTexts={{
-                              label: formatMessage(messages.caseId),
+                              label: messages.caseId,
                               maxValue: 20,
                             }}
                             required={isMedbridge}
@@ -332,7 +327,7 @@ const PatientPASForm = ({
                           <ColumnField
                             span={isMobile && !isTablet ? 24 : 8}
                             component={FormSelect}
-                            label={formatMessage(messages.homeLocation)}
+                            label={messages.homeLocation}
                             name="home_location"
                             options={locationOptions}
                             optionField="name"
@@ -343,7 +338,7 @@ const PatientPASForm = ({
                                 .includes(input.toLowerCase())
                             }
                             errorTexts={{
-                              label: formatMessage(messages.homeLocation),
+                              label: messages.homeLocation,
                               maxValue: 20,
                             }}
                             required={isMedbridge}
@@ -351,19 +346,19 @@ const PatientPASForm = ({
                           <ColumnField
                             span={isMobile && !isTablet ? 24 : 8}
                             component={FormSelect}
-                            label={formatMessage(messages.appointmentType)}
+                            label={messages.appointmentType}
                             name="appointment_type"
                             options={appointmentTypeOptions}
                             optionField="name"
                             errorTexts={{
-                              label: formatMessage(messages.appointmentType),
+                              label: messages.appointmentType,
                             }}
                             required={isMedbridge}
                           />
                           <ColumnField
                             span={isMobile && !isTablet ? 24 : 8}
                             component={FormSelect}
-                            label={formatMessage(messages.availableLocations)}
+                            label={messages.availableLocations}
                             name="available_location_ids"
                             options={locationOptions}
                             optionField="name"
@@ -375,7 +370,7 @@ const PatientPASForm = ({
                                 .includes(input.toLowerCase())
                             }
                             errorTexts={{
-                              label: formatMessage(messages.availableLocations),
+                              label: messages.availableLocations,
                               maxValue: 20,
                             }}
                           />
@@ -386,7 +381,7 @@ const PatientPASForm = ({
                       maxDate={new Date()}
                       component={FormDatePicker}
                       disablePastDates
-                      label={formatMessage(messages.dateOfBirth)}
+                      label={messages.dateOfBirth}
                       name="date_of_birth"
                       required
                     /> */}
@@ -397,7 +392,7 @@ const PatientPASForm = ({
                       options={genderChoices}
                       optionField="name"
                       defaultOption={values.gender}
-                      label={formatMessage(messages.sex)}
+                      label={messages.sex}
                       required
                     /> */}
                     </Row>
@@ -407,7 +402,7 @@ const PatientPASForm = ({
                     <ColumnField
                       span={8}
                       component={FormField}
-                      label={formatMessage(messages.height)}
+                      label={messages.height}
                       name="height"
                       type={'number'}
                       onKeyDown={filterNumberInput}
@@ -417,7 +412,7 @@ const PatientPASForm = ({
                     <ColumnField
                       span={8}
                       component={FormField}
-                      label={formatMessage(messages.weight)}
+                      label={messages.weight}
                       name="weight"
                       type={'number'}
                       onKeyDown={filterNumberInput}
@@ -433,7 +428,7 @@ const PatientPASForm = ({
                       options={ethnicities}
                       optionField="name"
                       defaultOption={values.ethnicity}
-                      label={formatMessage(messages.ethnicity)}
+                      label={messages.ethnicity}
                     />
                   </Row> */}
                   </Col>
@@ -443,7 +438,7 @@ const PatientPASForm = ({
                   {!isMobile && (
                     <Col xs={24} lg={6}>
                       <Title type="secondary" level={2} className="mt-4">
-                        {formatMessage(messages.contactDetails)}
+                        {messages.contactDetails}
                       </Title>
                     </Col>
                   )}
@@ -451,7 +446,7 @@ const PatientPASForm = ({
                   <Col xs={24} lg={18}>
                     {isMobile && (
                       <Title type="secondary" level={3} className="mb-3 mt-4">
-                        {formatMessage(messages.contactDetails)}
+                        {messages.contactDetails}
                       </Title>
                     )}
                     <Row gutter={isMobile ? 12 : 16}>
@@ -462,7 +457,7 @@ const PatientPASForm = ({
                         options={COUNTRY_CODES}
                         optionField="name"
                         defaultOption={values.country_code}
-                        label={formatMessage(messages.countryCode)}
+                        label={messages.countryCode}
                         showSearch
                         filterOption={(input, option) =>
                           `${option?.value ?? ''} ${option?.children ?? ''}`
@@ -470,8 +465,8 @@ const PatientPASForm = ({
                             .includes(input.toLowerCase())
                         }
                         errorTexts={{
-                          label: formatMessage(messages.countryCode),
-                          matchesLabel: formatMessage(messages.countryCodeFormat),
+                          label: messages.countryCode,
+                          matchesLabel: messages.countryCodeFormat,
                           maxValue: 4,
                         }}
                         required
@@ -479,11 +474,11 @@ const PatientPASForm = ({
                       <ColumnField
                         span={isMobile && !isTablet ? 24 : 12}
                         component={FormField}
-                        label={formatMessage(messages.phoneNumber)}
+                        label={messages.phoneNumber}
                         name="phone_number"
                         errorTexts={{
-                          label: formatMessage(messages.phoneNumber),
-                          matchesLabel: formatMessage(messages.phoneNumberFormat),
+                          label: messages.phoneNumber,
+                          matchesLabel: messages.phoneNumberFormat,
                           maxValue: 10,
                         }}
                         required
@@ -493,7 +488,7 @@ const PatientPASForm = ({
                     <ColumnField
                       span={12}
                       component={FormField}
-                      label={formatMessage(messages.email)}
+                      label={messages.email}
                       name="email"
                       required
                     />
@@ -505,7 +500,7 @@ const PatientPASForm = ({
                   {!isMobile && (
                     <Col xs={24} lg={6}>
                       <Title type="secondary" level={2} className="mt-4">
-                        {formatMessage(messages.addressDetails)}
+                        {messages.addressDetails}
                       </Title>
                     </Col>
                   )}
@@ -513,17 +508,17 @@ const PatientPASForm = ({
                   <Col xs={24} lg={18}>
                     {isMobile && (
                       <Title type="secondary" level={3} className="mb-3 mt-4">
-                        {formatMessage(messages.addressDetails)}
+                        {messages.addressDetails}
                       </Title>
                     )}
                     <Row gutter={isMobile ? 12 : 16}>
                       <ColumnField
                         span={isMobile && !isTablet ? 24 : 12}
                         component={FormField}
-                        label={formatMessage(messages.streetName)}
+                        label={messages.streetName}
                         name="street_name"
                         errorTexts={{
-                          label: formatMessage(messages.streetName),
+                          label: messages.streetName,
                           maxValue: 128,
                         }}
                         required
@@ -532,10 +527,10 @@ const PatientPASForm = ({
                       <ColumnField
                         span={isMobile && !isTablet ? 24 : 12}
                         component={FormField}
-                        label={formatMessage(messages.streetNumber)}
+                        label={messages.streetNumber}
                         name="street_number"
                         errorTexts={{
-                          label: formatMessage(messages.streetNumber),
+                          label: messages.streetNumber,
                           maxValue: 8,
                         }}
                         autoComplete="new-address"
@@ -545,20 +540,20 @@ const PatientPASForm = ({
                       <ColumnField
                         span={isMobile && !isTablet ? 24 : 12}
                         component={FormField}
-                        label={formatMessage(messages.areaOfLiving)}
+                        label={messages.areaOfLiving}
                         name="area_of_living"
                         errorTexts={{
-                          label: formatMessage(messages.areaOfLiving),
+                          label: messages.areaOfLiving,
                           maxValue: 128,
                         }}
                       />
                       <ColumnField
                         span={isMobile && !isTablet ? 24 : 12}
                         component={FormField}
-                        label={formatMessage(messages.city)}
+                        label={messages.city}
                         name="city"
                         errorTexts={{
-                          label: formatMessage(messages.city),
+                          label: messages.city,
                           maxValue: 64,
                         }}
                         required
@@ -568,10 +563,10 @@ const PatientPASForm = ({
                       <ColumnField
                         span={isMobile && !isTablet ? 24 : 12}
                         component={FormField}
-                        label={formatMessage(messages.postCode)}
+                        label={messages.postCode}
                         name="post_code"
                         errorTexts={{
-                          label: formatMessage(messages.postCode),
+                          label: messages.postCode,
                           maxValue: 16,
                         }}
                         required
@@ -579,10 +574,10 @@ const PatientPASForm = ({
                       <ColumnField
                         span={isMobile && !isTablet ? 24 : 12}
                         component={FormField}
-                        label={formatMessage(messages.country)}
+                        label={messages.country}
                         name="country"
                         errorTexts={{
-                          label: formatMessage(messages.country),
+                          label: messages.country,
                           maxValue: 64,
                         }}
                       />
@@ -594,7 +589,7 @@ const PatientPASForm = ({
                   {!isMobile && (
                     <Col xs={24} lg={6}>
                       <Title type="secondary" level={2} className="mt-4">
-                        {formatMessage(messages.otherDetails)}
+                        {messages.otherDetails}
                       </Title>
                     </Col>
                   )}
@@ -602,7 +597,7 @@ const PatientPASForm = ({
                   <Col xs={24} lg={18}>
                     {isMobile && (
                       <Title type="secondary" level={3} className="mb-3 mt-4">
-                        {formatMessage(messages.otherDetails)}
+                        {messages.otherDetails}
                       </Title>
                     )}
                     <Row gutter={isMobile ? 12 : 16}>
@@ -613,12 +608,12 @@ const PatientPASForm = ({
                         options={material_status}
                         optionField="name"
                         defaultOption={values.material_status}
-                        label={formatMessage(messages.materialStatus)}
+                        label={messages.materialStatus}
                       />
                       <ColumnField
                         span={isMobile && !isTablet ? 24 : 12}
                         component={FormField}
-                        label={formatMessage(messages.numberOfDependants)}
+                        label={messages.numberOfDependants}
                         name="number_of_dependants"
                         onKeyDown={filterNumberInput}
                         type={'number'}
@@ -633,7 +628,7 @@ const PatientPASForm = ({
                         options={employment}
                         optionField="name"
                         defaultOption={values.employment}
-                        label={formatMessage(messages.employmentStatus)}
+                        label={messages.employmentStatus}
                       />
                       <ColumnField
                         span={isMobile && !isTablet ? 24 : 12}
@@ -642,17 +637,17 @@ const PatientPASForm = ({
                         options={education}
                         optionField="name"
                         defaultOption={values.education}
-                        label={formatMessage(messages.education)}
+                        label={messages.education}
                       />
                   </Row>
                   <Row gutter={isMobile ? 12 : 16}>
                     <Col xs={24} sm={isMobile && !isTablet ? 24 : 12}>
                       <Field
                         component={FormField}
-                        label={formatMessage(messages.insurance)}
+                        label={messages.insurance}
                         name="insurance"
                         errorTexts={{
-                          label: formatMessage(messages.insurance),
+                          label: messages.insurance,
                           maxValue: MAX,
                         }}
                       />
@@ -684,7 +679,7 @@ const PatientPASForm = ({
               className={`floating-button ${!dirty || loading || !isSaveVisible ? '' : 'active'
                 }`}
             >
-              {formatMessage(messages.save)}
+              {messages.save}
             </Button>
           </>
         )}

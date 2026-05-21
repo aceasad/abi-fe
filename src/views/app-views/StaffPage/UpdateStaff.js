@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { useIntl } from 'react-intl';
 import StaffForm from './StaffForm';
 import messages from './messages';
 import { prepareFormData } from 'utils/helpers';
@@ -16,14 +15,13 @@ import {
 import Loading from 'components/shared-components/Loading';
 
 const UpdateStaff = ({ showList, staffId }) => {
-  const { formatMessage } = useIntl();
   const dispatch = useDispatch();
 
   const singleStaff = useSelector(makeSelectStaffSingle());
   const { loading } = useSelector(makeSelectLoading());
 
   const afterUpdate = () => {
-    message.success(formatMessage(messages.staffUpdated));
+    message.success(messages.staffUpdated);
     showList();
   };
 
@@ -35,8 +33,8 @@ const UpdateStaff = ({ showList, staffId }) => {
   };
 
   const GENDER_CHOICES = [
-    { id: GENDER.MALE, name: formatMessage(messages.male) },
-    { id: GENDER.FEMALE, name: formatMessage(messages.female) },
+    { id: GENDER.MALE, name: messages.male },
+    { id: GENDER.FEMALE, name: messages.female },
   ];
 
   useEffect(() => {
@@ -69,7 +67,7 @@ const UpdateStaff = ({ showList, staffId }) => {
       showList={showList}
       handleSubmit={handleSubmit}
       genderChoices={GENDER_CHOICES}
-      label={formatMessage(messages.updateStaff)}
+      label={messages.updateStaff}
       initialState={initialState}
     />
   );

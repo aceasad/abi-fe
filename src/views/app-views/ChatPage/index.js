@@ -2,7 +2,6 @@ import { Typography, Grid } from 'antd';
 import { PageHeader } from '@ant-design/pro-components';
 import InnerAppLayout from 'layouts/inner-app-layout';
 import React, { useEffect, useState } from 'react';
-import { useIntl } from 'react-intl';
 import ChatContent from './ChatContent';
 import ChatMenu from './ChatMenu';
 import messages from './messages';
@@ -20,7 +19,6 @@ import utils from 'utils';
 const { useBreakpoint } = Grid;
 
 const Chat = () => {
-  const { formatMessage } = useIntl();
 
   const { token } = useSelector(makeSelectLoginDetails());
 
@@ -91,7 +89,7 @@ const Chat = () => {
         title={
           isMobile ? (
             <Typography.Title level={3} className="mb-0" style={{ fontSize: '20px' }}>
-              {`${formatMessage(messages.conversationsTitle)}${!rasaHealthy
+              {`${messages.conversationsTitle}${!rasaHealthy
                 ? ': Communication with Asa AI is down for maintenance'
                 : ''
                 }`}

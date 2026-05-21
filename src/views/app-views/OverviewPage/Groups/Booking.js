@@ -1,5 +1,4 @@
 import React from 'react';
-import { useIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
 import { makeSelectBookingData } from 'redux/selectors/Overview';
 import messages from '../messages';
@@ -8,7 +7,6 @@ import GroupRow from './GroupRow';
 import { MdAssignmentTurnedIn, MdShowChart } from 'react-icons/md';
 
 const Booking = ({ title }) => {
-  const { formatMessage } = useIntl();
 
   const { bookingMadeAfterInvite, invitationRate, loading } = useSelector(
     makeSelectBookingData
@@ -20,8 +18,8 @@ const Booking = ({ title }) => {
         <GroupRow>
           <OverviewCard
             span={12}
-            title={formatMessage(messages.bookingAfterInvite)}
-            tooltip={formatMessage(messages.bookingAfterInviteTooltip)}
+            title={messages.bookingAfterInvite}
+            tooltip={messages.bookingAfterInviteTooltip}
             content={bookingMadeAfterInvite}
             styleTitle={title}
             icon={<MdAssignmentTurnedIn color="#ffffff" size="40" />}
@@ -29,8 +27,8 @@ const Booking = ({ title }) => {
           />
           <OverviewCard
             span={12}
-            title={formatMessage(messages.bookingInvitation)}
-            tooltip={formatMessage(messages.bookingInvitationTooltip)}
+            title={messages.bookingInvitation}
+            tooltip={messages.bookingInvitationTooltip}
             content={`${invitationRate}%`}
             styleTitle={title}
             icon={<MdShowChart color="#ffffff" size="40" />}

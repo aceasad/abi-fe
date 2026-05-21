@@ -1,20 +1,18 @@
 import React from 'react';
 import { Menu, Dropdown } from 'antd';
-import { useIntl } from 'react-intl';
 import messages from './messages';
 import { OPTION_KEYS } from './StaffList';
 import { EllipsisOutlined } from '@ant-design/icons';
 
 function StaffCardOptions({ handleMenuClick }) {
-  const { formatMessage } = useIntl();
 
   const dropdownMenu = (
     <Menu onClick={handleMenuClick}>
       <Menu.Item key={OPTION_KEYS.EDIT}>
-        {formatMessage(messages.edit)}
+        {messages.edit}
       </Menu.Item>
       <Menu.Item key={OPTION_KEYS.DELETE}>
-        {formatMessage(messages.delete)}
+        {messages.delete}
       </Menu.Item>
     </Menu>
   );

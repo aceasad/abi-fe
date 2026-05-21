@@ -7,7 +7,6 @@ import { motion } from 'framer-motion';
 import { Field, Formik } from 'formik';
 import { useSelector } from 'react-redux';
 import messages from './messages';
-import { useIntl } from 'react-intl';
 import { forgotPasswordSchema } from 'utils/validations';
 import { makeIsSendEmailUser } from 'redux/selectors/Auth';
 import { success } from 'components/shared-components/MessagesAlerts/index';
@@ -18,15 +17,13 @@ export const ForgotPasswordForm = ({ email, showMessage }) => {
   const dispatch = useDispatch();
   const isSent = useSelector(makeIsSendEmailUser());
 
-  const { formatMessage } = useIntl();
-
   const confirm = (values) => {
     dispatch(sendForgotPasswordEmail(values));
   };
 
   useEffect(() => {
     if (isSent) {
-      success(formatMessage(messages.successfulySentEmail));
+      success(messages.successfulySentEmail);
     }
   }, [isSent]);
 
@@ -49,13 +46,13 @@ export const ForgotPasswordForm = ({ email, showMessage }) => {
           <Form layout="vertical" name="login-form">
             <Field
               autoFocus
-              label={formatMessage(messages.emailInputLabel)}
+              label={messages.emailInputLabel}
               component={FormField}
               type="email"
               name="email"
               prefix={<MailOutlined className="text-primary" />}
               errorTexts={{
-                label: formatMessage(messages.emailInputLabel),
+                label: messages.emailInputLabel,
               }}
               value={values.email}
             />
@@ -67,12 +64,12 @@ export const ForgotPasswordForm = ({ email, showMessage }) => {
                 block
                 disabled={!isValid}
               >
-                {formatMessage(messages.confirmButton)}
+                {messages.confirmButton}
               </Button>
             </Form.Item>
             <div className="text-center">
               <Link to={ROUTES.LOGIN}>
-                {formatMessage(messages.backToLogin)}
+                {messages.backToLogin}
               </Link>
             </div>
           </Form>

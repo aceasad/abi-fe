@@ -103,14 +103,7 @@ export function* createUserPassword() {
         err?.response?.data?.detail ||
         err?.message;
       yield put(
-        showAuthMessage(
-          backendError
-            ? {
-                id: messages.createPasswordError.id,
-                defaultMessage: backendError,
-              }
-            : messages.createPasswordError
-        )
+        showAuthMessage(backendError || messages.createPasswordError)
       );
     } finally {
       yield put(showLoading(false));

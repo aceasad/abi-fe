@@ -5,7 +5,6 @@ import {
   WhatsAppOutlined,
 } from '@ant-design/icons';
 import React, { useEffect, useState } from 'react';
-import { useIntl } from 'react-intl';
 import FormImageUpload from 'components/custom-components/Form/FormImageUpload';
 import { Field, Formik } from 'formik';
 import Form from 'antd/lib/form/Form';
@@ -48,7 +47,6 @@ const PatientOverview = ({
   const { patient, loading } = useSelector(makeSelectPatientOverview());
   const { PASProvider } = useSelector((state) => state.auth.user || {});
   const [showMessages, setShowMessages] = useState();
-  const { formatMessage } = useIntl();
   const clinic = useSelector(makeSelectClinic());
   const screens = utils.getBreakPoint(useBreakpoint());
   const isMobile = !screens.includes('lg');
@@ -72,28 +70,28 @@ const PatientOverview = ({
   const patientDetailsFields = {
     ...(!shouldHideDobAndGender
       ? {
-          date_of_birth: formatMessage(messages.dateOfBirth),
-          gender: formatMessage(messages.sex),
+          date_of_birth: messages.dateOfBirth,
+          gender: messages.sex,
         }
       : {}),
-    ethnicity: formatMessage(messages.ethnicity),
-    height: formatMessage(messages.height),
-    weight: formatMessage(messages.weight),
-    phone_number: formatMessage(messages.phoneNumber),
-    email: formatMessage(messages.email),
-    street_number: formatMessage(messages.streetNumber),
-    street_name: formatMessage(messages.streetName),
-    area_of_living: formatMessage(messages.areaOfLiving),
-    city: formatMessage(messages.city),
-    post_code: formatMessage(messages.postCode),
-    country: formatMessage(messages.country),
-    material_status: formatMessage(messages.materialStatus),
-    number_of_dependants: formatMessage(messages.numberOfDependants),
-    employment: formatMessage(messages.employmentStatus),
-    education: formatMessage(messages.education),
-    insurance: formatMessage(messages.insurance),
-    last_appointment: formatMessage(messages.lastAppointment),
-    ...(isMedbridge ? { home_location: formatMessage(messages.homeLocation) } : {}),
+    ethnicity: messages.ethnicity,
+    height: messages.height,
+    weight: messages.weight,
+    phone_number: messages.phoneNumber,
+    email: messages.email,
+    street_number: messages.streetNumber,
+    street_name: messages.streetName,
+    area_of_living: messages.areaOfLiving,
+    city: messages.city,
+    post_code: messages.postCode,
+    country: messages.country,
+    material_status: messages.materialStatus,
+    number_of_dependants: messages.numberOfDependants,
+    employment: messages.employmentStatus,
+    education: messages.education,
+    insurance: messages.insurance,
+    last_appointment: messages.lastAppointment,
+    ...(isMedbridge ? { home_location: messages.homeLocation } : {}),
   };
 
   const getHomeLocationDisplay = (homeLocation) => {
@@ -142,7 +140,7 @@ const PatientOverview = ({
               <div className="text-primary cursor-pointer" onClick={showList}>
                 <LeftOutlined />
                 <Text underline className="text-primary ml-2">
-                  {formatMessage(messages.backToPatients)}
+                  {messages.backToPatients}
                 </Text>
               </div>
               <div
@@ -151,7 +149,7 @@ const PatientOverview = ({
               >
                 <EditOutlined />
                 <Text underline className="text-primary ml-2">
-                  {formatMessage(messages.editPatient)}
+                  {messages.editPatient}
                 </Text>
               </div>
             </Flex>
@@ -237,7 +235,7 @@ const PatientOverview = ({
           {showMessages ? (
             <>
               <Title level={3} className="ml-3 mr-4 mb-4">
-                {formatMessage(messages.messages)}
+                {messages.messages}
               </Title>
               <div className="chat inner-app-layout">
                 <div className="main-content">
@@ -252,7 +250,7 @@ const PatientOverview = ({
                       >
                         <LeftOutlined />
                         <Text className="ml-2">
-                          {formatMessage(messages.backToOverview)}
+                          {messages.backToOverview}
                         </Text>
                       </div>
                     )}
@@ -269,7 +267,7 @@ const PatientOverview = ({
                 style={{ flexWrap: isMobile ? 'wrap' : 'nowrap', gap: isMobile ? '12px' : 0 }}
               >
                 <Title level={3} className="mb-0" style={{ fontSize: isMobile ? '20px' : '28px' }}>
-                  {formatMessage(messages.overviewTittle)}
+                  {messages.overviewTittle}
                 </Title>
                 <Badge>
                   <Button
@@ -278,7 +276,7 @@ const PatientOverview = ({
                     icon={<WhatsAppOutlined />}
                     size={isMobile ? 'small' : 'middle'}
                   >
-                    {!isMobile && <span>{formatMessage(messages.overviewButtonMessages)}</span>}
+                    {!isMobile && <span>{messages.overviewButtonMessages}</span>}
                     {isMobile && <span>Messages</span>}
                   </Button>
                 </Badge>

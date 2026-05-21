@@ -1,6 +1,6 @@
 import { Card, Col, Row, Typography } from 'antd';
+import { interpolate } from 'utils/interpolate';
 import React from 'react';
-import { useIntl } from 'react-intl';
 import messages from '../messages';
 import {
   COLOR_1,
@@ -16,19 +16,18 @@ import { useSelector } from 'react-redux';
 import { makeSelectPreferencesData } from 'redux/selectors/Overview';
 
 const AppointmentsCharts = () => {
-  const { formatMessage } = useIntl();
 
   const { preferences } = useSelector(makeSelectPreferencesData);
 
   const dataTimeOfDay = {
     labels: [
-      formatMessage(messages.appointmentsChartMorning, {
+      interpolate(messages.appointmentsChartMorning, {
         value: preferences.byPeriod.morning,
       }),
-      formatMessage(messages.appointmentsChartAfternoon, {
+      interpolate(messages.appointmentsChartAfternoon, {
         value: preferences.byPeriod.afternoon,
       }),
-      formatMessage(messages.appointmentsChartEvening, {
+      interpolate(messages.appointmentsChartEvening, {
         value: preferences.byPeriod.evening,
       }),
     ],
@@ -44,25 +43,25 @@ const AppointmentsCharts = () => {
 
   const dataDayOfWeek = {
     labels: [
-      formatMessage(messages.appointmentsChartMon, {
+      interpolate(messages.appointmentsChartMon, {
         value: preferences.byDay.monday,
       }),
-      formatMessage(messages.appointmentsChartTue, {
+      interpolate(messages.appointmentsChartTue, {
         value: preferences.byDay.tuesday,
       }),
-      formatMessage(messages.appointmentsChartWed, {
+      interpolate(messages.appointmentsChartWed, {
         value: preferences.byDay.wednesday,
       }),
-      formatMessage(messages.appointmentsChartThur, {
+      interpolate(messages.appointmentsChartThur, {
         value: preferences.byDay.thursday,
       }),
-      formatMessage(messages.appointmentsChartFri, {
+      interpolate(messages.appointmentsChartFri, {
         value: preferences.byDay.friday,
       }),
-      formatMessage(messages.appointmentsChartSat, {
+      interpolate(messages.appointmentsChartSat, {
         value: preferences.byDay.saturday,
       }),
-      formatMessage(messages.appointmentsChartSun, {
+      interpolate(messages.appointmentsChartSun, {
         value: preferences.byDay.sunday,
       }),
     ],
@@ -95,7 +94,7 @@ const AppointmentsCharts = () => {
           className="height-100 d-flex flex-column justify-content-between"
           title={
             <Typography.Title level={4} className="text-wrap">
-              {formatMessage(messages.appointmentsPreferences)}
+              {messages.appointmentsPreferences}
             </Typography.Title>
           }
         >

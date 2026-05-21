@@ -12,7 +12,6 @@ import {
   Input,
 } from 'antd';
 import { WhatsAppOutlined } from '@ant-design/icons';
-import { useIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
 import AppointmentsRemindersTable from './AppointmentsRemindersTable';
 import overviewPageMessages from '../OverviewPage/messages';
@@ -117,7 +116,6 @@ const formatDateAndTimeBySection = (section, options = {}) => {
 
 const AppointmentsReminders = ({ title, startOpen }) => {
   const history = useHistory();
-  const { formatMessage } = useIntl();
   const dispatch = useDispatch();
   const { PASProvider } = useSelector((state) => state.auth.user || {});
   const clinic = useSelector(makeSelectClinic());
@@ -261,7 +259,7 @@ const AppointmentsReminders = ({ title, startOpen }) => {
     const items = [
       {
         key: "1",
-        label: formatMessage(overviewPageMessages.tableDropdownAiReachout),
+        label: overviewPageMessages.tableDropdownAiReachout,
         onClick: ({ domEvent }) => {
           domEvent.stopPropagation();
           goToPatientShowMessages({ id: row.patient.id });
@@ -272,7 +270,7 @@ const AppointmentsReminders = ({ title, startOpen }) => {
     if (reminderType === 'appointment' && row.appointment?.id) {
       items.unshift({
         key: "0",
-        label: formatMessage(overviewPageMessages.tableDropdownSeeAppointment),
+        label: overviewPageMessages.tableDropdownSeeAppointment,
         onClick: ({ domEvent }) => {
           domEvent.stopPropagation();
           setActiveAppointment({
@@ -287,9 +285,7 @@ const AppointmentsReminders = ({ title, startOpen }) => {
     if (row.reminder.status.indexOf('Scheduled') !== -1) {
       items.push({
         key: "2",
-        label: formatMessage(
-          overviewPageMessages.tableDropdownCancelAppointmentReminder
-        ),
+        label: overviewPageMessages.tableDropdownCancelAppointmentReminder,
         onClick: ({ domEvent }) => {
           domEvent.stopPropagation();
           cancelReminder(row);
@@ -300,9 +296,7 @@ const AppointmentsReminders = ({ title, startOpen }) => {
     if (row.reminder.status.indexOf('Cancelled') !== -1) {
       items.push({
         key: "3",
-        label: formatMessage(
-          overviewPageMessages.tableDropdownReverseAppointmentReminderCancellation
-        ),
+        label: overviewPageMessages.tableDropdownReverseAppointmentReminderCancellation,
         onClick: ({ domEvent }) => {
           domEvent.stopPropagation();
           reverseReminderCancellation(row);
@@ -325,17 +319,17 @@ const AppointmentsReminders = ({ title, startOpen }) => {
   const getTableColumns = () => {
     const baseColumns = [
       {
-        title: formatMessage(overviewPageMessages.tableColumnPatient),
+        title: overviewPageMessages.tableColumnPatient,
         dataIndex: ['patient', 'full_name'],
         sorter: true,
       },
       {
-        title: formatMessage(overviewPageMessages.tableColumnReminderTemplate),
+        title: overviewPageMessages.tableColumnReminderTemplate,
         dataIndex: ['reminder', 'message_template'],
         sorter: true,
       },
       {
-        title: formatMessage(overviewPageMessages.tableColumnReminderDatetime),
+        title: overviewPageMessages.tableColumnReminderDatetime,
         dataIndex: ['reminder', 'date'],
         sorter: true,
         render: (_, row) => {
@@ -356,7 +350,7 @@ const AppointmentsReminders = ({ title, startOpen }) => {
         },
       },
       {
-        title: formatMessage(overviewPageMessages.tableColumnReminderStatus),
+        title: overviewPageMessages.tableColumnReminderStatus,
         dataIndex: ['reminder', 'status'],
         sorter: true,
         render: (_, row) => (
@@ -373,7 +367,7 @@ const AppointmentsReminders = ({ title, startOpen }) => {
               placement="bottomRight"
             >
               <Button type="primary" ghost>
-                {formatMessage(overviewPageMessages.tableDropdownTitleActions)}
+                {overviewPageMessages.tableDropdownTitleActions}
                 <DownOutlined />
               </Button>
             </Dropdown>
@@ -388,7 +382,7 @@ const AppointmentsReminders = ({ title, startOpen }) => {
         ...(!isMedbridge
           ? [
             {
-              title: formatMessage(overviewPageMessages.tableColumnDoctor),
+              title: overviewPageMessages.tableColumnDoctor,
               dataIndex: ['doctor', 'full_name'],
               sorter: true,
               render: (_, row) => (
@@ -400,7 +394,7 @@ const AppointmentsReminders = ({ title, startOpen }) => {
           ]
           : []),
         {
-          title: formatMessage(overviewPageMessages.tableColumnAppointmentDatetime),
+          title: overviewPageMessages.tableColumnAppointmentDatetime,
           dataIndex: ['appointment', 'date'],
           sorter: true,
           render: (_, row) => {

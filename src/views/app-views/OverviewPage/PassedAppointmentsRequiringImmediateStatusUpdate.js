@@ -10,7 +10,6 @@ import {
   Dropdown,
 } from 'antd';
 import { CaretDownOutlined } from '@ant-design/icons';
-import { useIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
 import Appointments from '../StaffPage/Appointments';
 import overviewPageMessages from './messages';
@@ -62,7 +61,6 @@ const PassedAppointmentsRequiringImmediateStatusUpdate = ({
   startOpen,
 }) => {
   const history = useHistory();
-  const { formatMessage } = useIntl();
   const dispatch = useDispatch();
 
   const [activeAppointment, setActiveAppointment] = useState(null);
@@ -119,7 +117,7 @@ const PassedAppointmentsRequiringImmediateStatusUpdate = ({
     return [
       {
         key: "0",
-        label: formatMessage(overviewPageMessages.tableDropdownSeeAppointment),
+        label: overviewPageMessages.tableDropdownSeeAppointment,
         onClick: ({ domEvent }) => {
           domEvent.stopPropagation();
           setActiveAppointment({
@@ -131,7 +129,7 @@ const PassedAppointmentsRequiringImmediateStatusUpdate = ({
       },
       {
         key: "1",
-        label: formatMessage(overviewPageMessages.tableDropdownAiReachout),
+        label: overviewPageMessages.tableDropdownAiReachout,
         onClick: ({ domEvent }) => {
           domEvent.stopPropagation();
           goToPatientShowMessages({ id: row.patient.id });
@@ -139,9 +137,7 @@ const PassedAppointmentsRequiringImmediateStatusUpdate = ({
       },
       {
         key: "2",
-        label: formatMessage(
-          overviewPageMessages.tableDropdownUpdateMessageRequiringImmediateAttentionStatus
-        ),
+        label: overviewPageMessages.tableDropdownUpdateMessageRequiringImmediateAttentionStatus,
         onClick: ({ domEvent }) => {
           domEvent.stopPropagation();
           showUpdateAppointmentStatusWrapper(domEvent, row);
@@ -158,12 +154,12 @@ const PassedAppointmentsRequiringImmediateStatusUpdate = ({
     // },
     // (${row.doctor.seniority} ${row.doctor.specialization})
     {
-      title: formatMessage(patientPageMessages.columnTitlePatient),
+      title: patientPageMessages.columnTitlePatient,
       dataIndex: ['patient', 'full_name'],
       sorter: true,
     },
     {
-      title: formatMessage(patientPageMessages.columnTitleAppointment),
+      title: patientPageMessages.columnTitleAppointment,
       dataIndex: ['doctor', 'full_name'],
       sorter: true,
       render: (_, row) => (
@@ -173,12 +169,12 @@ const PassedAppointmentsRequiringImmediateStatusUpdate = ({
       ),
     },
     {
-      title: formatMessage(patientPageMessages.columnTitleDate),
+      title: patientPageMessages.columnTitleDate,
       dataIndex: 'date',
       sorter: true,
     },
     {
-      title: formatMessage(patientPageMessages.columnTitleTime),
+      title: patientPageMessages.columnTitleTime,
       dataIndex: 'time',
       sorter: true,
       render: (_, row) => (
@@ -199,7 +195,7 @@ const PassedAppointmentsRequiringImmediateStatusUpdate = ({
             placement="bottomRight"
           >
             <Button type="primary" ghost>
-              {formatMessage(overviewPageMessages.tableDropdownTitleActions)}
+              {overviewPageMessages.tableDropdownTitleActions}
               <DownOutlined />
             </Button>
           </Dropdown>

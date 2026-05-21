@@ -1,7 +1,6 @@
 import { Button, Typography, Grid } from 'antd';
 import { PageHeader } from '@ant-design/pro-components';
 import React from 'react';
-import { useIntl } from 'react-intl';
 import messages from './messages';
 import utils from 'utils';
 
@@ -13,7 +12,6 @@ const PatientHeader = ({
   primaryAction,
   primaryDisabled,
 }) => {
-  const { formatMessage } = useIntl();
   const screens = utils.getBreakPoint(useBreakpoint());
   const isMobile = !screens.includes('lg');
 
@@ -31,7 +29,7 @@ const PatientHeader = ({
       }
       extra={[
         <Button key="0" onClick={secondaryAction}>
-          {formatMessage(messages.cancel)}
+          {messages.cancel}
         </Button>,
         <Button
           key="1"
@@ -39,7 +37,7 @@ const PatientHeader = ({
           onClick={primaryAction}
           disabled={primaryDisabled}
         >
-          {formatMessage(messages.save)}
+          {messages.save}
         </Button>,
       ]}
     />

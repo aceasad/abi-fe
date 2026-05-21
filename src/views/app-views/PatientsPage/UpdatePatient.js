@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { GENDER } from 'constants/UserConstants';
@@ -20,7 +19,6 @@ import { makeSelectAppointmentTypes } from 'redux/selectors/Appointment';
 import { getAppointmentTypes } from 'redux/actions/Appointment';
 
 const UpdatePatient = ({ showList, patientId }) => {
-  const { formatMessage } = useIntl();
   const dispatch = useDispatch();
   const { isPasIntegrated, PASProvider } = useSelector(
     (state) => state.auth.user || {}
@@ -35,9 +33,9 @@ const UpdatePatient = ({ showList, patientId }) => {
   );
 
   const GENDER_CHOICES = [
-    { id: GENDER.MALE, name: formatMessage(messages.male) },
-    { id: GENDER.FEMALE, name: formatMessage(messages.female) },
-    { id: GENDER.OTHER, name: formatMessage(messages.other) },
+    { id: GENDER.MALE, name: messages.male },
+    { id: GENDER.FEMALE, name: messages.female },
+    { id: GENDER.OTHER, name: messages.other },
   ];
 
   useEffect(() => {
@@ -57,7 +55,7 @@ const UpdatePatient = ({ showList, patientId }) => {
 
   const afterUpdate = () => {
     showList();
-    message.success(formatMessage(messages.patientUpdated));
+    message.success(messages.patientUpdated);
   };
 
   const handleSubmit = (values, setErrors, enableRedirect) => {
@@ -132,7 +130,7 @@ const UpdatePatient = ({ showList, patientId }) => {
       return (
         <PatientPASForm
           id={patientId}
-          title={formatMessage(messages.newPASPatient)}
+          title={messages.newPASPatient}
           showList={showList}
           handleSubmit={handleSubmit}
           loading={loading}
@@ -144,7 +142,7 @@ const UpdatePatient = ({ showList, patientId }) => {
     else {
       return (
         <PatientForm
-          title={formatMessage(messages.editPatient)}
+          title={messages.editPatient}
           showList={showList}
           handleSubmit={handleSubmit}
           loading={loading}

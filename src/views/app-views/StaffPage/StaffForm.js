@@ -1,7 +1,6 @@
 import PageHeaderComponent from 'components/shared-components/PageHeaderComponent';
 import { Formik, Field } from 'formik';
 import React, { useEffect } from 'react';
-import { useIntl } from 'react-intl';
 import messages from './messages';
 import { Row, Col, Form, Card, Typography, Button, Space } from 'antd';
 import FormField from 'components/custom-components/Form/FormField';
@@ -23,7 +22,6 @@ const StaffForm = ({
   genderChoices,
   label,
 }) => {
-  const { formatMessage } = useIntl();
   const dispatch = useDispatch();
 
   const { ethnicities, specializations, seniorities, loading } = useSelector(
@@ -47,7 +45,7 @@ const StaffForm = ({
           <PageHeaderComponent
             title={label}
             handleSecondaryClick={showList}
-            // secondaryAction={formatMessage(messages.cancel)}
+            // secondaryAction={messages.cancel}
             handlePrimaryClick={handleSubmit}
             disablePrimary={!dirty || !isValid || loading}
           />
@@ -61,16 +59,16 @@ const StaffForm = ({
               <Row justify="end" gutter={16}>
                 <Col xs={24} lg={6}>
                   <Title type="secondary" level={2} className="mt-4">
-                    {formatMessage(messages.personalDetails)}
+                    {messages.personalDetails}
                   </Title>
                 </Col>
                 <Col xs={24} lg={6}>
                   <Field
                     component={FormField}
-                    label={formatMessage(messages.firstName)}
+                    label={messages.firstName}
                     name="first_name"
                     errorTexts={{
-                      label: formatMessage(messages.firstName),
+                      label: messages.firstName,
                     }}
                     // autoFocus
                   />
@@ -78,16 +76,16 @@ const StaffForm = ({
                 <Col xs={24} lg={6}>
                   <Field
                     component={FormField}
-                    label={formatMessage(messages.lastName)}
+                    label={messages.lastName}
                     name="last_name"
                     errorTexts={{
-                      label: formatMessage(messages.lastName),
+                      label: messages.lastName,
                     }}
                   />
                 </Col>
                 <Col xs={24} lg={6}>
                   <Field
-                    label={formatMessage(messages.dateOfBirth)}
+                    label={messages.dateOfBirth}
                     maxDate={new Date()}
                     disablePastDates
                     component={FormDatePicker}
@@ -103,17 +101,17 @@ const StaffForm = ({
                     options={ethnicities}
                     optionField="name"
                     defaultOption={values.ethnicity}
-                    label={formatMessage(messages.ethnicity)}
+                    label={messages.ethnicity}
                   />
                 </Col>
                 {/* <ColumnField
                       span={12}
                       component={FormField}
-                      label={formatMessage(messages.phoneNumber)}
+                      label={messages.phoneNumber}
                       name="phone_number"
                       errorTexts={{
-                        label: formatMessage(messages.phoneNumber),
-                        matchesLabel: formatMessage(messages.phoneNumberFormat),
+                        label: messages.phoneNumber,
+                        matchesLabel: messages.phoneNumberFormat,
                         maxValue: MAX,
                       }}
                       required
@@ -122,10 +120,10 @@ const StaffForm = ({
                 <Col xs={24} lg={6}>
                   <Field
                     component={FormField}
-                    label={formatMessage(messages.phoneNumber)}
+                    label={messages.phoneNumber}
                     name="phone_number"
                     errorTexts={{
-                      label: formatMessage(messages.phoneNumber),
+                      label: messages.phoneNumber,
                     }}
                   />
                 </Col>
@@ -135,7 +133,7 @@ const StaffForm = ({
                     component={FormRadio}
                     options={genderChoices}
                     optionField="name"
-                    label={formatMessage(messages.gender)}
+                    label={messages.gender}
                   />
                 </Col>
               </Row>
@@ -147,7 +145,7 @@ const StaffForm = ({
                     options={specializations}
                     optionField="name"
                     defaultOption={values.specialization}
-                    label={formatMessage(messages.specialization)}
+                    label={messages.specialization}
                   />
                 </Col>
                 <Col xs={24} lg={6}>
@@ -157,24 +155,24 @@ const StaffForm = ({
                     options={seniorities}
                     optionField="name"
                     defaultOption={values.seniority}
-                    label={formatMessage(messages.seniority)}
+                    label={messages.seniority}
                   />
                 </Col>
                 <Col span={24} className={'text-right'}>
                   <Space wrap>
                     <Button key="10" onClick={showList}>
-                      {formatMessage(messages.cancel)}
+                      {messages.cancel}
                     </Button>
                     <Button
                       disabled={!isValid || !dirty || loading}
                       type="primary"
                       onClick={handleSubmit}
                     >
-                      {formatMessage(messages.submit)}
+                      {messages.submit}
                     </Button>
                   </Space>
 
-                  {/* secondaryAction={formatMessage(messages.cancel)} */}
+                  {/* secondaryAction={messages.cancel} */}
                 </Col>
               </Row>
             </Form>

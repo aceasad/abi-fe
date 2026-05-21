@@ -6,23 +6,21 @@ import { getClinic } from 'redux/actions/Clinic';
 import Loading from 'components/shared-components/Loading';
 import { message } from 'antd';
 import messages from './messages';
-import { useIntl } from 'react-intl';
 
 const EditClinic = () => {
   const dispatch = useDispatch();
-  const { formatMessage } = useIntl();
 
   const clinic = useSelector(makeSelectClinic());
 
   const showSuccess = () =>
     message.success({
-      content: formatMessage(messages.update_success),
+      content: messages.update_success,
       duration: 2,
     });
 
   const showError = () =>
     message.error({
-      content: formatMessage(messages.update_error),
+      content: messages.update_error,
       duration: 2,
     });
 

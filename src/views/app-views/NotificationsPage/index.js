@@ -12,7 +12,6 @@ import {
     Spin
 } from 'antd';
 import { Link } from 'react-router-dom';
-import { useIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
 import { makeSelectLoginDetails } from 'redux/selectors/Auth';
 import { makeSelectClinic } from 'redux/selectors/Clinic';
@@ -58,7 +57,6 @@ const { useBreakpoint } = Grid;
 const { Title, Text } = Typography;
 
 const Notification = () => {
-    const { formatMessage } = useIntl();
     const { token } = useSelector(makeSelectLoginDetails());
     const clinic = useSelector(makeSelectClinic());
     const notifications = useSelector(makeSelectNotifications()) || [];

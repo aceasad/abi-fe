@@ -1,6 +1,6 @@
 import { Checkbox, Form } from 'antd';
+import { interpolate } from 'utils/interpolate';
 import React from 'react';
-import { useIntl } from 'react-intl';
 
 const FormGroupCheckbox = ({
   field,
@@ -10,13 +10,12 @@ const FormGroupCheckbox = ({
   errorTexts,
   required,
 }) => {
-  const { formatMessage } = useIntl();
   const onChange = (checkedValues) => {
     setFieldValue(field.name, checkedValues);
   };
 
   const defaultErrorMessage = () =>
-    formatMessage(errors[field.name], {
+    interpolate(errors[field.name], {
       label,
     });
 
@@ -28,7 +27,7 @@ const FormGroupCheckbox = ({
     return (
       shouldShowError() &&
       (errorTexts
-        ? formatMessage(errors[field.name], errorTexts)
+        ? interpolate(errors[field.name], errorTexts)
         : defaultErrorMessage())
     );
   };

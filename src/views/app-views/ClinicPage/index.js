@@ -2,22 +2,19 @@ import { Button, Card, Typography } from 'antd';
 import { PageHeader } from '@ant-design/pro-components';
 import ClinicForm from 'containers/Forms/ClinicForm/ClinicForm';
 import React from 'react';
-import { useIntl } from 'react-intl';
 import { useDispatch } from 'react-redux';
-import localeString from 'utils/localeString';
 import { signOut } from 'redux/actions/Auth';
 import messages from './messages';
 
-const ClinicPage = ({ localization = true }) => {
+const ClinicPage = () => {
   const dispatch = useDispatch();
-  const { formatMessage } = useIntl();
 
   return (
     <>
       <PageHeader
         title={
           <Typography.Title level={3} className="mb-0">
-            {localeString(localization, 'clinic_page.header.title')}
+            Clinic Settings
           </Typography.Title>
         }
         extra={[
@@ -28,7 +25,7 @@ const ClinicPage = ({ localization = true }) => {
               dispatch(signOut());
             }}
           >
-            {formatMessage(messages.logout)}
+            {messages.logout}
           </Button>,
         ]}
       />

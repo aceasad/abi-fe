@@ -1,7 +1,6 @@
 import { Avatar, Divider, Button } from 'antd';
 import { MESSAGE_TYPE } from 'constants/ChatConstants';
 import React, { useState, useRef, useEffect } from 'react';
-import { useIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
 import { useToggleRasaActivity } from 'queries/shared';
 import { toggleRasaActivity, getSingleChat } from 'redux/actions/Chats';
@@ -19,7 +18,6 @@ const ChatContentBody = ({
   onClickMarkInEmergencySituationResolved,
   chatLoading
 }) => {
-  const { formatMessage } = useIntl();
   const dispatch = useDispatch();
   const { mutate, isLoading } = useToggleRasaActivity();
   const { chatInfo } = useSelector(makeSelectSingleChatInfo);
@@ -330,7 +328,7 @@ const ChatContentBody = ({
               color: '#f57c00',
               fontWeight: '500'
             }}>
-              Patient is in opt-out situation
+              The patient has opted out
             </span>
             <Button
               type="primary"
@@ -341,7 +339,7 @@ const ChatContentBody = ({
               }
               style={{ marginLeft: '12px' }}
             >
-              {optOutLoading ? 'Updating...' : formatMessage(messages.optOut)}
+              {optOutLoading ? 'Updating...' : messages.optOut}
             </Button>
           </div>
         )}

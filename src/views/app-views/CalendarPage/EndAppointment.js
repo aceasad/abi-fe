@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import Modal from 'antd/lib/modal/Modal';
-import { useIntl } from 'react-intl';
 import { Field, Formik } from 'formik';
 import messages from './messages';
 import FormRadio from 'components/custom-components/Form/FormRadio';
@@ -51,7 +50,6 @@ const EndAppointment = ({
   staffId,
   endFrom = null,
 }) => {
-  const { formatMessage } = useIntl();
   const dispatch = useDispatch();
 
   const { appointmentMissingReasons } = useSelector(
@@ -61,7 +59,7 @@ const EndAppointment = ({
   const loading = useSelector(makeSelectSingleAppointmentLoading());
 
   const afterEnd = () => {
-    message.success(formatMessage(messages.endSuccess));
+    message.success(messages.endSuccess);
     if (endFrom === FROM_STAFF_APPOINTMENTS) {
       // eslint-disable-next-line default-case
       switch (appointment_type) {
@@ -110,8 +108,8 @@ const EndAppointment = ({
   }, [dispatch, appointmentMissingReasons?.length]);
 
   const options = [
-    { id: true, name: formatMessage(messages.yes) },
-    { id: false, name: formatMessage(messages.no) },
+    { id: true, name: messages.yes },
+    { id: false, name: messages.no },
   ];
 
   return (
@@ -127,15 +125,15 @@ const EndAppointment = ({
       {({ values, handleSubmit, isValid }) => (
         <Modal
           open
-          title={formatMessage(messages.endAppointment)}
-          okText={formatMessage(messages.confirm)}
-          cancelText={formatMessage(messages.cancel)}
+          title={messages.endAppointment}
+          okText={messages.confirm}
+          cancelText={messages.cancel}
           onCancel={handleClose}
           okButtonProps={{ disabled: !isValid || loading }}
           onOk={handleSubmit}
         >
           <Form layout="vertical">
-            {formatMessage(messages.attendedQuestion)}
+            {messages.attendedQuestion}
             <Field
               name="attended"
               component={FormRadio}
@@ -150,15 +148,15 @@ const EndAppointment = ({
                   options={appointmentMissingReasons}
                   defaultOption={values.missing_reason}
                   optionField="name"
-                  label={formatMessage(messages.missingReason)}
-                  errorTexts={{ label: formatMessage(messages.reason) }}
+                  label={messages.missingReason}
+                  errorTexts={{ label: messages.reason }}
                   required
                 />
                 <Field
                   component={FormTextArea}
                   name="missing_reason_details"
                   rows={4}
-                  label={formatMessage(messages.missingReasonDetails)}
+                  label={messages.missingReasonDetails}
                 />
               </div>
             )}
