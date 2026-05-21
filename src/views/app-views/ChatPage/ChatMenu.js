@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
-import { Input } from 'antd';
+import { Grid, Input } from 'antd';
+import utils from 'utils';
 import { SearchOutlined, MessageOutlined, WhatsAppOutlined } from '@ant-design/icons';
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
 import { useIntl } from 'react-intl';
@@ -29,6 +30,8 @@ import {
 import dayjs from 'utils/dayjs';
 import ConversationFilters from './ConversationFilters';
 
+const { useBreakpoint } = Grid;
+
 const ChatMenu = (props) => {
 
   const getStatusColor = (status) => {
@@ -49,6 +52,8 @@ const ChatMenu = (props) => {
   const match = useRouteMatch();
   const { formatMessage } = useIntl();
   const dispatch = useDispatch();
+  const screens = utils.getBreakPoint(useBreakpoint());
+  const isMobile = props.isMobile ?? !screens.includes('lg');
 
   const currentChatID = parseInt(location.pathname.match(/\/([^/]+)\/?$/)[1]);
   const [query, setQuery] = useState('');
@@ -186,10 +191,11 @@ const ChatMenu = (props) => {
     <div className="chat-menu">
       <div className="chat-menu-toolbar">
         <Input
-          style={{ width: '100%', maxWidth: '100%' }}
+          style={{ width: '100%' }}
           placeholder={formatMessage(messages.searchPlaceholder)}
           prefix={<SearchOutlined />}
           allowClear
+          size="middle"
           value={query}
           onChange={searchOnChange}
         />
