@@ -3,8 +3,7 @@ import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import AppLayout from 'layouts/app-layout';
 import AuthLayout from 'layouts/auth-layout';
-import AppLocale from 'lang';
-import { IntlProvider } from 'react-intl';
+import antdEnUS from 'antd/es/locale/en_US';
 import { ConfigProvider } from 'antd';
 import {
   APP_PAGES_PREFIX_PATH,
@@ -16,51 +15,44 @@ import ForceClinicRoute from '../routes/ForceClinicRoute';
 import { BeforeRouteContext, beforeRoute } from 'utils/context';
 import { ROUTES } from 'routes';
 
-export const Views = ({ location, locale }) => {
-  const currentAppLocale = AppLocale[locale];
+export const Views = ({ location }) => {
   const [routeContext, setRouteContext] = useState(beforeRoute);
 
   return (
-    <IntlProvider
-      locale={currentAppLocale.locale}
-      messages={currentAppLocale.messages}
-    >
-      <ConfigProvider locale={currentAppLocale.antd}>
-        <BeforeRouteContext.Provider
-          value={{ ...routeContext, setContext: setRouteContext }}
-        >
-          <Switch>
-            <Route exact path={`${URL_PREFIX_PATH}/`}>
-              <Redirect to={APP_PAGES_PREFIX_PATH} />
-            </Route>
-            <Route path={AUTH_PREFIX_PATH} component={AuthLayout} />
+    <ConfigProvider locale={antdEnUS}>
+      <BeforeRouteContext.Provider
+        value={{ ...routeContext, setContext: setRouteContext }}
+      >
+        <Switch>
+          <Route exact path={`${URL_PREFIX_PATH}/`}>
+            <Redirect to={APP_PAGES_PREFIX_PATH} />
+          </Route>
+          <Route path={AUTH_PREFIX_PATH} component={AuthLayout} />
 
-            <Suspense fallback={() => <h1>LOADING</h1>}>
-              <ForceClinicRoute
-                exact
-                path={`${APP_PAGES_PREFIX_PATH}/first-clinic-update`}
-                component={lazy(() => import(`./app-views/ClinicPage`))}
-              />
+          <Suspense fallback={() => <h1>LOADING</h1>}>
+            <ForceClinicRoute
+              exact
+              path={`${APP_PAGES_PREFIX_PATH}/first-clinic-update`}
+              component={lazy(() => import(`./app-views/ClinicPage`))}
+            />
 
-              <PrivateRoute
-                path={APP_PAGES_PREFIX_PATH}
-                component={(props) => (
-                  <AppLayout {...props} location={location} />
-                )}
-              />
-            </Suspense>
-            <Redirect to={ROUTES.LOGIN} />
-          </Switch>
-        </BeforeRouteContext.Provider>
-      </ConfigProvider>
-    </IntlProvider>
+            <PrivateRoute
+              path={APP_PAGES_PREFIX_PATH}
+              component={(props) => (
+                <AppLayout {...props} location={location} />
+              )}
+            />
+          </Suspense>
+          <Redirect to={ROUTES.LOGIN} />
+        </Switch>
+      </BeforeRouteContext.Provider>
+    </ConfigProvider>
   );
 };
 
-const mapStateToProps = ({ theme, auth }) => {
-  const { locale } = theme;
+const mapStateToProps = ({ auth }) => {
   const { token } = auth;
-  return { locale, token };
+  return { token };
 };
 
 export default withRouter(connect(mapStateToProps)(Views));

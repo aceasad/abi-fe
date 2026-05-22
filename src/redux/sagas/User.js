@@ -20,7 +20,6 @@ import {
   UPDATE_CURRENT_USER,
 } from 'redux/constants/User';
 import userService from 'services/UserService';
-import messages from 'views/app-views/UserSettings/messages';
 import { setUser, showLoading } from 'redux/actions/Auth';
 
 function* getUsers() {
@@ -42,7 +41,7 @@ function* createUser({ payload }) {
     yield payload.afterCreate();
     yield getUsers();
   } catch (err) {
-    yield payload.setErrors({ username: messages.usernameInUse });
+    yield payload.setErrors({ username: "User with given username already exists" });
   } finally {
     yield put(setUsersSingleLoading(false));
   }
@@ -55,7 +54,7 @@ function* updateUser({ payload }) {
     yield payload.afterUpdate();
     yield getUsers();
   } catch (err) {
-    yield payload.setErrors({ username: messages.usernameInUse });
+    yield payload.setErrors({ username: "User with given username already exists" });
   } finally {
     yield put(setUsersSingleLoading(false));
   }
@@ -97,7 +96,7 @@ function* updateCurrentUser({ payload }) {
     yield put(setUser(data));
   } catch (err) {
     if (err?.response?.status === 400) {
-      yield payload.setErrors({ username: messages.usernameInUse });
+      yield payload.setErrors({ username: "User with given username already exists" });
     }
   } finally {
     yield put(showLoading(false));

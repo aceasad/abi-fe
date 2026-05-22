@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { Menu, Grid } from 'antd';
-import IntlMessage from '../util-components/IntlMessage';
 import Icon from '../util-components/Icon';
 import { useNavigationConfig } from 'configs/NavigationConfig';
 import { connect } from 'react-redux';
@@ -13,7 +12,6 @@ import { beforeRoute, BeforeRouteContext } from 'utils/context';
 import { generateKey } from 'utils/helpers';
 import { MenuFoldOutlined, MenuUnfoldOutlined, LogoutOutlined } from '@ant-design/icons';
 import { useDispatch } from 'react-redux';
-import { useIntl } from 'react-intl';
 import { signOut } from 'redux/actions/Auth';
 import { useSelector } from 'react-redux';
 import { makeSelectUnreadCount } from 'redux/selectors/Notifications';
@@ -21,9 +19,6 @@ import { Badge } from 'antd';
 
 const { SubMenu } = Menu;
 const { useBreakpoint } = Grid;
-
-const setLocale = (isLocaleOn, localeKey) =>
-  isLocaleOn ? <IntlMessage id={localeKey} /> : localeKey.toString();
 
 const setDefaultOpen = (key) => {
   let keyList = [];
@@ -43,7 +38,6 @@ const SideNavContent = ({
   sideNavTheme,
   routeInfo,
   hideGroupTitle,
-  localization,
   onMobileNavToggle,
   navCollapsed,
   isMobile,
@@ -51,7 +45,6 @@ const SideNavContent = ({
   closeMobileDrawer, // New prop for closing mobile drawer
 }) => {
   const dispatch = useDispatch();
-  const { formatMessage } = useIntl();
   const unreadCount = useSelector(makeSelectUnreadCount());
   const navigationConfig = useNavigationConfig();
 
@@ -119,13 +112,13 @@ const SideNavContent = ({
       if (menu.submenu.length > 0) {
         return {
           key: menu.key,
-          label: setLocale(localization, menu.title),
+          label: menu.title,
           type: 'group',
           children: menu.submenu.map((subMenuFirst) => {
             if (subMenuFirst.submenu.length > 0) {
               return {
                 key: subMenuFirst.key,
-                label: setLocale(localization, subMenuFirst.title),
+                label: subMenuFirst.title,
                 icon: subMenuFirst.icon ? <Icon type={subMenuFirst?.icon} /> : null,
                 children: subMenuFirst.submenu.map((subMenuSecond) => ({
                   key: subMenuSecond.key,
@@ -135,7 +128,7 @@ const SideNavContent = ({
                         <Icon type={subMenuSecond?.icon} />
                       ) : null}
                       <span>
-                        {setLocale(localization, subMenuSecond.title)}
+                        {subMenuSecond.title}
                       </span>
                     </span>
                   ),
@@ -147,7 +140,7 @@ const SideNavContent = ({
                 label: (
                   <span>
                     {subMenuFirst.icon ? <Icon type={subMenuFirst.icon} /> : null}
-                    <span>{setLocale(localization, subMenuFirst.title)}</span>
+                    <span>{subMenuFirst.title}</span>
                   </span>
                 ),
               };
@@ -161,7 +154,7 @@ const SideNavContent = ({
             <span>
               {menu.icon ? <Icon type={menu?.icon} /> : null}
               <span>
-                {setLocale(localization, menu?.title)}
+                {menu?.title}
               </span>
               {menu.key === 'notifications' && unreadCount > 0 && (
                 <Badge
@@ -183,7 +176,7 @@ const SideNavContent = ({
     { type: 'divider', key: 'divider2' },
     {
       key: 'logout',
-      label: formatMessage({ id: 'login_page.text.log_out' }),
+      label: 'Log out',
       icon: <LogoutOutlined />,
       onClick: () => dispatch(signOut()),
     },
@@ -204,7 +197,7 @@ const SideNavContent = ({
 };
 
 const TopNavContent = (props) => {
-  const { topNavColor, localization } = props;
+  const { topNavColor } = props;
   const navigationConfig = useNavigationConfig();
 
   const convertTopNavItems = (menus) => {
@@ -215,7 +208,7 @@ const TopNavContent = (props) => {
           label: (
             <span>
               {menu.icon ? <Icon type={menu?.icon} /> : null}
-              <span>{setLocale(localization, menu.title)}</span>
+              <span>{menu.title}</span>
             </span>
           ),
           popupClassName: "top-nav-menu",
@@ -223,7 +216,7 @@ const TopNavContent = (props) => {
             if (subMenuFirst.submenu.length > 0) {
               return {
                 key: subMenuFirst.key,
-                label: setLocale(localization, subMenuFirst.title),
+                label: subMenuFirst.title,
                 icon: subMenuFirst.icon ? (
                   <Icon type={subMenuFirst?.icon} />
                 ) : null,
@@ -231,7 +224,7 @@ const TopNavContent = (props) => {
                   key: subMenuSecond.key,
                   label: (
                     <span>
-                      {setLocale(localization, subMenuSecond.title)}
+                      {subMenuSecond.title}
                       <Link to={subMenuSecond.path} />
                     </span>
                   ),
@@ -245,7 +238,7 @@ const TopNavContent = (props) => {
                     {subMenuFirst.icon ? (
                       <Icon type={subMenuFirst?.icon} />
                     ) : null}
-                    <span>{setLocale(localization, subMenuFirst.title)}</span>
+                    <span>{subMenuFirst.title}</span>
                     <Link to={subMenuFirst.path} />
                   </span>
                 ),
@@ -259,7 +252,7 @@ const TopNavContent = (props) => {
           label: (
             <span>
               {menu.icon ? <Icon type={menu?.icon} /> : null}
-              <span>{setLocale(localization, menu?.title)}</span>
+              <span>{menu?.title}</span>
               {menu.path ? <Link to={menu.path} /> : null}
             </span>
           ),

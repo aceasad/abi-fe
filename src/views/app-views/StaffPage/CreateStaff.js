@@ -1,7 +1,5 @@
 import React from 'react';
-import { useIntl } from 'react-intl';
 import StaffForm from './StaffForm';
-import messages from './messages';
 import { prepareFormData } from 'utils/helpers';
 import { useDispatch } from 'react-redux';
 import { message } from 'antd';
@@ -11,11 +9,10 @@ import dayjs from 'utils/dayjs';
 import { DATE_FORMAT_DD_MM_YYYY, DATE_FORMAT_DD_MMM_YYYY } from 'constants/DateConstant';
 
 const CreateStaff = ({ showList }) => {
-  const { formatMessage } = useIntl();
   const dispatch = useDispatch();
 
   const afterCreate = () => {
-    message.success(formatMessage(messages.staffCreated));
+    message.success("Staff created");
     showList();
   };
 
@@ -32,8 +29,8 @@ const CreateStaff = ({ showList }) => {
   };
 
   const GENDER_CHOICES = [
-    { id: GENDER.MALE, name: formatMessage(messages.male) },
-    { id: GENDER.FEMALE, name: formatMessage(messages.female) },
+    { id: GENDER.MALE, name: "Male" },
+    { id: GENDER.FEMALE, name: "Female" },
   ];
 
   return (
@@ -41,7 +38,7 @@ const CreateStaff = ({ showList }) => {
       showList={showList}
       handleSubmit={handleSubmit}
       genderChoices={GENDER_CHOICES}
-      label={formatMessage(messages.newStaff)}
+      label={"New staff"}
       initialState={{
         first_name: '',
         last_name: '',

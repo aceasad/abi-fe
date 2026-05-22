@@ -1,11 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useIntl } from 'react-intl';
 import { Collapse, List, Typography } from 'antd';
 
 import { makeSelectDoctorAppointments } from 'redux/selectors/Appointment';
 import StaffPanelItem from './StaffPanelItem';
 import { useDispatch, useSelector } from 'react-redux';
-import messages from './messages';
 import Loading from 'components/shared-components/Loading';
 import { getSingleAppointment } from 'redux/actions/Appointment';
 import AppointmentPreview from './AppointmentPreview';
@@ -17,8 +15,6 @@ const CalendarCollapseList = () => {
   const { doctorAppointments, loading } = useSelector(
     makeSelectDoctorAppointments()
   );
-
-  const { formatMessage } = useIntl();
 
   const [activeAppointment, setActiveAppointment] = useState(null);
   const { isPasIntegrated, PASProvider } = useSelector((state) => state.auth.user || {});
@@ -98,7 +94,7 @@ const CalendarCollapseList = () => {
           <Collapse expandIconPosition="end" items={collapseItems} />
         )
       ) : (
-        <div>{formatMessage(messages.noAppointments)}</div>
+        <div>{"No appointments for selected date"}</div>
       )}
       {activeAppointment && <AppointmentPreview handleClose={handleClose} />}
     </div>

@@ -17,6 +17,7 @@ import {
   TOGGLE_RASA_ACTIVITY,
   TRIGGER_SEARCH_CONVERSATIONS,
   CLEAR_TRIGGER_SEARCH_CONVERSATIONS,
+  CLEAR_SINGLE_CHAT_MESSAGES,
 } from 'redux/constants/Chats';
 
 export const getSingleChat = (payload) => ({
@@ -104,4 +105,8 @@ export const triggerSearchConversations = () => ({
 
 export const clearTriggerSearchConversations = () => ({
   type: CLEAR_TRIGGER_SEARCH_CONVERSATIONS,
+});
+
+export const clearSingleChatMessages = () => ({
+  type: CLEAR_SINGLE_CHAT_MESSAGES,
 });

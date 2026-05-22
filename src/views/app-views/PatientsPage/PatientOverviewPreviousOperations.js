@@ -2,8 +2,6 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { DEFAULT_SMALL_PAGINATION_LIMIT } from 'constants/ApiConstant';
 import { Card, Table, Typography } from 'antd';
-import messages from './messages';
-import { useIntl } from 'react-intl';
 import { makeSelectPreviousOperations } from 'redux/selectors/Anemnesis';
 import {
   getPreviousOperations,
@@ -16,7 +14,6 @@ const { Title } = Typography;
 
 const PatientOverviewPreviousOperations = ({ patientId }) => {
   const dispatch = useDispatch();
-  const { formatMessage } = useIntl();
 
   const { items, loading, count, page } = useSelector(
     makeSelectPreviousOperations()
@@ -29,11 +26,11 @@ const PatientOverviewPreviousOperations = ({ patientId }) => {
 
   const columnsHistory = [
     {
-      title: formatMessage(messages.columnTitleOperation),
+      title: "Operation",
       dataIndex: 'operation_type',
     },
     {
-      title: formatMessage(messages.columnTitleTimeOfSurgery),
+      title: "Time of surgery",
       dataIndex: 'year',
     },
   ];
@@ -46,7 +43,7 @@ const PatientOverviewPreviousOperations = ({ patientId }) => {
     <Card>
       <div className="mb-3">
         <Title level={4} className="mb-0">
-          {formatMessage(messages.cardTitlePreviousOperatins)}
+          {"Previous operations"}
         </Title>
       </div>
       <Table

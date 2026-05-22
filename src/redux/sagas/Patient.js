@@ -49,7 +49,6 @@ import {
 } from '../selectors/Patient';
 import { getPreviousOperations } from './Anemnesis';
 import { getMedicalConditions } from './Anemnesis';
-import messages from 'views/app-views/PatientsPage/messages';
 import dayjs from 'utils/dayjs';
 
 function* getPatients() {
@@ -119,13 +118,13 @@ function* createPatient({ payload }) {
     if (err?.response?.status === 400) {
       var error_data = err?.response?.data
       if (error_data['ExternalIdentificationNumber'] == 'NHS number is incorrect!') {
-        yield payload.setErrors({ ExternalIdentificationNumber: messages.nhsNumberIncorrect });
+        yield payload.setErrors({ ExternalIdentificationNumber: "NHS number is incorrect!" });
       }
       else if (error_data['phone_number'] == 'patient with this phone number already exists.') {
-        yield payload.setErrors({ phone_number: messages.phoneNumberAlreadyExists });
+        yield payload.setErrors({ phone_number: "Phone number is already added by another clinic!" });
       }
       else {
-        yield payload.setErrors({ email: messages.emailAlreadyTaken });
+        yield payload.setErrors({ email: "Email is already taken" });
       }
     }
   } finally {
@@ -153,7 +152,7 @@ function* updatePatient({ payload }) {
     yield put(modifyPatient(payload.data));
   } catch (err) {
     if (err?.response?.status === 400) {
-      yield payload.setErrors({ email: messages.emailAlreadyTaken });
+      yield payload.setErrors({ email: "Email is already taken" });
     }
   } finally {
     yield put(setPatientLoading(false));

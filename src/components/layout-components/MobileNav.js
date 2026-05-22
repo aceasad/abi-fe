@@ -15,7 +15,6 @@ export const MobileNav = ({
   onMobileNavToggle,
   routeInfo,
   hideGroupTitle,
-  localization = true,
 }) => {
   const onClose = () => {
     onMobileNavToggle(false);
@@ -25,7 +24,6 @@ export const MobileNav = ({
     sideNavTheme,
     routeInfo,
     hideGroupTitle,
-    localization,
     isMobile: true, // Explicitly set isMobile to true for mobile drawer
     onMobileNavToggle, // Pass the toggle function
     closeMobileDrawer: onClose, // Pass the close function directly

@@ -11,8 +11,6 @@ import {
   Typography,
 } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
-import { useIntl } from 'react-intl';
-import messages from './messages';
 import { DeleteFilled, CloseOutlined } from '@ant-design/icons';
 import Scrollbars from 'react-custom-scrollbars';
 import dayjs from 'utils/dayjs';
@@ -41,7 +39,6 @@ const PatientFormPreviousOperationss = ({
   id,
   deleteOperationType,
 }) => {
-  const { formatMessage } = useIntl();
   const nextRef = useRef();
 
   const organization = useSelector(makeSelectOrganization());
@@ -143,7 +140,7 @@ const PatientFormPreviousOperationss = ({
   };
 
   const afterAdd = () => {
-    message.success(formatMessage(messages.operationTypeAdded));
+    message.success("Operation type successfully created");
     setSearch('');
   };
 
@@ -243,7 +240,7 @@ const PatientFormPreviousOperationss = ({
       <Row gutter={16}>
         <Col span={6}>
           <Title type="secondary" level={2} className="mt-4">
-            {formatMessage(messages.cardTitlePreviousOperatins)}
+            {"Previous operations"}
           </Title>
         </Col>
         <Col span={18}>
@@ -261,7 +258,7 @@ const PatientFormPreviousOperationss = ({
                     }}
                     onSelect={handleSelect}
                     onSearch={setSearch}
-                    placeholder={formatMessage(messages.pressEnterToAdd)}
+                    placeholder={"Press enter to add"}
                     onKeyDown={handleEnterPress}
                     backfill
                   >
@@ -285,7 +282,7 @@ const PatientFormPreviousOperationss = ({
                   onClick={() => handleSelect(search)}
                   disabled={isFetching || !isFetched}
                 >
-                  {formatMessage(messages.addNew)}
+                  {"Add new"}
                 </Button>
               </Input.Group>
             </Form.Item>
@@ -294,12 +291,12 @@ const PatientFormPreviousOperationss = ({
             <Row className="list-with-delete-header">
               <Col span={16}>
                 <Typography.Text strong type="secondary">
-                  {formatMessage(messages.columnTitleOperation)}
+                  {"Operation"}
                 </Typography.Text>
               </Col>
               <Col span={8}>
                 <Typography.Text strong type="secondary">
-                  {formatMessage(messages.columnTitleTimeOfSurgery)}
+                  {"Time of surgery"}
                 </Typography.Text>
               </Col>
             </Row>

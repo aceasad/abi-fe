@@ -1,11 +1,9 @@
 import { message } from 'antd';
 import UserSettingsFormModal from 'containers/Forms/UserSettings/UserSettingsFormModal';
 import React, { useEffect } from 'react';
-import { useIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
 import { getSingleUser, updateUser } from 'redux/actions/User';
 import { makeSelectSingleUser } from 'redux/selectors/Users';
-import messages from './messages';
 import { updateUserSchema } from 'utils/validations';
 import { filterEmptyObjectFeilds } from 'utils/helpers';
 
@@ -19,7 +17,7 @@ function UpdateUser({ closeModal, userId }) {
   }, []);
 
   const afterUpdate = () => {
-    message.success(formatMessage(messages.userUpdated));
+    message.success("User Updated");
     closeModal();
   };
 
@@ -33,11 +31,9 @@ function UpdateUser({ closeModal, userId }) {
     );
   };
 
-  const { formatMessage } = useIntl();
-
   return (
     <UserSettingsFormModal
-      title={formatMessage(messages.editUser)}
+      title={"Edit User"}
       closeModal={closeModal}
       initialValues={{ ...user, password: '', confirmPassword: '' }}
       handleSubmit={handleSubmit}

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { interpolate } from 'utils/interpolate';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Form, Modal, Row, Col, Typography } from 'antd';
 import { MailOutlined, LockOutlined } from '@ant-design/icons';
@@ -8,8 +9,6 @@ import { motion } from 'framer-motion';
 import { Formik, Field } from 'formik';
 import { loginSchema } from 'utils/validations';
 import 'assets/sass/views/auth/login.scss';
-import messages from './messages';
-import { useIntl } from 'react-intl';
 import { ROUTES } from 'routes';
 import { passwordMinLength } from 'constants/Validation';
 import FormField from 'components/custom-components/Form/FormField';
@@ -37,7 +36,6 @@ export const LoginForm = () => {
   const { loading, message, showMessage, token } = useSelector(
     makeSelectLoginDetails()
   );
-  const { formatMessage } = useIntl();
 
 
   const onLogin = (values) => {
@@ -77,7 +75,7 @@ export const LoginForm = () => {
 
   const PasswordLabel = ({ email }) => (
     <div className={'d-flex justify-content-between w-100 align-items-center'}>
-      <span>{formatMessage(messages.passwordInputLabel)}</span>
+      <span>{"Password"}</span>
 
       <span
         className="authentication-label-link"
@@ -86,7 +84,7 @@ export const LoginForm = () => {
           event.preventDefault();
         }}
       >
-        {formatMessage(messages.forgotPasswordLink)}
+        {"Forgot yout password?"}
       </span>
     </div>
   );
@@ -94,12 +92,12 @@ export const LoginForm = () => {
   const ValidPasswordFormat = (
     <div>
       <div>
-        {formatMessage(messages.minimumCharacters, { min: passwordMinLength })}
+        {interpolate("At least {min} characters", { min: passwordMinLength })}
       </div>
-      <div>{formatMessage(messages.upperAndLowerMixture)}</div>
-      <div>{formatMessage(messages.lettersAndNumberMixture)}</div>
-      <div>{formatMessage(messages.specialCharacters)}</div>
-      <div>{formatMessage(messages.specialCharactersExcluded)}</div>
+      <div>{"A mixture of both uppercase and lowercase letters"}</div>
+      <div>{"A mixture of letters and numbers"}</div>
+      <div>{"Inclusion of at least one special character, e.g., ! @ # ? ]"}</div>
+      <div>{"Note: do not use < or > in your password, as both can cause problems in Web browsers"}</div>
     </div>
   );
 
@@ -112,7 +110,7 @@ export const LoginForm = () => {
         marginBottom: showMessage ? 20 : 0,
       }}
     >
-      {showMessage && message && formatMessage(message)}
+      {showMessage && message}
     </motion.div>
     <Formik
       initialValues={{ username: '', password: '' }}
@@ -126,11 +124,11 @@ export const LoginForm = () => {
         <Form layout="vertical" name="login-form">
           <Field
             component={FormField}
-            label={formatMessage(messages.emailInputLabel)}
+            label={"Email Address"}
             name={'username'}
             prefix={<MailOutlined className="text-primary" />}
             errorTexts={{
-              label: formatMessage(messages.emailInputLabel),
+              label: "Email Address",
             }}
             autoFocus
           />
@@ -142,9 +140,9 @@ export const LoginForm = () => {
             prefix={<LockOutlined className="text-primary" />}
             secureField
             errorTexts={{
-              label: formatMessage(messages.passwordInputLabel),
+              label: "Password",
               minValue: passwordMinLength,
-              matchesLabel: formatMessage(messages.passwordValidFormat),
+              matchesLabel: "Password must be in valid format",
             }}
             labelBlock={true}
           />
@@ -161,7 +159,7 @@ export const LoginForm = () => {
               disabled={!dirty || !isValid || !submitEnable}
               loading={loading}
             >
-              {formatMessage(messages.loginButton)}
+              {"Log In"}
             </Button>
           </Form.Item>
         </Form>

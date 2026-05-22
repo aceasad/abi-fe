@@ -11,10 +11,8 @@ import {
   Tag,
 } from 'antd';
 import { CaretDownOutlined } from '@ant-design/icons';
-import { useIntl } from 'react-intl';
 import { useDispatch } from 'react-redux';
 import MessagesRequiringImmediateAttentionTable from './MessagesRequiringImmediateAttentionTable';
-import overviewPageMessages from './messages';
 import {
   MESSAGES_REQUIRING_IMMEDIATE_ATTENTION,
   SCHEDULED,
@@ -56,7 +54,6 @@ export const NESTED_MODAL = {
 
 const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
   const history = useHistory();
-  const { formatMessage } = useIntl();
   const dispatch = useDispatch();
   const { isPasIntegrated } = useSelector(state => state.auth.user);
   const clinic = useSelector(makeSelectClinic());
@@ -98,7 +95,7 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
       }),
     },
     {
-      title: formatMessage(overviewPageMessages.columnTitlePatient),
+      title: "Patient",
       dataIndex: ['patient', 'full_name'],
       sorter: true,
       render: (_, row) => (
@@ -112,20 +109,20 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
         </Typography.Link>
       ),
       onCell: () => ({
-        'data-label': formatMessage(overviewPageMessages.columnTitlePatient),
+        'data-label': "Patient",
       }),
     },
     {
-      title: formatMessage(overviewPageMessages.columnTitleEvent),
+      title: "Event",
       dataIndex: ['message_requiring_immediate_attention_type', 'name'],
       sorter: true,
       render: (_, row) => _,
       onCell: () => ({
-        'data-label': formatMessage(overviewPageMessages.columnTitleEvent),
+        'data-label': "Event",
       }),
     },
     // {
-    //   title: formatMessage(overviewPageMessages.columnTitlePriority),
+    //   title: "Priority",
     //   dataIndex: ['priority', 'name'],
     //   sorter: true,
     //   render: (_, row) => (
@@ -138,11 +135,11 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
     //     </div>
     //   ),
     //   onCell: () => ({
-    //     'data-label': formatMessage(overviewPageMessages.columnTitlePriority),
+    //     'data-label': "Priority",
     //   }),
     // },
     {
-      title: formatMessage(overviewPageMessages.columnTitleStatus),
+      title: "Status",
       dataIndex: ['status', 'name'],
       sorter: true,
       render: (_, row) => (
@@ -157,7 +154,7 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
         </div>
       ),
       onCell: () => ({
-        'data-label': formatMessage(overviewPageMessages.columnTitleStatus),
+        'data-label': "Status",
       }),
     },
     {
@@ -170,7 +167,7 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
             placement="bottomRight"
           >
             <Button type="primary" ghost>
-              {formatMessage(overviewPageMessages.tableDropdownTitleActions)}
+              {"Actions"}
               <DownOutlined />
             </Button>
           </Dropdown>
@@ -248,7 +245,7 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
     const items = [
       {
         key: "1",
-        label: formatMessage(overviewPageMessages.tableDropdownPatientInfo),
+        label: "Patient info",
         onClick: ({ domEvent }) => {
           domEvent.stopPropagation();
           goToPatientShowMessages({ id: row.patient.id });
@@ -259,7 +256,7 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
     if (row.appointment) {
       items.push({
         key: "0",
-        label: formatMessage(overviewPageMessages.tableDropdownAppointmentInfo),
+        label: "Appointment info",
         onClick: ({ domEvent }) => {
           domEvent.stopPropagation();
           setActiveAppointment({
@@ -274,9 +271,7 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
     if (row.pre_appointment_questionnaire) {
       items.push({
         key: "3",
-        label: formatMessage(
-          overviewPageMessages.tableDropdownPreAppointmentQuestionnaireInfo
-        ),
+        label: "Pre-appointment question info",
         onClick: ({ domEvent }) => {
           domEvent.stopPropagation();
           setActivePreAppointmentQuestionnaire({
@@ -288,9 +283,7 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
 
     items.push({
       key: "2",
-      label: formatMessage(
-        overviewPageMessages.tableDropdownUpdateMessageRequiringImmediateAttentionStatus
-      ),
+      label: "Change status",
       onClick: ({ domEvent }) => {
         domEvent.stopPropagation();
         showUpdateMessageRequiringImmediateAttentionStatusWrapper(

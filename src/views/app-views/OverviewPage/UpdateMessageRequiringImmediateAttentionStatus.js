@@ -1,8 +1,6 @@
 import React, { useEffect } from 'react';
 import Modal from 'antd/lib/modal/Modal';
-import { useIntl } from 'react-intl';
 import { Field, Formik } from 'formik';
-import messages from './messages';
 import FormSelect from 'components/custom-components/Form/FormSelect';
 import Form from 'antd/lib/form/Form';
 import FormTextArea from 'components/custom-components/Form/FormTextArea';
@@ -41,7 +39,6 @@ const UpdateMessageRequiringImmediateAttentionStatus = ({
   updateMessageRequiringImmediateAttentionStatusFrom = null,
   messageRequiringImmediateAttention,
 }) => {
-  const { formatMessage } = useIntl();
   const dispatch = useDispatch();
 
   const { messageRequiringImmediateAttentionStatuses } = useSelector(
@@ -58,9 +55,7 @@ const UpdateMessageRequiringImmediateAttentionStatus = ({
 
   const afterMessageRequiringImmediateAttentionStatusUpdate = () => {
     message.success(
-      formatMessage(
-        messages.MessageRequiringImmediateAttentionStatusUpdateSuccess
-      )
+      "Updated Successfully"
     );
     setTimeout(handleClose(), 1000);
     if (
@@ -108,15 +103,9 @@ const UpdateMessageRequiringImmediateAttentionStatus = ({
       {({ values, handleSubmit, isValid }) => (
         <Modal
           open
-          title={formatMessage(
-            messages.modalTitleUpdateMessageRequiringImmediateAttentionStatus
-          )}
-          okText={formatMessage(
-            messages.modalOkTextUpdateMessageRequiringImmediateAttentionStatus
-          )}
-          cancelText={formatMessage(
-            messages.modalCancelTextUpdateMessageRequiringImmediateAttentionStatus
-          )}
+          title={"Change status"}
+          okText={"Update"}
+          cancelText={"Cancel"}
           onCancel={handleClose}
           okButtonProps={{ disabled: !isValid || loading }}
           onOk={handleSubmit}
@@ -129,13 +118,9 @@ const UpdateMessageRequiringImmediateAttentionStatus = ({
                 options={messageRequiringImmediateAttentionStatuses}
                 defaultOption={values.status}
                 optionField="name"
-                label={formatMessage(
-                  messages.messageRequiringImmediateAttentionFormLabelStatus
-                )}
+                label={"Please set the status using the dropdown below"}
                 errorTexts={{
-                  label: formatMessage(
-                    messages.modalErrorUpdateMessageRequiringImmediateAttentionStatus
-                  ),
+                  label: "Error",
                 }}
                 required
               />
@@ -143,9 +128,7 @@ const UpdateMessageRequiringImmediateAttentionStatus = ({
                 component={FormTextArea}
                 name="status_details"
                 rows={4}
-                label={formatMessage(
-                  messages.messageRequiringImmediateAttentionFormLabelStatusDetails
-                )}
+                label={"Status details"}
               />
             </div>
           </Form>

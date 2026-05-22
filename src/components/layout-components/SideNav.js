@@ -19,12 +19,11 @@ export const SideNav = ({
   sideNavTheme,
   routeInfo,
   hideGroupTitle,
-  localization = true,
   mobileNav,
   isMobile,
   toggleCollapsedNav,
 }) => {
-  const props = { sideNavTheme, routeInfo, hideGroupTitle, localization, navCollapsed, isMobile };
+  const props = { sideNavTheme, routeInfo, hideGroupTitle, navCollapsed, isMobile };
 
   const handleTriggerClick = () => {
     toggleCollapsedNav(!navCollapsed);

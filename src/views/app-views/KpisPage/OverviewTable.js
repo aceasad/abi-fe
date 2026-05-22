@@ -1,7 +1,5 @@
 import React from 'react';
 import { Table, Card, Menu, Dropdown, Button, Typography } from 'antd';
-import { useIntl } from 'react-intl';
-import messages from './messages';
 import { DownOutlined } from '@ant-design/icons';
 
 const dummyData = [
@@ -62,33 +60,32 @@ const dummyData = [
 ];
 
 const OverviewTable = () => {
-  const { formatMessage } = useIntl();
 
   const columns = [
     {
-      title: formatMessage(messages.tableColumnPatient),
+      title: "Patient",
       dataIndex: 'patient',
       key: 'patient',
     },
     {
-      title: formatMessage(messages.tableColumnAppointment),
+      title: "Appointment",
       dataIndex: 'appointment',
       key: 'appointment',
     },
     {
-      title: formatMessage(messages.tableColumnDate),
+      title: "Date",
       dataIndex: 'date',
       key: 'date',
     },
     {
-      title: formatMessage(messages.tableColumnTime),
+      title: "Time",
       key: 'time',
       dataIndex: 'time',
     },
     {
       title: () => (
         <div className="text-center">
-          {formatMessage(messages.tableColumnWhitelisted)}
+          {"Whitelisted"}
         </div>
       ),
       key: 'whitelisted',
@@ -96,7 +93,7 @@ const OverviewTable = () => {
       render: (text) => <div className="text-center">{text}</div>,
     },
     {
-      title: formatMessage(messages.tableColumnStatus),
+      title: "Status",
       key: 'status',
       dataIndex: 'status',
     },
@@ -106,7 +103,7 @@ const OverviewTable = () => {
         <div className="text-right">
           <Dropdown menu={{ items: menuItems }} trigger={['click']} placement="bottomRight">
             <Button type="primary" ghost>
-              {formatMessage(messages.tableDropdownTitleContact)}
+              {"Contact"}
               <DownOutlined />
             </Button>
           </Dropdown>
@@ -118,18 +115,18 @@ const OverviewTable = () => {
   const menuItems = [
     {
       key: "0",
-      label: formatMessage(messages.tableDropdownSeeAppointment),
+      label: "See appointment",
     },
     {
       key: "1",
-      label: formatMessage(messages.tableDropdownAiReachout),
+      label: "Message",
     },
   ];
 
   return (
     <>
       <Typography.Title level={2} className="mb-4">
-        {formatMessage(messages.tableTitle)}
+        KPIs
       </Typography.Title>
       <Card>
         <Table columns={columns} dataSource={dummyData} />
