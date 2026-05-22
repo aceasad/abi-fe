@@ -15,6 +15,8 @@ const ENDPOINTS = {
     '/patients/:id/mark-conversation-human-not-required/',
   MARK_CONVERSATION_NOT_IN_EMERGENCY_SITUATION:
     '/patients/:id/mark-conversation-not-in-emergency-situation/',
+  UNMARK_CONVERSATION_OPT_OUT_SITUATION:
+    '/patients/:id/unmark-conversation-opt-out-situation/',
   GET_PATIENTS_DETAILS_NEW_PATIENT_FORM: '/patients/patient-details/',
   GET_PATIENT_LOCATIONS: '/patients/locations/',
   UPLOADPATIENTSCSV: '/patients/uploadcsv/',
@@ -104,6 +106,11 @@ class PatientService extends ApiService {
   markConversationNotInEmergencySituation = (id) =>
     this.apiClient.post(
       ENDPOINTS.MARK_CONVERSATION_NOT_IN_EMERGENCY_SITUATION.replace(':id', id)
+    );
+
+  unmarkConversationOptOutSituation = (id) =>
+    this.apiClient.post(
+      ENDPOINTS.UNMARK_CONVERSATION_OPT_OUT_SITUATION.replace(':id', id)
     );
   uploadPatientCSV = (payload) => {
     const formData = new FormData();

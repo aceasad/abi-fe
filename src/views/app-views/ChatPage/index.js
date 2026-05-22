@@ -82,22 +82,20 @@ const Chat = () => {
   }, []);
 
   return (
-    <>
-      <PageHeader
-        className="p-0 mb-4"
-        title={
-          isMobile ? (
+    <div className="chat-page">
+      {isMobile && (
+        <PageHeader
+          className="p-0 mb-4"
+          title={
             <Typography.Title level={3} className="mb-0" style={{ fontSize: '20px' }}>
               {`${"Conversations"}${!rasaHealthy
                 ? ': Communication with Asa AI is down for maintenance'
                 : ''
                 }`}
             </Typography.Title>
-          ) : (
-            ''
-          )
-        }
-      />
+          }
+        />
+      )}
       <div className="chat">
         <InnerAppLayout
           sideContent={
@@ -109,7 +107,7 @@ const Chat = () => {
           border
         />
       </div>
-    </>
+    </div>
   );
 };
 

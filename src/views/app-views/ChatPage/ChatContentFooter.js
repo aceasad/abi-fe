@@ -1,4 +1,4 @@
-import { SendOutlined } from '@ant-design/icons';
+import { ArrowUpOutlined } from '@ant-design/icons';
 import { Button, Form, Input } from 'antd';
 import React, { useMemo, useRef } from 'react';
 import { useSelector } from 'react-redux';
@@ -77,14 +77,12 @@ const ChatContentFooter = ({ onSend }) => {
         </Form.Item>
         <Button
           className="chat-send-button"
-          shape="circle"
           type="primary"
-          size="small"
           onClick={onSend}
           htmlType="submit"
           disabled={isDisabled}
         >
-          <SendOutlined />
+          <ArrowUpOutlined style={{ fontSize: 19 }} />
         </Button>
       </Form>
     </div>

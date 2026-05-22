@@ -8,6 +8,7 @@ import { makeSelectSingleChatInfo } from 'redux/selectors/Chats';
 const ChatStatusIndicators = ({
   onClickMarkHumanRequiredResolved,
   onClickMarkInEmergencySituationResolved,
+  onClickOptBackIn,
   chatLoading,
 }) => {
   const dispatch = useDispatch();
@@ -35,8 +36,9 @@ const ChatStatusIndicators = ({
     onClickMarkInEmergencySituationResolved(patient_id);
   };
 
-  const onClickMarkInOptOutWrapper = (patient_id) => {
+  const onClickOptBackInWrapper = (patient_id) => {
     setOptOutLoading(true);
+    onClickOptBackIn(patient_id);
   };
 
   if (chatLoading) {
@@ -174,7 +176,7 @@ const ChatStatusIndicators = ({
       <div className="chat-status-indicators" style={{
         padding: '16px',
         backgroundColor: '#ffffff',
-        borderRadius: '8px',
+        borderRadius: '10px',
         border: '1px solid #e9ecef'
       }}>
         {chatInfo.patient.is_human_required && (
@@ -184,7 +186,7 @@ const ChatStatusIndicators = ({
             marginBottom: '12px',
             padding: '12px',
             backgroundColor: '#e3f2fd',
-            borderRadius: '6px',
+            borderRadius: '8px',
             border: '1px solid #2196f3'
           }}>
             <span style={{
@@ -222,7 +224,7 @@ const ChatStatusIndicators = ({
             marginBottom: '12px',
             padding: '12px',
             backgroundColor: '#ffebee',
-            borderRadius: '6px',
+            borderRadius: '8px',
             border: '1px solid #f44336'
           }}>
             <span style={{
@@ -263,7 +265,7 @@ const ChatStatusIndicators = ({
             marginBottom: '12px',
             padding: '12px',
             backgroundColor: '#fff3e0',
-            borderRadius: '6px',
+            borderRadius: '8px',
             border: '1px solid #ff9800'
           }}>
             <span style={{
@@ -285,11 +287,11 @@ const ChatStatusIndicators = ({
               disabled={isLoading || optOutLoading}
               loading={optOutLoading}
               onClick={() =>
-                onClickMarkInOptOutWrapper(chatInfo.patient.id)
+                onClickOptBackInWrapper(chatInfo.patient.id)
               }
               style={{ marginLeft: '12px' }}
             >
-              {optOutLoading ? 'Updating...' : "Opt-Out"}
+              {optOutLoading ? 'Updating...' : 'Opt back in'}
             </Button>
           </div>
         )}
@@ -299,7 +301,7 @@ const ChatStatusIndicators = ({
           alignItems: 'center',
           padding: '12px',
           backgroundColor: chatInfo?.patient?.is_rasa_paused ? '#f3e5f5' : '#e8f5e8',
-          borderRadius: '6px',
+          borderRadius: '8px',
           border: `1px solid ${chatInfo?.patient?.is_rasa_paused ? '#9c27b0' : '#4caf50'}`
         }}>
           <span style={{
@@ -320,7 +322,7 @@ const ChatStatusIndicators = ({
             }
           </span>
           <Button
-            type={chatInfo?.patient?.is_rasa_paused ? "primary" : "default"}
+            type="primary"
             disabled={isLoading}
             loading={isLoading}
             onClick={() =>

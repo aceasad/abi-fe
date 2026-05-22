@@ -127,6 +127,17 @@ const Conversation = ({
     getConversation(patient_id);
   };
 
+  const handleOnClickOptBackIn = async (patient_id) => {
+    if (!patient_id || isNaN(patient_id) || patient_id <= 0) {
+      console.warn('Invalid patient_id provided to handleOnClickOptBackIn:', patient_id);
+      return;
+    }
+
+    await patientService.unmarkConversationOptOutSituation(patient_id);
+    dispatch(triggerSearchConversations());
+    getConversation(patient_id);
+  };
+
   // Updated chatContentBody function to pass all required props
   const chatContentBody = (messages, next, patientPicture) =>
     messages ? (
@@ -194,6 +205,7 @@ const Conversation = ({
         chatLoading={loading}
         onClickMarkHumanRequiredResolved={handleOnClickMarkHumanRequiredResolved}
         onClickMarkInEmergencySituationResolved={handleOnClickMarkInEmergencySituationResolved}
+        onClickOptBackIn={handleOnClickOptBackIn}
       />
       <ChatContentFooter onSend={onSend} />
     </div>
