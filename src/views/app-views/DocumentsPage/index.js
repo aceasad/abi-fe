@@ -9,6 +9,11 @@ import utils from 'utils';
 import Modal from 'components/shared-components/Modal';
 import { FileTextOutlined, DownloadOutlined, TagOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons';
 import { useSelector } from 'react-redux';
+import {
+  formatDocumentTypeLabel,
+  getDocumentTypeTagColor,
+  usesLocation,
+} from './documentTypeHelpers';
 const { Title } = Typography;
 
 const { useBreakpoint } = Grid;
@@ -203,8 +208,8 @@ const DocumentsPage = () => {
       dataIndex: 'document_type',
       key: 'document_type',
       render: (document_type) => (
-        <Tag color={document_type === 'location' ? 'blue' : 'purple'}>
-          {(document_type || 'appointment_type').replace('_', ' ').toUpperCase()}
+        <Tag color={getDocumentTypeTagColor(document_type)}>
+          {formatDocumentTypeLabel(document_type)}
         </Tag>
       ),
       responsive: ['md'],
@@ -214,9 +219,11 @@ const DocumentsPage = () => {
       dataIndex: 'appointment_type',
       key: 'appointment_type',
       render: (appointment_type) => (
-        <>
+        appointment_type && appointment_type !== 'None' ? (
           <Tag color="red">{appointment_type.toUpperCase()}</Tag>
-        </>
+        ) : (
+          '-'
+        )
       ),
       responsive: ['md'], // Hide on mobile
     },
@@ -299,18 +306,18 @@ const DocumentsPage = () => {
           </Typography.Text>
         </Space>
 
-        {document.appointment_type && (
+        {document.appointment_type && document.appointment_type !== 'None' && (
           <Space size="small">
             <TagOutlined style={{ fontSize: '12px', color: '#8c8c8c' }} />
             <Tag color="red">{document.appointment_type.toUpperCase()}</Tag>
           </Space>
         )}
         <Space size="small">
-          <Tag color={document.document_type === 'location' ? 'blue' : 'purple'}>
-            {(document.document_type || 'appointment_type').replace('_', ' ').toUpperCase()}
+          <Tag color={getDocumentTypeTagColor(document.document_type)}>
+            {formatDocumentTypeLabel(document.document_type)}
           </Tag>
         </Space>
-        {isMedbridge && (
+        {isMedbridge && usesLocation(document.document_type) && (
           <Space size="small">
             <TagOutlined style={{ fontSize: '12px', color: '#8c8c8c' }} />
             <Typography.Text type="secondary">

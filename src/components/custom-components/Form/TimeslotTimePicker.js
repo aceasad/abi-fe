@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useEffect } from 'react';
-import { useIntl } from 'react-intl';
+import { interpolate } from 'utils/interpolate';
 import { Form, TimePicker } from 'antd';
 import dayjs from 'utils/dayjs';
 import { TIME_FORMAT_HH_MM } from 'constants/TimeConstant';
@@ -28,10 +28,9 @@ const TimeslotTimePicker = ({
   defaultTime,
   showDefaultTime,
 }) => {
-  const { formatMessage } = useIntl();
 
   const defaultErrorMessage = () =>
-    formatMessage(errors[field.name], {
+    interpolate(errors[field.name], {
       label,
     });
 
@@ -43,7 +42,7 @@ const TimeslotTimePicker = ({
   const showError = () =>
     hasError &&
     (errorTexts
-      ? formatMessage(errors[field.name], errorTexts)
+      ? interpolate(errors[field.name], errorTexts)
       : defaultErrorMessage());
 
   const onChange = (_, timeString) => {

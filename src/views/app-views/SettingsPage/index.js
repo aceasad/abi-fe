@@ -9,8 +9,6 @@ import { Card, Layout, Menu, Typography, Grid, Select } from 'antd';
 import { Link, Redirect, Route, Switch, useHistory } from 'react-router-dom';
 import EditClinic from './EditClinic';
 import ProfileSettings from './ProfileSettings';
-import messages from './messages';
-import { useIntl } from 'react-intl';
 import IndustryAverage from '../IndustryAveragePage';
 import UserSettings from '../UserSettings';
 import { useSelector } from 'react-redux';
@@ -22,32 +20,31 @@ const { useBreakpoint } = Grid;
 const { Option } = Select;
 
 const SettingOption = ({ match, location, isOrganizationOwner, isMobile, isTablet }) => {
-  const { formatMessage } = useIntl();
   const history = useHistory();
 
   const menuItems = [
     {
       key: `${match.url}/edit-clinic`,
       icon: <FormOutlined />,
-      label: formatMessage(messages.editClinicMenuLabel),
+      label: "Edit Clinic",
       path: 'edit-clinic'
     },
     {
       key: `${match.url}/profile-settings`,
       icon: <LockOutlined />,
-      label: formatMessage(messages.profileSettingsTitle),
+      label: "Profile Settings",
       path: 'profile-settings'
     },
     ...(isOrganizationOwner ? [{
       key: `${match.url}/user-settings`,
       icon: <TeamOutlined />,
-      label: formatMessage(messages.userSettings),
+      label: "User Settings",
       path: 'user-settings'
     }] : []),
     {
       key: `${match.url}/industry-average`,
       icon: <BarChartOutlined />,
-      label: formatMessage(messages.industryAverageMenuLabel),
+      label: "Industry Average",
       path: 'industry-average'
     },
   ];

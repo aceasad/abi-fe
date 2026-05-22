@@ -7,12 +7,9 @@ import { makeSelectSinglePreAppointmentQuestionnaire } from 'redux/selectors/App
 import { Space } from 'antd';
 import Flex from 'components/shared-components/Flex';
 //import { formatMessage } from '@formatjs/intl';
-import messages from './messages';
-import { useIntl } from 'react-intl';
 import { getSafe } from 'utils/helpers';
 
 function PreAppointmentQuestionnairePreviewModal({ handleClose, title }) {
-  const { formatMessage } = useIntl();
   const {
     preAppointmentQuestionnaire,
     preAppointmentQuestionnaireLoading,
@@ -47,7 +44,7 @@ function PreAppointmentQuestionnairePreviewModal({ handleClose, title }) {
       footer={null}
       title={
         <Flex justifyContent="between">
-          {formatMessage(messages.modalTitlePreAppointmentQuestionnaire)}
+          {"Pre-appointment questionnaire patient answers"}
           <Space size="middle">
             <CloseOutlined onClick={handleClose} />
           </Space>

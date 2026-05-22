@@ -1,17 +1,14 @@
 import React from 'react';
 import { ForgotPasswordForm } from 'containers/Forms/ForgotPasswordForm/ForgotPasswordForm';
-import messages from './messages';
-import { useIntl } from 'react-intl';
 import AuthFormWrapper from 'components/layout-components/AuthFormWrapper';
 
 const ForgotPassword = (props) => {
-  const { formatMessage } = useIntl();
   const email = props.location.state;
 
   return (
     <AuthFormWrapper
-      title={formatMessage(messages.forgottenPasswordTitle)}
-      paragraph={formatMessage(messages.forgotPasswordParagraph)}
+      title={"Forgotten password"}
+      paragraph={"Please enter the email you use to sign in to Asa. We'll then send you an email with the instructions to follow."}
     >
       <ForgotPasswordForm email={email} />
     </AuthFormWrapper>

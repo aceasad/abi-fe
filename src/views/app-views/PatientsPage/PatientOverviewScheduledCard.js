@@ -1,10 +1,8 @@
 import { Button, Card, Table, Typography, Grid, Row, Col, Space, Tag } from 'antd';
 import React, { useState } from 'react';
-import { useIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
 import { setScheduledOrder, setScheduledPage } from 'redux/actions/Patient';
 import { makeSelectScheduledAppointments } from 'redux/selectors/Patient';
-import messages from './messages';
 import Flex from 'components/shared-components/Flex';
 import {
   DEFAULT_SMALL_PAGINATION_LIMIT,
@@ -67,8 +65,6 @@ const PatientOverviewScheduledCard = ({ patient, showAppointment }) => {
       );
   };
 
-  const { formatMessage } = useIntl();
-
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const closeModal = () => {
@@ -79,7 +75,7 @@ const PatientOverviewScheduledCard = ({ patient, showAppointment }) => {
 
   const columnsScheduled = [
     {
-      title: formatMessage(messages.columnTitleDate),
+      title: "Date",
       dataIndex: 'date',
       sorter: true,
       render: (date) => formatDateByCountry(date, clinic?.country, [
@@ -89,7 +85,7 @@ const PatientOverviewScheduledCard = ({ patient, showAppointment }) => {
       ]),
     },
     {
-      title: formatMessage(messages.columnTitleTime),
+      title: "Time",
       dataIndex: 'time',
       sorter: false,
       render: (time) => removeLeadingZeroFromTime(dayjs(time, ['HH:mm', 'h:mm A']).format('hh:mm A')),
@@ -97,7 +93,7 @@ const PatientOverviewScheduledCard = ({ patient, showAppointment }) => {
     ...(!isMedbridge
       ? [
           {
-            title: formatMessage(messages.columnTitleDoctor),
+            title: "Doctor",
             dataIndex: ['doctor', 'full_name'],
             sorter: true,
             responsive: ['md'],
@@ -105,13 +101,13 @@ const PatientOverviewScheduledCard = ({ patient, showAppointment }) => {
         ]
       : []),
     {
-      title: formatMessage(messages.columnTitleType),
+      title: "Type",
       dataIndex: ['appointment_type', 'name'],
       sorter: true,
       responsive: ['lg'],
     },
     // {
-    //   title: formatMessage(messages.columnTitlePrediction),
+    //   title: "Prediction",
     //   dataIndex: 'no_show_score',
     //   sorter: true,
     //   render: RenderPredictionText,
@@ -178,10 +174,10 @@ const PatientOverviewScheduledCard = ({ patient, showAppointment }) => {
     <Card>
       <Flex justifyContent="between" alignItems="center" className="mb-3" style={{ flexWrap: 'wrap', gap: '8px' }}>
         <Title level={4} className="mb-0" style={{ fontSize: isMobile ? '16px' : '20px' }}>
-          {formatMessage(messages.cardTitleScheduledAppointments)}
+          {"Scheduled appointments"}
         </Title>
         <Button ghost type="primary" onClick={() => setIsModalVisible(true)} size={isMobile ? 'small' : 'middle'}>
-          {formatMessage(messages.buttonNewAppointment)}
+          {"New appointment"}
         </Button>
       </Flex>
 

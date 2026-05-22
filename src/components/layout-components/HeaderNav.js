@@ -11,7 +11,6 @@ import {
 } from 'constants/ThemeConstant';
 import { LogoutOutlined } from '@ant-design/icons';
 import utils from 'utils';
-import { useIntl } from 'react-intl';
 import { signOut } from 'redux/actions/Auth';
 import { useDispatch } from 'react-redux';
 
@@ -28,7 +27,6 @@ export const HeaderNav = (props) => {
     isMobile,
     currentTheme,
   } = props;
-  const { formatMessage } = useIntl();
   const dispatch = useDispatch();
 
   const onToggle = () => {
@@ -88,7 +86,7 @@ export const HeaderNav = (props) => {
               onClick={() => dispatch(signOut())}
             >
               <LogoutOutlined />
-              {formatMessage({ id: 'login_page.text.log_out' })}
+              Log out
             </Button>
           </Space>
         </div>

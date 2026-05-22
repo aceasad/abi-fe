@@ -1,8 +1,6 @@
 import React, { useEffect } from 'react';
 import Modal from 'antd/lib/modal/Modal';
-import { useIntl } from 'react-intl';
 import { Field, Formik } from 'formik';
-import messages from './messages';
 import FormSelect from 'components/custom-components/Form/FormSelect';
 import Form from 'antd/lib/form/Form';
 import FormTextArea from 'components/custom-components/Form/FormTextArea';
@@ -48,7 +46,6 @@ const RescheduleAppointmentReminderModal = ({
   staffId,
   cancelFrom = null,
 }) => {
-  const { formatMessage } = useIntl();
   const dispatch = useDispatch();
 
   const { appointmentCancellationReasons } = useSelector(
@@ -58,7 +55,7 @@ const RescheduleAppointmentReminderModal = ({
   const loading = useSelector(makeSelectSingleAppointmentLoading());
 
   const afterCancel = () => {
-    message.success(formatMessage(messages.cancelSuccess));
+    message.success("Appointment cancelled");
     if (cancelFrom === FROM_STAFF_APPOINTMENTS) {
       // eslint-disable-next-line default-case
       switch (appointment_type) {
@@ -114,9 +111,9 @@ const RescheduleAppointmentReminderModal = ({
       {({ values, handleSubmit, isValid }) => (
         <Modal
           open
-          title={formatMessage(messages.RescheduleAppointmentReminderModal)}
-          okText={formatMessage(messages.confirm)}
-          cancelText={formatMessage(messages.cancel)}
+          title="Reschedule reminder"
+          okText={"Confirm"}
+          cancelText={"Cancel"}
           onCancel={handleClose}
           okButtonProps={{ disabled: !isValid || loading }}
           onOk={handleSubmit}
@@ -129,15 +126,15 @@ const RescheduleAppointmentReminderModal = ({
                 options={appointmentCancellationReasons}
                 defaultOption={values.cancellation_reason}
                 optionField="name"
-                label={formatMessage(messages.cancellationReason)}
-                errorTexts={{ label: formatMessage(messages.reason) }}
+                label={"Why did the patient cancel the appointment?"}
+                errorTexts={{ label: "Reason" }}
                 required
               />
               <Field
                 component={FormTextArea}
                 name="cancellation_reason_details"
                 rows={4}
-                label={formatMessage(messages.cancellationReasonDetails)}
+                label={"Cancellation details"}
               />
             </div>
           </Form>

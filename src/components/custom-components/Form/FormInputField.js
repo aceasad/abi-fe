@@ -1,7 +1,7 @@
 import React from 'react';
+import { interpolate } from 'utils/interpolate';
 import { ErrorMessage } from 'formik';
 import { Form, Input, Popover } from 'antd';
-import { useIntl } from 'react-intl';
 
 const FormInputField = ({
   form: { handleBlur, handleChange, min },
@@ -12,10 +12,9 @@ const FormInputField = ({
   Tooltip,
   ...props
 }) => {
-  const { formatMessage } = useIntl();
 
   const defaultErrorMessage = (msg) =>
-    formatMessage(msg, {
+    interpolate(msg, {
       label,
     });
 
@@ -38,7 +37,7 @@ const FormInputField = ({
       {Tooltip ? <Popover content={Tooltip}>{FormItem}</Popover> : FormItem}
       <ErrorMessage name={field.name}>
         {errorTexts
-          ? (msg) => formatMessage(msg, errorTexts)
+          ? (msg) => interpolate(msg, errorTexts)
           : defaultErrorMessage}
       </ErrorMessage>
     </div>

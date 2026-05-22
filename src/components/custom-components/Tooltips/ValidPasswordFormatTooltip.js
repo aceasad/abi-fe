@@ -1,19 +1,17 @@
 import React from 'react';
-import messages from './messages';
-import { useIntl } from 'react-intl';
+import { interpolate } from 'utils/interpolate';
 import { passwordMinLength } from 'constants/Validation';
 
 const ValidPasswordFormatTooltip = () => {
-  const { formatMessage } = useIntl();
   return (
     <div>
       <div>
-        {formatMessage(messages.minimumCharacters, { min: passwordMinLength })}
+        {interpolate("At least {min} characters", { min: passwordMinLength })}
       </div>
-      <div>{formatMessage(messages.upperAndLowerMixture)}</div>
-      <div>{formatMessage(messages.lettersAndNumberMixture)}</div>
-      <div>{formatMessage(messages.specialCharacters)}</div>
-      <div>{formatMessage(messages.specialCharactersExcluded)}</div>
+      <div>{"A mixture of both uppercase and lowercase letters"}</div>
+      <div>{"A mixture of letters and numbers"}</div>
+      <div>{"Inclusion of at least one special character, e.g., ! @ # ? ]"}</div>
+      <div>{"Note: do not use < or > in your password, as both can cause problems in Web browsers"}</div>
     </div>
   );
 };

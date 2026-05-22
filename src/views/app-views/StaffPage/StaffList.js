@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useIntl } from 'react-intl';
+import { interpolate } from 'utils/interpolate';
 import { useDispatch, useSelector } from 'react-redux';
 import CardComponent from 'components/shared-components/Card';
 import { setStaffPage, getStaff } from 'redux/actions/Staff';
 
-import messages from './messages';
 import StaffCardOptions from './StaffCardOptions';
 import PaginationComponent from 'components/custom-components/Pagination';
 import { makeSelectStaff, makeSelectPagination } from 'redux/selectors/Staff';
@@ -33,8 +32,6 @@ const StaffList = ({ showCreate, editUser, seeAppointments }) => {
   const screens = utils.getBreakPoint(useBreakpoint());
   const isMobile = !screens.includes('lg');
 
-  const { formatMessage } = useIntl();
-
   useEffect(() => {
     dispatch(getStaff());
   }, []);
@@ -45,7 +42,7 @@ const StaffList = ({ showCreate, editUser, seeAppointments }) => {
 
   const afterDelete = () => {
     setStaffForDelete(null);
-    message.success(formatMessage(messages.deletedSuccess));
+    message.success("Staff deleted");
   };
 
   const handleDelete = () => {
@@ -158,7 +155,7 @@ const StaffList = ({ showCreate, editUser, seeAppointments }) => {
           <Row gutter={16} align="middle" style={{ marginBottom: '16px' }}>
             <Col flex="auto">
               <Typography.Title level={3} style={{ fontSize: '20px', margin: 0 }}>
-                {formatMessage(messages.staff)}
+                {"Staff"}
               </Typography.Title>
             </Col>
             <Col>
@@ -177,12 +174,12 @@ const StaffList = ({ showCreate, editUser, seeAppointments }) => {
           <Row gutter={16} align="middle" style={{ marginBottom: '16px' }}>
             <Col flex="auto">
               <Typography.Title level={3} style={{ margin: 0 }}>
-                {formatMessage(messages.staff)}
+                {"Staff"}
               </Typography.Title>
             </Col>
             <Col>
               <Button type="primary" onClick={showCreate}>
-                {formatMessage(messages.addNewStaff)}
+                {"Add new staff"}
               </Button>
             </Col>
           </Row>
@@ -234,7 +231,7 @@ const StaffList = ({ showCreate, editUser, seeAppointments }) => {
                         title={staffItem.first_name + ' ' + staffItem.last_name}
                         description={''}
                         avatar={staffItem.profile_picture}
-                        action={formatMessage(messages.seeAppointments)}
+                        action={"See appointments"}
                         Options={() => (
                           <StaffCardOptions
                             handleMenuClick={({ key }) =>
@@ -252,7 +249,7 @@ const StaffList = ({ showCreate, editUser, seeAppointments }) => {
                           staffItem.seniority + ' ' + staffItem.specialization
                         }
                         avatar={staffItem.profile_picture}
-                        action={formatMessage(messages.seeAppointments)}
+                        action={"See appointments"}
                         Options={() => (
                           <StaffCardOptions
                             handleMenuClick={({ key }) =>
@@ -277,12 +274,12 @@ const StaffList = ({ showCreate, editUser, seeAppointments }) => {
       )}
 
       <Modal
-        title={formatMessage(messages.deleteTitle)}
-        description={formatMessage(messages.deleteDescription, {
+        title={"Delete staff?"}
+        description={interpolate("Are you sure you want to delete {label}?", {
           label: getStaffFirstAndLastName(),
         })}
-        primaryAction={formatMessage(messages.delete)}
-        secondaryAction={formatMessage(messages.cancel)}
+        primaryAction={"Delete"}
+        secondaryAction={"Cancel"}
         open={staffForDelete}
         handlePrimaryAction={handleDelete}
         handleSecondaryAction={() => setStaffForDelete(null)}

@@ -7,6 +7,12 @@ import FormField from 'components/custom-components/Form/FormField';
 import FormSelect from 'components/custom-components/Form/FormSelect';
 import Form from 'antd/lib/form/Form';
 import { Field, Formik } from 'formik';
+import {
+  DOCUMENT_TYPE_OPTIONS_DEFAULT,
+  DOCUMENT_TYPE_OPTIONS_MEDBRIDGE,
+  usesAppointmentType,
+  usesLocation,
+} from './documentTypeHelpers';
 
 const Uploader = ({ handleUpdateDataSource, appointmentTypes, locations, isMedbridge }) => {
   const [open, setOpen] = useState(false);
@@ -37,11 +43,11 @@ const Uploader = ({ handleUpdateDataSource, appointmentTypes, locations, isMedbr
       file: fileListToUpload[0],
       document_name: values.document_name,
       document_type: selectedDocumentType,
-      appointment_type_id:
-        selectedDocumentType === 'appointment_type' ? values.appointment_type_id : null,
-      location_id:
-        selectedDocumentType === 'location' ? values.location_id : null,
-      location: selectedLocation || null,
+      appointment_type_id: usesAppointmentType(selectedDocumentType)
+        ? values.appointment_type_id
+        : null,
+      location_id: usesLocation(selectedDocumentType) ? values.location_id : null,
+      location: usesLocation(selectedDocumentType) ? selectedLocation || null : null,
     })
       .then(() => {
         setOpen(false);
@@ -141,17 +147,12 @@ const Uploader = ({ handleUpdateDataSource, appointmentTypes, locations, isMedbr
                   component={FormSelect}
                   name="document_type"
                   options={
-                    isMedbridge
-                      ? [
-                          { id: 'appointment_type', name: 'Appointment Type Specific' },
-                          { id: 'location', name: 'Clinic Location Specific' },
-                        ]
-                      : [{ id: 'appointment_type', name: 'Appointment Type Specific' }]
+                    isMedbridge ? DOCUMENT_TYPE_OPTIONS_MEDBRIDGE : DOCUMENT_TYPE_OPTIONS_DEFAULT
                   }
                   optionField="name"
                   defaultOption={values.document_type}
                 />
-                {values.document_type === 'appointment_type' && (
+                {usesAppointmentType(values.document_type) && (
                   <Field
                     label="Appointment Type"
                     component={FormSelect}
@@ -161,7 +162,7 @@ const Uploader = ({ handleUpdateDataSource, appointmentTypes, locations, isMedbr
                     defaultOption={values.appointment_type_id}
                   />
                 )}
-                {isMedbridge && values.document_type === 'location' && (
+                {isMedbridge && usesLocation(values.document_type) && (
                   <Field
                     label="Location"
                     component={FormSelect}

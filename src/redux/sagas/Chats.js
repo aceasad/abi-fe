@@ -6,6 +6,7 @@ import {
   addMoreToSingleChat,
   setAllChatsInfo,
   setAllChatsInfoLoading,
+  clearSingleChatMessages,
   setSingleChat,
   setSingleChatLoading,
 } from 'redux/actions/Chats';
@@ -33,6 +34,7 @@ export function* getSingleChat({ payload }) {
     }
 
     yield put(setSingleChatLoading(true));
+    yield put(clearSingleChatMessages());
     const { data } = yield call(chatService.getSingleChat, payload.patientId);
     yield put(setSingleChat(data));
   } catch (err) {

@@ -10,11 +10,8 @@ import {
   Dropdown,
 } from 'antd';
 import { CaretDownOutlined } from '@ant-design/icons';
-import { useIntl } from 'react-intl';
 import { useDispatch } from 'react-redux';
 import Appointments from '../StaffPage/Appointments';
-import overviewPageMessages from '../OverviewPage/messages';
-import patientPageMessages from '../PatientsPage/messages';
 import { LIKELY_TO_BE_MISSED, SCHEDULED } from 'redux/reducers/Staff';
 import { getSingleAppointment } from 'redux/actions/Appointment';
 import AppointmentPreview from '../CalendarPage/AppointmentPreview';
@@ -52,7 +49,6 @@ export const NESTED_MODAL = {
 
 const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
   const history = useHistory();
-  const { formatMessage } = useIntl();
   const dispatch = useDispatch();
 
   const [activeAppointment, setActiveAppointment] = useState(null);
@@ -107,7 +103,7 @@ const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
     return [
       {
         key: "0",
-        label: formatMessage(overviewPageMessages.tableDropdownSeeAppointment),
+        label: "See appointment",
         onClick: ({ domEvent }) => {
           domEvent.stopPropagation();
           setActiveAppointment({
@@ -120,7 +116,7 @@ const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
       },
       {
         key: "1",
-        label: formatMessage(overviewPageMessages.tableDropdownAiReachout),
+        label: "Message",
         onClick: ({ domEvent }) => {
           domEvent.stopPropagation();
           goToPatientShowMessages({ id: row.patient.id });
@@ -137,12 +133,12 @@ const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
     // },
     // (${row.doctor.seniority} ${row.doctor.specialization})
     {
-      title: formatMessage(patientPageMessages.columnTitlePatient),
+      title: "Patient",
       dataIndex: ['patient', 'full_name'],
       sorter: true,
     },
     {
-      title: formatMessage(patientPageMessages.columnTitleAppointment),
+      title: "Staff Member",
       sorter: true,
       dataIndex: ['doctor', 'full_name'],
       render: (_, row) => (
@@ -152,12 +148,12 @@ const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
       ),
     },
     {
-      title: formatMessage(patientPageMessages.columnTitleDate),
+      title: "Date",
       dataIndex: 'date',
       sorter: true,
     },
     {
-      title: formatMessage(patientPageMessages.columnTitleTime),
+      title: "Time",
       dataIndex: 'time',
       sorter: true,
       render: (_, row) => (
@@ -169,7 +165,7 @@ const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
       ),
     },
     {
-      title: formatMessage(patientPageMessages.columnTitleCommunicationStatus),
+      title: "Communication",
       dataIndex: ['communication_status', 'name'],
       sorter: true,
       render: (_, row) => (
@@ -184,12 +180,12 @@ const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
       ),
     },
     {
-      title: formatMessage(patientPageMessages.columnTitleStatus),
+      title: "Status",
       dataIndex: ['status', 'name'],
       sorter: true,
     },
     {
-      title: formatMessage(patientPageMessages.columnTitleWhitelisted),
+      title: "Whitelisted",
       dataIndex: ['patient', 'whitelisted'],
       sorter: true,
       render: (_, row) => (
@@ -208,7 +204,7 @@ const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
             placement="bottomRight"
           >
             <Button type="primary" ghost>
-              {formatMessage(overviewPageMessages.tableDropdownTitleContact)}
+              {"Contact"}
               <DownOutlined />
             </Button>
           </Dropdown>
@@ -222,9 +218,8 @@ const AppointmentsLikelyToBeMissed = ({ title, startOpen }) => {
     //     <div className="text-right">
     //       <Space>
     //         <Tooltip
-    //           title={formatMessage(
-    //             patientPageMessages.columnTitleReachOutToPatient
-    //           )}
+    //           title={//             "Reach out to patient"
+    //}
     //         >
     //           <Button
     //             icon={<WhatsAppOutlined />}

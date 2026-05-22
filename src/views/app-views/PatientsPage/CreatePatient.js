@@ -1,18 +1,15 @@
 import { message } from 'antd';
 import { GENDER } from 'constants/UserConstants';
 import React, { useState } from 'react';
-import { useIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
 import { createPatient } from 'redux/actions/Patient';
 import { filterEmptyObjectFeilds } from 'utils/helpers';
-import messages from './messages';
 import PatientForm from './PatientForm';
 import PatientPASForm from './PatientPASForm';
 import { makeSelectPatientLoading } from 'redux/selectors/Patient';
 import {makeSelectSingleUser} from 'redux/selectors/Users';
 
 const CreatePatient = ({ showList }) => {
-  const { formatMessage } = useIntl();
   const dispatch = useDispatch();
   const { loading } = useSelector(makeSelectPatientLoading());
   const { isPasIntegrated, PASProvider } = useSelector(
@@ -21,14 +18,14 @@ const CreatePatient = ({ showList }) => {
   const normalizedPasProvider = PASProvider?.toLowerCase();
 
   const GENDER_CHOICES = [
-    { id: GENDER.MALE, name: formatMessage(messages.male) },
-    { id: GENDER.FEMALE, name: formatMessage(messages.female) },
-    { id: GENDER.OTHER, name: formatMessage(messages.other) },
+    { id: GENDER.MALE, name: "Male" },
+    { id: GENDER.FEMALE, name: "Female" },
+    { id: GENDER.OTHER, name: "Other" },
   ];
 
   const afterCreate = () => {
     showList();
-    message.success(formatMessage(messages.patientCreated));
+    message.success("Patient created");
   };
 
   const handleSubmit = (values, setErrors, enableRedirect) => {
@@ -59,7 +56,7 @@ const CreatePatient = ({ showList }) => {
     if (isPasIntegrated) {
       return (
         <PatientPASForm
-          title={formatMessage(messages.newPASPatient)}
+          title={"New PAS patient"}
           showList={showList}
           handleSubmit={handleSubmit}
           loading={loading}
@@ -85,7 +82,7 @@ const CreatePatient = ({ showList }) => {
     } else {
       return (
         <PatientForm
-          title={formatMessage(messages.newPatient)}
+          title={"New patient"}
           showList={showList}
           handleSubmit={handleSubmit}
           loading={loading}
