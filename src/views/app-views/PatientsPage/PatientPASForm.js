@@ -301,10 +301,10 @@ const PatientPASForm = ({
                       <ColumnField
                         span={isMobile && !isTablet ? 24 : 8}
                         component={FormField}
-                        label={"Patient NHS Number"}
+                        label={isMedbridge ? "Patient Identification Number" : "Patient NHS Number"}
                         name="ExternalIdentificationNumber"
                         errorTexts={{
-                          label: "Patient NHS Number",
+                          label: isMedbridge ? "Patient Identification Number" : "Patient NHS Number",
                           matchesLabel: "Patient Identification Number must be 7 or 10 digits",
                           maxValue: NHS_MAX,
                         }}
