@@ -76,6 +76,7 @@ const CreatePatient = ({ showList }) => {
             email: '',
             country: '',
             appointment_type: '',
+            doctor_reference: '',
           }}
           genderChoices={GENDER_CHOICES}
         />)
