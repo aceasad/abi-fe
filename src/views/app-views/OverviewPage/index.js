@@ -8,8 +8,6 @@ import {
 } from 'antd';
 import { PageHeader } from '@ant-design/pro-components';
 import React, { useEffect, useState } from 'react';
-import { useIntl } from 'react-intl';
-import messages from './messages';
 import { useDispatch } from 'react-redux';
 import AppointmentsLikelyToBeMissed from './AppointmentsLikelyToBeMissed';
 import MessagesRequiringImmediateAttention from './MessagesRequiringImmediateAttention';
@@ -29,7 +27,6 @@ const { Option } = Select;
 const { useBreakpoint } = Grid;
 
 const OverviewPage = () => {
-  const { formatMessage } = useIntl();
   const screens = utils.getBreakPoint(useBreakpoint());
   const isMobile = !screens.includes('lg');
   const [activeKey, setActiveKey] = useState("1");
@@ -37,44 +34,34 @@ const OverviewPage = () => {
   const tabItems = [
     ...(SHOW_MESSAGES_REQUIRING_IMMEDIATE_ATTENTION ? [{
       key: "1",
-      label: formatMessage(
-        messages.tableMessagesRequiringImmediateAttentionTitle
-      ),
+      label: "Human intervention needed",
       shortLabel: "Human Intervention",
       children: (
         <MessagesRequiringImmediateAttention
           startOpen
-          title={formatMessage(
-            messages.tableMessagesRequiringImmediateAttentionTitle
-          )}
+          title={"Human intervention needed"}
         />
       ),
     }] : []),
     ...(SHOW_PATIENT_PROGRESS ? [{
       key: "5",
-      label: formatMessage(
-        messages.tablePatientProgressTitle
-      ),
+      label: "Booking progress",
       shortLabel: "Patient Progress",
       children: (
         <PatientProgressTable
           startOpen
-          title={formatMessage(
-            messages.tablePatientProgressTitle
-          )}
+          title={"Booking progress"}
         />
       ),
     }] : []),
     ...(SHOW_APPOINTMENTS_REMINDERS ? [{
       key: "4",
-      label: formatMessage(messages.tableAppointmentsRemindersTitle),
+      label: "Appointment reminders",
       shortLabel: "Reminders",
       children: (
         <AppointmentsReminders
           startOpen
-          title={formatMessage(
-            messages.tableAppointmentsRemindersTitle
-          )}
+          title={"Appointment reminders"}
         />
       ),
     }] : []),
@@ -86,7 +73,7 @@ const OverviewPage = () => {
     <>
       <div className="mb-4" style={{ paddingTop: isMobile ? 0 : '24px' }}>
         <Typography.Title level={3} style={{ marginTop: "8px", marginBottom: isMobile ? '16px' : 0 }}>
-          {formatMessage(messages.title)}
+          {"Overview"}
         </Typography.Title>
       </div>
       <Layout>

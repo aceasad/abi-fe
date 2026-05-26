@@ -1,7 +1,6 @@
 import {
   TOGGLE_COLLAPSED_NAV,
   SIDE_NAV_STYLE_CHANGE,
-  CHANGE_LOCALE,
   NAV_TYPE_CHANGE,
   TOP_NAV_COLOR_CHANGE,
   HEADER_NAV_COLOR_CHANGE,
@@ -20,13 +19,6 @@ export function onNavStyleChange(sideNavTheme) {
   return {
     type: SIDE_NAV_STYLE_CHANGE,
     sideNavTheme,
-  };
-}
-
-export function onLocaleChange(locale) {
-  return {
-    type: CHANGE_LOCALE,
-    locale,
   };
 }
 

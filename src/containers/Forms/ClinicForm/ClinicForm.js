@@ -4,7 +4,6 @@ import FormField from 'components/custom-components/Form/FormField';
 import FormImageUpload from 'components/custom-components/Form/FormImageUpload';
 import { Field, Formik } from 'formik';
 import React, { useState } from 'react';
-import { useIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
 import { createClinic, updateClinic } from 'redux/actions/Clinic';
 import { makeSelectIsLoading } from 'redux/selectors/Clinic';
@@ -16,7 +15,6 @@ import {
   MIN_PHONE_LENGTH,
   MAX_PHONE_LENGTH,
 } from 'constants/ClinicConstants';
-import messages from './messages';
 import ColumnField from 'components/custom-components/Form/ColumnField';
 import { isUsCountry, prepareFormData } from 'utils/helpers';
 import { useLocation } from 'react-router-dom';
@@ -27,7 +25,6 @@ import utils from 'utils';
 const { useBreakpoint } = Grid;
 
 const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
-  const { formatMessage } = useIntl();
   const dispatch = useDispatch();
   const loading = useSelector(makeSelectIsLoading());
   const [visibilityOfParkinSizeField, setVisibility] = useState(
@@ -127,7 +124,7 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
                 <Field
                   component={FormImageUpload}
                   name={'photo'}
-                  removeImageLabel={formatMessage(messages.removeImageButton)}
+                  removeImageLabel={"Remove Image"}
                 />
               </Col>
             </Row>
@@ -140,7 +137,7 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
                     level={2}
                     className="mt-4 ml-2"
                   >
-                    {formatMessage({ id: 'clinic_page.side.title' })}
+                    Clinic details
                   </Typography.Title>
                 </Col>
               )}
@@ -149,11 +146,11 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
                   <ColumnField
                     span={24}
                     component={FormField}
-                    label={formatMessage(messages.clinicName)}
+                    label={"Clinic Name"}
                     name={'name'}
                     errorTexts={{
-                      label: formatMessage(messages.errorInputLabelName),
-                      maxValue: formatMessage(messages.max),
+                      label: "Name",
+                      maxValue: 100,
                     }}
                   />
                 </Row>
@@ -162,11 +159,11 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
                   <ColumnField
                     span={16}
                     component={FormField}
-                    label={formatMessage(messages.phoneNumber)}
+                    label={"Phone number"}
                     name={'phone_number'}
                     errorTexts={{
-                      label: formatMessage(messages.phoneNumber),
-                      matchesLabel: formatMessage(messages.phoneNumberFormat),
+                      label: "Phone number",
+                      matchesLabel: "Phone number format is +xxxxxxxxxxxxxxx",
                       minValue: MIN_PHONE_LENGTH,
                       maxValue: MAX_PHONE_LENGTH,
                     }}
@@ -177,22 +174,20 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
                   <ColumnField
                     span={isMobile && !isTablet ? 24 : 12}
                     component={FormField}
-                    label={formatMessage(messages.streetNumber)}
+                    label={"Street number"}
                     name={'street_number'}
                     errorTexts={{
-                      label: formatMessage(
-                        messages.errorInputLabelStreetNumber
-                      ),
+                      label: "Street number",
                       maxValue: 8,
                     }}
                   />
                   <ColumnField
                     span={isMobile && !isTablet ? 24 : 12}
                     component={FormField}
-                    label={formatMessage(messages.streetName)}
+                    label={"Street name"}
                     name={'street_name'}
                     errorTexts={{
-                      label: formatMessage(messages.errorInputLabelStreetName),
+                      label: "Street name",
                       maxValue: 128,
                     }}
                     required
@@ -202,20 +197,20 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
                   <ColumnField
                     span={isMobile && !isTablet ? 24 : 12}
                     component={FormField}
-                    label={formatMessage(messages.area)}
+                    label={"Area"}
                     name={'area_of_living'}
                     errorTexts={{
-                      label: formatMessage(messages.errorInputLabelArea),
+                      label: "Area",
                       maxValue: 128,
                     }}
                   />
                   <ColumnField
                     span={isMobile && !isTablet ? 24 : 12}
                     component={FormField}
-                    label={formatMessage(messages.city)}
+                    label={"City"}
                     name={'city'}
                     errorTexts={{
-                      label: formatMessage(messages.errorInputLabelCity),
+                      label: "City",
                       maxValue: 64,
                     }}
                     required
@@ -225,10 +220,10 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
                   <ColumnField
                     span={isMobile && !isTablet ? 24 : 12}
                     component={FormField}
-                    label={formatMessage(messages.postCode)}
+                    label={"Postcode"}
                     name={'post_code'}
                     errorTexts={{
-                      label: formatMessage(messages.errorInputLabelPostCode),
+                      label: "Postcode",
                       maxValue: 16,
                     }}
                     required
@@ -236,10 +231,10 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
                   <ColumnField
                     span={isMobile && !isTablet ? 24 : 12}
                     component={FormField}
-                    label={formatMessage(messages.country)}
+                    label={"Country"}
                     name={'country'}
                     errorTexts={{
-                      label: formatMessage(messages.errorInputLabelCountry),
+                      label: "Country",
                       maxValue: 64,
                     }}
                   />
@@ -248,14 +243,12 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
                   <ColumnField
                     span={24}
                     component={FormField}
-                    label={formatMessage(messages.googleMapsLink)}
+                    label={"Google maps link"}
                     name={'google_maps_link'}
                     errorTexts={{
-                      label: formatMessage(messages.googleMapsLink),
-                      matchesLabel: formatMessage(
-                        messages.errorInputLabelGoogleMapsLink
-                      ),
-                      maxValue: formatMessage(messages.maxGoogleLink),
+                      label: "Google maps link",
+                      matchesLabel: "Google maps link",
+                      maxValue: 500,
                     }}
                   />
                 </Row>
@@ -263,7 +256,7 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
                   <Col xs={24} md={12}>
                     <Form.Item
                       name="radio-group"
-                      label={formatMessage(messages.parkingAvailability)}
+                      label={"Parking availability"}
                     >
                       <Radio.Group
                         className="width-100"
@@ -278,13 +271,13 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
                       >
                         <Space direction={isMobile && !isTablet ? 'vertical' : 'horizontal'}>
                           <Radio value={NO}>
-                            {formatMessage(messages.parkingNo)}
+                            {"No parking"}
                           </Radio>
                           <Radio value={FREE}>
-                            {formatMessage(messages.parkingFree)}
+                            {"Free"}
                           </Radio>
                           <Radio value={AVAILABLE}>
-                            {formatMessage(messages.parkingAvailable)}
+                            {"Parking available"}
                           </Radio>
                         </Space>
                       </Radio.Group>
@@ -293,7 +286,7 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
                   <Col xs={24} md={12}>
                     {visibilityOfParkinSizeField ? (
                       <Form.Item
-                        label={formatMessage(messages.parkingSize)}
+                        label={"Parking space"}
                         className="mb-0"
                       >
                         <Field
@@ -306,7 +299,7 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
                     ) : null}
                   </Col>
                 </Row>
-                <Form.Item label={formatMessage(messages.workingHours)}>
+                <Form.Item label={"Working hours"}>
                   <Row gutter={8}>
                     <Field
                       span={isMobile && !isTablet ? 24 : 6}
@@ -315,7 +308,7 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
                       displayFormat={workingHoursDisplayFormat}
                       use12Hours={isWorkingHours12h}
                       errorTexts={{
-                        label: formatMessage(messages.startOfWork),
+                        label: "Start of Work",
                       }}
                       disabled={isAllDayChecked}
                     />
@@ -331,7 +324,7 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
                       displayFormat={workingHoursDisplayFormat}
                       use12Hours={isWorkingHours12h}
                       errorTexts={{
-                        label: formatMessage(messages.endOfWork),
+                        label: "End of Work",
                       }}
                       disabled={isAllDayChecked}
                     />
@@ -340,7 +333,7 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
                         onChange={(e) => setIsAllDayChecked(e.target.checked)}
                         checked={isAllDayChecked}
                       >
-                        {formatMessage(messages.allDayWorkingHours)}
+                        {"Working hours 00-24"}
                       </Checkbox>
                     </Col>
                   </Row>
@@ -354,11 +347,9 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
                         // disabled={loading || !dirty || !isValid}
                         onClick={handleSubmit}
                       >
-                        {formatMessage(
-                          clinicData
-                            ? messages.updateButton
-                            : messages.createButton
-                        )}
+                        {clinicData
+                            ? "Update"
+                            : "Create"}
                       </Button>
                     </Form.Item>
                   </Col>

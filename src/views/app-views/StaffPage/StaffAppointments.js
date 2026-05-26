@@ -1,11 +1,9 @@
 import { Typography } from 'antd';
 import { PageHeader } from '@ant-design/pro-components';
 import React, { useState, useEffect } from 'react';
-import { useIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
 import { makeSelectStaff } from 'redux/selectors/Staff';
 import Appointments from './Appointments';
-import messages from '../PatientsPage/messages';
 import { HISTORY, SCHEDULED } from 'redux/reducers/Staff';
 import { getSingleAppointment } from 'redux/actions/Appointment';
 import AppointmentPreview from '../CalendarPage/AppointmentPreview';
@@ -50,7 +48,6 @@ const StaffAppointments = ({ staffId, showList }) => {
   const staffData = staff.find((obj) => {
     return obj.id === staffId;
   });
-  const { formatMessage } = useIntl();
   const dispatch = useDispatch();
 
   const [activeAppointment, setActiveAppointment] = useState(null);
@@ -71,36 +68,36 @@ const StaffAppointments = ({ staffId, showList }) => {
       />
       <Appointments field={SCHEDULED} id={staffId} columnMap={columnMap}>
         <Appointments.Table
-          title={formatMessage(messages.cardTitleScheduledAppointments)}
+          title={"Scheduled appointments"}
           columns={[
             {
-              title: formatMessage(messages.columnTitleDate),
+              title: "Date",
               dataIndex: 'date',
               sorter: true,
             },
             {
-              title: formatMessage(messages.columnTitleTime),
+              title: "Time",
               dataIndex: 'time',
               sorter: false,
             },
             {
-              title: formatMessage(messages.columnTitlePatient),
+              title: "Patient",
               dataIndex: ['patient', 'full_name'],
               sorter: true,
             },
             {
-              title: formatMessage(messages.columnTitleType),
+              title: "Type",
               dataIndex: ['appointment_type', 'name'],
               sorter: true,
             },
             // {
-            //   title: formatMessage(messages.columnTitlePrediction),
+            //   title: "Prediction",
             //   dataIndex: 'no_show_score',
             //   sorter: true,
             //   render: RenderPredictionText,
             // },
             {
-              title: formatMessage(messages.columnTitleStatus),
+              title: "Status",
               dataIndex: ['status', 'name'],
               sorter: true,
               render: statusColor,
@@ -121,36 +118,36 @@ const StaffAppointments = ({ staffId, showList }) => {
       </Appointments>
       <Appointments field={HISTORY} id={staffId} columnMap={columnMap}>
         <Appointments.Table
-          title={formatMessage(messages.staffPastAppointments)}
+          title={"Past appointments"}
           columns={[
             {
-              title: formatMessage(messages.columnTitleDate),
+              title: "Date",
               dataIndex: 'date',
               sorter: true,
             },
             {
-              title: formatMessage(messages.columnTitleTime),
+              title: "Time",
               dataIndex: 'time',
               sorter: false,
             },
             {
-              title: formatMessage(messages.columnTitlePatient),
+              title: "Patient",
               dataIndex: ['patient', 'full_name'],
               sorter: true,
             },
             {
-              title: formatMessage(messages.columnTitleType),
+              title: "Type",
               dataIndex: ['appointment_type', 'name'],
               sorter: true,
             },
             // {
-            //   title: formatMessage(messages.columnTitlePrediction),
+            //   title: "Prediction",
             //   dataIndex: 'no_show_score',
             //   sorter: true,
             //   render: RenderPredictionText,
             // },
             {
-              title: formatMessage(messages.columnTitleStatus),
+              title: "Status",
               dataIndex: ['status', 'name'],
               sorter: true,
               render: statusColor,

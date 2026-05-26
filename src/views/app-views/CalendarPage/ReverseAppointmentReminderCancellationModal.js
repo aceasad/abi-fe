@@ -1,8 +1,6 @@
 import Modal from 'antd/lib/modal/Modal';
 import React from 'react';
-import { useIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
-import messages from './messages';
 import { makeSelectSingleAppointmentLoading } from 'redux/selectors/Appointment';
 import { makeSelectClinic } from 'redux/selectors/Clinic';
 import { Typography } from 'antd';
@@ -14,22 +12,21 @@ const ReverseAppointmentReminderCancellationModal = ({
   handleDelete,
   appointment,
 }) => {
-  const { formatMessage } = useIntl();
 
   const loading = useSelector(makeSelectSingleAppointmentLoading());
   const clinic = useSelector(makeSelectClinic());
 
   const listData = [
     {
-      label: formatMessage(messages.patient),
+      label: "Patient",
       value: appointment?.patient?.full_name,
     },
     {
-      label: formatMessage(messages.doctor),
+      label: "Doctor",
       value: `${appointment?.doctor?.full_name} (${appointment?.specialization})`,
     },
     {
-      label: formatMessage(messages.date),
+      label: "Date",
       value: formatDateByCountry(appointment?.date, clinic?.country, [
         'DD/MM/YYYY',
         'MM/DD/YYYY',
@@ -37,7 +34,7 @@ const ReverseAppointmentReminderCancellationModal = ({
       ]),
     },
     {
-      label: formatMessage(messages.time),
+      label: "Time",
       value: appointment?.time,
     },
   ];
@@ -52,15 +49,15 @@ const ReverseAppointmentReminderCancellationModal = ({
   return (
     <Modal
       open
-      cancelText={formatMessage(messages.cancel)}
-      okText={formatMessage(messages.confirm)}
-      title={formatMessage(messages.deleteAppointment)}
+      cancelText={"Cancel"}
+      okText={"Confirm"}
+      title={"Delete appointment?"}
       onCancel={handleClose}
       okButtonProps={{ disabled: loading }}
       onOk={handleDelete}
     >
       <Typography.Paragraph type="secondary" strong>
-        {formatMessage(messages.deleteMessage)}
+        {"Are you sure you want to delete this appointment?"}
       </Typography.Paragraph>
       {list}
     </Modal>

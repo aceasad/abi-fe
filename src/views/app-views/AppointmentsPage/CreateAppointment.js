@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import AppointmentFormModal from './AppointmentFormModal';
 import AppointmentPASFormModal from './AppointmentPASFormModal'
-import messages from './messages';
-import { useIntl } from 'react-intl';
 import { createAppointmentValidationSchema, createPASAppointmentValidationSchema } from 'utils/validations';
 import { message } from 'antd';
 import { getYearAndMonth, prepareAppointmentData } from 'utils/helpers';
@@ -27,11 +25,10 @@ const CreateAppointment = ({
   isCalendar = true,
 }) => {
   const dispatch = useDispatch();
-  const { formatMessage } = useIntl();
   const { isPasIntegrated } = useSelector(state => state.auth.user);
 
   const afterCreate = (newAppointmentStartDatetime) => {
-    message.success(formatMessage(messages.newAppointmentCreated));
+    message.success("New appointment created");
     closeModal();
     if (isCalendar) {
       dispatch(
@@ -65,7 +62,7 @@ const CreateAppointment = ({
 
   return (
     <AppointmentFormModal
-      title={formatMessage(messages.createAppointmentTitle)}
+      title={"New appointment"}
       initialState={{
         patient: patient_id,
         doctor: '',

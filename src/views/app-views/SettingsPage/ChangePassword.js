@@ -5,19 +5,16 @@ import ValidPasswordFormatTooltip from 'components/custom-components/Tooltips/Va
 import { passwordMinLength } from 'constants/Validation';
 import { Field, Formik } from 'formik';
 import React from 'react';
-import { useIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
 import { changePassword } from 'redux/actions/Auth';
 import { makeSelectLoading } from 'redux/selectors/Auth';
 import { changePasswordSchema } from 'utils/validations';
-import messages from './messages';
 import utils from 'utils';
 
 const { useBreakpoint } = Grid;
 
 const ChangePassword = () => {
   const dispatch = useDispatch();
-  const { formatMessage } = useIntl();
   const screens = utils.getBreakPoint(useBreakpoint());
   const isMobile = !screens.includes('lg');
   const isTablet = screens.includes('md') && !screens.includes('lg');
@@ -26,13 +23,13 @@ const ChangePassword = () => {
 
   const showSuccess = () =>
     message.success({
-      content: formatMessage(messages.passwordChanged),
+      content: "Password has been changed!",
       duration: 2,
     });
 
   const showError = () =>
     message.error({
-      content: formatMessage(messages.changePasswordError),
+      content: "Failed to change password",
       duration: 2,
     });
 
@@ -54,7 +51,7 @@ const ChangePassword = () => {
   return (
     <div className="p-2">
       <Typography.Title level={3} className="mb-4">
-        {formatMessage(messages.changePasswordMenuLabel)}
+        {"Change Password"}
       </Typography.Title>
       <Row>
         <Col xs={24} sm={24} md={isTablet ? 16 : 12} lg={10} xl={8}>
@@ -71,43 +68,43 @@ const ChangePassword = () => {
               <Form layout="vertical">
                 <Field
                   component={FormField}
-                  label={formatMessage(messages.oldPasswordInputLabel)}
+                  label={"Old Password"}
                   tooltipText={ValidPasswordFormatTooltip}
                   name={'oldPassword'}
                   prefix={<LockOutlined className="text-primary" />}
                   secureField
                   errorTexts={{
-                    label: formatMessage(messages.oldPasswordInputLabel),
+                    label: "Old Password",
                     minValue: passwordMinLength,
-                    matchesLabel: formatMessage(messages.passwordValidFormat),
+                    matchesLabel: "Password must be in valid format",
                   }}
                 />
 
                 <Field
                   component={FormField}
-                  label={formatMessage(messages.newPasswordInputLabel)}
+                  label={"New Password"}
                   tooltipText={ValidPasswordFormatTooltip}
                   name={'newPassword'}
                   prefix={<LockOutlined className="text-primary" />}
                   secureField
                   errorTexts={{
-                    label: formatMessage(messages.newPasswordInputLabel),
+                    label: "New Password",
                     minValue: passwordMinLength,
-                    matchesLabel: formatMessage(messages.passwordValidFormat),
+                    matchesLabel: "Password must be in valid format",
                   }}
                 />
                 <Field
                   component={FormField}
-                  label={formatMessage(messages.newPasswordConfirmInputLabel)}
+                  label={"Confirm New Password"}
                   tooltipText={ValidPasswordFormatTooltip}
                   name={'newPasswordConfirm'}
                   prefix={<LockOutlined className="text-primary" />}
                   secureField
                   errorTexts={{
-                    label: formatMessage(messages.newPasswordConfirmInputLabel),
+                    label: "Confirm New Password",
                     minValue: passwordMinLength,
-                    matchesLabel: formatMessage(messages.passwordValidFormat),
-                    value: formatMessage(messages.newPasswordInputLabel),
+                    matchesLabel: "Password must be in valid format",
+                    value: "New Password",
                   }}
                 />
                 <Form.Item className="mt-sm-5">
@@ -117,7 +114,7 @@ const ChangePassword = () => {
                     disabled={loading || !dirty || !isValid}
                     onClick={handleSubmit}
                   >
-                    {formatMessage(messages.changePasswordBtn)}
+                    {"Change password"}
                   </Button>
                 </Form.Item>
               </Form>

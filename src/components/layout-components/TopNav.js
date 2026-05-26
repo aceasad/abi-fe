@@ -4,8 +4,8 @@ import { NAV_TYPE_TOP } from 'constants/ThemeConstant';
 import utils from 'utils';
 import MenuContent from './MenuContent';
 
-export const TopNav = ({ topNavColor, localization = true }) => {
-  const props = { topNavColor, localization };
+export const TopNav = ({ topNavColor }) => {
+  const props = { topNavColor };
   return (
     <div
       className={`top-nav ${utils.getColorContrast(topNavColor)}`}

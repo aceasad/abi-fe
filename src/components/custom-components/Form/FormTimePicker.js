@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useIntl } from 'react-intl';
+import { interpolate } from 'utils/interpolate';
 import { Form, TimePicker } from 'antd';
 import dayjs from 'utils/dayjs';
 import { TIME_FORMAT_HH_MM } from 'constants/TimeConstant';
@@ -18,14 +18,13 @@ const FormTimePicker = ({
   displayFormat = TIME_FORMAT_HH_MM,
   use12Hours = false,
 }) => {
-  const { formatMessage } = useIntl();
 
   const [time, setTime] = useState(
     dayjs(field.value ? field.value : defaultTime, TIME_FORMAT_HH_MM)
   );
 
   const defaultErrorMessage = () =>
-    formatMessage(errors[field.name], {
+    interpolate(errors[field.name], {
       label,
     });
 
@@ -34,7 +33,7 @@ const FormTimePicker = ({
   const showError = () =>
     triggerError() &&
     (errorTexts
-      ? formatMessage(errors[field.name], errorTexts)
+      ? interpolate(errors[field.name], errorTexts)
       : defaultErrorMessage());
 
   const onChange = (timeMoment, timeString) => {

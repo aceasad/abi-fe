@@ -7,6 +7,12 @@ import { Field, Formik } from 'formik';
 import documentsService from 'services/DocumentsService';
 import Modal from 'antd/lib/modal/Modal';
 import Dropzone from './Dropzone';
+import {
+  DOCUMENT_TYPE_OPTIONS_DEFAULT,
+  DOCUMENT_TYPE_OPTIONS_MEDBRIDGE,
+  usesAppointmentType,
+  usesLocation,
+} from './documentTypeHelpers';
 
 const EditModal = ({
   record,
@@ -45,11 +51,11 @@ const EditModal = ({
       id: record.id,
       document_name: values.document_name,
       document_type: selectedDocumentType,
-      appointment_type_id:
-        selectedDocumentType === 'appointment_type' ? values.appointment_type_id || null : null,
-      location_id:
-        selectedDocumentType === 'location' ? values.location_id || null : null,
-      location: selectedLocation || undefined,
+      appointment_type_id: usesAppointmentType(selectedDocumentType)
+        ? values.appointment_type_id || null
+        : null,
+      location_id: usesLocation(selectedDocumentType) ? values.location_id || null : null,
+      location: usesLocation(selectedDocumentType) ? selectedLocation || undefined : undefined,
       file: fileListToUpload[0],
     };
 
@@ -162,17 +168,12 @@ const EditModal = ({
                   component={FormSelect}
                   name="document_type"
                   options={
-                    isMedbridge
-                      ? [
-                          { id: 'appointment_type', name: 'Appointment Type Specific' },
-                          { id: 'location', name: 'Clinic Location Specific' },
-                        ]
-                      : [{ id: 'appointment_type', name: 'Appointment Type Specific' }]
+                    isMedbridge ? DOCUMENT_TYPE_OPTIONS_MEDBRIDGE : DOCUMENT_TYPE_OPTIONS_DEFAULT
                   }
                   optionField="name"
                   defaultOption={values.document_type}
                 />
-                {values.document_type === 'appointment_type' && (
+                {usesAppointmentType(values.document_type) && (
                   <Field
                     label="Appointment type"
                     component={FormSelect}
@@ -188,7 +189,7 @@ const EditModal = ({
                     }
                   />
                 )}
-                {isMedbridge && values.document_type === 'location' && (
+                {isMedbridge && usesLocation(values.document_type) && (
                   <Field
                     label="Location"
                     component={FormSelect}

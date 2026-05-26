@@ -1,4 +1,3 @@
-import languageReducer from 'containers/LanguageProvider/reducer';
 import { combineReducers } from 'redux';
 import auth from './Auth';
 import industryAverage from './IndustryAverage';
@@ -31,7 +30,6 @@ export default (history) => {
     chats,
     overview,
     notifications,
-    language: languageReducer,
   });
 
   const rootReducer = (state, action) => {

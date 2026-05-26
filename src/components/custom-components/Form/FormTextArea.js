@@ -1,6 +1,6 @@
 import React from 'react';
+import { interpolate } from 'utils/interpolate';
 import { Form, Input, Tooltip } from 'antd';
-import { useIntl } from 'react-intl';
 
 const FormTextArea = ({
   form: { handleBlur, handleChange, touched, errors },
@@ -14,7 +14,6 @@ const FormTextArea = ({
   required,
   ...props
 }) => {
-  const { formatMessage } = useIntl();
 
   const getLabel = () => {
     if (Label) {
@@ -24,7 +23,7 @@ const FormTextArea = ({
   };
 
   const defaultErrorMessage = () =>
-    formatMessage(errors[field.name], {
+    interpolate(errors[field.name], {
       label,
     });
 
@@ -33,7 +32,7 @@ const FormTextArea = ({
   const showError = () =>
     triggerError() &&
     (errorTexts
-      ? formatMessage(errors[field.name], errorTexts)
+      ? interpolate(errors[field.name], errorTexts)
       : defaultErrorMessage());
 
   const FormItem = (

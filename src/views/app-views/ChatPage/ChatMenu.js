@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
-import { Input } from 'antd';
+import { Grid, Input } from 'antd';
+import utils from 'utils';
 import { SearchOutlined, MessageOutlined, WhatsAppOutlined } from '@ant-design/icons';
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
-import { useIntl } from 'react-intl';
-import messages from './messages';
+
+
 import {
   chatListItemStyle,
   getDateFormatByCountry,
@@ -11,6 +12,7 @@ import {
 import {
   getAllChatsInfo,
   getMoreChatsInfo,
+  getSingleChat,
   setConversationToRead,
   searchConversations,
   clearTriggerSearchConversations,
@@ -28,6 +30,8 @@ import {
 } from 'constants/ChatConstants';
 import dayjs from 'utils/dayjs';
 import ConversationFilters from './ConversationFilters';
+
+const { useBreakpoint } = Grid;
 
 const ChatMenu = (props) => {
 
@@ -47,8 +51,10 @@ const ChatMenu = (props) => {
   const history = useHistory();
   const location = useLocation();
   const match = useRouteMatch();
-  const { formatMessage } = useIntl();
+
   const dispatch = useDispatch();
+  const screens = utils.getBreakPoint(useBreakpoint());
+  const isMobile = props.isMobile ?? !screens.includes('lg');
 
   const currentChatID = parseInt(location.pathname.match(/\/([^/]+)\/?$/)[1]);
   const [query, setQuery] = useState('');
@@ -138,6 +144,9 @@ const ChatMenu = (props) => {
 
   const openChat = (id) => {
     dispatch(setConversationToRead(id));
+    if (currentChatID === id) {
+      dispatch(getSingleChat({ patientId: id }));
+    }
     history.push(`${match.url}/${id}`);
     // Close mobile drawer if the function is provided
     if (props.closeMobileDrawer) {
@@ -186,10 +195,11 @@ const ChatMenu = (props) => {
     <div className="chat-menu">
       <div className="chat-menu-toolbar">
         <Input
-          style={{ width: '100%', maxWidth: '100%' }}
-          placeholder={formatMessage(messages.searchPlaceholder)}
+          style={{ width: '100%' }}
+          placeholder={"Search"}
           prefix={<SearchOutlined />}
           allowClear
+          size="middle"
           value={query}
           onChange={searchOnChange}
         />

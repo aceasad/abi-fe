@@ -17,7 +17,7 @@ const pagesNavTree = [
   {
     key: 'overview',
     path: `${APP_PAGES_PREFIX_PATH}/overview`,
-    title: 'sidenav.pages.overview',
+    title: 'Overview',
     icon: PieChartOutlined,
     breadcrumb: false,
     submenu: [],
@@ -25,7 +25,7 @@ const pagesNavTree = [
   {
     key: 'kpis',
     path: `${APP_PAGES_PREFIX_PATH}/kpis`,
-    title: 'sidenav.pages.kpis',
+    title: 'KPIs',
     icon: LineChartOutlined,
     breadcrumb: false,
     submenu: [],
@@ -33,7 +33,7 @@ const pagesNavTree = [
   {
     key: 'conversation',
     path: `${APP_PAGES_PREFIX_PATH}/conversation`,
-    title: 'sidenav.pages.conversation',
+    title: 'Conversations',
     icon: WhatsAppOutlined,
     breadcrumb: false,
     submenu: [],
@@ -41,7 +41,7 @@ const pagesNavTree = [
   {
     key: 'notifications',
     path: `${APP_PAGES_PREFIX_PATH}/notifications`,
-    title: 'sidenav.pages.notifications',
+    title: 'Notifications',
     icon: NotificationOutlined,
     breadcrumb: false,
     submenu: [],
@@ -49,7 +49,7 @@ const pagesNavTree = [
   {
     key: 'appointments',
     path: `${APP_PAGES_PREFIX_PATH}/appointments`,
-    title: 'sidenav.pages.appointments',
+    title: 'Appointments',
     icon: CalendarOutlined,
     breadcrumb: false,
     submenu: [],
@@ -57,7 +57,7 @@ const pagesNavTree = [
   {
     key: 'patients',
     path: `${APP_PAGES_PREFIX_PATH}/patients`,
-    title: 'sidenav.pages.patients',
+    title: 'Patients',
     icon: TeamOutlined,
     breadcrumb: false,
     submenu: [],
@@ -65,7 +65,7 @@ const pagesNavTree = [
   {
     key: 'staff',
     path: `${APP_PAGES_PREFIX_PATH}/staff`,
-    title: 'sidenav.pages.staff',
+    title: 'Staff',
     icon: UserOutlined,
     breadcrumb: false,
     submenu: [],
@@ -73,7 +73,7 @@ const pagesNavTree = [
   {
     key: 'documents',
     path: `${APP_PAGES_PREFIX_PATH}/documents`,
-    title: 'sidenav.pages.documents',
+    title: 'Documents',
     icon: PaperClipOutlined,
     breadcrumb: false,
     submenu: [],
@@ -81,7 +81,7 @@ const pagesNavTree = [
   {
     key: 'settings',
     path: `${APP_PAGES_PREFIX_PATH}/settings`,
-    title: 'sidenav.pages.settings',
+    title: 'Settings',
     icon: SettingOutlined,
     breadcrumb: false,
     submenu: [],

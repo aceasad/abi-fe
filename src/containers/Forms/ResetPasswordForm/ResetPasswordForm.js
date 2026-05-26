@@ -1,9 +1,8 @@
 import React, { useEffect } from 'react';
+import { interpolate } from 'utils/interpolate';
 import { Formik, Field } from 'formik';
 import { Button, Form } from 'antd';
-import messages from './messages';
 import { useDispatch, useSelector } from 'react-redux';
-import { useIntl } from 'react-intl';
 import FormField from 'components/custom-components/Form/FormField';
 import { useHistory, useParams } from 'react-router-dom';
 import { resetPassword } from 'redux/actions/Auth';
@@ -14,17 +13,16 @@ import { ROUTES } from 'routes';
 const { resetPasswordSchema } = import('utils/validations');
 
 export const ValidPasswordFormat = () => {
-  const { formatMessage } = useIntl();
 
   return (
     <div>
       <div>
-        {formatMessage(messages.minimumCharacters, { min: passwordMinLength })}
+        {interpolate("At least {min} characters", { min: passwordMinLength })}
       </div>
-      <div>{formatMessage(messages.upperAndLowerMixture)}</div>
-      <div>{formatMessage(messages.lettersAndNumberMixture)}</div>
-      <div>{formatMessage(messages.specialCharacters)}</div>
-      <div>{formatMessage(messages.specialCharactersExcluded)}</div>
+      <div>{"A mixture of both uppercase and lowercase letters"}</div>
+      <div>{"A mixture of letters and numbers"}</div>
+      <div>{"Inclusion of at least one special character, e.g., ! @ # ? ]"}</div>
+      <div>{"Note: do not use < or > in your password, as both can cause problems in Web browsers"}</div>
     </div>
   );
 };
@@ -33,13 +31,12 @@ const ResetPasswordForm = () => {
   const dispatch = useDispatch();
   const isReset = useSelector(makeIsResetPassword());
   const { token } = useParams();
-  const { formatMessage } = useIntl();
 
   const history = useHistory();
 
   useEffect(() => {
     if (isReset) {
-      success(formatMessage(messages.passwordSuccessfullyChanged));
+      success("Password successfully changed.");
       history.push(ROUTES.LOGIN);
     }
   }, [isReset]);
@@ -58,24 +55,24 @@ const ResetPasswordForm = () => {
         {({ values, handleSubmit, dirty, isValid }) => (
           <Form layout="vertical" name="login-form">
             <Field
-              label={formatMessage(messages.passwordInputLabel)}
+              label={"New Password"}
               component={FormField}
               name={'password'}
               tooltipText={ValidPasswordFormat}
               secureField
               errorTexts={{
-                label: formatMessage(messages.passwordInputLabel),
-                matchesLabel: formatMessage(messages.matches_password),
+                label: "New Password",
+                matchesLabel: "Password must be in valid format",
               }}
             />
             <Field
-              label={formatMessage(messages.passwordRepeatInputLabel)}
+              label={"Confirm New Password"}
               component={FormField}
               name={'passwordRepeat'}
               secureField
               errorTexts={{
-                label: formatMessage(messages.passwordRepeatInputLabel),
-                value: formatMessage(messages.passwordInputLabel),
+                label: "Confirm New Password",
+                value: "New Password",
               }}
             />
             <Form.Item>
@@ -86,7 +83,7 @@ const ResetPasswordForm = () => {
                 block
                 disabled={!dirty || !isValid}
               >
-                {formatMessage(messages.confirmButton)}
+                {"Confirm"}
               </Button>
             </Form.Item>
           </Form>

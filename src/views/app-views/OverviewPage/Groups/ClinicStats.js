@@ -1,15 +1,12 @@
 import React from 'react';
-import { useIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
 import { makeSelectClinicStatsData } from 'redux/selectors/Overview';
-import messages from '../messages';
 import OverviewCard from '../OverviewCard';
 import GroupRow from './GroupRow';
 import { MdAssignmentTurnedIn, MdShowChart } from 'react-icons/md';
 
 
 const ClinicStats = ({ title }) => {
-  const { formatMessage } = useIntl();
 
   const { patients_enrolled, open_conversations, bookings, declines, already_screened, loading } = useSelector(
     makeSelectClinicStatsData
@@ -20,8 +17,8 @@ const ClinicStats = ({ title }) => {
         <GroupRow>
           <OverviewCard
             span={4}
-            title={formatMessage(messages.clinicStatsPatientEnrolled)}
-            // tooltip={formatMessage(messages.clinicStatsPatientEnrolled)}
+            title={"Patient Invited"}
+            // tooltip={"Patient Invited"}
             content={`${parseInt(patients_enrolled ?? 0, 10)}`}
             styleTitle={title}
             icon={<MdAssignmentTurnedIn color="#ffffff" size="40" />}
@@ -29,8 +26,8 @@ const ClinicStats = ({ title }) => {
           />
           <OverviewCard
             span={4}
-            title={formatMessage(messages.clinicStatsOpenConversation)}
-            // tooltip={formatMessage(messages.clinicStatsOpenConversation)}
+            title={"Patients Engaged"}
+            // tooltip={"Patients Engaged"}
             content={`${parseInt(open_conversations ?? 0, 10)}`}
             styleTitle={title}
             icon={<MdShowChart color="#ffffff" size="40" />}
@@ -38,8 +35,8 @@ const ClinicStats = ({ title }) => {
           />
           <OverviewCard
             span={4}
-            title={formatMessage(messages.clinicStatsBookings)}
-            // tooltip={formatMessage(messages.clinicStatsBookings)}
+            title={"Bookings"}
+            // tooltip={"Bookings"}
             content={`${parseInt(bookings ?? 0, 10)}`}
             styleTitle={title}
             icon={<MdShowChart color="#ffffff" size="40" />}
@@ -47,8 +44,8 @@ const ClinicStats = ({ title }) => {
           />
           <OverviewCard
             span={4}
-            title={formatMessage(messages.clinicStatsDecline)}
-            // tooltip={formatMessage(messages.clinicStatsDecline)}
+            title={"Declines"}
+            // tooltip={"Declines"}
             content={`${parseInt(declines ?? 0, 10)}`}
             styleTitle={title}
             icon={<MdShowChart color="#ffffff" size="40" />}
@@ -56,8 +53,8 @@ const ClinicStats = ({ title }) => {
           />
           <OverviewCard
             span={4}
-            title={formatMessage(messages.clinicStatsAlreadyScreened)}
-            // tooltip={formatMessage(messages.clinicStatsAlreadyScreened)}
+            title={" Screened elsewhere"}
+            // tooltip={" Screened elsewhere"}
             content={`${parseInt(already_screened ?? 0, 10)}`}
             styleTitle={title}
             icon={<MdShowChart color="#ffffff" size="40" />}

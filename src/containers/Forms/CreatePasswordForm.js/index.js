@@ -1,4 +1,5 @@
 import React from 'react';
+import { interpolate } from 'utils/interpolate';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Form } from 'antd';
 import { LockOutlined } from '@ant-design/icons';
@@ -7,8 +8,6 @@ import { createPassword } from 'redux/actions/Auth';
 import { Formik, Field } from 'formik';
 import { createPasswordSchema } from 'utils/validations';
 import 'assets/sass/views/auth/login.scss';
-import messages from './messages';
-import { useIntl } from 'react-intl';
 
 import { passwordMinLength } from 'constants/Validation';
 import FormField from 'components/custom-components/Form/FormField';
@@ -18,7 +17,6 @@ export const CreatePassowrdForm = () => {
   const dispatch = useDispatch();
 
   const { loading } = useSelector(makeSelectLoginDetails());
-  const { formatMessage } = useIntl();
 
   const onCreatePassword = (values) => {
     dispatch(createPassword(values));
@@ -27,15 +25,15 @@ export const CreatePassowrdForm = () => {
   const ValidPasswordFormat = (
     <div>
       <div>
-        {formatMessage(messages.minimumCharacters, { min: passwordMinLength })}
+        {interpolate("At least {min} characters", { min: passwordMinLength })}
       </div>
-      <div>{formatMessage(messages.upperAndLowerMixture)}</div>
-      <div>{formatMessage(messages.lettersAndNumberMixture)}</div>
-      <div>{formatMessage(messages.specialCharacters)}</div>
-      <div>{formatMessage(messages.specialCharactersExcluded)}</div>
-      <div>{formatMessage(messages.notCommonPassword)}</div>
-      <div>{formatMessage(messages.notEntirelyNumeric)}</div>
-      <div>{formatMessage(messages.notSimilarToPersonalInfo)}</div>
+      <div>{"A mixture of both uppercase and lowercase letters"}</div>
+      <div>{"A mixture of letters and numbers"}</div>
+      <div>{"Inclusion of at least one special character, e.g., ! @ # ? ]"}</div>
+      <div>{"Note: do not use < or > in your password, as both can cause problems in Web browsers"}</div>
+      <div>{"Do not use a common password (for example: password, 12345678)."}</div>
+      <div>{"Your password cannot be entirely numeric."}</div>
+      <div>{"Your password must not be too similar to your personal information."}</div>
     </div>
   );
 
@@ -50,29 +48,29 @@ export const CreatePassowrdForm = () => {
         <Form layout="vertical" name="login-form">
           <Field
             component={FormField}
-            label={formatMessage(messages.passwordInputLabel)}
+            label={"Password"}
             tooltipText={ValidPasswordFormat}
             name={'password'}
             prefix={<LockOutlined className="text-primary" />}
             secureField
             errorTexts={{
-              label: formatMessage(messages.passwordInputLabel),
+              label: "Password",
               minValue: passwordMinLength,
-              matchesLabel: formatMessage(messages.passwordValidFormat),
+              matchesLabel: "Password must be in valid format",
             }}
           />
           <Field
             component={FormField}
-            label={formatMessage(messages.passwordRepeatInputLabel)}
+            label={"Repeat password"}
             tooltipText={ValidPasswordFormat}
             name={'passwordRepeat'}
             prefix={<LockOutlined className="text-primary" />}
             secureField
             errorTexts={{
-              label: formatMessage(messages.passwordRepeatInputLabel),
+              label: "Repeat password",
               minValue: passwordMinLength,
-              matchesLabel: formatMessage(messages.passwordValidFormat),
-              value: formatMessage(messages.passwordInputLabel),
+              matchesLabel: "Password must be in valid format",
+              value: "Password",
             }}
           />
 
@@ -85,7 +83,7 @@ export const CreatePassowrdForm = () => {
               loading={loading}
               onClick={() => handleSubmit(values)}
             >
-              {formatMessage(messages.createPassword)}
+              {"Create password"}
             </Button>
           </Form.Item>
         </Form>

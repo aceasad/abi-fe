@@ -1,5 +1,5 @@
 import React from 'react';
-import { useIntl } from 'react-intl';
+import { interpolate } from 'utils/interpolate';
 import { DatePicker, Form } from 'antd';
 import dayjs from 'utils/dayjs';
 import { DATE_FORMAT_DD_MM_YYYY } from 'constants/DateConstant';
@@ -12,10 +12,9 @@ const FormDatePicker = ({
   errorTexts,
   ...props
 }) => {
-  const { formatMessage } = useIntl();
 
   const defaultErrorMessage = () =>
-    formatMessage(errors[field.name], {
+    interpolate(errors[field.name], {
       label,
     });
 
@@ -24,7 +23,7 @@ const FormDatePicker = ({
   const showError = () =>
     triggerError() &&
     (errorTexts
-      ? formatMessage(errors[field.name], errorTexts)
+      ? interpolate(errors[field.name], errorTexts)
       : defaultErrorMessage());
 
   const defaultDisabledDate = (current) => {

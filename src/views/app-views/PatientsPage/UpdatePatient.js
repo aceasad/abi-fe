@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { GENDER } from 'constants/UserConstants';
-import messages from './messages';
 import PatientForm from './PatientForm';
 import { getSinglePatient, editPatient } from 'redux/actions/Patient';
 import { makeSelectPatientSingle } from 'redux/selectors/Patient';
@@ -20,7 +18,6 @@ import { makeSelectAppointmentTypes } from 'redux/selectors/Appointment';
 import { getAppointmentTypes } from 'redux/actions/Appointment';
 
 const UpdatePatient = ({ showList, patientId }) => {
-  const { formatMessage } = useIntl();
   const dispatch = useDispatch();
   const { isPasIntegrated, PASProvider } = useSelector(
     (state) => state.auth.user || {}
@@ -35,9 +32,9 @@ const UpdatePatient = ({ showList, patientId }) => {
   );
 
   const GENDER_CHOICES = [
-    { id: GENDER.MALE, name: formatMessage(messages.male) },
-    { id: GENDER.FEMALE, name: formatMessage(messages.female) },
-    { id: GENDER.OTHER, name: formatMessage(messages.other) },
+    { id: GENDER.MALE, name: "Male" },
+    { id: GENDER.FEMALE, name: "Female" },
+    { id: GENDER.OTHER, name: "Other" },
   ];
 
   useEffect(() => {
@@ -57,7 +54,7 @@ const UpdatePatient = ({ showList, patientId }) => {
 
   const afterUpdate = () => {
     showList();
-    message.success(formatMessage(messages.patientUpdated));
+    message.success("Patient updated");
   };
 
   const handleSubmit = (values, setErrors, enableRedirect) => {
@@ -132,7 +129,7 @@ const UpdatePatient = ({ showList, patientId }) => {
       return (
         <PatientPASForm
           id={patientId}
-          title={formatMessage(messages.newPASPatient)}
+          title={"New PAS patient"}
           showList={showList}
           handleSubmit={handleSubmit}
           loading={loading}
@@ -144,7 +141,7 @@ const UpdatePatient = ({ showList, patientId }) => {
     else {
       return (
         <PatientForm
-          title={formatMessage(messages.editPatient)}
+          title={"Edit patient"}
           showList={showList}
           handleSubmit={handleSubmit}
           loading={loading}

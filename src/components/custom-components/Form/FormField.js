@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form, Input, Tooltip } from 'antd';
-import { useIntl } from 'react-intl';
+import { interpolate } from 'utils/interpolate';
 
 const FormField = ({
   form: { handleBlur, handleChange, touched, errors },
@@ -16,8 +16,6 @@ const FormField = ({
 }) => {
   const InputField = secureField ? Input.Password : Input;
 
-  const { formatMessage } = useIntl();
-
   const getLabel = () => {
     if (Label) {
       return <Label />;
@@ -26,7 +24,7 @@ const FormField = ({
   };
 
   const defaultErrorMessage = () =>
-    formatMessage(errors[field.name], {
+    interpolate(errors[field.name], {
       label,
     });
 
@@ -35,7 +33,7 @@ const FormField = ({
   const showError = () =>
     triggerError() &&
     (errorTexts
-      ? formatMessage(errors[field.name], errorTexts)
+      ? interpolate(errors[field.name], errorTexts)
       : defaultErrorMessage());
 
   const FormItem = (

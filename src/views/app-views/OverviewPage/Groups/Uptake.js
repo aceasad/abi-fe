@@ -1,14 +1,11 @@
 import React from 'react';
-import { useIntl } from 'react-intl';
 import OverviewCard from '../OverviewCard';
-import messages from '../messages';
 import GroupRow from './GroupRow';
 import { useSelector } from 'react-redux';
 import { makeSelectUptakeData } from 'redux/selectors/Overview';
 import { MdSystemUpdateAlt, MdInsertChart, MdLooks } from 'react-icons/md';
 
 const Uptake = ({ title }) => {
-  const { formatMessage } = useIntl();
 
   const { coverage, uptake, coverageAverage, uptakeAverage } = useSelector(
     makeSelectUptakeData
@@ -19,32 +16,32 @@ const Uptake = ({ title }) => {
       <GroupRow>
         <OverviewCard
           span={12}
-          title={formatMessage(messages.uptakeProportion)}
-          tooltip={formatMessage(messages.uptakeProportionTooltip)}
+          title={"Uptake"}
+          tooltip={"Uptake"}
           content={`${uptake}%`}
           styleTitle={title}
           icon={<MdSystemUpdateAlt color="#ffffff" size="40" />}
         />
         <OverviewCard
           span={12}
-          title={formatMessage(messages.uptakeAverage)}
-          tooltip={formatMessage(messages.uptakeAverageTooltip)}
+          title={"Uptake - country average"}
+          tooltip={"Uptake - country average"}
           content={`${uptakeAverage}%`}
           styleTitle={title}
           icon={<MdInsertChart color="#ffffff" size="40" />}
         />
         <OverviewCard
           span={12}
-          title={formatMessage(messages.uptakeCoverageProportion)}
-          tooltip={formatMessage(messages.uptakeCoverageProportionTooltip)}
+          title={"Coverage"}
+          tooltip={"Coverage"}
           content={`${coverage}%`}
           styleTitle={title}
           icon={<MdLooks color="#ffffff" size="40" />}
         />
         <OverviewCard
           span={12}
-          title={formatMessage(messages.uptakeCoverageAverage)}
-          tooltip={formatMessage(messages.uptakeCoverageAverageTooltip)}
+          title={"Coverage - country average"}
+          tooltip={"Coverage - country average"}
           content={`${coverageAverage}%`}
           styleTitle={title}
           icon={<MdInsertChart color="#ffffff" size="40" />}

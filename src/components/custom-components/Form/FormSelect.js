@@ -1,7 +1,6 @@
 import React from 'react';
+import { interpolate } from 'utils/interpolate';
 import { Form, Select } from 'antd';
-import messages from 'views/app-views/StaffPage/messages';
-import { useIntl } from 'react-intl';
 
 const { Option } = Select;
 
@@ -22,9 +21,8 @@ const FormSelect = ({
   optionFilterProp,
   filterOption,
 }) => {
-  const { formatMessage } = useIntl();
 
-  const placeholderText = placeholder || formatMessage(messages.selectOption);
+  const placeholderText = placeholder || "Select option";
 
   const handleSelected = (value) => {
     setFieldValue(field.name, value);
@@ -32,7 +30,7 @@ const FormSelect = ({
   };
 
   const defaultErrorMessage = () =>
-    formatMessage(errors[field.name], {
+    interpolate(errors[field.name], {
       label,
     });
 
@@ -41,7 +39,7 @@ const FormSelect = ({
   const showError = () =>
     triggerError() &&
     (errorTexts
-      ? formatMessage(errors[field.name], errorTexts)
+      ? interpolate(errors[field.name], errorTexts)
       : defaultErrorMessage());
 
   return (

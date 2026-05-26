@@ -7,7 +7,6 @@ import {
 } from 'antd';
 
 
-import { useIntl } from 'react-intl';
 import { useDispatch } from 'react-redux';
 import PatientProgressTable from './PatientProgressTable';
 import { getPatientProgress } from '../../../services/PatientService/getPatientProgress'
@@ -79,7 +78,6 @@ const columnMap = {
 
 const PatientProgress = ({ title, startOpen }) => {
   const history = useHistory();
-  const { formatMessage } = useIntl();
   const dispatch = useDispatch();
   // const { isPasIntegrated } = useSelector(state => state.auth.user);
 
@@ -238,7 +236,7 @@ const PatientProgress = ({ title, startOpen }) => {
   //           // goToPatientShowMessages({ id: row.patient.id });
   //         }}
   //       >
-  //         {formatMessage(overviewPageMessages.tableDropdownPatientInfo)}
+  //         {overviewPageMessages.tableDropdownPatientInfo}
   //       </Menu.Item>
   //       {row.appointment && (
   //         <Menu.Item
@@ -252,7 +250,7 @@ const PatientProgress = ({ title, startOpen }) => {
   //             // });
   //           }}
   //         >
-  //           {formatMessage(overviewPageMessages.tableDropdownAppointmentInfo)}
+  //           {overviewPageMessages.tableDropdownAppointmentInfo}
   //         </Menu.Item>
   //       )}
   //       {row.pre_appointment_questionnaire && (
@@ -265,9 +263,8 @@ const PatientProgress = ({ title, startOpen }) => {
   //             // });
   //           }}
   //         >
-  //           {formatMessage(
-  //             overviewPageMessages.tableDropdownPreAppointmentQuestionnaireInfo
-  //           )}
+  //           {//             overviewPageMessages.tableDropdownPreAppointmentQuestionnaireInfo
+  //}
   //         </Menu.Item>
   //       )}
   //       <Menu.Item
@@ -280,9 +277,8 @@ const PatientProgress = ({ title, startOpen }) => {
   //           // );
   //         }}
   //       >
-  //         {formatMessage(
-  //           overviewPageMessages.tableDropdownUpdateMessageRequiringImmediateAttentionStatus
-  //         )}
+  //         {//           overviewPageMessages.tableDropdownUpdateMessageRequiringImmediateAttentionStatus
+  //}
   //       </Menu.Item>
   //     </Menu>
   //   );

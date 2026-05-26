@@ -12,6 +12,7 @@ import { addDividers, formatMessageForSocketSend } from 'utils/helpers';
 import ChatContentBody from './ChatContentBody';
 import ChatContentFooter from './ChatContentFooter';
 import ChatContentHeader from './ChatContentHeader';
+import ChatStatusIndicators from './ChatStatusIndicators';
 import WebSocketClient from 'services/WebSocketClient';
 import { useLazyLoad } from 'utils/hooks';
 import { triggerSearchConversations } from 'redux/actions/Chats';
@@ -126,15 +127,24 @@ const Conversation = ({
     getConversation(patient_id);
   };
 
+  const handleOnClickOptBackIn = async (patient_id) => {
+    if (!patient_id || isNaN(patient_id) || patient_id <= 0) {
+      console.warn('Invalid patient_id provided to handleOnClickOptBackIn:', patient_id);
+      return;
+    }
+
+    await patientService.unmarkConversationOptOutSituation(patient_id);
+    dispatch(triggerSearchConversations());
+    getConversation(patient_id);
+  };
+
   // Updated chatContentBody function to pass all required props
   const chatContentBody = (messages, next, patientPicture) =>
     messages ? (
       <ChatContentBody
+        key={id}
         messages={addDividers(messages, next, clinic?.country)}
         patientPicture={patientPicture}
-        onClickMarkHumanRequiredResolved={handleOnClickMarkHumanRequiredResolved}
-        onClickMarkInEmergencySituationResolved={handleOnClickMarkInEmergencySituationResolved}
-        chatLoading={loading}
       />
     ) : null;
 
@@ -154,9 +164,6 @@ const Conversation = ({
         isMenuVisible={isMenuVisible}
         BackAction={BackAction}
 
-      // Remove these props since they're now handled in ChatContentBody
-      // onClickMarkHumanRequiredResolved={handleOnClickMarkHumanRequiredResolved}
-      // onClickMarkInEmergencySituationResolved={handleOnClickMarkInEmergencySituationResolved}
       />
       <div className="chat-content-body">
         <Scrollbars
@@ -194,6 +201,12 @@ const Conversation = ({
             chatContentBody(items, next, chatInfo.patient.picture)}
         </Scrollbars>
       </div>
+      <ChatStatusIndicators
+        chatLoading={loading}
+        onClickMarkHumanRequiredResolved={handleOnClickMarkHumanRequiredResolved}
+        onClickMarkInEmergencySituationResolved={handleOnClickMarkInEmergencySituationResolved}
+        onClickOptBackIn={handleOnClickOptBackIn}
+      />
       <ChatContentFooter onSend={onSend} />
     </div>
   );

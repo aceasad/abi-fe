@@ -2,10 +2,8 @@ import { Typography, Grid } from 'antd';
 import { PageHeader } from '@ant-design/pro-components';
 import InnerAppLayout from 'layouts/inner-app-layout';
 import React, { useEffect, useState } from 'react';
-import { useIntl } from 'react-intl';
 import ChatContent from './ChatContent';
 import ChatMenu from './ChatMenu';
-import messages from './messages';
 import { useDispatch, useSelector } from 'react-redux';
 import { makeSelectLoginDetails } from 'redux/selectors/Auth';
 import { createWebsocketUrl, parseReceivedEvent } from 'utils/helpers';
@@ -20,7 +18,6 @@ import utils from 'utils';
 const { useBreakpoint } = Grid;
 
 const Chat = () => {
-  const { formatMessage } = useIntl();
 
   const { token } = useSelector(makeSelectLoginDetails());
 
@@ -85,22 +82,20 @@ const Chat = () => {
   }, []);
 
   return (
-    <>
-      <PageHeader
-        className="p-0 mb-4"
-        title={
-          isMobile ? (
+    <div className="chat-page">
+      {isMobile && (
+        <PageHeader
+          className="p-0 mb-4"
+          title={
             <Typography.Title level={3} className="mb-0" style={{ fontSize: '20px' }}>
-              {`${formatMessage(messages.conversationsTitle)}${!rasaHealthy
+              {`${"Conversations"}${!rasaHealthy
                 ? ': Communication with Asa AI is down for maintenance'
                 : ''
                 }`}
             </Typography.Title>
-          ) : (
-            ''
-          )
-        }
-      />
+          }
+        />
+      )}
       <div className="chat">
         <InnerAppLayout
           sideContent={
@@ -112,7 +107,7 @@ const Chat = () => {
           border
         />
       </div>
-    </>
+    </div>
   );
 };
 

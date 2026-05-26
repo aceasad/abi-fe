@@ -1,17 +1,84 @@
 @chat-header-height: 60px;
-@chat-footer-height: 76px;
+@chat-footer-height: 100px;
+@chat-page-top-spacing: 12px;
+@chat-page-bottom-spacing: 12px;
+
+// Fill the app content area without page-level scroll. The footer offset in
+// @content-height-offset is not used on this layout, so we size from viewport
+// minus the actual app-content padding only.
+.app-content:has(.chat-page) {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    min-height: 0;
+    overflow: hidden;
+    // Reclaim bottom spacing so the chat panel can grow without page scroll.
+    padding-bottom: @layout-content-gutter - @chat-page-bottom-spacing;
+
+    .screen-mobile({
+        padding-bottom: @layout-content-gutter-sm - @chat-page-bottom-spacing;
+    });
+
+    > .ant-layout-content {
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+}
+
+.chat-page {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    padding-top: @chat-page-top-spacing;
+
+    .screen-mobile({
+        padding-top: 0;
+    });
 
 .chat {
     border: 1px solid @border-color-base;
     border-radius: @border-radius-base;
-    margin-top: 12px;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    .inner-app-layout {
+        flex: 1;
+        min-height: 0;
+        height: 100%;
+        overflow: hidden;
+
+        > .side-content {
+            height: 100%;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        > .main-content {
+            flex: 1;
+            min-height: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+    }
 
     .general-instructions {
         max-width: 700px;
     }
     
     .chat-content {
+        display: flex;
+        flex-direction: column;
         height: 100%;
+        max-height: 100%;
+        overflow: hidden;
         
         .chat-content-header{
             height: @chat-header-height;
@@ -36,12 +103,16 @@
         }
 
         .chat-content-body {
-            height: calc(100vh - @chat-header-height - @chat-footer-height - @layout-content-gutter - @header-height - @footer-height - 30px);
-            padding: 15px;
-            overflow-y: auto;
+            flex: 1;
+            min-height: 0;
+            padding: 15px 15px 0 15px;
+            overflow: hidden;
+
+            #single-chat-scroll {
+                height: 100% !important;
+            }
 
             @media (max-width: 991px) {
-                height: calc(100vh - @chat-header-height - @chat-footer-height - 200px);
                 padding: 12px;
             }
 
@@ -115,11 +186,56 @@
             }
         }
 
+        .chat-status-bar {
+            flex-shrink: 0;
+            padding: 0 15px 12px;
+            background-color: @component-background;
+
+            .chat-status-indicators {
+                margin-bottom: 0;
+            }
+        }
+
+        @keyframes chat-status-pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
         .chat-content-footer {
-            height: @chat-footer-height;
-            padding: 0 20px;
+            flex-shrink: 0;
+            position: relative;
+            height: @chat-footer-height + @chat-page-bottom-spacing;
+            padding: 0 20px @chat-page-bottom-spacing;
             display: flex;
             align-items: center;
+            overflow: hidden;
+
+            .ant-form-item {
+                margin-bottom: 0;
+                width: 100%;
+            }
+
+            .chat-message-input {
+                height: 95px !important;
+                min-height: 52px !important;
+                max-height: 100px !important;
+                padding-right: 50px;
+                padding-top: 10px !important;
+                resize: none;
+                border-radius: 10px !important;
+                margin-top: 2px !important;
+            }
+            
+
+            .chat-send-button {
+                position: absolute;
+                right: 28px;
+                bottom: 20px;
+                z-index: 1;
+                width: 40px;
+                border-radius: 10px !important;
+            }
         }
     }
 
@@ -134,24 +250,26 @@
             width: 100%;
         }
     }
+    }
 }
 
 .chat-menu {
     width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
     .chat-menu-toolbar {
         height: @chat-header-height;
     }
  
     .chat-menu-toolbar {
+        flex-shrink: 0;
         border-bottom: 1px solid @border-color-base;
         padding: 0 15px;
         display: flex;
         align-items: center;
-
-        > .ant-input-affix-wrapper {
-            flex: 1;
-            min-width: 0;
-        }
     }
 
     // The filter bar grows vertically as chips wrap, unlike the fixed-height
@@ -164,12 +282,13 @@
     }
 
     .chat-menu-list {
-        height: calc(100vh - @chat-header-height - @chat-footer-height - @layout-content-gutter - @header-height - 30px);
-        overflow: auto;
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
         position: relative;
 
-        @media (max-width: 991px) {
-            height: calc(100vh - 200px);
+        #chat-menu-scroll {
+            height: 100% !important;
         }
         
         .chat-menu-list-item {

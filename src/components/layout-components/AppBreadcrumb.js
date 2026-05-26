@@ -2,15 +2,13 @@ import React, { useMemo } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { Breadcrumb } from 'antd';
 import { useNavigationConfig } from 'configs/NavigationConfig';
-import IntlMessage from 'components/util-components/IntlMessage';
 
 function buildBreadcrumbData(navigationConfig) {
   const data = {
-    '/app': <IntlMessage id="home" />,
+    '/app': 'Home',
   };
   navigationConfig.forEach((elm) => {
-    const assignBreadcrumb = (obj) =>
-      (data[obj.path] = <IntlMessage id={obj.title} />);
+    const assignBreadcrumb = (obj) => (data[obj.path] = obj.title);
     assignBreadcrumb(elm);
     if (elm.submenu) {
       elm.submenu.forEach((subElm) => {

@@ -1,8 +1,8 @@
 import React from 'react';
+import { interpolate } from 'utils/interpolate';
 import { InputNumber } from 'antd';
 import { ErrorMessage } from 'formik';
 import { Form, Tooltip } from 'antd';
-import { useIntl } from 'react-intl';
 
 function FormNumberField({
   form: { handleBlur, setFieldValue },
@@ -18,7 +18,6 @@ function FormNumberField({
   max = Number.MAX_SAFE_INTEGER,
   ...props
 }) {
-  const { formatMessage } = useIntl();
 
   const getLabel = () => {
     if (Label) {
@@ -27,7 +26,7 @@ function FormNumberField({
     return label;
   };
   const defaultErrorMessage = (msg) =>
-    formatMessage(msg, {
+    interpolate(msg, {
       label,
     });
 
@@ -53,7 +52,7 @@ function FormNumberField({
       <div className="authentication-error">
         <ErrorMessage name={field.name}>
           {errorTexts
-            ? (msg) => formatMessage(msg, errorTexts)
+            ? (msg) => interpolate(msg, errorTexts)
             : defaultErrorMessage}
         </ErrorMessage>
       </div>
