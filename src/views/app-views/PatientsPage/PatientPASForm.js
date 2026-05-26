@@ -373,6 +373,16 @@ const PatientPASForm = ({
                               maxValue: 20,
                             }}
                           />
+                          <ColumnField
+                            span={isMobile && !isTablet ? 24 : 8}
+                            component={FormField}
+                            label={"Referral Doctor's Name"}
+                            name="doctor_reference"
+                            errorTexts={{
+                              label: "Referral Doctor's Name",
+                              maxValue: 20,
+                            }}
+                          />
                         </>
                       )}
                       {/* <ColumnField
