@@ -44,18 +44,18 @@ const calculateValueChange = (currentValue, previousValue) => {
 const StatCard = ({ title, value, subtitle, color = '#000000', change = null, changeType = "percentage", style = {}, bare = false, isMobile = false }) => {
   const changeIsObject = change != null && typeof change === 'object';
   const changeNode = !changeIsObject && change != null ? (
-        <Text
-          type="secondary"
-          style={{
-            color: (changeType !== "decrease" && typeof change === 'number' && change > 0) ? '#10B981' : (changeType !== "increase" && typeof change === 'number' && change < 0) ? '#EF4444' : '#6B7280',
-            justifyContent: 'center',
-            fontSize: isMobile ? '12px' : '16px',
-          }}>
-          {changeType === "percentage"
-            ? formatPercentageChangeDisplay(change)
-            : formatValueChangeDisplay(change)}
-        </Text>
-      ) : null;
+    <Text
+      type="secondary"
+      style={{
+        color: (changeType !== "decrease" && typeof change === 'number' && change > 0) ? '#10B981' : (changeType !== "increase" && typeof change === 'number' && change < 0) ? '#EF4444' : '#6B7280',
+        justifyContent: 'center',
+        fontSize: isMobile ? '12px' : '16px',
+      }}>
+      {changeType === "percentage"
+        ? formatPercentageChangeDisplay(change)
+        : formatValueChangeDisplay(change)}
+    </Text>
+  ) : null;
 
   const content = (
     <div style={{ display: 'flex', alignItems: "center", gap: '8px', flexWrap: isMobile ? 'wrap' : 'nowrap' }}>
@@ -149,13 +149,13 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
 
   const priorBucketSubtitle =
     percentage_changes?.pc_booking_time_distribution &&
-    typeof percentage_changes.pc_booking_time_distribution === 'object'
+      typeof percentage_changes.pc_booking_time_distribution === 'object'
       ? interpolate("Prior: morning {morning}, afternoon {afternoon}, evening {evening}, night {night}", {
-          morning: percentage_changes.pc_booking_time_distribution.morning ?? 0,
-          afternoon: percentage_changes.pc_booking_time_distribution.afternoon ?? 0,
-          evening: percentage_changes.pc_booking_time_distribution.evening ?? 0,
-          night: percentage_changes.pc_booking_time_distribution.night ?? 0,
-        })
+        morning: percentage_changes.pc_booking_time_distribution.morning ?? 0,
+        afternoon: percentage_changes.pc_booking_time_distribution.afternoon ?? 0,
+        evening: percentage_changes.pc_booking_time_distribution.evening ?? 0,
+        night: percentage_changes.pc_booking_time_distribution.night ?? 0,
+      })
       : null;
 
   const otherAppointmentOutcomeCounts =
@@ -262,166 +262,166 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
 
   return (
     <Spin spinning={loading}>
-    <>
-      <Card title={"Patient communication flow"}>
-        {previousPeriod && !isMobile && (
-          <Text type="secondary" style={{ position: "absolute", top: 20, left: 276 }}>
-            {"Previous period"}{' '}
-            {formatDateByCountry(previousPeriod[0], country)} - {formatDateByCountry(previousPeriod[1], country)}
-          </Text>
-        )}
+      <>
+        <Card title={"Patient communication flow"}>
+          {previousPeriod && !isMobile && (
+            <Text type="secondary" style={{ position: "absolute", top: 20, left: 276 }}>
+              {"Previous period"}{' '}
+              {formatDateByCountry(previousPeriod[0], country)} - {formatDateByCountry(previousPeriod[1], country)}
+            </Text>
+          )}
 
-        {previousPeriod && isMobile && (
-          <Text type="secondary" style={{ display: 'block', marginBottom: '12px', fontSize: '12px' }}>
-            {"Previous period"}:{' '}
-            {dayjs(previousPeriod[0]).format(mobileShortFormat)} - {dayjs(previousPeriod[1]).format(mobileShortFormat)}
-          </Text>
-        )}
+          {previousPeriod && isMobile && (
+            <Text type="secondary" style={{ display: 'block', marginBottom: '12px', fontSize: '12px' }}>
+              {"Previous period"}:{' '}
+              {dayjs(previousPeriod[0]).format(mobileShortFormat)} - {dayjs(previousPeriod[1]).format(mobileShortFormat)}
+            </Text>
+          )}
 
-        <Row gutter={16}>
-          <Col xs={24} lg={18}>
-            <Row gutter={isMobile ? 8 : 16}>
-              <Col xs={12} sm={6} md={6} lg={6}>
-                <StatCard title={"Patient Invited"} value={displayValue(total_patients_added)} style={{ width: '100%', height: isMobile ? 80 : 100 }} isMobile={isMobile} />
-              </Col>
-              <Col xs={12} sm={6} md={6} lg={6}>
-                <StatCard title={"Invites recieved by patients"} value={displayValue(total_patients_invited)} style={{ width: '100%', height: isMobile ? 80 : 100 }} isMobile={isMobile} />
-              </Col>
-              <Col xs={12} sm={6} md={6} lg={6}>
-                <StatCard title={"Patients Engaged"} value={displayValue(total_patients_engaged)} style={{ width: '100%', height: isMobile ? 80 : 100 }} isMobile={isMobile} />
-              </Col>
-              <Col xs={12} sm={6} md={6} lg={6}>
-                <StatCard title={"Bookings made"} value={displayValue(bookings)} style={{ width: '100%', height: isMobile ? 80 : 100 }} isMobile={isMobile} />
-              </Col>
-            </Row>
+          <Row gutter={16}>
+            <Col xs={24} lg={18}>
+              <Row gutter={isMobile ? 8 : 16}>
+                <Col xs={12} sm={6} md={6} lg={6}>
+                  <StatCard title={"Patient Invited"} value={displayValue(total_patients_added)} style={{ width: '100%', height: isMobile ? 80 : 100 }} isMobile={isMobile} />
+                </Col>
+                <Col xs={12} sm={6} md={6} lg={6}>
+                  <StatCard title={"Invites recieved by patients"} value={displayValue(total_patients_invited)} style={{ width: '100%', height: isMobile ? 80 : 100 }} isMobile={isMobile} />
+                </Col>
+                <Col xs={12} sm={6} md={6} lg={6}>
+                  <StatCard title={"Patients Engaged"} value={displayValue(total_patients_engaged)} style={{ width: '100%', height: isMobile ? 80 : 100 }} isMobile={isMobile} />
+                </Col>
+                <Col xs={12} sm={6} md={6} lg={6}>
+                  <StatCard title={"Bookings made"} value={displayValue(bookings)} style={{ width: '100%', height: isMobile ? 80 : 100 }} isMobile={isMobile} />
+                </Col>
+              </Row>
 
-            <Card style={{ borderRadius: 8, marginTop: 16 }}>
-              {isMobile ? (
-                <>
-                  <div style={{ width: '100%', marginBottom: '16px' }}>
-                    <ResponsiveContainer width="100%" height={175}>
-                      <BarChart data={communicationFlowData} margin={{ top: 20, right: 10, left: 10, bottom: 0 }}>
-                        <Bar dataKey="value" fill="#5B4CDB" radius={[4, 4, 0, 0]}>
-                          <LabelList dataKey="name" position="top" style={{ fill: '#000000', fontSize: '12px' }} />
-                        </Bar>
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </div>
+              <Card style={{ borderRadius: 8, marginTop: 16 }}>
+                {isMobile ? (
+                  <>
+                    <div style={{ width: '100%', marginBottom: '16px' }}>
+                      <ResponsiveContainer width="100%" height={175}>
+                        <BarChart data={communicationFlowData} margin={{ top: 20, right: 10, left: 10, bottom: 0 }}>
+                          <Bar dataKey="value" fill="#5B4CDB" radius={[4, 4, 0, 0]}>
+                            <LabelList dataKey="name" position="top" style={{ fill: '#000000', fontSize: '12px' }} />
+                          </Bar>
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
 
-                  <Row gutter={8}>
-                    <Col span={12}>
-                      <StatCard
-                        title={"Engagement"}
-                        value={displayValue(engagement_rate, true)}
-                        change={percentage_changes?.pc_engagement_rate}
-                        changeType="percentage"
-                        bare
-                        isMobile={isMobile}
-                      />
-                    </Col>
-                    <Col span={12}>
-                      <StatCard
-                        title={"After hours"}
-                        value={displayValue(calculateAfterHoursBookings())}
-                        change={afterHoursChange}
-                        subtitle={priorBucketSubtitle}
-                        changeType="value"
-                        bare
-                        isMobile={isMobile}
-                      />
-                    </Col>
-                  </Row>
-                </>
-              ) : (
-                <div style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  flexWrap: 'nowrap',
-                  alignItems: 'flex-start',
-                  height: '220px',
-                }}>
-                  <div style={{ flex: 1 }}>
-                    <ResponsiveContainer width="100%" height={220}>
-                      <BarChart data={communicationFlowData} margin={{ top: 20, right: 30, left: 20, bottom: 0 }}>
-                        <Bar dataKey="value" fill="#5B4CDB" radius={[4, 4, 0, 0]}>
-                          <LabelList dataKey="name" position="top" style={{ fill: '#000000', fontSize: '14px' }} />
-                        </Bar>
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </div>
-
+                    <Row gutter={8}>
+                      <Col span={12}>
+                        <StatCard
+                          title={"Engagement"}
+                          value={displayValue(engagement_rate, true)}
+                          change={percentage_changes?.pc_engagement_rate}
+                          changeType="percentage"
+                          bare
+                          isMobile={isMobile}
+                        />
+                      </Col>
+                      <Col span={12}>
+                        <StatCard
+                          title={"After hours"}
+                          value={displayValue(calculateAfterHoursBookings())}
+                          change={afterHoursChange}
+                          subtitle={priorBucketSubtitle}
+                          changeType="value"
+                          bare
+                          isMobile={isMobile}
+                        />
+                      </Col>
+                    </Row>
+                  </>
+                ) : (
                   <div style={{
                     display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between',
-                    height: '100%',
-                    minWidth: '240px',
-                    marginLeft: '16px'
+                    flexDirection: 'row',
+                    flexWrap: 'nowrap',
+                    alignItems: 'flex-start',
+                    height: '220px',
                   }}>
-                    <div style={{ width: '100%', marginBottom: '20px' }}>
-                      <StatCard
-                        title={"Engagement"}
-                        value={displayValue(engagement_rate, true)}
-                        change={percentage_changes?.pc_engagement_rate}
-                        changeType="percentage"
-                        bare
-                        isMobile={false}
-                      />
+                    <div style={{ flex: 1 }}>
+                      <ResponsiveContainer width="100%" height={220}>
+                        <BarChart data={communicationFlowData} margin={{ top: 20, right: 30, left: 20, bottom: 0 }}>
+                          <Bar dataKey="value" fill="#5B4CDB" radius={[4, 4, 0, 0]}>
+                            <LabelList dataKey="name" position="top" style={{ fill: '#000000', fontSize: '14px' }} />
+                          </Bar>
+                        </BarChart>
+                      </ResponsiveContainer>
                     </div>
-                    <div style={{ width: '100%' }}>
-                      <StatCard
-                        title={"Bookings made after hours"}
-                        value={displayValue(calculateAfterHoursBookings())}
-                        change={afterHoursChange}
-                        subtitle={priorBucketSubtitle}
-                        changeType="value"
-                        bare
-                        isMobile={false}
-                      />
+
+                    <div style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'space-between',
+                      height: '100%',
+                      minWidth: '240px',
+                      marginLeft: '16px'
+                    }}>
+                      <div style={{ width: '100%', marginBottom: '20px' }}>
+                        <StatCard
+                          title={"Engagement"}
+                          value={displayValue(engagement_rate, true)}
+                          change={percentage_changes?.pc_engagement_rate}
+                          changeType="percentage"
+                          bare
+                          isMobile={false}
+                        />
+                      </div>
+                      <div style={{ width: '100%' }}>
+                        <StatCard
+                          title={"Bookings made after hours"}
+                          value={displayValue(calculateAfterHoursBookings())}
+                          change={afterHoursChange}
+                          // subtitle={priorBucketSubtitle}
+                          changeType="value"
+                          bare
+                          isMobile={false}
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
-              )}
-            </Card>
-          </Col>
+                )}
+              </Card>
+            </Col>
 
-          <Col xs={24} lg={6} style={{ marginTop: isMobile ? 12 : 0 }}>
-            <Row gutter={isMobile ? 8 : 16}>
-              <Col xs={24} sm={8} lg={24}>
-                <StatCard
-                  title={"Booking rate"}
-                  value={displayValue(booking_rate, true)}
-                  change={percentage_changes?.pc_booking_rate}
-                  changeType="percentage"
-                  style={{ width: '100%', height: isMobile ? 80 : 100, marginBottom: 16 }}
-                  isMobile={isMobile}
-                />
-              </Col>
-              <Col xs={24} sm={8} lg={24}>
-                <StatCard
-                  title={failedMessageTitle}
-                  value={displayValue(total_patients_failed_message_status)}
-                  change={failedMessagesChange}
-                  changeType="value"
-                  style={{ width: '100%', height: isMobile ? 80 : 100, marginBottom: 16 }}
-                  isMobile={isMobile}
-                />
-              </Col>
-              <Col xs={24} sm={8} lg={24}>
-                <StatCard
-                  title={deliveredUnengagedTitle}
-                  value={displayValue(total_patients_read_but_no_response)}
-                  change={deliveredUnengagedChange}
-                  changeType="value"
-                  style={{ width: '100%', height: isMobile ? 80 : 100 }}
-                  isMobile={isMobile}
-                />
-              </Col>
-            </Row>
-          </Col>
-        </Row>
-      </Card>
-
+            <Col xs={24} lg={6} style={{ marginTop: isMobile ? 12 : 0 }}>
+              <Row gutter={isMobile ? 8 : 16}>
+                <Col xs={24} sm={8} lg={24}>
+                  <StatCard
+                    title={"Booking rate"}
+                    value={displayValue(booking_rate, true)}
+                    change={percentage_changes?.pc_booking_rate}
+                    changeType="percentage"
+                    style={{ width: '100%', height: isMobile ? 80 : 100, marginBottom: 16 }}
+                    isMobile={isMobile}
+                  />
+                </Col>
+                <Col xs={24} sm={8} lg={24}>
+                  <StatCard
+                    title={failedMessageTitle}
+                    value={displayValue(total_patients_failed_message_status)}
+                    change={failedMessagesChange}
+                    changeType="value"
+                    style={{ width: '100%', height: isMobile ? 80 : 100, marginBottom: 16 }}
+                    isMobile={isMobile}
+                  />
+                </Col>
+                <Col xs={24} sm={8} lg={24}>
+                  <StatCard
+                    title={deliveredUnengagedTitle}
+                    value={displayValue(total_patients_read_but_no_response)}
+                    change={deliveredUnengagedChange}
+                    changeType="value"
+                    style={{ width: '100%', height: isMobile ? 80 : 100 }}
+                    isMobile={isMobile}
+                  />
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+        </Card>
+        {/* TODO: HIDE UNTIL NEXT WEEK 
       <Row gutter={isMobile ? 12 : 16} style={{ marginTop: isMobile ? 12 : 0 }}>
         <Col xs={24} sm={24} md={12} lg={12} style={{ marginBottom: isMobile ? 12 : 0 }}>
           <Card title={"Appointment outcomes"} style={isMobile ? { height: 'auto' } : { minHeight: 425 }}>
@@ -488,8 +488,8 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
             </Row>
           </Card>
         </Col>
-      </Row>
-    </>
+      </Row> */}
+      </>
     </Spin>
   );
 };
