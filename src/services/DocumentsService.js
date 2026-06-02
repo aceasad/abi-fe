@@ -5,7 +5,10 @@ const ENDPOINTS = {
 };
 
 class DocumentsService extends ApiService {
-  getDocuments = () => this.apiClient.get(`${ENDPOINTS.DOCUMENTS}`);
+  getDocuments = (limit = 1000) =>
+    this.apiClient.get(`${ENDPOINTS.DOCUMENTS}`, {
+      params: { limit },
+    });
 
   createDocument = (payload) => {
     const formData = new FormData();
