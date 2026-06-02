@@ -10,8 +10,15 @@ const makeSelectAllChatsInfoRequestData = createSelector(
     page: substate.page,
     count: substate.count,
     offset: substate.offset,
+    // pageSize: substate.pageSize,
   })
 );
+
+// Page-size selector (kept for reference):
+// const makeSelectChatsPageSize = createSelector(
+//   selectChatsDomain,
+//   (substate) => substate.pageSize
+// );
 
 const makeSelectSingleChatRequestData = createSelector(
   selectChatsDomain,
@@ -53,4 +60,5 @@ export {
   makeSelectAllChatsInfo,
   makeSelectSingleChat,
   makeSelectSingleChatInfo,
+  // makeSelectChatsPageSize,
 };
