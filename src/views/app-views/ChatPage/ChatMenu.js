@@ -1,4 +1,6 @@
-import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
+// `useCallback` was used by the removed load-more handler (kept for reference)
+import React, { useEffect, useRef, useState, useMemo } from 'react';
+// `Select` and `Tooltip` were used by the removed page-size selector
 import { Grid, Input } from 'antd';
 import utils from 'utils';
 import { SearchOutlined, MessageOutlined, WhatsAppOutlined } from '@ant-design/icons';
@@ -11,16 +13,22 @@ import {
 } from 'utils/helpers';
 import {
   getAllChatsInfo,
-  getMoreChatsInfo,
+  // getMoreChatsInfo,
   getSingleChat,
   setConversationToRead,
   searchConversations,
   clearTriggerSearchConversations,
+  // setChatsPageSize,
 } from 'redux/actions/Chats';
 import { useDispatch, useSelector } from 'react-redux';
-import { makeSelectAllChatsInfo } from 'redux/selectors/Chats';
+import {
+  makeSelectAllChatsInfo,
+  // makeSelectChatsPageSize,
+} from 'redux/selectors/Chats';
 import { makeSelectClinic } from 'redux/selectors/Clinic';
-import { useDebounce, useLazyLoad } from 'utils/hooks';
+// import { CHAT_PAGE_SIZE_OPTIONS } from 'constants/ApiConstant';
+// `useLazyLoad` powered the removed infinite-scroll load-more
+import { useDebounce } from 'utils/hooks';
 import Scrollbars from 'react-custom-scrollbars';
 import {
   CHAT_FILTERS,
@@ -60,15 +68,18 @@ const ChatMenu = (props) => {
   const [query, setQuery] = useState('');
   const debouncedSearch = useDebounce(query, 500);
   const trimmedQuery = query.trim();
-  const isSearching = trimmedQuery.length > 0;
+  // const isSearching = trimmedQuery.length > 0;
 
-  const nextRef = useRef(null);
+  // const nextRef = useRef(null);
   const menuRef = useRef(null);
-  const scrollHeightRef = useRef(0);
+  // const scrollHeightRef = useRef(0);
 
-  const { items, next, loading, scrollDown } = useSelector(
-    makeSelectAllChatsInfo
-  );
+  // Paginated version also selected next/loading/scrollDown (kept for reference):
+  // const { items, next, loading, scrollDown } = useSelector(
+  //   makeSelectAllChatsInfo
+  // );
+  const { items } = useSelector(makeSelectAllChatsInfo);
+  // const pageSize = useSelector(makeSelectChatsPageSize);
   const clinic = useSelector(makeSelectClinic());
   const { PASProvider } = useSelector((state) => state.auth.user || {});
   const showPatientLocationFilter =
@@ -121,26 +132,27 @@ const ChatMenu = (props) => {
     }
   }, [dispatch, query, statusFilter, props.triggerSearchConversations]);
 
-  useEffect(() => {
-    nextRef.current = next;
-  }, [next]);
+  // Infinite-scroll "load more" for the conversations list (kept for reference):
+  // useEffect(() => {
+  //   nextRef.current = next;
+  // }, [next]);
 
-  const handleGetMoreChatsInfo = useCallback(
-    () => {
-      if (isSearching) {
-        return;
-      }
-      dispatch(getMoreChatsInfo({ filter: statusFilter }));
-    },
-    [dispatch, statusFilter, isSearching]
-  );
+  // const handleGetMoreChatsInfo = useCallback(
+  //   () => {
+  //     if (isSearching) {
+  //       return;
+  //     }
+  //     dispatch(getMoreChatsInfo({ filter: statusFilter }));
+  //   },
+  //   [dispatch, statusFilter, isSearching]
+  // );
 
-  useLazyLoad(
-    '#chat-menu-scroll div',
-    handleGetMoreChatsInfo,
-    [loading, isSearching],
-    () => !!nextRef.current && !isSearching
-  );
+  // useLazyLoad(
+  //   '#chat-menu-scroll div',
+  //   handleGetMoreChatsInfo,
+  //   [loading, isSearching],
+  //   () => !!nextRef.current && !isSearching
+  // );
 
   const openChat = (id) => {
     dispatch(setConversationToRead(id));
@@ -158,22 +170,34 @@ const ChatMenu = (props) => {
     setQuery(e.target.value);
   };
 
-  const stopScroll = () => {
-    menuRef.current &&
-      menuRef.current.getScrollHeight() - scrollHeightRef.current > 2 &&
-      menuRef.current.scrollTop(
-        menuRef.current.getScrollHeight() - scrollHeightRef.current
-      );
-  };
+  // Page-size selector change handler (kept for reference):
+  // const handlePageSizeChange = (value) => {
+  //   dispatch(setChatsPageSize(value));
+  //   if (trimmedQuery) {
+  //     dispatch(searchConversations({ query: trimmedQuery, filter: statusFilter }));
+  //   } else {
+  //     dispatch(getAllChatsInfo(statusFilter));
+  //   }
+  // };
 
-  useEffect(() => {
-    if (scrollDown) {
-      stopScroll();
-    }
-    if (menuRef.current) {
-      scrollHeightRef.current = menuRef.current.getScrollHeight();
-    }
-  }, [items]);
+  // Preserved scroll position while prepending paginated results (kept for
+  // reference):
+  // const stopScroll = () => {
+  //   menuRef.current &&
+  //     menuRef.current.getScrollHeight() - scrollHeightRef.current > 2 &&
+  //     menuRef.current.scrollTop(
+  //       menuRef.current.getScrollHeight() - scrollHeightRef.current
+  //     );
+  // };
+
+  // useEffect(() => {
+  //   if (scrollDown) {
+  //     stopScroll();
+  //   }
+  //   if (menuRef.current) {
+  //     scrollHeightRef.current = menuRef.current.getScrollHeight();
+  //   }
+  // }, [items]);
 
   const patientLocationOptions = useMemo(
     () => buildPatientLocationFilterOptions(items),
@@ -203,6 +227,21 @@ const ChatMenu = (props) => {
           value={query}
           onChange={searchOnChange}
         />
+        {/* Page-size selector (kept for reference). To re-enable, wrap the
+            toolbar in a flex container and restore the Redux page-size flow:
+        <Tooltip title="Conversations per page">
+          <Select
+            size="middle"
+            value={pageSize}
+            onChange={handlePageSizeChange}
+            style={{ width: 80, flexShrink: 0 }}
+            options={CHAT_PAGE_SIZE_OPTIONS.map((size) => ({
+              label: size,
+              value: size,
+            }))}
+          />
+        </Tooltip>
+        */}
       </div>
       <div className="chat-menu-toolbar chat-menu-filter-bar">
         <ConversationFilters

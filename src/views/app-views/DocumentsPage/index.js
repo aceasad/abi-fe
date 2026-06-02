@@ -14,6 +14,7 @@ import {
   getDocumentTypeTagColor,
   usesLocation,
 } from './documentTypeHelpers';
+import { DEFAULT_PAGINATION_LIMIT } from 'constants/ApiConstant';
 const { Title } = Typography;
 
 const { useBreakpoint } = Grid;
@@ -443,6 +444,12 @@ const DocumentsPage = () => {
           rowSelection={{
             selectedRowKeys,
             onChange: (keys) => setSelectedRowKeys(keys),
+          }}
+          pagination={{
+            defaultPageSize: DEFAULT_PAGINATION_LIMIT,
+            showSizeChanger: true,
+            pageSizeOptions: ['10', '20', '50', '100'],
+            hideOnSinglePage: false,
           }}
         />
       )}

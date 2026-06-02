@@ -1,8 +1,8 @@
 import { produce } from 'immer';
 import { chatBaseState } from 'constants/ChatConstants';
 import {
-  ADD_MORE_TO_ALL_CHATS_INFO,
   ADD_MORE_TO_SINGLE_CHAT,
+  // ADD_MORE_TO_ALL_CHATS_INFO,
   ADD_ONE_MESSAGE,
   RESET_CHAT_REDUCER,
   SET_ALL_CHATS_INFO,
@@ -14,9 +14,10 @@ import {
   TRIGGER_SEARCH_CONVERSATIONS,
   CLEAR_TRIGGER_SEARCH_CONVERSATIONS,
   CLEAR_SINGLE_CHAT_MESSAGES,
+  // SET_CHATS_PAGE_SIZE,
 } from 'redux/constants/Chats';
 import {
-  ALL_CHATS_PAGINATION_LIMIT,
+  // ALL_CHATS_PAGINATION_LIMIT,
   CHAT_MESSAGES_PAGINATION_LIMIT,
 } from 'constants/ApiConstant';
 import { MESSAGE_STATUS } from 'constants/ChatConstants';
@@ -24,6 +25,7 @@ import { updateChatMenuItems, updateConversation } from 'utils/helpers';
 
 const initialState = {
   ...chatBaseState,
+  // pageSize: ALL_CHATS_PAGINATION_LIMIT,
   single: (({ single, ...rest }) => rest)({ ...chatBaseState, chatInfo: null }),
 };
 
@@ -59,8 +61,14 @@ const chats = (state = initialState, action) =>
         draft.items = action.payload.results;
         draft.count = action.payload.count;
         draft.next = action.payload.next;
-        draft.page =
-          Math.floor(action.payload.count / ALL_CHATS_PAGINATION_LIMIT) + 1;
+        // Paginated version computed page from the page size; everything now
+        // loads at once so the list is always a single page:
+        // draft.page =
+        //   Math.floor(
+        //     action.payload.count /
+        //       (state.pageSize || ALL_CHATS_PAGINATION_LIMIT)
+        //   ) + 1;
+        draft.page = 1;
         draft.offset = action.payload.results.length;
         draft.scrollDown = false;
         break;
@@ -84,15 +92,19 @@ const chats = (state = initialState, action) =>
           scrollDown: false,
         };
         break;
-      case ADD_MORE_TO_ALL_CHATS_INFO:
-        draft.items = [...state.items, ...action.payload.results];
-        draft.count = action.payload.count;
-        draft.next = action.payload.next;
-        draft.page =
-          Math.floor(action.payload.count / ALL_CHATS_PAGINATION_LIMIT) + 1;
-        draft.offset = action.payload.results.length + state.offset;
-        draft.scrollDown = true;
-        break;
+      // Pagination "load more" for the conversations list (kept for reference):
+      // case ADD_MORE_TO_ALL_CHATS_INFO:
+      //   draft.items = [...state.items, ...action.payload.results];
+      //   draft.count = action.payload.count;
+      //   draft.next = action.payload.next;
+      //   draft.page =
+      //     Math.floor(
+      //       action.payload.count /
+      //         (state.pageSize || ALL_CHATS_PAGINATION_LIMIT)
+      //     ) + 1;
+      //   draft.offset = action.payload.results.length + state.offset;
+      //   draft.scrollDown = true;
+      //   break;
       case SET_CONVERSATION_TO_READ:
         draft.items = state.items.map((item) =>
           item.patient.id === action.payload
@@ -185,6 +197,11 @@ const chats = (state = initialState, action) =>
         draft.single.items = [];
         break;
       }
+      // Page-size selector (kept for reference):
+      // case SET_CHATS_PAGE_SIZE: {
+      //   draft.pageSize = action.payload;
+      //   break;
+      // }
       case RESET_CHAT_REDUCER: {
         return initialState;
       }

@@ -1,6 +1,7 @@
 import ApiService from './ApiService';
 import {
-  ALL_CHATS_PAGINATION_LIMIT,
+  ALL_CHATS_FETCH_LIMIT,
+  // ALL_CHATS_PAGINATION_LIMIT,
   CHAT_MESSAGES_PAGINATION_LIMIT,
 } from 'constants/ApiConstant';
 import { CHAT_FILTERS } from 'constants/ChatConstants';
@@ -29,18 +30,28 @@ class ChatService extends ApiService {
       },
     });
 
-  getAllChatInformation = (
-    offset = 0,
-    limit = ALL_CHATS_PAGINATION_LIMIT,
-    filter = CHAT_FILTERS.ALL
-  ) =>
+  // Paginated version (kept for reference):
+  // getAllChatInformation = (
+  //   offset = 0,
+  //   limit = ALL_CHATS_PAGINATION_LIMIT,
+  //   filter = CHAT_FILTERS.ALL
+  // ) =>
+  //   this.apiClient.get(ENDPOINTS.ALL_CHATS, {
+  //     params: { limit, offset, filter },
+  //   });
+  getAllChatInformation = (filter = CHAT_FILTERS.ALL) =>
     this.apiClient.get(ENDPOINTS.ALL_CHATS, {
-      params: { limit, offset, filter },
+      params: { limit: ALL_CHATS_FETCH_LIMIT, filter },
     });
 
+  // Paginated version (kept for reference):
+  // searchConversations = (queryParams, limit = ALL_CHATS_PAGINATION_LIMIT) =>
+  //   this.apiClient.get(ENDPOINTS.SEARCH_CHATS, {
+  //     params: { ...queryParams, limit },
+  //   });
   searchConversations = (queryParams) =>
     this.apiClient.get(ENDPOINTS.SEARCH_CHATS, {
-      params: { ...queryParams, limit: ALL_CHATS_PAGINATION_LIMIT },
+      params: { ...queryParams, limit: ALL_CHATS_FETCH_LIMIT },
     });
 
   markConversationAsRead = (patientId) =>
