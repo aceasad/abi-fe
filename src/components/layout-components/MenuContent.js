@@ -14,7 +14,7 @@ import { MenuFoldOutlined, MenuUnfoldOutlined, LogoutOutlined } from '@ant-desig
 import { useDispatch } from 'react-redux';
 import { signOut } from 'redux/actions/Auth';
 import { useSelector } from 'react-redux';
-import { makeSelectUnreadCount } from 'redux/selectors/Notifications';
+import { makeSelectVisibleUnreadCount } from 'redux/selectors/Notifications';
 import { Badge } from 'antd';
 
 const { SubMenu } = Menu;
@@ -45,7 +45,7 @@ const SideNavContent = ({
   closeMobileDrawer, // New prop for closing mobile drawer
 }) => {
   const dispatch = useDispatch();
-  const unreadCount = useSelector(makeSelectUnreadCount());
+  const visibleUnreadCount = useSelector(makeSelectVisibleUnreadCount());
   const navigationConfig = useNavigationConfig();
 
   const history = useHistory();
@@ -156,10 +156,10 @@ const SideNavContent = ({
               <span>
                 {menu?.title}
               </span>
-              {menu.key === 'notifications' && unreadCount > 0 && (
+              {menu.key === 'notifications' && visibleUnreadCount > 0 && (
                 <Badge
                   className="side-nav-notification-badge"
-                  count={unreadCount}
+                  count={visibleUnreadCount}
                   size="default"
                 />
               )}

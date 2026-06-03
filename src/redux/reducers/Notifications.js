@@ -1,4 +1,8 @@
 import { produce } from 'immer';
+import {
+    getVisibleUnreadNotificationCount,
+    isVisibleUnreadNotification,
+} from 'utils/notificationVisibility';
 
 const initialState = {
     notifications: [],
@@ -36,7 +40,9 @@ const notifications = (state = initialState, action) => {
                         created_at: newNotification.timestamp || new Date().toISOString(),
                     };
                     draft.notifications.unshift(convertedNotification);
-                    draft.unreadCount += 1;
+                    if (isVisibleUnreadNotification(convertedNotification)) {
+                        draft.unreadCount = getVisibleUnreadNotificationCount(draft);
+                    }
                 }
                 break;
 
@@ -46,7 +52,6 @@ const notifications = (state = initialState, action) => {
                 const notification = draft.notifications.find(n => n.id === notificationId);
                 if (notification && !notification.is_read) {
                     notification.is_read = true;
-                    draft.unreadCount = Math.max(0, draft.unreadCount - 1);
                 }
                 // Update in categorized arrays
                 const bookingNotification = draft.bookingNotifications.find(n => n.id === notificationId);
@@ -61,6 +66,7 @@ const notifications = (state = initialState, action) => {
                 if (humanInterventionNotification && !humanInterventionNotification.is_read) {
                     humanInterventionNotification.is_read = true;
                 }
+                draft.unreadCount = getVisibleUnreadNotificationCount(draft);
                 draft.markReadLoading = false;
                 break;
 
@@ -74,7 +80,7 @@ const notifications = (state = initialState, action) => {
 
             case 'SET_NOTIFICATIONS':
                 draft.notifications = action.payload || [];
-                draft.unreadCount = Array.isArray(action.payload) ? action.payload.filter(n => !n.is_read).length : 0;
+                draft.unreadCount = getVisibleUnreadNotificationCount(draft);
                 draft.fetchLoading = false;
                 break;
 
@@ -131,11 +137,13 @@ const notifications = (state = initialState, action) => {
             // Category-specific actions
             case 'SET_BOOKING_NOTIFICATIONS':
                 draft.bookingNotifications = action.payload || [];
+                draft.unreadCount = getVisibleUnreadNotificationCount(draft);
                 draft.fetchLoading = false;
                 break;
 
             case 'SET_OFF_TOPIC_NOTIFICATIONS':
                 draft.offTopicNotifications = action.payload || [];
+                draft.unreadCount = getVisibleUnreadNotificationCount(draft);
                 draft.fetchLoading = false;
                 break;
 
