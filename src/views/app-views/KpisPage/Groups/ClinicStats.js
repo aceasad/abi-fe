@@ -142,9 +142,9 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
 
   const calculateAfterHoursBookings = () => {
     if (!booking_time_distribution) return -1;
-    const evening = booking_time_distribution.evening ?? 0;
+    // const evening = booking_time_distribution.evening ?? 0;
     const night = booking_time_distribution.night ?? 0;
-    return evening + night;
+    return night;
   };
 
   const priorBucketSubtitle =
