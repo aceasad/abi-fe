@@ -9,6 +9,7 @@ import {
 import { PageHeader } from '@ant-design/pro-components';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import AppointmentsLikelyToBeMissed from './AppointmentsLikelyToBeMissed';
 import MessagesRequiringImmediateAttention from './MessagesRequiringImmediateAttention';
 import PassedAppointmentsRequiringImmediateStatusUpdate from './PassedAppointmentsRequiringImmediateStatusUpdate';
@@ -29,7 +30,12 @@ const { useBreakpoint } = Grid;
 const OverviewPage = () => {
   const screens = utils.getBreakPoint(useBreakpoint());
   const isMobile = !screens.includes('lg');
-  const [activeKey, setActiveKey] = useState("1");
+  const location = useLocation();
+  // When navigated here from another page (e.g. the KPIs booking status card),
+  // the router state can request a specific tab and pre-fill its status filter.
+  const requestedTabKey = location.state?.activeTabKey;
+  const requestedFilterStatus = location.state?.progressFilterStatus;
+  const [activeKey, setActiveKey] = useState(requestedTabKey || "1");
 
   const tabItems = [
     ...(SHOW_MESSAGES_REQUIRING_IMMEDIATE_ATTENTION ? [{
@@ -51,6 +57,7 @@ const OverviewPage = () => {
         <PatientProgressTable
           startOpen
           title={"Booking progress"}
+          initialFilterStatus={requestedFilterStatus}
         />
       ),
     }] : []),

@@ -17,7 +17,7 @@ import { makeSelectLoginDetails } from 'redux/selectors/Auth';
 import { makeSelectClinic } from 'redux/selectors/Clinic';
 import {
     makeSelectNotifications,
-    makeSelectUnreadCount,
+    makeSelectVisibleUnreadCount,
     makeSelectFetchLoading,
     makeSelectMarkReadLoading,
     makeSelectMarkAllReadLoading,
@@ -44,6 +44,11 @@ import authService from 'services/AuthService';
 import { API_BASE_URL } from 'configs/AppConfig';
 import utils from 'utils';
 import {
+    HUMAN_INTERVENTION_NOTIFICATION_TYPES,
+    isVisibleNotification,
+    isVisibleUnreadNotification,
+} from 'utils/notificationVisibility';
+import {
     BellOutlined,
     MessageOutlined,
     UserOutlined,
@@ -60,7 +65,7 @@ const Notification = () => {
     const { token } = useSelector(makeSelectLoginDetails());
     const clinic = useSelector(makeSelectClinic());
     const notifications = useSelector(makeSelectNotifications()) || [];
-    const unreadCount = useSelector(makeSelectUnreadCount()) || 0;
+    const visibleUnreadCount = useSelector(makeSelectVisibleUnreadCount()) || 0;
     const fetchLoading = useSelector(makeSelectFetchLoading()) || false;
     const markReadLoading = useSelector(makeSelectMarkReadLoading()) || false;
     const markAllReadLoading = useSelector(makeSelectMarkAllReadLoading()) || false;
@@ -154,24 +159,15 @@ const Notification = () => {
         return formatDateByCountry(date, clinic?.country);
     };
 
-    // Define human intervention notification types
-    const humanInterventionTypes = [
-        'Emergency Situation',
-        'Human Intervention',
-        'Opt out',
-        'Screened Elsewhere',
-        'Decline',
-        'Snoozed'
-    ];
-
     // Use categorized notifications from Redux state - filter to show only unread notifications
     const categorizedNotifications = {
-        bookingNotes: bookingNotifications.filter(n => !n.is_read),
-        offTopic: offTopicNotifications.filter(n => !n.is_read),
-        humanIntervention: notifications.filter(n =>
-            !n.is_read &&
-            humanInterventionTypes.includes(n.notification_type)
-        )
+        bookingNotes: bookingNotifications.filter(isVisibleUnreadNotification),
+        offTopic: offTopicNotifications.filter(isVisibleUnreadNotification),
+        humanIntervention: notifications.filter(
+            (n) =>
+                isVisibleUnreadNotification(n) &&
+                HUMAN_INTERVENTION_NOTIFICATION_TYPES.includes(n.notification_type)
+        ),
     };
 
     const getNotificationIcon = (notificationType, priority) => {
@@ -322,9 +318,9 @@ const Notification = () => {
                         <div style={{ marginBottom: '12px' }}>
                             <Title level={3} style={{ marginTop: "8px" }}>
                                 Notifications
-                                {unreadCount > 0 && (
+                                {visibleUnreadCount > 0 && (
                                     <Badge
-                                        count={unreadCount}
+                                        count={visibleUnreadCount}
                                         size="default"
                                         style={{ marginLeft: '12px' }}
                                     />
@@ -333,7 +329,7 @@ const Notification = () => {
                         </div>
                         <div style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', gap: '8px' }}>
                             {fetchLoading && <Spin size="small" />}
-                            {unreadCount > 0 && (
+                            {visibleUnreadCount > 0 && (
                                 <Button
                                     type="link"
                                     onClick={markAllAsRead}
@@ -352,9 +348,9 @@ const Notification = () => {
                         <Col flex="auto">
                             <Title level={3} style={{ marginTop: "8px" }}>
                                 Notifications
-                                {unreadCount > 0 && (
+                                {visibleUnreadCount > 0 && (
                                     <Badge
-                                        count={unreadCount}
+                                        count={visibleUnreadCount}
                                         size="default"
                                         style={{ marginLeft: '12px' }}
                                     />
@@ -364,7 +360,7 @@ const Notification = () => {
                         <Col>
                             <Space>
                                 {fetchLoading && <Spin size="small" />}
-                                {unreadCount > 0 && (
+                                {visibleUnreadCount > 0 && (
                                     <Button
                                         type="link"
                                         onClick={markAllAsRead}
@@ -415,7 +411,7 @@ const Notification = () => {
                             <NotificationCard
                                 title="All Notifications"
                                 description="All notifications from the system"
-                                notifications={notifications}
+                                notifications={notifications.filter(isVisibleNotification)}
                             />
                         </Col>
                     </Row>
