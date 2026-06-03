@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { makeSelectClinicStatsData } from 'redux/selectors/Overview';
 import { Card, Row, Col, Typography, Spin } from 'antd';
+import { RightOutlined } from '@ant-design/icons';
+import { APP_PAGES_PREFIX_PATH } from 'configs/AppConfig';
 import { formatDateByCountry, getDateFormatByCountry } from 'utils/helpers';
 import dayjs from 'utils/dayjs';
 
@@ -33,6 +36,25 @@ const PLACEHOLDER_APPOINTMENT_OUTCOMES = [
   { name: 'Rescheduled', value: 4 },
   { name: 'Arrived', value: 3 },
 ];
+
+// The "Booking progress" tab on the Overview page is keyed "5". Clicking a
+// booking status bar deep-links there and pre-fills its "Filter by status"
+// control, so each KPI outcome label is mapped to the matching progress status
+// key used by that filter (see PatientProgressTable's statusMapping).
+const BOOKING_PROGRESS_TAB_KEY = '5';
+
+const OUTCOME_TO_PROGRESS_STATUS = {
+  'Scheduled': 'BOOKED',
+  'Attended': 'ATTENDED',
+  'Not attended': 'NOT_ATTENDED',
+  'Cancelled': 'CANCELLED',
+  'Rescheduled': 'RESCHEDULED',
+  'Arrived': 'ARRIVED',
+  'Sent in': 'SENT_IN',
+  'Quiet sent in': 'QUIET_SENT_IN',
+  'Walked out': 'WALKED_OUT',
+  'Not updated': 'NOT_UPDATED',
+};
 
 const areAllAppointmentOutcomesZero = (values) =>
   values.every((value) => Number(value ?? 0) === 0);
@@ -106,7 +128,7 @@ const DeltaBadge = ({ change, changeType = 'percentage', isMobile = false }) => 
   );
 };
 
-const StatCard = ({ title, value, subtitle, color = HEADING_COLOR, change = null, changeType = 'percentage', style = {}, bare = false, isMobile = false }) => {
+const StatCard = ({ title, value, subtitle, color = HEADING_COLOR, change = null, changeType = 'percentage', style = {}, bare = false, compact = false, isMobile = false }) => {
   const changeNode = change != null && typeof change !== 'object'
     ? <DeltaBadge change={change} changeType={changeType} isMobile={isMobile} />
     : null;
@@ -142,12 +164,12 @@ const StatCard = ({ title, value, subtitle, color = HEADING_COLOR, change = null
         background: '#fff',
         border: CARD_BORDER,
         borderRadius: 14,
-        padding: isMobile ? '14px' : '16px 18px',
-        height: '100%',
+        padding: isMobile ? '14px' : compact ? '10px 16px' : '16px 18px',
+        height: compact ? 'auto' : '100%',
         ...style,
       }}
     >
-      <Text type="secondary" style={{ display: 'block', fontSize: isMobile ? '13px' : '14px', marginBottom: isMobile ? 6 : 10 }}>
+      <Text type="secondary" style={{ display: 'block', fontSize: isMobile ? '13px' : '14px', marginBottom: isMobile ? 6 : compact ? 6 : 10 }}>
         {title}
       </Text>
       {content}
@@ -305,8 +327,24 @@ const SectionCard = ({ title, extra, children, style, isMobile, fillHeight = fal
 );
 
 const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
+  const history = useHistory();
+  const [hoveredOutcome, setHoveredOutcome] = useState(null);
   const { PASProvider } = useSelector((state) => state.auth.user || {});
   const isMedbridge = PASProvider?.toLowerCase() === 'medbridge';
+
+  // Deep-link a clicked booking status to the Overview "Booking progress" tab
+  // with its status filter pre-selected via router state.
+  const handleOutcomeClick = (outcomeName) => {
+    const progressStatus = OUTCOME_TO_PROGRESS_STATUS[outcomeName];
+    if (!progressStatus) return;
+    history.push({
+      pathname: `${APP_PAGES_PREFIX_PATH}/overview`,
+      state: {
+        activeTabKey: BOOKING_PROGRESS_TAB_KEY,
+        progressFilterStatus: progressStatus,
+      },
+    });
+  };
   const {
     engagement_rate,
     booking_rate,
@@ -571,14 +609,52 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
                   const value = Number(item.value ?? 0);
                   const pct = appointmentOutcomesTotal > 0 ? (value / appointmentOutcomesTotal) * 100 : 0;
                   const color = item.color || pieChartColors[index % pieChartColors.length];
+                  const isClickable = Boolean(OUTCOME_TO_PROGRESS_STATUS[item.name]);
+                  const isHovered = hoveredOutcome === item.name;
 
                   return (
-                    <div key={item.name}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 7 }}>
+                    <div
+                      key={item.name}
+                      role={isClickable ? 'button' : undefined}
+                      tabIndex={isClickable ? 0 : undefined}
+                      onClick={isClickable ? () => handleOutcomeClick(item.name) : undefined}
+                      onKeyDown={isClickable ? (e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          handleOutcomeClick(item.name);
+                        }
+                      } : undefined}
+                      onMouseEnter={isClickable ? () => setHoveredOutcome(item.name) : undefined}
+                      onMouseLeave={isClickable ? () => setHoveredOutcome(null) : undefined}
+                      style={{
+                        cursor: isClickable ? 'pointer' : 'default',
+                        margin: '0 -8px',
+                        padding: '8px',
+                        borderRadius: 10,
+                        background: isClickable && isHovered ? 'rgba(93, 78, 191, 0.06)' : 'transparent',
+                        transition: 'background 0.2s ease',
+                        outline: 'none',
+                      }}
+                    >
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 7 }}>
                         <Text style={{ fontSize: isMobile ? 13 : 14, color: HEADING_COLOR }}>{item.name}</Text>
-                        <span style={{ fontSize: isMobile ? 13 : 14, color: HEADING_COLOR, whiteSpace: 'nowrap' }}>
-                          <span style={{ fontWeight: 700 }}>{value.toLocaleString()}</span>
-                          <span style={{ color: MUTED_COLOR, marginLeft: 8 }}>{pct.toFixed(1)}%</span>
+                        <span style={{ display: 'inline-flex', alignItems: 'center', whiteSpace: 'nowrap' }}>
+                          <span style={{ fontSize: isMobile ? 13 : 14, color: HEADING_COLOR }}>
+                            <span style={{ fontWeight: 700 }}>{value.toLocaleString()}</span>
+                            <span style={{ color: MUTED_COLOR, marginLeft: 8 }}>{pct.toFixed(1)}%</span>
+                          </span>
+                          {isClickable ? (
+                            <RightOutlined
+                              style={{
+                                fontSize: isMobile ? 11 : 12,
+                                marginLeft: 10,
+                                color: isHovered ? '#5D4EBF' : MUTED_COLOR,
+                                opacity: isHovered ? 1 : 0.5,
+                                transform: isHovered ? 'translateX(2px)' : 'none',
+                                transition: 'color 0.2s ease, opacity 0.2s ease, transform 0.2s ease',
+                              }}
+                            />
+                          ) : null}
                         </span>
                       </div>
                       <div style={{ height: isMobile ? 8 : 10, borderRadius: 999, background: TRACK_COLOR, overflow: 'hidden' }}>
@@ -600,21 +676,18 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
           </SectionCard>
         </Col>
 
-        <Col xs={24} md={12} style={{ display: 'flex' }}>
+        <Col xs={24} md={12} style={{ display: 'flex', alignSelf: 'flex-start' }}>
           <SectionCard
             title="Intervention & special cases"
             isMobile={isMobile}
-            fillHeight={!isMobile}
-            style={isMobile ? { height: 'auto', width: '100%' } : { minHeight: 425, height: '100%', width: '100%' }}
+            style={{ height: 'auto', width: '100%', flex: 'none' }}
           >
             <div
               style={{
                 display: 'grid',
                 gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
-                gridTemplateRows: isMobile ? 'auto' : 'repeat(3, minmax(0, 1fr))',
+                gridTemplateRows: 'auto',
                 gap: isMobile ? 8 : 12,
-                flex: isMobile ? 'none' : 1,
-                height: isMobile ? 'auto' : '100%',
               }}
             >
               {interventionData.map((item, index) => (
@@ -624,7 +697,8 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
                   value={displayValue(item.value)}
                   change={item.change}
                   changeType="value"
-                  style={{ width: '100%', minHeight: isMobile ? 'auto' : 0 }}
+                  compact={!isMobile}
+                  style={{ width: '100%' }}
                   isMobile={isMobile}
                 />
               ))}
