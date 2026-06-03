@@ -139,7 +139,7 @@ const PatientOverview = ({
               <div className="text-primary cursor-pointer" onClick={showList}>
                 <LeftOutlined />
                 <Text underline className="text-primary ml-2">
-                  {"Back to patietnts"}
+                  {"Back to patients"}
                 </Text>
               </div>
               <div
@@ -236,9 +236,10 @@ const PatientOverview = ({
               <Title level={3} className="ml-3 mr-4 mb-4">
                 {"Messages"}
               </Title>
-              <div className="chat inner-app-layout">
-                <div className="main-content">
-                  <Conversation
+              <div className="patient-messages-chat">
+                <div className="chat inner-app-layout">
+                  <div className="main-content no-gutter">
+                    <Conversation
                     showTitle={false}
                     conversationId={patientId}
                     isMenuVisible={false}
@@ -253,7 +254,8 @@ const PatientOverview = ({
                         </Text>
                       </div>
                     )}
-                  />
+                    />
+                  </div>
                 </div>
               </div>
             </>
