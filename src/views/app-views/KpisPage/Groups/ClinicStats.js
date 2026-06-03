@@ -2,7 +2,6 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { makeSelectClinicStatsData } from 'redux/selectors/Overview';
 import { Card, Row, Col, Typography, Spin } from 'antd';
-import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import { formatDateByCountry, getDateFormatByCountry } from 'utils/helpers';
 import dayjs from 'utils/dayjs';
 
@@ -124,7 +123,7 @@ const StatCard = ({ title, value, subtitle, color = HEADING_COLOR, change = null
   if (bare) {
     return (
       <div style={{ height: isMobile ? '80px' : '100px', textAlign: 'left', ...style }}>
-        <Text type="secondary" style={{ display: 'block', fontSize: isMobile ? '12px' : '13px', lineHeight: '22px', marginBottom: isMobile ? '4px' : '8px' }}>
+        <Text type="secondary" style={{ display: 'block', fontSize: isMobile ? '13px' : '14px', lineHeight: '22px', marginBottom: isMobile ? '4px' : '8px' }}>
           {title}
         </Text>
         {content}
@@ -148,7 +147,7 @@ const StatCard = ({ title, value, subtitle, color = HEADING_COLOR, change = null
         ...style,
       }}
     >
-      <Text type="secondary" style={{ display: 'block', fontSize: isMobile ? '12px' : '13px', marginBottom: isMobile ? 6 : 10 }}>
+      <Text type="secondary" style={{ display: 'block', fontSize: isMobile ? '13px' : '14px', marginBottom: isMobile ? 6 : 10 }}>
         {title}
       </Text>
       {content}
@@ -177,7 +176,7 @@ const RateTile = ({ label, value, change, changeType = 'percentage', accent = '#
   >
     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
       <span style={{ width: 8, height: 8, borderRadius: '50%', background: accent, flexShrink: 0 }} />
-      <Text type="secondary" style={{ fontSize: isMobile ? 12 : 13 }}>{label}</Text>
+      <Text type="secondary" style={{ fontSize: isMobile ? 13 : 14 }}>{label}</Text>
     </div>
     <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
       <span style={{ fontSize: isMobile ? 22 : 26, fontWeight: 700, color: HEADING_COLOR, letterSpacing: '-0.02em', lineHeight: 1.1 }}>
@@ -222,9 +221,14 @@ const ConversionFunnel = ({ stages, isMobile }) => {
 
         return (
           <div key={stage.key} style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <span style={{ fontSize: isMobile ? 18 : 24, fontWeight: 700, color: HEADING_COLOR, letterSpacing: '-0.02em', marginBottom: 8 }}>
-              {rawValue == null ? '—' : value.toLocaleString()}
-            </span>
+            <div style={{ textAlign: 'center', marginBottom: 10 }}>
+              <div style={{ fontSize: isMobile ? 12 : 14, fontWeight: 600, color: HEADING_COLOR, lineHeight: 1.2 }}>
+                {stage.label}
+              </div>
+              <div style={{ fontSize: isMobile ? 18 : 24, fontWeight: 700, color: HEADING_COLOR, letterSpacing: '-0.02em', lineHeight: 1.2 }}>
+                {rawValue == null ? '—' : value.toLocaleString()}
+              </div>
+            </div>
 
             <div
               style={{
@@ -251,12 +255,9 @@ const ConversionFunnel = ({ stages, isMobile }) => {
               />
             </div>
 
-            <span style={{ fontSize: isMobile ? 12 : 14, fontWeight: 600, color: HEADING_COLOR, marginTop: 12, textAlign: 'center' }}>
-              {stage.label}
-            </span>
             <span
               style={{
-                marginTop: 6,
+                marginTop: 12,
                 fontSize: isMobile ? 10 : 12,
                 fontWeight: 600,
                 color: index === 0 ? MUTED_COLOR : '#5D4EBF',
@@ -275,12 +276,29 @@ const ConversionFunnel = ({ stages, isMobile }) => {
   );
 };
 
-const SectionCard = ({ title, extra, children, style, isMobile }) => (
+const SectionCard = ({ title, extra, children, style, isMobile, fillHeight = false }) => (
   <Card
     title={<span style={{ fontSize: isMobile ? 15 : 16, fontWeight: 600, color: HEADING_COLOR }}>{title}</span>}
     extra={extra}
-    style={{ borderRadius: CARD_RADIUS, border: CARD_BORDER, boxShadow: CARD_SHADOW, ...style }}
-    styles={{ header: { borderBottom: 'none', paddingTop: isMobile ? 16 : 20, minHeight: 'auto' }, body: { paddingTop: isMobile ? 4 : 8 } }}
+    style={{
+      borderRadius: CARD_RADIUS,
+      border: CARD_BORDER,
+      boxShadow: CARD_SHADOW,
+      ...(fillHeight ? { display: 'flex', flexDirection: 'column' } : {}),
+      ...style,
+    }}
+    styles={{
+      header: {
+        borderBottom: 'none',
+        paddingTop: isMobile ? 16 : 0,
+        paddingInline: 16,
+        minHeight: 'auto',
+      },
+      body: {
+        paddingTop: isMobile ? 4 : 8,
+        ...(fillHeight ? { flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 } : {}),
+      },
+    }}
   >
     {children}
   </Card>
@@ -375,6 +393,9 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
     (sum, item) => sum + Number(item.value ?? 0),
     0
   );
+
+  const sortedAppointmentOutcomes = [...appointmentOutcomesForChart]
+    .sort((a, b) => Number(b.value ?? 0) - Number(a.value ?? 0));
 
   const interventionData = [
     {
@@ -526,92 +547,88 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
         </Row>
       </SectionCard>
 
-      <Row gutter={[isMobile ? 12 : 16, isMobile ? 12 : 16]} style={{ marginTop: isMobile ? 12 : 16 }}>
-        <Col xs={24} md={12}>
+      <Row gutter={[isMobile ? 12 : 16, isMobile ? 12 : 16]} style={{ marginTop: isMobile ? 12 : 16 }} align="stretch">
+        <Col xs={24} md={12} style={{ display: 'flex' }}>
           <SectionCard
-            title="Booking outcomes"
+            title="Booking statuses"
             isMobile={isMobile}
+            fillHeight={!isMobile}
             extra={usePlaceholderAppointmentOutcomes ? (
               <Text type="secondary" style={{ fontSize: 12 }}>Sample data</Text>
             ) : null}
-            style={isMobile ? { height: 'auto' } : { minHeight: 425 }}
+            style={isMobile ? { height: 'auto', width: '100%' } : { minHeight: 425, height: '100%', width: '100%' }}
           >
-            <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: 'center' }}>
-              <div style={{ flex: 1, minWidth: 0, position: 'relative' }}>
-                <ResponsiveContainer width="100%" height={isMobile ? 260 : 320}>
-                  <PieChart>
-                    <Pie
-                      data={appointmentOutcomesForChart}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={isMobile ? 60 : 78}
-                      outerRadius={isMobile ? 95 : 120}
-                      paddingAngle={2}
-                      dataKey="value"
-                      stroke="none"
-                    >
-                      {appointmentOutcomesForChart.map((_entry, index) => (
-                        <Cell key={`cell-${index}`} fill={pieChartColors[index % pieChartColors.length]} />
-                      ))}
-                    </Pie>
-                  </PieChart>
-                </ResponsiveContainer>
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    textAlign: 'center',
-                    pointerEvents: 'none',
-                  }}
-                >
-                  <div style={{ fontSize: isMobile ? 24 : 30, fontWeight: 700, color: HEADING_COLOR, letterSpacing: '-0.02em' }}>
-                    {appointmentOutcomesTotal.toLocaleString()}
-                  </div>
-                  <div style={{ fontSize: isMobile ? 11 : 12, color: MUTED_COLOR }}>Total bookings</div>
-                </div>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, marginBottom: isMobile ? 18 : 22 }}>
+                <span style={{ fontSize: isMobile ? 30 : 38, fontWeight: 700, color: HEADING_COLOR, letterSpacing: '-0.02em', lineHeight: 1 }}>
+                  {appointmentOutcomesTotal.toLocaleString()}
+                </span>
+                <span style={{ fontSize: isMobile ? 13 : 14, color: MUTED_COLOR }}>total bookings</span>
               </div>
-              <div
-                style={{
-                  width: isMobile ? '100%' : 160,
-                  display: 'flex',
-                  flexDirection: isMobile ? 'row' : 'column',
-                  flexWrap: 'wrap',
-                  gap: isMobile ? 10 : 12,
-                  marginTop: isMobile ? 8 : 0,
-                }}
-              >
-                {appointmentOutcomesForChart.map((item, index) => (
-                  <div key={index} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, minWidth: isMobile ? 120 : 'auto' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', minWidth: 0 }}>
-                      <span style={{ width: 8, height: 8, backgroundColor: pieChartColors[index % pieChartColors.length], borderRadius: '50%', marginRight: 8, flexShrink: 0 }} />
-                      <Text style={{ fontSize: isMobile ? 12 : 13, color: HEADING_COLOR }}>{item.name}</Text>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? 14 : 16 }}>
+                {sortedAppointmentOutcomes.map((item, index) => {
+                  const value = Number(item.value ?? 0);
+                  const pct = appointmentOutcomesTotal > 0 ? (value / appointmentOutcomesTotal) * 100 : 0;
+                  const color = item.color || pieChartColors[index % pieChartColors.length];
+
+                  return (
+                    <div key={item.name}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 7 }}>
+                        <Text style={{ fontSize: isMobile ? 13 : 14, color: HEADING_COLOR }}>{item.name}</Text>
+                        <span style={{ fontSize: isMobile ? 13 : 14, color: HEADING_COLOR, whiteSpace: 'nowrap' }}>
+                          <span style={{ fontWeight: 700 }}>{value.toLocaleString()}</span>
+                          <span style={{ color: MUTED_COLOR, marginLeft: 8 }}>{pct.toFixed(1)}%</span>
+                        </span>
+                      </div>
+                      <div style={{ height: isMobile ? 8 : 10, borderRadius: 999, background: TRACK_COLOR, overflow: 'hidden' }}>
+                        <div
+                          style={{
+                            height: '100%',
+                            width: `${Math.max(pct, value > 0 ? 2 : 0)}%`,
+                            borderRadius: 999,
+                            background: color,
+                            transition: 'width 0.7s cubic-bezier(0.22, 1, 0.36, 1)',
+                          }}
+                        />
+                      </div>
                     </div>
-                    <Text strong style={{ fontSize: isMobile ? 12 : 13, color: HEADING_COLOR }}>{Number(item.value).toLocaleString()}</Text>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           </SectionCard>
         </Col>
 
-        <Col xs={24} md={12}>
-          <SectionCard title="Intervention & special cases" isMobile={isMobile} style={isMobile ? { height: 'auto' } : { minHeight: 425 }}>
-            <Row gutter={[isMobile ? 8 : 12, isMobile ? 8 : 12]}>
+        <Col xs={24} md={12} style={{ display: 'flex' }}>
+          <SectionCard
+            title="Intervention & special cases"
+            isMobile={isMobile}
+            fillHeight={!isMobile}
+            style={isMobile ? { height: 'auto', width: '100%' } : { minHeight: 425, height: '100%', width: '100%' }}
+          >
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+                gridTemplateRows: isMobile ? 'auto' : 'repeat(3, minmax(0, 1fr))',
+                gap: isMobile ? 8 : 12,
+                flex: isMobile ? 'none' : 1,
+                height: isMobile ? 'auto' : '100%',
+              }}
+            >
               {interventionData.map((item, index) => (
-                <Col key={index} xs={12} sm={12} lg={8}>
-                  <StatCard
-                    title={item.titleMessage}
-                    value={displayValue(item.value)}
-                    change={item.change}
-                    changeType="value"
-                    style={{ width: '100%' }}
-                    isMobile={isMobile}
-                  />
-                </Col>
+                <StatCard
+                  key={index}
+                  title={item.titleMessage}
+                  value={displayValue(item.value)}
+                  change={item.change}
+                  changeType="value"
+                  style={{ width: '100%', minHeight: isMobile ? 'auto' : 0 }}
+                  isMobile={isMobile}
+                />
               ))}
-            </Row>
+            </div>
           </SectionCard>
         </Col>
       </Row>
