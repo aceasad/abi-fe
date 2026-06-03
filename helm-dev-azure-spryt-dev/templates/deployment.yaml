@@ -27,8 +27,8 @@ spec:
             name: abi-fe-env-configmap
         resources:
           requests:
-            memory: "1024Mi"
-            cpu: "330m"
+            memory: "512Mi"
+            cpu: "200m"
           limits:
-            memory: "1024Mi"
-            cpu: "330m"
+            memory: "768Mi"
+            cpu: "400m"
