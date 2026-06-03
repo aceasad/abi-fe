@@ -141,7 +141,7 @@ const KpisPage = () => {
   }, [dispatch, normalizedDateRange, selectedCampaign]);
 
   return (
-    <div style={{ maxWidth: '100%', overflowX: 'hidden' }}>
+    <div style={{ maxWidth: 1100, margin: '0 auto', width: '100%', overflowX: 'hidden' }}>
       <div className="mb-4" style={{ paddingTop: isMobile ? 0 : '24px' }}>
         <Typography.Title level={3} style={{ marginTop: "8px" }}>
           Key Performance Indicators

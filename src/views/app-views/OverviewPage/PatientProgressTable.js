@@ -19,6 +19,7 @@ const PatientProgressTable = ({
   handleChange,
   loading,
   title,
+  initialFilterStatus,
 }) => {
   const [data, setData] = useState([]); // All patient data
   const [displayData, setDisplayData] = useState([]); // Data for current page
@@ -29,7 +30,7 @@ const PatientProgressTable = ({
     total: 0, // Total number of records (calculated dynamically based on data length)
     pageSizeOptions: ['10', '20', '50', '100', '200'], // Available page size options
   });
-  const [filterStatus, setFilterStatus] = useState(null); // Add new state for filter
+  const [filterStatus, setFilterStatus] = useState(initialFilterStatus || null); // Add new state for filter
   const clinic = useSelector(makeSelectClinic());
   const { PASProvider } = useSelector((state) => state.auth.user || {});
   const isMedbridge = PASProvider?.toLowerCase() === 'medbridge';
@@ -89,6 +90,24 @@ const PatientProgressTable = ({
     ],
     [statusMapping]
   );
+
+  // A status deep-linked from another page (e.g. the KPIs booking status card)
+  // may not exist in the predefined options, so surface it with a readable label
+  // to keep the Select in a consistent, controlled state.
+  const selectOptions = useMemo(() => {
+    if (
+      filterStatus &&
+      filterStatus !== 'ALL' &&
+      !statusOptions.some((option) => option.value === filterStatus)
+    ) {
+      const label = filterStatus
+        .toLowerCase()
+        .replace(/_/g, ' ')
+        .replace(/\b\w/g, (char) => char.toUpperCase());
+      return [...statusOptions, { value: filterStatus, label }];
+    }
+    return statusOptions;
+  }, [statusOptions, filterStatus]);
 
   const columns = [
     {
@@ -407,7 +426,8 @@ const PatientProgressTable = ({
           style={{ width: isMobile ? '100%' : 200 }}
           placeholder="Filter by status"
           allowClear
-          options={statusOptions}
+          value={filterStatus || undefined}
+          options={selectOptions}
           onChange={handleFilterChange}
         />
       </Space>

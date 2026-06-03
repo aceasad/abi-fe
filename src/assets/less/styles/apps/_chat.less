@@ -40,6 +40,13 @@
         padding-top: 0;
     });
 
+    > .chat {
+        flex: 1;
+        min-height: 0;
+    }
+}
+
+// Shared chat panel (dedicated chat page and patient overview messages)
 .chat {
     border: 1px solid @border-color-base;
     border-radius: @border-radius-base;
@@ -48,6 +55,18 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
+
+    // Patient overview: .chat and .inner-app-layout share one element
+    &.inner-app-layout {
+        > .main-content {
+            flex: 1;
+            min-height: 0;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+    }
 
     .inner-app-layout {
         flex: 1;
@@ -250,6 +269,18 @@
             width: 100%;
         }
     }
+}
+
+// Embedded messages on the patient overview (no .chat-page wrapper)
+.patient-messages-chat {
+    > .chat.inner-app-layout {
+        height: calc(100vh - @header-height - @footer-height - 260px);
+        min-height: 480px;
+        margin-top: 0;
+
+        > .main-content {
+            min-height: 0 !important;
+        }
     }
 }
 

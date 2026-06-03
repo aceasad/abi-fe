@@ -43,7 +43,7 @@ const Conversation = ({
     if (!isNaN(id) && id > 0) {
       getConversation(id);
     }
-  }, [params.id]);
+  }, [params.id, conversationId]);
 
   const handleGetMoreSingleMessages = () => {
     dispatch(getMoreSingleChatMessages());
