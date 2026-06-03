@@ -1,5 +1,4 @@
-// `useCallback` was used by the removed load-more handler (kept for reference)
-import React, { useEffect, useRef, useState, useMemo } from 'react';
+import React, { useCallback, useEffect, useRef, useState, useMemo } from 'react';
 // `Select` and `Tooltip` were used by the removed page-size selector
 import { Grid, Input } from 'antd';
 import utils from 'utils';
@@ -13,7 +12,7 @@ import {
 } from 'utils/helpers';
 import {
   getAllChatsInfo,
-  // getMoreChatsInfo,
+  getMoreChatsInfo,
   getSingleChat,
   setConversationToRead,
   searchConversations,
@@ -27,8 +26,7 @@ import {
 } from 'redux/selectors/Chats';
 import { makeSelectClinic } from 'redux/selectors/Clinic';
 // import { CHAT_PAGE_SIZE_OPTIONS } from 'constants/ApiConstant';
-// `useLazyLoad` powered the removed infinite-scroll load-more
-import { useDebounce } from 'utils/hooks';
+import { useDebounce, useLazyLoad } from 'utils/hooks';
 import Scrollbars from 'react-custom-scrollbars';
 import {
   CHAT_FILTERS,
@@ -70,15 +68,17 @@ const ChatMenu = (props) => {
   const trimmedQuery = query.trim();
   // const isSearching = trimmedQuery.length > 0;
 
-  // const nextRef = useRef(null);
+  const nextRef = useRef(null);
   const menuRef = useRef(null);
-  // const scrollHeightRef = useRef(0);
+  const scrollHeightRef = useRef(0);
 
   // Paginated version also selected next/loading/scrollDown (kept for reference):
   // const { items, next, loading, scrollDown } = useSelector(
   //   makeSelectAllChatsInfo
   // );
-  const { items } = useSelector(makeSelectAllChatsInfo);
+  const { items, next, loading, scrollDown } = useSelector(
+    makeSelectAllChatsInfo
+  );
   // const pageSize = useSelector(makeSelectChatsPageSize);
   const clinic = useSelector(makeSelectClinic());
   const { PASProvider } = useSelector((state) => state.auth.user || {});
@@ -132,27 +132,25 @@ const ChatMenu = (props) => {
     }
   }, [dispatch, query, statusFilter, props.triggerSearchConversations]);
 
-  // Infinite-scroll "load more" for the conversations list (kept for reference):
-  // useEffect(() => {
-  //   nextRef.current = next;
-  // }, [next]);
+  useEffect(() => {
+    nextRef.current = next;
+  }, [next]);
 
-  // const handleGetMoreChatsInfo = useCallback(
-  //   () => {
-  //     if (isSearching) {
-  //       return;
-  //     }
-  //     dispatch(getMoreChatsInfo({ filter: statusFilter }));
-  //   },
-  //   [dispatch, statusFilter, isSearching]
-  // );
+  const handleGetMoreChatsInfo = useCallback(() => {
+    dispatch(
+      getMoreChatsInfo({
+        filter: statusFilter,
+        query: trimmedQuery || undefined,
+      })
+    );
+  }, [dispatch, statusFilter, trimmedQuery]);
 
-  // useLazyLoad(
-  //   '#chat-menu-scroll div',
-  //   handleGetMoreChatsInfo,
-  //   [loading, isSearching],
-  //   () => !!nextRef.current && !isSearching
-  // );
+  useLazyLoad(
+    '#chat-menu-scroll div',
+    handleGetMoreChatsInfo,
+    [loading, trimmedQuery],
+    () => !!nextRef.current
+  );
 
   const openChat = (id) => {
     dispatch(setConversationToRead(id));
@@ -180,24 +178,22 @@ const ChatMenu = (props) => {
   //   }
   // };
 
-  // Preserved scroll position while prepending paginated results (kept for
-  // reference):
-  // const stopScroll = () => {
-  //   menuRef.current &&
-  //     menuRef.current.getScrollHeight() - scrollHeightRef.current > 2 &&
-  //     menuRef.current.scrollTop(
-  //       menuRef.current.getScrollHeight() - scrollHeightRef.current
-  //     );
-  // };
+  const stopScroll = () => {
+    menuRef.current &&
+      menuRef.current.getScrollHeight() - scrollHeightRef.current > 2 &&
+      menuRef.current.scrollTop(
+        menuRef.current.getScrollHeight() - scrollHeightRef.current
+      );
+  };
 
-  // useEffect(() => {
-  //   if (scrollDown) {
-  //     stopScroll();
-  //   }
-  //   if (menuRef.current) {
-  //     scrollHeightRef.current = menuRef.current.getScrollHeight();
-  //   }
-  // }, [items]);
+  useEffect(() => {
+    if (scrollDown) {
+      stopScroll();
+    }
+    if (menuRef.current) {
+      scrollHeightRef.current = menuRef.current.getScrollHeight();
+    }
+  }, [items, scrollDown]);
 
   const patientLocationOptions = useMemo(
     () => buildPatientLocationFilterOptions(items),
