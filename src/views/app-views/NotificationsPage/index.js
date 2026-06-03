@@ -154,6 +154,10 @@ const Notification = () => {
         return formatDateByCountry(date, clinic?.country);
     };
 
+    const HIDDEN_NOTIFICATION_TITLES = ['Patient Intake Form Incomplete'];
+    const isVisibleNotification = (notification) =>
+        !HIDDEN_NOTIFICATION_TITLES.includes(notification.title);
+
     // Define human intervention notification types
     const humanInterventionTypes = [
         'Emergency Situation',
@@ -166,7 +170,9 @@ const Notification = () => {
 
     // Use categorized notifications from Redux state - filter to show only unread notifications
     const categorizedNotifications = {
-        bookingNotes: bookingNotifications.filter(n => !n.is_read),
+        bookingNotes: bookingNotifications.filter(
+            n => !n.is_read && isVisibleNotification(n)
+        ),
         offTopic: offTopicNotifications.filter(n => !n.is_read),
         humanIntervention: notifications.filter(n =>
             !n.is_read &&
@@ -415,7 +421,7 @@ const Notification = () => {
                             <NotificationCard
                                 title="All Notifications"
                                 description="All notifications from the system"
-                                notifications={notifications}
+                                notifications={notifications.filter(isVisibleNotification)}
                             />
                         </Col>
                     </Row>
