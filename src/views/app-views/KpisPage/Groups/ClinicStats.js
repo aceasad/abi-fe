@@ -319,6 +319,7 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
                           isMobile={isMobile}
                         />
                       </Col>
+                      {/* TODO: hide Bookings made after hours until ready
                       <Col span={12}>
                         <StatCard
                           title={"After hours"}
@@ -330,6 +331,7 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
                           isMobile={isMobile}
                         />
                       </Col>
+                      */}
                     </Row>
                   </>
                 ) : (
@@ -368,6 +370,7 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
                           isMobile={false}
                         />
                       </div>
+                      {/* TODO: hide Bookings made after hours until ready
                       <div style={{ width: '100%' }}>
                         <StatCard
                           title={"Bookings made after hours"}
@@ -379,6 +382,7 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
                           isMobile={false}
                         />
                       </div>
+                      */}
                     </div>
                   </div>
                 )}
