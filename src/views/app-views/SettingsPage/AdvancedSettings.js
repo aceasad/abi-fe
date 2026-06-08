@@ -3,6 +3,7 @@ import {
   Button,
   Col,
   Form,
+  Input,
   Row,
   Select,
   TimePicker,
@@ -14,9 +15,21 @@ import dayjs from 'utils/dayjs';
 import { TIME_FORMAT_HH_MM } from 'constants/TimeConstant';
 import clinicService from 'services/ClinicService';
 import Loading from 'components/shared-components/Loading';
+import { useSelector } from 'react-redux';
 
 const { Text } = Typography;
 const { Option } = Select;
+
+const CLINIC_TIMEZONES = [
+  'Europe/London',
+  'America/New_York',
+  'America/Chicago',
+  'America/Denver',
+  'America/Los_Angeles',
+  'America/Phoenix',
+  'America/Anchorage',
+  'Pacific/Honolulu',
+];
 
 const formatTimeDefault = (hour, minute) => {
   if (hour == null && minute == null) {
@@ -114,13 +127,16 @@ const apiToFormValues = (settings) => ({
     settings.message_earliest_send_hour,
     settings.message_earliest_send_minute,
   ),
+  timezone: settings.timezone,
+  email_for_reports: settings.email_for_reports || '',
+  email_for_docman: settings.email_for_docman || '',
 });
 
-const formToApiPayload = (values) => {
+const formToApiPayload = (values, isEmis) => {
   const inviteTime = values.patient_invite_send_time;
   const earliestTime = values.message_earliest_send_time;
 
-  return {
+  const payload = {
     disable_csv_upload: values.disable_csv_upload ?? null,
     patient_invite_now: values.patient_invite_now ?? null,
     patient_invite_send_hour: inviteTime ? inviteTime.hour() : null,
@@ -139,14 +155,26 @@ const formToApiPayload = (values) => {
       : null,
     message_earliest_send_hour: earliestTime ? earliestTime.hour() : null,
     message_earliest_send_minute: earliestTime ? earliestTime.minute() : null,
+    timezone: values.timezone || null,
+    email_for_reports: values.email_for_reports?.trim() || null,
   };
+
+  if (isEmis) {
+    payload.email_for_docman = values.email_for_docman?.trim() || null;
+  }
+
+  return payload;
 };
 
 const AdvancedSettings = () => {
+  const { PASProvider } = useSelector((state) => state.auth.user || {});
+  const isEmis = PASProvider?.toLowerCase() === 'emis';
+
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [defaults, setDefaults] = useState({});
+  const [extraTimezones, setExtraTimezones] = useState([]);
 
   const loadSettings = async () => {
     setLoading(true);
@@ -154,6 +182,11 @@ const AdvancedSettings = () => {
       const { data } = await clinicService.getAdvancedSettings();
       const { system_defaults: systemDefaults, ...settings } = data;
       setDefaults(systemDefaults || {});
+      if (settings.timezone && !CLINIC_TIMEZONES.includes(settings.timezone)) {
+        setExtraTimezones([settings.timezone]);
+      } else {
+        setExtraTimezones([]);
+      }
       form.setFieldsValue(apiToFormValues(settings));
     } catch {
       message.error('Failed to load advanced settings');
@@ -169,10 +202,15 @@ const AdvancedSettings = () => {
   const handleSubmit = async (values) => {
     setSaving(true);
     try {
-      const payload = formToApiPayload(values);
+      const payload = formToApiPayload(values, isEmis);
       const { data } = await clinicService.updateAdvancedSettings(payload);
       const { system_defaults: systemDefaults, ...settings } = data;
       setDefaults(systemDefaults || {});
+      if (settings.timezone && !CLINIC_TIMEZONES.includes(settings.timezone)) {
+        setExtraTimezones([settings.timezone]);
+      } else {
+        setExtraTimezones([]);
+      }
       form.setFieldsValue(apiToFormValues(settings));
       message.success('Advanced settings saved');
     } catch {
@@ -192,6 +230,9 @@ const AdvancedSettings = () => {
       appointment_reminder_midday_time: null,
       appointment_reminder_afternoon_time: null,
       message_earliest_send_time: null,
+      timezone: defaults.timezone,
+      email_for_reports: '',
+      ...(isEmis ? { email_for_docman: '' } : {}),
     });
   };
 
@@ -271,6 +312,63 @@ const AdvancedSettings = () => {
             hourOnly
           />
         </Col>
+
+        <Col xs={24} md={12}>
+          <Form.Item
+            label={
+              <FieldLabel
+                label="Clinic timezone"
+                defaultValue={defaults.timezone || 'Not set'}
+              />
+            }
+            name="timezone"
+          >
+            <Select
+              showSearch
+              optionFilterProp="children"
+              style={{ width: '100%' }}
+              placeholder="Select timezone"
+            >
+              {[...extraTimezones, ...CLINIC_TIMEZONES].map((tz) => (
+                <Option key={tz} value={tz}>
+                  {tz}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
+        </Col>
+        <Col xs={24} md={12}>
+          <Form.Item
+            label={
+              <FieldLabel
+                label="Email for transcripts"
+                defaultValue={defaults.email_for_reports || 'Not set'}
+              />
+            }
+            name="email_for_reports"
+            normalize={(value) => value ?? ''}
+            rules={[{ type: 'email', message: 'Enter a valid email address' }]}
+          >
+            <Input placeholder="transcripts@clinic.example" allowClear />
+          </Form.Item>
+        </Col>
+        {isEmis && (
+          <Col xs={24} md={12}>
+            <Form.Item
+              label={
+                <FieldLabel
+                  label="Email for Docman"
+                  defaultValue={defaults.email_for_docman || 'Not set'}
+                />
+              }
+              name="email_for_docman"
+              normalize={(value) => value ?? ''}
+              rules={[{ type: 'email', message: 'Enter a valid email address' }]}
+            >
+              <Input placeholder="docman@clinic.example" allowClear />
+            </Form.Item>
+          </Col>
+        )}
       </Row>
 
       <Space style={{ marginTop: 8 }}>
