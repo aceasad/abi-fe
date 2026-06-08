@@ -4,6 +4,7 @@ import {
   LockOutlined,
   BarChartOutlined,
   TeamOutlined,
+  SettingOutlined,
 } from '@ant-design/icons';
 import { Card, Layout, Menu, Typography, Grid, Select } from 'antd';
 import { Link, Redirect, Route, Switch, useHistory } from 'react-router-dom';
@@ -11,6 +12,7 @@ import EditClinic from './EditClinic';
 import ProfileSettings from './ProfileSettings';
 import IndustryAverage from '../IndustryAveragePage';
 import UserSettings from '../UserSettings';
+import AdvancedSettings from './AdvancedSettings';
 import { useSelector } from 'react-redux';
 import { makeSelectIsOrganizationOwner } from 'redux/selectors/Auth';
 import utils from 'utils';
@@ -35,12 +37,20 @@ const SettingOption = ({ match, location, isOrganizationOwner, isMobile, isTable
       label: "Profile Settings",
       path: 'profile-settings'
     },
-    ...(isOrganizationOwner ? [{
-      key: `${match.url}/user-settings`,
-      icon: <TeamOutlined />,
-      label: "User Settings",
-      path: 'user-settings'
-    }] : []),
+    ...(isOrganizationOwner ? [
+      {
+        key: `${match.url}/user-settings`,
+        icon: <TeamOutlined />,
+        label: "User Settings",
+        path: 'user-settings'
+      },
+      {
+        key: `${match.url}/advanced-settings`,
+        icon: <SettingOutlined />,
+        label: "Advanced Settings",
+        path: 'advanced-settings'
+      },
+    ] : []),
     {
       key: `${match.url}/industry-average`,
       icon: <BarChartOutlined />,
@@ -106,7 +116,13 @@ const SettingContent = ({ match, isOrganizationOwner }) => {
         component={IndustryAverage}
       />
       {isOrganizationOwner && (
-        <Route path={`${match.url}/user-settings`} component={UserSettings} />
+        <>
+          <Route path={`${match.url}/user-settings`} component={UserSettings} />
+          <Route
+            path={`${match.url}/advanced-settings`}
+            component={AdvancedSettings}
+          />
+        </>
       )}
     </Switch>
   );
