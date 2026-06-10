@@ -11,6 +11,8 @@ spec:
   selector:
     matchLabels:
       app: abi-fe
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
