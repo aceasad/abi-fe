@@ -3,7 +3,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import patientService from 'services/PatientService';
 import dayjs from 'utils/dayjs';
 import { Link } from 'react-router-dom';
-import { CalendarOutlined, ClockCircleOutlined } from '@ant-design/icons';
+import { CalendarOutlined, ClockCircleOutlined, EnvironmentOutlined } from '@ant-design/icons';
 import utils from 'utils';
 import { useSelector } from 'react-redux';
 import { makeSelectClinic } from 'redux/selectors/Clinic';
@@ -11,6 +11,49 @@ import { formatDateTimeByCountry } from 'utils/helpers';
 import { SearchOutlined } from '@ant-design/icons';
 
 const { useBreakpoint } = Grid;
+
+/** Edit these values (px) to tune Booking Progress column max-widths */
+const BOOKING_PROGRESS_COLUMN_MAX_WIDTHS = {
+  patientName: 180,
+  location: 320,
+  invitationSent: 180,
+  lastContact: 180,
+  bookingProgress: 180,
+};
+
+const withColumnMaxWidth = (widthKey, column) => {
+  const maxWidth = BOOKING_PROGRESS_COLUMN_MAX_WIDTHS[widthKey];
+  const existingOnCell = column.onCell;
+
+  return {
+    ...column,
+    width: maxWidth,
+    ellipsis: true,
+    onHeaderCell: () => ({
+      style: { maxWidth },
+    }),
+    onCell: (...args) => ({
+      ...(typeof existingOnCell === 'function' ? existingOnCell(...args) : existingOnCell || {}),
+      style: { maxWidth },
+    }),
+  };
+};
+
+const getHomeLocationDisplay = (homeLocation) => {
+  if (!homeLocation) return '-';
+
+  if (typeof homeLocation === 'object') {
+    if (homeLocation.location_name && homeLocation.location_id) {
+      return `${homeLocation.location_name} (${homeLocation.location_id})`;
+    }
+    return homeLocation.location_name || homeLocation.location_id || '-';
+  }
+
+  return homeLocation;
+};
+
+const getRecordHomeLocation = (record) =>
+  record.home_location ?? record['Home Location'] ?? record.patient?.home_location;
 
 const PatientProgressTable = ({
   column,
@@ -109,20 +152,29 @@ const PatientProgressTable = ({
     return statusOptions;
   }, [statusOptions, filterStatus]);
 
-  const columns = [
-    {
+  const columns = useMemo(() => [
+    withColumnMaxWidth('patientName', {
       title: 'Patient Name',
       dataIndex: 'Patient Name',
       key: 'Patient Name',
-      sorter: true,
-      sortOrder: sortedInfo.columnKey === 'Patient Name' && sortedInfo.order,
       render: (text, record) => (
         <Link to={`/pages/conversation/${record.PatientId}`}>
           {text}
         </Link>
       ),
-    },
-    {
+    }),
+    ...(isMedbridge
+      ? [
+        withColumnMaxWidth('location', {
+          title: 'Location',
+          key: 'Location',
+          render: (_, record) => (
+            <span>{getHomeLocationDisplay(getRecordHomeLocation(record))}</span>
+          ),
+        }),
+      ]
+      : []),
+    withColumnMaxWidth('invitationSent', {
       title: 'Invitation Sent',
       dataIndex: 'Invitation Sent',
       key: 'Invitation Sent',
@@ -137,8 +189,8 @@ const PatientProgressTable = ({
         );
         return <div className="text-left text-uppercase">{`${formattedDatetime}`}</div>;
       },
-    },
-    {
+    }),
+    withColumnMaxWidth('lastContact', {
       title: 'Last Contact',
       dataIndex: 'Last Contact',
       key: 'Last Contact',
@@ -158,29 +210,11 @@ const PatientProgressTable = ({
           return <div className="text-left">{`${''}`}</div>;
         }
       },
-    },
-    {
+    }),
+    withColumnMaxWidth('bookingProgress', {
       title: 'Booking progress',
       dataIndex: 'status',
       key: 'status',
-      sorter: (a, b) => {
-        const statusOrder = {
-          'Rescheduled': 2,
-          'Booked': 1,
-          'Asked Question': 3,
-          'Rescheduling': 4,
-          'Cancelling': 5,
-          'Booking': 6,
-          'Cancelled': 7,
-          'No Response': 8,
-          'Invited': 9,
-          'Incomplete': 10,
-          'Unknown': 11,
-        };
-
-        return statusOrder[a.Status] - statusOrder[b.Status];
-      },
-      sortOrder: sortedInfo.columnKey === 'status' && sortedInfo.order,
       render: (_, record) => {
         const buttonColor = getProgressColor(record.Status); // Get the color based on progress
         return (
@@ -199,8 +233,8 @@ const PatientProgressTable = ({
           </div>
         );
       },
-    },
-  ];
+    }),
+  ], [clinic?.country, isMedbridge, sortedInfo.columnKey, sortedInfo.order, screenedElsewhereLabel]);
 
   const getProgressData = async () => {
     try {
@@ -296,36 +330,15 @@ const PatientProgressTable = ({
       const columnKey = sorter.field;
 
       // Sorting logic based on column
-      if (columnKey === 'status') {
-        // If the sorted column is status, use the custom status order
-        sortedData.sort((a, b) => {
-          const statusOrder = {
-            'Rescheduled': 2,
-            'Booked': 1,
-            'Asked Question': 3,
-            'Rescheduling': 4,
-            'Cancelling': 5,
-            'Booking': 6,
-            'Cancelled': 7,
-            'No Response': 8,
-            'Invited': 9,
-            'Incomplete': 10,
-            'Unknown': 11,
-          };
-          return (statusOrder[a.Status] - statusOrder[b.Status]) * sortOrder;
-        });
-      } else {
-        // Default sorting for other columns
-        sortedData.sort((a, b) => {
-          if (typeof a[columnKey] === 'string') {
-            return a[columnKey].localeCompare(b[columnKey]) * sortOrder;
-          }
-          if (dayjs(a[columnKey]).isValid() && dayjs(b[columnKey]).isValid()) {
-            return (dayjs(a[columnKey]).isBefore(dayjs(b[columnKey])) ? -1 : 1) * sortOrder;
-          }
-          return (a[columnKey] - b[columnKey]) * sortOrder;
-        });
-      }
+      sortedData.sort((a, b) => {
+        if (typeof a[columnKey] === 'string') {
+          return a[columnKey].localeCompare(b[columnKey]) * sortOrder;
+        }
+        if (dayjs(a[columnKey]).isValid() && dayjs(b[columnKey]).isValid()) {
+          return (dayjs(a[columnKey]).isBefore(dayjs(b[columnKey])) ? -1 : 1) * sortOrder;
+        }
+        return (a[columnKey] - b[columnKey]) * sortOrder;
+      });
     }
     setData(sortedData);
   };
@@ -354,6 +367,7 @@ const PatientProgressTable = ({
   // Mobile Card Component
   const ProgressCard = ({ record }) => {
     const buttonColor = getProgressColor(record.Status);
+    const locationDisplay = getHomeLocationDisplay(getRecordHomeLocation(record));
 
     return (
       <Card
@@ -378,6 +392,15 @@ const PatientProgressTable = ({
             >
               {record.Status}
             </Tag>
+
+            {isMedbridge && locationDisplay !== '-' && (
+              <Space size="small">
+                <EnvironmentOutlined style={{ fontSize: '12px', color: '#8c8c8c' }} />
+                <Typography.Text type="secondary" style={{ fontSize: '12px' }}>
+                  {locationDisplay}
+                </Typography.Text>
+              </Space>
+            )}
 
             <Space size="small">
               <CalendarOutlined style={{ fontSize: '12px', color: '#8c8c8c' }} />
@@ -469,6 +492,7 @@ const PatientProgressTable = ({
         // Desktop Table View
         <div className="responsive-table ant-table-row-pointer">
           <Table
+            tableLayout="fixed"
             columns={columns}
             dataSource={displayData}
             onChange={handleTableChange}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   Card,
   Collapse,
@@ -40,11 +40,47 @@ const { Panel } = Collapse;
 
 const columnMap = {
   created_datetime: 'created_datetime',
-  patient_full_name: 'patient__last_name',
-  message_requiring_immediate_attention_type_name:
-    'message_requiring_immediate_attention_type__name',
-  priority_name: 'priority__name',
-  status_name: 'status__name',
+};
+
+/** Edit these values (px) to tune Human Intervention Needed column max-widths */
+const HUMAN_INTERVENTION_COLUMN_MAX_WIDTHS = {
+  dateTime: 180,
+  patient: 180,
+  location: 320,
+  event: 220,
+  status: 130,
+  actions: 110,
+};
+
+const withColumnMaxWidth = (widthKey, column) => {
+  const maxWidth = HUMAN_INTERVENTION_COLUMN_MAX_WIDTHS[widthKey];
+  const existingOnCell = column.onCell;
+
+  return {
+    ...column,
+    width: maxWidth,
+    ellipsis: widthKey !== 'actions',
+    onHeaderCell: () => ({
+      style: { maxWidth },
+    }),
+    onCell: (...args) => ({
+      ...(typeof existingOnCell === 'function' ? existingOnCell(...args) : existingOnCell || {}),
+      style: { maxWidth },
+    }),
+  };
+};
+
+const getHomeLocationDisplay = (homeLocation) => {
+  if (!homeLocation) return '-';
+
+  if (typeof homeLocation === 'object') {
+    if (homeLocation.location_name && homeLocation.location_id) {
+      return `${homeLocation.location_name} (${homeLocation.location_id})`;
+    }
+    return homeLocation.location_name || homeLocation.location_id || '-';
+  }
+
+  return homeLocation;
 };
 
 export const NESTED_MODAL = {
@@ -55,7 +91,8 @@ export const NESTED_MODAL = {
 const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
   const history = useHistory();
   const dispatch = useDispatch();
-  const { isPasIntegrated } = useSelector(state => state.auth.user);
+  const { PASProvider } = useSelector((state) => state.auth.user || {});
+  const isMedbridge = PASProvider?.toLowerCase() === 'medbridge';
   const clinic = useSelector(makeSelectClinic());
 
   const [activeAppointment, setActiveAppointment] = useState(null);
@@ -67,8 +104,8 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
 
   // Removed duplicate dispatch - this is now handled by the parent OverviewPage component
 
-  let tableColumns = [
-    {
+  const tableColumns = useMemo(() => [
+    withColumnMaxWidth('dateTime', {
       title: 'Date/Time',
       dataIndex: 'created_datetime',
       sorter: true,
@@ -93,11 +130,10 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
       onCell: () => ({
         'data-label': 'Date/Time',
       }),
-    },
-    {
+    }),
+    withColumnMaxWidth('patient', {
       title: "Patient",
       dataIndex: ['patient', 'full_name'],
-      sorter: true,
       render: (_, row) => (
         <Typography.Link
           onClick={(e) => {
@@ -111,16 +147,29 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
       onCell: () => ({
         'data-label': "Patient",
       }),
-    },
-    {
+    }),
+    ...(isMedbridge
+      ? [
+        withColumnMaxWidth('location', {
+          title: "Location",
+          dataIndex: ['patient', 'home_location'],
+          render: (_, row) => (
+            <div>{getHomeLocationDisplay(row.patient?.home_location)}</div>
+          ),
+          onCell: () => ({
+            'data-label': "Location",
+          }),
+        }),
+      ]
+      : []),
+    withColumnMaxWidth('event', {
       title: "Event",
       dataIndex: ['message_requiring_immediate_attention_type', 'name'],
-      sorter: true,
       render: (_, row) => _,
       onCell: () => ({
         'data-label': "Event",
       }),
-    },
+    }),
     // {
     //   title: "Priority",
     //   dataIndex: ['priority', 'name'],
@@ -138,10 +187,9 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
     //     'data-label': "Priority",
     //   }),
     // },
-    {
+    withColumnMaxWidth('status', {
       title: "Status",
       dataIndex: ['status', 'name'],
-      sorter: true,
       render: (_, row) => (
         <div
           onClick={(e) =>
@@ -156,8 +204,8 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
       onCell: () => ({
         'data-label': "Status",
       }),
-    },
-    {
+    }),
+    withColumnMaxWidth('actions', {
       key: 'action',
       render: (_, row) => (
         <div className="text-right">
@@ -173,13 +221,8 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
           </Dropdown>
         </div>
       ),
-    },
-  ];
-  // useEffect(()=>{
-  //   if(isPasIntegrated){
-  //     tableColumns=tableColumns.splice(3,1)
-  //   }
-  // },[tableColumns])
+    }),
+  ], [clinic?.country, isMedbridge]);
 
   const [
     activePreAppointmentQuestionnaire,

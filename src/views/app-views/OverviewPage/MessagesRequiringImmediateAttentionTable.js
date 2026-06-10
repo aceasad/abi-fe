@@ -8,7 +8,7 @@ import {
 } from 'redux/actions/Staff';
 import { makeSelectMessagesRequiringImmediateAttentionRequestData } from 'redux/selectors/Staff';
 import { DEFAULT_PAGINATION_LIMIT, SET_DEFAULT_PAGINATION_LIMIT } from 'constants/ApiConstant';
-import { ClockCircleOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import { ClockCircleOutlined, ExclamationCircleOutlined, EnvironmentOutlined } from '@ant-design/icons';
 import utils from 'utils';
 import { SearchOutlined } from '@ant-design/icons';
 
@@ -51,6 +51,9 @@ const MessagesRequiringImmediateAttentionTable = ({
     const dateColumn = columns.find(col => col.dataIndex === 'created_datetime');
     const patientColumn = columns.find(col => col.dataIndex?.[0] === 'patient');
     const eventColumn = columns.find(col => col.dataIndex?.[0] === 'message_requiring_immediate_attention_type');
+    const locationColumn = columns.find(
+      (col) => col.dataIndex?.[0] === 'patient' && col.dataIndex?.[1] === 'home_location'
+    );
     const statusColumn = columns.find(col => col.dataIndex?.[0] === 'status');
     const actionsColumn = columns.find(col => col.key === 'action');
 
@@ -58,6 +61,9 @@ const MessagesRequiringImmediateAttentionTable = ({
     const patientContent = patientColumn?.render ? patientColumn.render(null, item) : item.patient?.full_name;
     const dateContent = dateColumn?.render ? dateColumn.render(null, item) : item.created_datetime;
     const eventContent = eventColumn?.render ? eventColumn.render(null, item) : item.message_requiring_immediate_attention_type?.name;
+    const locationContent = locationColumn?.render
+      ? locationColumn.render(null, item)
+      : null;
     const statusContent = item.status?.name;
 
     return (
@@ -88,6 +94,15 @@ const MessagesRequiringImmediateAttentionTable = ({
               <ExclamationCircleOutlined style={{ fontSize: '12px', color: '#8c8c8c' }} />
               <Typography.Text type="secondary" style={{ fontSize: '13px' }}>
                 {eventContent}
+              </Typography.Text>
+            </Space>
+          )}
+
+          {locationColumn && locationContent && locationContent !== '-' && (
+            <Space size="small">
+              <EnvironmentOutlined style={{ fontSize: '12px', color: '#8c8c8c' }} />
+              <Typography.Text type="secondary" style={{ fontSize: '13px' }}>
+                {locationContent}
               </Typography.Text>
             </Space>
           )}
@@ -171,6 +186,7 @@ const MessagesRequiringImmediateAttentionTable = ({
         // Desktop Table View
         <div className="responsive-table ant-table-row-pointer">
           <Table
+            tableLayout="fixed"
             columns={columns}
             dataSource={filteredItems.map((item) => ({ ...item, key: item.id || item.key }))}
             onRow={onRow}
