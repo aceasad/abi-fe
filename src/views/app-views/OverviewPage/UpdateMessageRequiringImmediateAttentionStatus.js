@@ -14,10 +14,7 @@ import {
   makeSelectSingleAppointmentLoading,
 } from 'redux/selectors/Appointment';
 import { message } from 'antd';
-import { FROM_OVERVIEW_APPOINTMENTS } from 'constants/ClinicConstants';
 import { MESSAGES_REQUIRING_IMMEDIATE_ATTENTION } from 'redux/reducers/Staff';
-import { getAppointments } from 'redux/actions/Staff';
-import { getMessagesRequiringImmediateAttention } from 'redux/sagas/Staff';
 
 const prepareData = (values) => {
   const status_details = values.status_details?.length
@@ -54,38 +51,22 @@ const UpdateMessageRequiringImmediateAttentionStatus = ({
   }, []);
 
   const afterMessageRequiringImmediateAttentionStatusUpdate = () => {
-    message.success(
-      "Updated Successfully"
-    );
-    setTimeout(handleClose(), 1000);
-    if (
-      updateMessageRequiringImmediateAttentionStatusFrom ===
-      FROM_OVERVIEW_APPOINTMENTS
-    ) {
-      // Force refresh the status data after update
-      dispatch(getMessageRequiringImmediateAttentionStatuses({ force: true }));
-      // Also refresh the messages table
-      var payload = { id: null, field: 'messages_requiring_immediate_attention' }
-      dispatch(
-        getMessagesRequiringImmediateAttention(payload)
-      );
-    }
+    message.success("Updated Successfully");
+    handleClose();
   };
 
   const handleSubmit = (values) => {
     dispatch(
       updateAppointmentMessageRequiringImmediateAttentionStatus({
         id,
-        // data: prepareData(values),
         status: messageRequiringImmediateAttentionStatuses.find(
           (status) => status.id === values.status
         )?.id || 0,
         status_details: values.status_details,
         field: MESSAGES_REQUIRING_IMMEDIATE_ATTENTION,
-        // afterMessageRequiringImmediateAttentionStatusUpdate,
+        afterMessageRequiringImmediateAttentionStatusUpdate,
       })
     );
-    afterMessageRequiringImmediateAttentionStatusUpdate();
   };
 
   const initialState = messageRequiringImmediateAttention
