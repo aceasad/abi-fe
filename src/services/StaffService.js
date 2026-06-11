@@ -1,4 +1,8 @@
-import { DEFAULT_PAGINATION_LIMIT, ORDERING } from 'constants/ApiConstant';
+import {
+  DEFAULT_PAGINATION_LIMIT,
+  MESSAGES_REQUIRING_IMMEDIATE_ATTENTION_PAGE_SIZE,
+  ORDERING,
+} from 'constants/ApiConstant';
 import {
   HISTORY,
   SCHEDULED,
@@ -90,7 +94,7 @@ class StaffService extends ApiService {
 
   getMessagesRequiringImmediateAttention = (
     id,
-    { order, field, page },
+    { order, field, page, pageSize = MESSAGES_REQUIRING_IMMEDIATE_ATTENTION_PAGE_SIZE },
     state_field
   ) =>
     this.apiClient.get(
@@ -103,8 +107,8 @@ class StaffService extends ApiService {
             .split(',')
             .map((part) => `${order === ORDERING.DESC ? '-' : ''}${part}`)
             .join(),
-          limit: DEFAULT_PAGINATION_LIMIT,
-          offset: (page - 1) * DEFAULT_PAGINATION_LIMIT,
+          limit: pageSize,
+          offset: (page - 1) * pageSize,
         },
       }
     );

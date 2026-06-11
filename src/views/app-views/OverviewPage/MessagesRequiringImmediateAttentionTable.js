@@ -7,7 +7,7 @@ import {
   setMessagesRequiringImmediateAttentionOrder,
 } from 'redux/actions/Staff';
 import { makeSelectMessagesRequiringImmediateAttentionRequestData } from 'redux/selectors/Staff';
-import { DEFAULT_PAGINATION_LIMIT, SET_DEFAULT_PAGINATION_LIMIT } from 'constants/ApiConstant';
+import { MESSAGES_REQUIRING_IMMEDIATE_ATTENTION_PAGE_SIZE } from 'constants/ApiConstant';
 import { ClockCircleOutlined, ExclamationCircleOutlined, EnvironmentOutlined } from '@ant-design/icons';
 import utils from 'utils';
 import { SearchOutlined } from '@ant-design/icons';
@@ -22,6 +22,7 @@ const MessagesRequiringImmediateAttentionTable = ({
   pageSize,
   count,
   handlePaginationChange,
+  handlePageSizeChange,
   page,
   loading,
   title,
@@ -30,9 +31,8 @@ const MessagesRequiringImmediateAttentionTable = ({
   const isMobile = !screens.includes('lg');
   const [patientSearch, setPatientSearch] = useState('');
 
-  const handlePaginationSizeChange = (current, size) => {
-    SET_DEFAULT_PAGINATION_LIMIT(size);
-    handlePaginationChange(1);
+  const handlePaginationSizeChange = (_, size) => {
+    handlePageSizeChange(1, size);
   };
 
   const filteredItems = useMemo(() => {
@@ -223,7 +223,7 @@ const MessagesRequiringImmediateAttention = ({
 }) => {
   if (!children) throw new Error('Component must have children');
 
-  const { items, loading, page, count } = useSelector(
+  const { items, loading, page, count, pageSize } = useSelector(
     makeSelectMessagesRequiringImmediateAttentionRequestData(field)
   );
 
@@ -235,6 +235,17 @@ const MessagesRequiringImmediateAttention = ({
 
   const handlePaginationChange = (page) => {
     dispatch(setMessagesRequiringImmediateAttentionPage({ page, field, id }));
+  };
+
+  const handlePageSizeChange = (page, nextPageSize) => {
+    dispatch(
+      setMessagesRequiringImmediateAttentionPage({
+        page,
+        pageSize: nextPageSize,
+        field,
+        id,
+      })
+    );
   };
 
   const handleChange = (_, __, sortField, e) => {
@@ -262,11 +273,12 @@ const MessagesRequiringImmediateAttention = ({
     ) {
       return React.cloneElement(child, {
         items,
-        pageSize: DEFAULT_PAGINATION_LIMIT,
+        pageSize: pageSize || MESSAGES_REQUIRING_IMMEDIATE_ATTENTION_PAGE_SIZE,
         loading,
         page,
         count,
         handlePaginationChange,
+        handlePageSizeChange,
         handleChange,
       });
     }
