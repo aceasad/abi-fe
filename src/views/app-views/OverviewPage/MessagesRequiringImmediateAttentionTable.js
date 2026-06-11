@@ -279,30 +279,29 @@ const MessagesRequiringImmediateAttentionTable = ({
 
   return (
     <Card>
-      <div style={{ marginBottom: 16 }}>
-        <Row gutter={[12, 12]} align="middle">
-          <Col xs={24} sm={12} lg="auto">
-            <Input
-              style={{ width: isMobile ? '100%' : 240, maxWidth: '100%' }}
-              placeholder="Search by patient name"
-              prefix={<SearchOutlined />}
-              value={patientSearch}
-              onChange={(e) => setPatientSearch(e.target.value)}
-              allowClear
-              size="middle"
-            />
-          </Col>
-          <Col xs={24} lg="auto">
-            <div style={{ display: 'inline-flex', maxWidth: '100%' }}>
-              <MessagesRequiringImmediateAttentionFilters
-                attributes={filterAttributes}
-                value={activeFilters}
-                onChange={setActiveFilters}
-              />
-            </div>
-          </Col>
-        </Row>
-      </div>
+      <Space
+        direction={isMobile ? 'vertical' : 'horizontal'}
+        align={isMobile ? 'stretch' : 'center'}
+        wrap
+        style={{ width: '100%', marginBottom: 16 }}
+      >
+        <Input
+          style={{ width: isMobile ? '100%' : 240 }}
+          placeholder="Search by patient name"
+          prefix={<SearchOutlined />}
+          value={patientSearch}
+          onChange={(e) => setPatientSearch(e.target.value)}
+          allowClear
+          size="middle"
+        />
+        <div style={{ width: isMobile ? '100%' : 'auto', flex: isMobile ? undefined : '1 1 0', minWidth: 0 }}>
+          <MessagesRequiringImmediateAttentionFilters
+            attributes={filterAttributes}
+            value={activeFilters}
+            onChange={setActiveFilters}
+          />
+        </div>
+      </Space>
       {title && <Typography.Title level={4}>{title}</Typography.Title>}
       {isMobile ? (
         // Mobile Card View

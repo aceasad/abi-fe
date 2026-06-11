@@ -1,16 +1,24 @@
-import { Card, Table, Button, Select, Grid, Space, Typography, Tag, Row, Col, Input } from 'antd';
+import { Card, Table, Button, Grid, Space, Typography, Tag, Row, Col, Input } from 'antd';
 import React, { useState, useEffect, useMemo } from 'react';
 import patientService from 'services/PatientService';
 import dayjs from 'utils/dayjs';
 import { Link } from 'react-router-dom';
 import { CalendarOutlined, ClockCircleOutlined, EnvironmentOutlined } from '@ant-design/icons';
 import utils from 'utils';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { makeSelectClinic } from 'redux/selectors/Clinic';
+import { makeSelectPatientLocations } from 'redux/selectors/Patient';
+import { getPatientLocations } from 'redux/actions/Patient';
 import { formatDateTimeByCountry } from 'utils/helpers';
 import { SearchOutlined } from '@ant-design/icons';
+import MessagesRequiringImmediateAttentionFilters from './MessagesRequiringImmediateAttentionFilters';
 
 const { useBreakpoint } = Grid;
+
+const FILTER_ATTRIBUTES = {
+  STATUS: 'status',
+  LOCATION: 'location',
+};
 
 /** Edit these values (px) to tune Booking Progress column max-widths */
 const BOOKING_PROGRESS_COLUMN_MAX_WIDTHS = {
@@ -55,6 +63,16 @@ const getHomeLocationDisplay = (homeLocation) => {
 const getRecordHomeLocation = (record) =>
   record.home_location ?? record['Home Location'] ?? record.patient?.home_location;
 
+const getRecordLocationId = (homeLocation) => {
+  if (!homeLocation) return null;
+  if (typeof homeLocation === 'object') {
+    return homeLocation.location_id != null
+      ? String(homeLocation.location_id)
+      : null;
+  }
+  return String(homeLocation);
+};
+
 const PatientProgressTable = ({
   column,
   items,
@@ -64,6 +82,7 @@ const PatientProgressTable = ({
   title,
   initialFilterStatus,
 }) => {
+  const dispatch = useDispatch();
   const [data, setData] = useState([]); // All patient data
   const [displayData, setDisplayData] = useState([]); // Data for current page
   const [sortedInfo, setSortedInfo] = useState({}); // Sorting info
@@ -73,8 +92,14 @@ const PatientProgressTable = ({
     total: 0, // Total number of records (calculated dynamically based on data length)
     pageSizeOptions: ['10', '20', '50', '100', '200'], // Available page size options
   });
-  const [filterStatus, setFilterStatus] = useState(initialFilterStatus || null); // Add new state for filter
+  const [activeFilters, setActiveFilters] = useState(() => {
+    if (initialFilterStatus && initialFilterStatus !== 'ALL') {
+      return [{ attribute: FILTER_ATTRIBUTES.STATUS, values: [initialFilterStatus] }];
+    }
+    return [];
+  });
   const clinic = useSelector(makeSelectClinic());
+  const { locations } = useSelector(makeSelectPatientLocations());
   const { PASProvider } = useSelector((state) => state.auth.user || {});
   const isMedbridge = PASProvider?.toLowerCase() === 'medbridge';
   const screenedElsewhereLabel = isMedbridge
@@ -123,34 +148,80 @@ const PatientProgressTable = ({
     [screenedElsewhereLabel]
   );
 
-  const statusOptions = useMemo(
-    () => [
-      { value: 'ALL', label: 'All' },
-      ...Object.keys(statusMapping).map((key) => ({
-        value: key,
-        label: statusMapping[key].status,
-      })),
-    ],
-    [statusMapping]
-  );
+  const getFilterValue = (attribute) => {
+    const entry = activeFilters.find((f) => f.attribute === attribute);
+    return entry && entry.values.length > 0 ? entry.values[0] : null;
+  };
 
-  // A status deep-linked from another page (e.g. the KPIs booking status card)
-  // may not exist in the predefined options, so surface it with a readable label
-  // to keep the Select in a consistent, controlled state.
-  const selectOptions = useMemo(() => {
-    if (
-      filterStatus &&
-      filterStatus !== 'ALL' &&
-      !statusOptions.some((option) => option.value === filterStatus)
-    ) {
+  const filterStatus = getFilterValue(FILTER_ATTRIBUTES.STATUS);
+  const filterLocation = getFilterValue(FILTER_ATTRIBUTES.LOCATION);
+
+  const statusFilterOptions = useMemo(() => {
+    const options = Object.keys(statusMapping).map((key) => ({
+      value: key,
+      label: statusMapping[key].status,
+    }));
+
+    // A status deep-linked from another page may not exist in the predefined options.
+    if (filterStatus && !options.some((option) => option.value === filterStatus)) {
       const label = filterStatus
         .toLowerCase()
         .replace(/_/g, ' ')
         .replace(/\b\w/g, (char) => char.toUpperCase());
-      return [...statusOptions, { value: filterStatus, label }];
+      options.push({ value: filterStatus, label });
     }
-    return statusOptions;
-  }, [statusOptions, filterStatus]);
+
+    return options;
+  }, [statusMapping, filterStatus]);
+
+  const locationOptions = useMemo(
+    () =>
+      (locations || [])
+        .filter((location) => location?.location_id)
+        .map((location) => {
+          const id = String(location.location_id);
+          const name = location.location_name || id;
+          return {
+            value: id,
+            label: `${name} (${id})`,
+          };
+        }),
+    [locations]
+  );
+
+  const filterAttributes = useMemo(() => {
+    const attributes = [
+      {
+        id: FILTER_ATTRIBUTES.STATUS,
+        label: 'Status',
+        options: statusFilterOptions,
+      },
+    ];
+
+    if (isMedbridge) {
+      attributes.push({
+        id: FILTER_ATTRIBUTES.LOCATION,
+        label: 'Location',
+        options: locationOptions,
+      });
+    }
+
+    return attributes;
+  }, [isMedbridge, locationOptions, statusFilterOptions]);
+
+  useEffect(() => {
+    if (isMedbridge) {
+      dispatch(getPatientLocations());
+    }
+  }, [dispatch, isMedbridge]);
+
+  useEffect(() => {
+    if (!isMedbridge) {
+      setActiveFilters((prev) =>
+        prev.filter((f) => f.attribute !== FILTER_ATTRIBUTES.LOCATION)
+      );
+    }
+  }, [isMedbridge]);
 
   const columns = useMemo(() => [
     withColumnMaxWidth('patientName', {
@@ -289,10 +360,19 @@ const PatientProgressTable = ({
   }, []);
 
   useEffect(() => {
-    // First apply status filter
     let filteredData = data;
-    if (filterStatus && filterStatus !== 'ALL') {
-      filteredData = data.filter(item => item.originalProcess === filterStatus);
+
+    if (filterStatus) {
+      filteredData = filteredData.filter(
+        (item) => item.originalProcess === filterStatus
+      );
+    }
+
+    if (filterLocation) {
+      filteredData = filteredData.filter(
+        (item) =>
+          getRecordLocationId(getRecordHomeLocation(item)) === String(filterLocation)
+      );
     }
 
     const normalizedSearch = patientSearch.trim().toLowerCase();
@@ -302,17 +382,22 @@ const PatientProgressTable = ({
       );
     }
 
-    // Then apply pagination
     const startIndex = (pagination.current - 1) * pagination.pageSize;
     const endIndex = startIndex + pagination.pageSize;
     setDisplayData(filteredData.slice(startIndex, endIndex));
 
-    // Update pagination total
     setPagination(prev => ({
       ...prev,
       total: filteredData.length,
     }));
-  }, [pagination.current, pagination.pageSize, data, filterStatus, patientSearch]);
+  }, [
+    pagination.current,
+    pagination.pageSize,
+    data,
+    filterStatus,
+    filterLocation,
+    patientSearch,
+  ]);
 
   // Modified handleTableChange to handle both sorting and pagination
   const handleTableChange = (paginationParams, filters, sorter) => {
@@ -343,13 +428,11 @@ const PatientProgressTable = ({
     setData(sortedData);
   };
 
-  // Add handler for filter change
-  const handleFilterChange = (value) => {
-    setFilterStatus(value);
-    // Reset to page 1 when filter changes
+  const handleFiltersChange = (nextFilters) => {
+    setActiveFilters(nextFilters);
     setPagination(prev => ({
       ...prev,
-      current: 1
+      current: 1,
     }));
   };
 
@@ -435,6 +518,8 @@ const PatientProgressTable = ({
     <Card>
       <Space
         direction={isMobile ? 'vertical' : 'horizontal'}
+        align={isMobile ? 'stretch' : 'center'}
+        wrap
         style={{ width: '100%', marginBottom: 16 }}
       >
         <Input
@@ -444,15 +529,15 @@ const PatientProgressTable = ({
           value={patientSearch}
           onChange={handlePatientSearchChange}
           allowClear
+          size="middle"
         />
-        <Select
-          style={{ width: isMobile ? '100%' : 200 }}
-          placeholder="Filter by status"
-          allowClear
-          value={filterStatus || undefined}
-          options={selectOptions}
-          onChange={handleFilterChange}
-        />
+        <div style={{ width: isMobile ? '100%' : 'auto', flex: isMobile ? undefined : '1 1 0', minWidth: 0 }}>
+          <MessagesRequiringImmediateAttentionFilters
+            attributes={filterAttributes}
+            value={activeFilters}
+            onChange={handleFiltersChange}
+          />
+        </div>
       </Space>
       {isMobile ? (
         // Mobile Card View
