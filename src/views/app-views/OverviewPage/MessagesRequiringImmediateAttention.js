@@ -29,7 +29,7 @@ import {
 import { DownOutlined } from '@ant-design/icons';
 import { setPatientShowMessages } from 'redux/actions/Patient';
 import { ROUTES } from 'routes';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { formatDateTimeByCountry, getSafe } from 'utils/helpers';
 import UpdateMessageRequiringImmediateAttentionStatus from './UpdateMessageRequiringImmediateAttentionStatus';
 import PreAppointmentQuestionnairePreviewModal from './PreAppointmentQuestionnairePreviewModal';
@@ -135,14 +135,12 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
       title: "Patient",
       dataIndex: ['patient', 'full_name'],
       render: (_, row) => (
-        <Typography.Link
-          onClick={(e) => {
-            e.stopPropagation();
-            goToPatientShowMessages({ id: row.patient.id });
-          }}
+        <Link
+          to={`/pages/conversation/${row.patient.id}`}
+          onClick={(e) => e.stopPropagation()}
         >
           {row.patient.full_name}
-        </Typography.Link>
+        </Link>
       ),
       onCell: () => ({
         'data-label': "Patient",
@@ -350,17 +348,6 @@ const MessagesRequiringImmediateAttention = ({ title, startOpen }) => {
       >
         <MessagesRequiringImmediateAttentionTable.Table
           columns={tableColumns}
-        // onRow={(record) => {
-        //   return {
-        //     onClick: () => {
-        //       setActiveAppointment({
-        //         id: record.id,
-        //         type: SCHEDULED,
-        //         patientId: record.patient.id,
-        //       });
-        //     },
-        //   };
-        // }}
         />
       </MessagesRequiringImmediateAttentionTable>
       {activeAppointment && (
