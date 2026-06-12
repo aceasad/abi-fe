@@ -35,6 +35,7 @@ const UpdateMessageRequiringImmediateAttentionStatus = ({
   staffId,
   updateMessageRequiringImmediateAttentionStatusFrom = null,
   messageRequiringImmediateAttention,
+  preselectedStatusId = null,
 }) => {
   const dispatch = useDispatch();
 
@@ -71,11 +72,11 @@ const UpdateMessageRequiringImmediateAttentionStatus = ({
 
   const initialState = messageRequiringImmediateAttention
     ? {
-      status: messageRequiringImmediateAttention.status?.id,
+      status: preselectedStatusId ?? messageRequiringImmediateAttention.status?.id,
       status_details: messageRequiringImmediateAttention.status_details,
     }
     : {
-      status: '',
+      status: preselectedStatusId ?? '',
       status_details: '',
     };
 

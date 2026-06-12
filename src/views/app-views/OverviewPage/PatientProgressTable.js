@@ -189,39 +189,22 @@ const PatientProgressTable = ({
     [locations]
   );
 
-  const filterAttributes = useMemo(() => {
-    const attributes = [
-      {
-        id: FILTER_ATTRIBUTES.STATUS,
-        label: 'Status',
-        options: statusFilterOptions,
-      },
-    ];
-
-    if (isMedbridge) {
-      attributes.push({
-        id: FILTER_ATTRIBUTES.LOCATION,
-        label: 'Location',
-        options: locationOptions,
-      });
-    }
-
-    return attributes;
-  }, [isMedbridge, locationOptions, statusFilterOptions]);
+  const filterAttributes = useMemo(() => [
+    {
+      id: FILTER_ATTRIBUTES.STATUS,
+      label: 'Status',
+      options: statusFilterOptions,
+    },
+    {
+      id: FILTER_ATTRIBUTES.LOCATION,
+      label: 'Location',
+      options: locationOptions,
+    },
+  ], [locationOptions, statusFilterOptions]);
 
   useEffect(() => {
-    if (isMedbridge) {
-      dispatch(getPatientLocations());
-    }
-  }, [dispatch, isMedbridge]);
-
-  useEffect(() => {
-    if (!isMedbridge) {
-      setActiveFilters((prev) =>
-        prev.filter((f) => f.attribute !== FILTER_ATTRIBUTES.LOCATION)
-      );
-    }
-  }, [isMedbridge]);
+    dispatch(getPatientLocations());
+  }, [dispatch]);
 
   const columns = useMemo(() => [
     withColumnMaxWidth('patientName', {
@@ -229,22 +212,22 @@ const PatientProgressTable = ({
       dataIndex: 'Patient Name',
       key: 'Patient Name',
       render: (text, record) => (
-        <Link to={`/pages/conversation/${record.PatientId}`}>
+        <Link
+          to={`/pages/conversation/${record.PatientId}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           {text}
         </Link>
       ),
     }),
-    ...(isMedbridge
-      ? [
-        withColumnMaxWidth('location', {
-          title: 'Location',
-          key: 'Location',
-          render: (_, record) => (
-            <span>{getHomeLocationDisplay(getRecordHomeLocation(record))}</span>
-          ),
-        }),
-      ]
-      : []),
+    withColumnMaxWidth('location', {
+      title: 'Location',
+      key: 'Location',
+      render: (_, record) => (
+        <span>{getHomeLocationDisplay(getRecordHomeLocation(record))}</span>
+      ),
+    }),
     withColumnMaxWidth('invitationSent', {
       title: 'Invitation Sent',
       dataIndex: 'Invitation Sent',
@@ -305,7 +288,7 @@ const PatientProgressTable = ({
         );
       },
     }),
-  ], [clinic?.country, isMedbridge, sortedInfo.columnKey, sortedInfo.order, screenedElsewhereLabel]);
+  ], [clinic?.country, sortedInfo.columnKey, sortedInfo.order, screenedElsewhereLabel]);
 
   const getProgressData = async () => {
     try {
@@ -458,7 +441,11 @@ const PatientProgressTable = ({
         styles={{ body: { padding: '16px' } }}
         style={{ height: '100%', borderRadius: '8px' }}
       >
-        <Link to={`/pages/conversation/${record.PatientId}`}>
+        <Link
+          to={`/pages/conversation/${record.PatientId}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           <Space direction="vertical" size="small" style={{ width: '100%' }}>
             <Typography.Text strong style={{ fontSize: '16px', display: 'block' }}>
               {record['Patient Name']}
@@ -476,7 +463,7 @@ const PatientProgressTable = ({
               {record.Status}
             </Tag>
 
-            {isMedbridge && locationDisplay !== '-' && (
+            {locationDisplay !== '-' && (
               <Space size="small">
                 <EnvironmentOutlined style={{ fontSize: '12px', color: '#8c8c8c' }} />
                 <Typography.Text type="secondary" style={{ fontSize: '12px' }}>

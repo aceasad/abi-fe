@@ -71,20 +71,8 @@ const MessagesRequiringImmediateAttentionTable = ({
   const [activeFilters, setActiveFilters] = useState([]);
 
   useEffect(() => {
-    if (isMedbridge) {
-      dispatch(getPatientLocations());
-    }
-  }, [dispatch, isMedbridge]);
-
-  // The location filter is only available for Medbridge providers, so drop any
-  // active location filter if the provider changes away from Medbridge.
-  useEffect(() => {
-    if (!isMedbridge) {
-      setActiveFilters((prev) =>
-        prev.filter((f) => f.attribute !== FILTER_ATTRIBUTES.LOCATION)
-      );
-    }
-  }, [isMedbridge]);
+    dispatch(getPatientLocations());
+  }, [dispatch]);
 
   const getFilterValue = (attribute) => {
     const entry = activeFilters.find((f) => f.attribute === attribute);
@@ -139,25 +127,18 @@ const MessagesRequiringImmediateAttentionTable = ({
     [locations]
   );
 
-  const filterAttributes = useMemo(() => {
-    const attributes = [
-      {
-        id: FILTER_ATTRIBUTES.EVENT,
-        label: 'Event',
-        options: eventTypeOptions,
-      },
-    ];
-
-    if (isMedbridge) {
-      attributes.push({
-        id: FILTER_ATTRIBUTES.LOCATION,
-        label: 'Location',
-        options: locationOptions,
-      });
-    }
-
-    return attributes;
-  }, [eventTypeOptions, isMedbridge, locationOptions]);
+  const filterAttributes = useMemo(() => [
+    {
+      id: FILTER_ATTRIBUTES.EVENT,
+      label: 'Event',
+      options: eventTypeOptions,
+    },
+    {
+      id: FILTER_ATTRIBUTES.LOCATION,
+      label: 'Location',
+      options: locationOptions,
+    },
+  ], [eventTypeOptions, locationOptions]);
 
   const handlePaginationSizeChange = (_, size) => {
     handlePageSizeChange(1, size);
