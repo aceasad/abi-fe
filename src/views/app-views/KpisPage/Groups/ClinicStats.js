@@ -85,6 +85,12 @@ const calculateValueChange = (currentValue, previousValue) => {
   return current - previous;
 };
 
+// Invited patients who never received a delivered message count as failed.
+const calculateMessagesFailed = (invited, delivered) => {
+  if (isMissing(invited) || isMissing(delivered)) return -1;
+  return Math.max(Number(invited) - Number(delivered), 0);
+};
+
 // Modern pill-shaped delta indicator. Green for positive momentum, red for
 // negative, neutral grey when a direction shouldn't be implied.
 const DeltaBadge = ({ change, changeType = 'percentage', isMobile = false }) => {
@@ -350,7 +356,6 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
     booking_rate,
     total_patients_added,
     total_patients_invited,
-    total_patients_failed_message_status,
     total_patients_engaged,
     total_patients_read_but_no_response,
     bookings,
@@ -472,9 +477,21 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
     (percentage_changes?.pc_booking_time_distribution?.evening ?? 0)
     + (percentage_changes?.pc_booking_time_distribution?.night ?? 0);
   const afterHoursChange = calculateValueChange(calculateAfterHoursBookings(), previousAfterHours);
+  const messagesFailedCount = calculateMessagesFailed(
+    total_patients_added,
+    total_patients_invited
+  );
+  const previousMessagesFailedCount =
+    percentage_changes?.pc_total_patients_added != null
+    && percentage_changes?.pc_total_patients_invited != null
+      ? calculateMessagesFailed(
+        percentage_changes.pc_total_patients_added,
+        percentage_changes.pc_total_patients_invited
+      )
+      : percentage_changes?.pc_failed_messages;
   const failedMessagesChange = calculateValueChange(
-    total_patients_failed_message_status,
-    percentage_changes?.pc_failed_messages
+    messagesFailedCount,
+    previousMessagesFailedCount
   );
   const deliveredUnengagedChange = calculateValueChange(
     total_patients_read_but_no_response,
@@ -507,7 +524,7 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
     {
       key: 'failed',
       label: 'Messages failed',
-      value: displayValue(total_patients_failed_message_status),
+      value: displayValue(messagesFailedCount),
       change: failedMessagesChange,
     },
     {
