@@ -17,7 +17,7 @@ import {
 import { makeSelectAppointmentTypes } from 'redux/selectors/Appointment';
 import { patientSchema } from 'utils/validations';
 import { MAX, NHS_MAX } from 'constants/ClinicConstants';
-import { filterNumberInput } from 'utils/helpers';
+import { filterNumberInput, joinPhoneNumberWithCountryCode } from 'utils/helpers';
 import PatientFormExistingConditions from './PatientFormExistingConditions';
 import PatientFormPreviousOperationss from './PatientFormPreviousOperations';
 import {
@@ -86,7 +86,10 @@ const PatientPASForm = ({
     }, {});
     const parsedValues = {
       ...values,
-      phone_number: values.country_code + values.phone_number,
+      phone_number: joinPhoneNumberWithCountryCode(
+        values.country_code,
+        values.phone_number
+      ),
     };
     delete parsedValues.pas_provider;
     if (isMedbridge) {

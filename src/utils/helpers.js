@@ -1,6 +1,7 @@
 import { WS_CHAT_URL, WS_NOTIFICATION_URL } from 'constants/ApiConstant';
 import { MESSAGE_TYPE, MESSAGE_STATUS } from 'constants/ChatConstants';
 import { MONTH_FORMAT_MM, YEAR_FORMAT_YYYY } from 'constants/DateConstant';
+import { COUNTRY_CODES } from 'constants/CountryCodesConstants';
 import dayjs from './dayjs';
 import { NO_SHOW_SCORE_THRESHOLD } from './constants';
 import { Typography } from 'antd';
@@ -39,6 +40,58 @@ export const mapEmptyStingObjectFeildsToNull = (obj) =>
     }),
     {}
   );
+
+const SORTED_COUNTRY_CODE_IDS = [
+  ...new Set(COUNTRY_CODES.map(({ id }) => id)),
+].sort((a, b) => b.length - a.length);
+
+export const normalizeLocalPhoneNumber = (phoneNumber) => {
+  if (phoneNumber == null || phoneNumber === '') {
+    return '';
+  }
+
+  const digits = String(phoneNumber).replace(/\D/g, '');
+  if (!digits) {
+    return '';
+  }
+
+  return digits.startsWith('0') ? digits.slice(1) : digits;
+};
+
+export const joinPhoneNumberWithCountryCode = (countryCode, localPhoneNumber) =>
+  `${countryCode || ''}${normalizeLocalPhoneNumber(localPhoneNumber)}`;
+
+export const splitPhoneNumberByCountryCode = (fullPhoneNumber) => {
+  const emptyResult = { country_code: '', phone_number: '' };
+
+  if (!fullPhoneNumber) {
+    return emptyResult;
+  }
+
+  const digits = String(fullPhoneNumber).replace(/\D/g, '');
+  if (!digits) {
+    return emptyResult;
+  }
+
+  const matchedCountryCode = SORTED_COUNTRY_CODE_IDS.find(
+    (countryCode) =>
+      digits.startsWith(countryCode) && digits.length > countryCode.length
+  );
+
+  if (matchedCountryCode) {
+    return {
+      country_code: matchedCountryCode,
+      phone_number: normalizeLocalPhoneNumber(
+        digits.slice(matchedCountryCode.length)
+      ),
+    };
+  }
+
+  return {
+    country_code: '',
+    phone_number: normalizeLocalPhoneNumber(digits),
+  };
+};
 
 export const chatListItemStyle = (
   chatListLength,

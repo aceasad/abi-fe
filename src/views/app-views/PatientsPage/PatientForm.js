@@ -13,7 +13,7 @@ import ColumnField from 'components/custom-components/Form/ColumnField';
 import { makeSelectPatientDetails } from 'redux/selectors/Patient';
 import { patientSchema } from 'utils/validations';
 import { MAX } from 'constants/ClinicConstants';
-import { filterNumberInput } from 'utils/helpers';
+import { filterNumberInput, joinPhoneNumberWithCountryCode } from 'utils/helpers';
 import PatientFormExistingConditions from './PatientFormExistingConditions';
 import PatientFormPreviousOperationss from './PatientFormPreviousOperations';
 import {
@@ -64,7 +64,10 @@ const PatientForm = ({
       date_of_birth: dayjs(values.date_of_birth, 'DD/MM/YYYY').format(
         DATE_FORMAT_DD_MM_YYYY
       ),
-      phone_number: values.country_code + values.phone_number,
+      phone_number: joinPhoneNumberWithCountryCode(
+        values.country_code,
+        values.phone_number
+      ),
     };
     handleSubmit(parsedValues, setErrors, enableRedirect);
   };

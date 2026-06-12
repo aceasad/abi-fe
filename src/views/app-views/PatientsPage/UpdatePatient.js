@@ -8,6 +8,7 @@ import { makeSelectPatientSingle } from 'redux/selectors/Patient';
 import {
   filterEmptyObjectFeilds,
   mapNullObjectFeildsToString,
+  splitPhoneNumberByCountryCode,
 } from 'utils/helpers';
 import { message } from 'antd';
 import dayjs from 'utils/dayjs';
@@ -90,14 +91,7 @@ const UpdatePatient = ({ showList, patientId }) => {
             material_status: patient?.material_status?.id,
             employment: patient?.employment?.id,
             medicalConditions: items.map((condition) => condition.id),
-            phone_number: patient?.phone_number?.substr(
-              patient?.phone_number?.length - 10,
-              patient?.phone_number?.length
-            ),
-            country_code: patient?.phone_number?.substr(
-              0,
-              patient?.phone_number?.length - 10
-            ),
+            ...splitPhoneNumberByCountryCode(patient?.phone_number),
             home_location: patient?.home_location?.location_id
               ? String(patient.home_location.location_id)
               : '',
