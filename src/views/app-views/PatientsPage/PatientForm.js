@@ -66,7 +66,6 @@ const PatientForm = ({
       ),
       phone_number: values.country_code + values.phone_number,
     };
-    console.log('Patient submit payload (non-PAS)', parsedValues);
     handleSubmit(parsedValues, setErrors, enableRedirect);
   };
 

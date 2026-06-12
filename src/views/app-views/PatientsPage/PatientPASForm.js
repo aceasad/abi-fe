@@ -127,7 +127,6 @@ const PatientPASForm = ({
       delete parsedValues.date_of_birth;
     }
 
-    console.log('Patient submit payload (PAS)', parsedValues);
     handleSubmit(parsedValues, setErrors, enableRedirect);
   };
 
