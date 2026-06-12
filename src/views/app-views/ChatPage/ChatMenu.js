@@ -10,6 +10,7 @@ import {
   chatListItemStyle,
   getDateFormatByCountry,
 } from 'utils/helpers';
+import dayjs from 'utils/dayjs';
 import {
   getAllChatsInfo,
   getMoreChatsInfo,
@@ -34,7 +35,6 @@ import {
   buildPatientLocationFilterOptions,
   getPatientLocationDescription,
 } from 'constants/ChatConstants';
-import dayjs from 'utils/dayjs';
 import ConversationFilters from './ConversationFilters';
 
 const { useBreakpoint } = Grid;
@@ -333,7 +333,7 @@ const ChatMenu = (props) => {
                   color: '#888'
                 }}>
                   {lastMessageCreatedAt ?
-                    dayjs(lastMessageCreatedAt).format(shortDateFormat) :
+                    dayjs(lastMessageCreatedAt).local().format(shortDateFormat) :
                     ''}
                 </div>
               </div>
