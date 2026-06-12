@@ -313,6 +313,10 @@ export const isUsCountry = (country = '') => {
   );
 };
 
+export const getClinicTimezone = (clinic) =>
+  clinic?.timezone ||
+  (isUsCountry(clinic?.country) ? 'America/New_York' : 'Europe/London');
+
 export const getDateFormatByCountry = (country = '') =>
   isUsCountry(country) ? 'MM/DD/YYYY' : 'DD/MM/YYYY';
 
@@ -369,6 +373,7 @@ export const formatDateTimeByCountry = (
     return dateTimeValue;
   }
 
+  parsedDateTime = parsedDateTime.local();
   const formattedDate = parsedDateTime.format(getDateFormatByCountry(country));
   const formattedTime = parsedDateTime.format(timeFormat);
   return `${formattedDate} ${formattedTime}`.trim();
