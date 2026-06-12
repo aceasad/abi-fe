@@ -61,6 +61,123 @@ export const normalizeLocalPhoneNumber = (phoneNumber) => {
 export const joinPhoneNumberWithCountryCode = (countryCode, localPhoneNumber) =>
   `${countryCode || ''}${normalizeLocalPhoneNumber(localPhoneNumber)}`;
 
+export const HOME_LOCATION_TIMEZONE_ERROR =
+  'Could not determine patient timezone from this location. The selected location is missing information required to determine the timezone (zip code or state).';
+
+export const buildPatientHomeLocationNoTimeslotsError = (
+  locationLabel,
+  searchDays = 'N/A'
+) =>
+  `No appointment timeslots are available for ${searchDays} days from today at ${locationLabel}.`;
+
+export const formatLocationLabel = (location, fallbackLocationId = '') => {
+  const locationId = location?.location_id || location?.LocationId || fallbackLocationId;
+  const locationName =
+    location?.location_name ||
+    location?.LocationName ||
+    location?.name ||
+    location?.location_description ||
+    location?.LocationDescription ||
+    '';
+
+  if (locationName && locationId) {
+    return `${locationName} (${locationId})`;
+  }
+  if (locationName) {
+    return locationName;
+  }
+  if (locationId) {
+    return `Unknown location (${locationId})`;
+  }
+  return 'Unknown location';
+};
+
+const HOME_LOCATION_ZIP_KEYS = [
+  'location_zip_post_code',
+  'LocationZipPostCode',
+];
+const HOME_LOCATION_STATE_KEYS = [
+  'location_state_county',
+  'LocationStateCounty',
+];
+
+const getHomeLocationFieldValue = (homeLocation, keys) => {
+  if (!homeLocation || typeof homeLocation !== 'object') {
+    return '';
+  }
+  for (const key of keys) {
+    const value = homeLocation[key];
+    if (value != null && String(value).trim() !== '') {
+      return String(value).trim();
+    }
+  }
+  return '';
+};
+
+export const getHomeLocationZipCode = (homeLocation) =>
+  getHomeLocationFieldValue(homeLocation, HOME_LOCATION_ZIP_KEYS);
+
+export const getHomeLocationState = (homeLocation) =>
+  getHomeLocationFieldValue(homeLocation, HOME_LOCATION_STATE_KEYS);
+
+export const getHomeLocationTimezoneValidationError = (homeLocation) => {
+  const zipCode = getHomeLocationZipCode(homeLocation);
+  const state = getHomeLocationState(homeLocation);
+
+  if (!zipCode && !state) {
+    return HOME_LOCATION_TIMEZONE_ERROR;
+  }
+
+  return null;
+};
+
+const parseApiFieldError = (value) => {
+  if (Array.isArray(value)) {
+    return value[0];
+  }
+  return value;
+};
+
+export const parsePatientFormApiErrors = (errorData) => {
+  if (!errorData || typeof errorData !== 'object') {
+    return {};
+  }
+
+  const errors = {};
+
+  if (errorData.home_location) {
+    errors.home_location = parseApiFieldError(errorData.home_location);
+  }
+  if (errorData.ExternalIdentificationNumber) {
+    errors.ExternalIdentificationNumber = parseApiFieldError(
+      errorData.ExternalIdentificationNumber
+    );
+  }
+  if (errorData.phone_number) {
+    const phoneError = parseApiFieldError(errorData.phone_number);
+    errors.phone_number =
+      phoneError === 'patient with this phone number already exists.'
+        ? 'Phone number is already added by another clinic!'
+        : phoneError;
+  }
+  if (errorData.email) {
+    errors.email = parseApiFieldError(errorData.email);
+  }
+  if (errorData.doctor_reference) {
+    errors.doctor_reference = parseApiFieldError(errorData.doctor_reference);
+  }
+  if (errorData.appointment_type) {
+    errors.appointment_type = parseApiFieldError(errorData.appointment_type);
+  }
+  if (errorData.available_location_ids) {
+    errors.available_location_ids = parseApiFieldError(
+      errorData.available_location_ids
+    );
+  }
+
+  return errors;
+};
+
 export const splitPhoneNumberByCountryCode = (fullPhoneNumber) => {
   const emptyResult = { country_code: '', phone_number: '' };
 

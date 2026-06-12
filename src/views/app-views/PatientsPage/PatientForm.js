@@ -319,6 +319,7 @@ const PatientForm = ({
                           matchesLabel: "Phone must be in valid format",
                           maxValue: MAX,
                         }}
+                        placeholder="e.g. (212) 555-1234"
                         required
                       />
                     </Row>

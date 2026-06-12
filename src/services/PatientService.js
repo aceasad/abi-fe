@@ -19,6 +19,7 @@ const ENDPOINTS = {
     '/patients/:id/unmark-conversation-opt-out-situation/',
   GET_PATIENTS_DETAILS_NEW_PATIENT_FORM: '/patients/patient-details/',
   GET_PATIENT_LOCATIONS: '/patients/locations/',
+  VALIDATE_HOME_LOCATION_TIMESLOTS: '/patients/:id/validate-home-location-timeslots/',
   UPLOADPATIENTSCSV: '/patients/uploadcsv/',
   PATIENTPROGRESS: '/patients/get-all-communication-status-for-patient/',
   DOWNLOADPATIENTSNOTONWHATSAPP: '/patients/download_not_on_whatsapp_patients_text_file/',
@@ -49,6 +50,14 @@ class PatientService extends ApiService {
     this.apiClient.get(ENDPOINTS.GET_PATIENT_LOCATIONS, {
       params: location_id ? { location_id: location_id } : undefined,
     });
+
+  validateHomeLocationTimeslots = (patientId, locationId) =>
+    this.apiClient.get(
+      ENDPOINTS.VALIDATE_HOME_LOCATION_TIMESLOTS.replace(':id', patientId),
+      {
+        params: { location_id: locationId },
+      }
+    );
 
   createPatient = (data) => this.apiClient.post(ENDPOINTS.GET_PATIENTS, data);
   getPatientSingle = (id) =>
