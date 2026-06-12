@@ -127,6 +127,10 @@ const apiToFormValues = (settings) => ({
     settings.message_earliest_send_hour,
     settings.message_earliest_send_minute,
   ),
+  message_latest_send_time: toDayjsFromHourMinute(
+    settings.message_latest_send_hour,
+    settings.message_latest_send_minute,
+  ),
   timezone: settings.timezone,
   email_for_reports: settings.email_for_reports || '',
   email_for_docman: settings.email_for_docman || '',
@@ -135,6 +139,7 @@ const apiToFormValues = (settings) => ({
 const formToApiPayload = (values, isEmis) => {
   const inviteTime = values.patient_invite_send_time;
   const earliestTime = values.message_earliest_send_time;
+  const latestTime = values.message_latest_send_time;
 
   const payload = {
     disable_csv_upload: values.disable_csv_upload ?? null,
@@ -162,6 +167,22 @@ const formToApiPayload = (values, isEmis) => {
   if (isEmis) {
     payload.email_for_docman = values.email_for_docman?.trim() || null;
   }
+
+  // Reminder-hour fields are currently hidden from the UI. Only include them
+  // when the form actually carries a value (i.e. the field is rendered).
+  // While hidden the key is absent, so this partial update leaves the saved
+  // value untouched instead of resetting it to the system default (null).
+  const reminderHourFields = [
+    ['appointment_reminder_morning_hour', 'appointment_reminder_morning_time'],
+    ['appointment_reminder_default_hour', 'appointment_reminder_default_time'],
+    ['appointment_reminder_midday_hour', 'appointment_reminder_midday_time'],
+    ['appointment_reminder_afternoon_hour', 'appointment_reminder_afternoon_time'],
+  ];
+  reminderHourFields.forEach(([apiKey, formKey]) => {
+    if (values[formKey] !== undefined) {
+      payload[apiKey] = values[formKey] ? values[formKey].hour() : null;
+    }
+  });
 
   return payload;
 };
@@ -230,6 +251,7 @@ const AdvancedSettings = () => {
       appointment_reminder_midday_time: null,
       appointment_reminder_afternoon_time: null,
       message_earliest_send_time: null,
+      message_latest_send_time: null,
       timezone: defaults.timezone,
       email_for_reports: '',
       ...(isEmis ? { email_for_docman: '' } : {}),
@@ -243,13 +265,6 @@ const AdvancedSettings = () => {
   return (
     <Form form={form} layout="vertical" onFinish={handleSubmit}>
       <Row gutter={[24, 0]}>
-        <Col xs={24} md={12}>
-          <NullableBooleanField
-            name="disable_csv_upload"
-            label="Disable CSV upload"
-            defaultValue={defaults.disable_csv_upload}
-          />
-        </Col>
         <Col xs={24} md={12}>
           <NullableBooleanField
             name="patient_invite_now"
@@ -278,6 +293,16 @@ const AdvancedSettings = () => {
             )}
           />
         </Col>
+        <Col xs={24} md={12}>
+          <NullableTimeField
+            name="message_latest_send_time"
+            label="Latest send time"
+            defaultValue={formatTimeDefault(
+              defaults.message_latest_send_hour,
+              defaults.message_latest_send_minute,
+            )}
+          />
+        </Col>
 
         <Col xs={24} md={12}>
           <NullableTimeField
@@ -295,7 +320,6 @@ const AdvancedSettings = () => {
             hourOnly
           />
         </Col>
-
         <Col xs={24} md={12}>
           <NullableTimeField
             name="appointment_reminder_midday_time"
@@ -369,6 +393,13 @@ const AdvancedSettings = () => {
             </Form.Item>
           </Col>
         )}
+        <Col xs={24} md={12}>
+          <NullableBooleanField
+            name="disable_csv_upload"
+            label="Disable CSV upload"
+            defaultValue={defaults.disable_csv_upload}
+          />
+        </Col>
       </Row>
 
       <Space style={{ marginTop: 8 }}>
