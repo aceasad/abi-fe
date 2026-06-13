@@ -88,6 +88,8 @@ const MessagesRequiringImmediateAttention = () => {
   const history = useHistory();
   const dispatch = useDispatch();
   const clinic = useSelector(makeSelectClinic());
+  const { PASProvider } = useSelector((state) => state.auth.user || {});
+  const isMedbridge = PASProvider?.toLowerCase() === 'medbridge';
   const { messageRequiringImmediateAttentionStatuses } = useSelector(
     makeSelectMessageRequiringImmediateAttentionStatuses()
   );
@@ -182,16 +184,18 @@ const MessagesRequiringImmediateAttention = () => {
         'data-label': "Patient",
       }),
     }),
-    withColumnMaxWidth('location', {
-      title: "Location",
-      dataIndex: ['patient', 'home_location'],
-      render: (_, row) => (
-        <div>{getHomeLocationDisplay(row.patient?.home_location)}</div>
-      ),
-      onCell: () => ({
-        'data-label': "Location",
-      }),
-    }),
+    ...(isMedbridge
+      ? [withColumnMaxWidth('location', {
+        title: "Location",
+        dataIndex: ['patient', 'home_location'],
+        render: (_, row) => (
+          <div>{getHomeLocationDisplay(row.patient?.home_location)}</div>
+        ),
+        onCell: () => ({
+          'data-label': "Location",
+        }),
+      })]
+      : []),
     withColumnMaxWidth('event', {
       title: "Event",
       dataIndex: ['message_requiring_immediate_attention_type', 'name'],
@@ -247,7 +251,7 @@ const MessagesRequiringImmediateAttention = () => {
         </div>
       ),
     }),
-  ], [clinic?.country, messageRequiringImmediateAttentionStatuses]);
+  ], [clinic?.country, messageRequiringImmediateAttentionStatuses, isMedbridge]);
 
   const [
     activePreAppointmentQuestionnaire,
