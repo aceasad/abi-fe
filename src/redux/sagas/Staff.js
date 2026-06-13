@@ -42,6 +42,7 @@ import {
 } from 'redux/selectors/Staff';
 import staffService from 'services/StaffService';
 import { UPDATE_MESSAGE_REQUIRING_IMMEDIATE_ATTENTION_STATUS } from 'redux/constants/Appointment';
+import { setSingleAppointmentLoading } from 'redux/actions/Appointment';
 
 function* getPaginatedStaff() {
   try {
@@ -210,10 +211,27 @@ export function* getMessagesRequiringImmediateAttention({ payload }) {
 }
 
 export function* updateMessageRequiringImmediateAttentionStatus({ payload }) {
+  const {
+    afterMessageRequiringImmediateAttentionStatusUpdate,
+    ...updatePayload
+  } = payload;
+
   try {
-    yield call(staffService.updateMessageRequiringImmediateAttention, payload);
-    yield call(getMessagesRequiringImmediateAttention, { payload });
+    yield put(setSingleAppointmentLoading(true));
+    yield call(
+      staffService.updateMessageRequiringImmediateAttention,
+      updatePayload
+    );
+    yield call(getMessagesRequiringImmediateAttention, {
+      payload: updatePayload,
+    });
+    if (afterMessageRequiringImmediateAttentionStatusUpdate) {
+      yield call(afterMessageRequiringImmediateAttentionStatusUpdate);
+    }
   } catch (err) { }
+  finally {
+    yield put(setSingleAppointmentLoading(false));
+  }
 }
 
 export function* getStaff() {

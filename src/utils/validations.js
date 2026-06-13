@@ -1,4 +1,5 @@
 import Yup from './yupValidations';
+import { normalizeLocalPhoneNumber } from './helpers';
 import {
   maxDigits,
   passwordFormat,
@@ -31,6 +32,11 @@ const passwordRepeatValidation = (refField) =>
 const usernameSchema = Yup.string().email();
 const nameSchema = Yup.string().trim().max(MAX).required();
 const externalIdentificationFormat = /^(?:\d{7}|\d{10})$/;
+const digitsOnlyPhoneSchema = Yup.string()
+  .transform((value) => normalizeLocalPhoneNumber(value))
+  .matches(/^[0-9]+$/, { excludeEmptyString: true })
+  .max(MAX)
+  .required();
 
 export const loginSchema = Yup.object().shape({
   username: usernameSchema,
@@ -106,11 +112,11 @@ export const patientSchema = Yup.object().shape({
   first_name: Yup.string().trim().max(MAX).required(),
   last_name: Yup.string().trim().max(MAX).required(),
   gender: Yup.string(),
-  date_of_birth: Yup.string(),
+  date_of_birth: Yup.string().nullable(),
   height: Yup.number(),
   weight: Yup.number(),
-  country_code: Yup.string().matches(phoneFormat).max(MAX).required(),
-  phone_number: Yup.string().matches(phoneFormat).max(MAX).required(),
+  country_code: digitsOnlyPhoneSchema,
+  phone_number: digitsOnlyPhoneSchema,
   email: usernameSchema,
   number_of_dependants: Yup.number(),
   insurance: Yup.string().max(MAX),
@@ -134,6 +140,11 @@ export const patientSchema = Yup.object().shape({
     otherwise: (schema) => schema,
   }),
   available_location_ids: Yup.array().of(Yup.string()),
+  doctor_reference: Yup.string().trim().max(20).when('pas_provider', {
+    is: 'medbridge',
+    then: (schema) => schema.required(),
+    otherwise: (schema) => schema,
+  }),
   isPASPatient: Yup.boolean(),
 });
 
