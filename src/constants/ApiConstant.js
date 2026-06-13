@@ -2,6 +2,7 @@ import { env } from 'configs/EnvironmentConfig';
 
 export const API_BASE_URL = 'http://localhost:8001';
 export var DEFAULT_PAGINATION_LIMIT = 10;
+export const MESSAGES_REQUIRING_IMMEDIATE_ATTENTION_PAGE_SIZE = 100;
 export const DEFAULT_SMALL_PAGINATION_LIMIT = 5;
 export const LARGE_PAGINATION_LIMIT = 50;
 export const MAX_PAGINATION_LIMIT = 500;

@@ -21,11 +21,15 @@ const pieChartColors = ['#5D4EBF', '#E880FF', '#FFBFB0', '#18D9C5', '#121E38', '
 
 // Each funnel stage moves the eye from the brand purple (outreach) toward the
 // booking teal (success), reinforcing the journey from invite to booking.
+// Clicking a stage deep-links to the Overview "Booking progress" tab. Invited
+// and Delivered are broad funnel steps with no single matching status, so they
+// open the tab unfiltered (progressStatus null), while Engaged and Booked
+// pre-select their corresponding progress status.
 const FUNNEL_STAGES_META = [
-  { key: 'invited', label: 'Invited', gradient: 'linear-gradient(90deg, #6E5FD8, #8C7DEC)' },
-  { key: 'delivered', label: 'Delivered', gradient: 'linear-gradient(90deg, #5D4EBF, #6E5FD8)' },
-  { key: 'engaged', label: 'Engaged', gradient: 'linear-gradient(90deg, #2FA8C7, #45C2D8)' },
-  { key: 'booked', label: 'Booked', gradient: 'linear-gradient(90deg, #14C2B0, #18D9C5)' },
+  { key: 'invited', label: 'Invited', gradient: 'linear-gradient(90deg, #6E5FD8, #8C7DEC)', progressStatus: null },
+  { key: 'delivered', label: 'Delivered', gradient: 'linear-gradient(90deg, #5D4EBF, #6E5FD8)', progressStatus: null },
+  { key: 'engaged', label: 'Engaged', gradient: 'linear-gradient(90deg, #2FA8C7, #45C2D8)', progressStatus: 'BOOKING' },
+  { key: 'booked', label: 'Booked', gradient: 'linear-gradient(90deg, #14C2B0, #18D9C5)', progressStatus: 'BOOKED' },
 ];
 
 const PLACEHOLDER_APPOINTMENT_OUTCOMES = [
@@ -85,6 +89,12 @@ const calculateValueChange = (currentValue, previousValue) => {
   return current - previous;
 };
 
+// Invited patients who never received a delivered message count as failed.
+const calculateMessagesFailed = (invited, delivered) => {
+  if (isMissing(invited) || isMissing(delivered)) return -1;
+  return Math.max(Number(invited) - Number(delivered), 0);
+};
+
 // Modern pill-shaped delta indicator. Green for positive momentum, red for
 // negative, neutral grey when a direction shouldn't be implied.
 const DeltaBadge = ({ change, changeType = 'percentage', isMobile = false }) => {
@@ -128,7 +138,10 @@ const DeltaBadge = ({ change, changeType = 'percentage', isMobile = false }) => 
   );
 };
 
-const StatCard = ({ title, value, subtitle, color = HEADING_COLOR, change = null, changeType = 'percentage', style = {}, bare = false, compact = false, isMobile = false }) => {
+const StatCard = ({ title, value, subtitle, color = HEADING_COLOR, change = null, changeType = 'percentage', style = {}, bare = false, compact = false, isMobile = false, onClick = undefined }) => {
+  const [hovered, setHovered] = useState(false);
+  const isClickable = typeof onClick === 'function';
+
   const changeNode = change != null && typeof change !== 'object'
     ? <DeltaBadge change={change} changeType={changeType} isMobile={isMobile} />
     : null;
@@ -160,18 +173,45 @@ const StatCard = ({ title, value, subtitle, color = HEADING_COLOR, change = null
 
   return (
     <div
+      role={isClickable ? 'button' : undefined}
+      tabIndex={isClickable ? 0 : undefined}
+      onClick={isClickable ? onClick : undefined}
+      onKeyDown={isClickable ? (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onClick();
+        }
+      } : undefined}
+      onMouseEnter={isClickable ? () => setHovered(true) : undefined}
+      onMouseLeave={isClickable ? () => setHovered(false) : undefined}
       style={{
-        background: '#fff',
-        border: CARD_BORDER,
+        background: isClickable && hovered ? 'rgba(93, 78, 191, 0.06)' : '#fff',
+        border: isClickable && hovered ? '1px solid rgba(93, 78, 191, 0.25)' : CARD_BORDER,
         borderRadius: 14,
         padding: isMobile ? '14px' : compact ? '10px 16px' : '16px 18px',
         height: compact ? 'auto' : '100%',
+        cursor: isClickable ? 'pointer' : 'default',
+        transition: 'background 0.2s ease, border-color 0.2s ease',
+        outline: 'none',
         ...style,
       }}
     >
-      <Text type="secondary" style={{ display: 'block', fontSize: isMobile ? '13px' : '14px', marginBottom: isMobile ? 6 : compact ? 6 : 10 }}>
-        {title}
-      </Text>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, marginBottom: isMobile ? 6 : compact ? 6 : 10 }}>
+        <Text type="secondary" style={{ fontSize: isMobile ? '13px' : '14px' }}>
+          {title}
+        </Text>
+        {isClickable ? (
+          <RightOutlined
+            style={{
+              fontSize: isMobile ? 11 : 12,
+              color: hovered ? '#5D4EBF' : MUTED_COLOR,
+              opacity: hovered ? 1 : 0.5,
+              transform: hovered ? 'translateX(2px)' : 'none',
+              transition: 'color 0.2s ease, opacity 0.2s ease, transform 0.2s ease',
+            }}
+          />
+        ) : null}
+      </div>
       {content}
       {subtitle ? (
         <Text type="secondary" style={{ display: 'block', fontSize: isMobile ? '11px' : '12px', marginTop: 8 }}>
@@ -217,11 +257,13 @@ const RateTile = ({ label, value, change, changeType = 'percentage', accent = '#
 // drop-off is read by comparing bar heights at a glance — the count sits on top
 // and a conversion pill underneath shows how many carried over from the
 // previous step.
-const ConversionFunnel = ({ stages, isMobile }) => {
+const ConversionFunnel = ({ stages, isMobile, onStageClick }) => {
+  const [hoveredKey, setHoveredKey] = useState(null);
   const numericValues = stages.map((s) => (isMissing(s.value) ? 0 : Number(s.value)));
   const maxValue = Math.max(...numericValues, 1);
   const chartHeight = isMobile ? 150 : 200;
   const barWidth = isMobile ? 34 : 56;
+  const isClickable = typeof onStageClick === 'function';
 
   return (
     <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: isMobile ? 8 : 16 }}>
@@ -241,8 +283,36 @@ const ConversionFunnel = ({ stages, isMobile }) => {
             ? `${stepConversion.toFixed(0)}%`
             : '—';
 
+        const isHovered = hoveredKey === stage.key;
+
         return (
-          <div key={stage.key} style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <div
+            key={stage.key}
+            role={isClickable ? 'button' : undefined}
+            tabIndex={isClickable ? 0 : undefined}
+            onClick={isClickable ? () => onStageClick(stage) : undefined}
+            onKeyDown={isClickable ? (e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onStageClick(stage);
+              }
+            } : undefined}
+            onMouseEnter={isClickable ? () => setHoveredKey(stage.key) : undefined}
+            onMouseLeave={isClickable ? () => setHoveredKey(null) : undefined}
+            style={{
+              flex: 1,
+              minWidth: 0,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              cursor: isClickable ? 'pointer' : 'default',
+              borderRadius: 12,
+              padding: isMobile ? '6px 2px' : '8px 4px',
+              background: isClickable && isHovered ? 'rgba(93, 78, 191, 0.06)' : 'transparent',
+              transition: 'background 0.2s ease',
+              outline: 'none',
+            }}
+          >
             <div style={{ textAlign: 'center', marginBottom: 10 }}>
               <div style={{ fontSize: isMobile ? 12 : 14, fontWeight: 600, color: HEADING_COLOR, lineHeight: 1.2 }}>
                 {stage.label}
@@ -329,28 +399,34 @@ const SectionCard = ({ title, extra, children, style, isMobile, fillHeight = fal
 const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
   const history = useHistory();
   const [hoveredOutcome, setHoveredOutcome] = useState(null);
+  const [hoveredConcernKey, setHoveredConcernKey] = useState(null);
   const { PASProvider } = useSelector((state) => state.auth.user || {});
   const isMedbridge = PASProvider?.toLowerCase() === 'medbridge';
 
-  // Deep-link a clicked booking status to the Overview "Booking progress" tab
-  // with its status filter pre-selected via router state.
+  // Deep-link to the Overview "Booking progress" tab. When a progress status is
+  // provided it is pre-selected in the tab's "Filter by status" control via
+  // router state; passing a falsy status opens the tab unfiltered.
+  const goToBookingProgress = (progressStatus) => {
+    const state = { activeTabKey: BOOKING_PROGRESS_TAB_KEY };
+    if (progressStatus) {
+      state.progressFilterStatus = progressStatus;
+    }
+    history.push({
+      pathname: `${APP_PAGES_PREFIX_PATH}/overview`,
+      state,
+    });
+  };
+
   const handleOutcomeClick = (outcomeName) => {
     const progressStatus = OUTCOME_TO_PROGRESS_STATUS[outcomeName];
     if (!progressStatus) return;
-    history.push({
-      pathname: `${APP_PAGES_PREFIX_PATH}/overview`,
-      state: {
-        activeTabKey: BOOKING_PROGRESS_TAB_KEY,
-        progressFilterStatus: progressStatus,
-      },
-    });
+    goToBookingProgress(progressStatus);
   };
   const {
     engagement_rate,
     booking_rate,
     total_patients_added,
     total_patients_invited,
-    total_patients_failed_message_status,
     total_patients_engaged,
     total_patients_read_but_no_response,
     bookings,
@@ -440,31 +516,37 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
       titleMessage: 'Emergency situation',
       value: emergency_situation ?? -1,
       change: calculateValueChange(emergency_situation, percentage_changes?.pc_emergency_situation),
+      progressStatus: 'EMERGENCY_SITUATION',
     },
     {
       titleMessage: 'Human intervention',
       value: human_intervention ?? -1,
       change: calculateValueChange(human_intervention, percentage_changes?.pc_human_intervention),
+      progressStatus: 'HUMAN_INTERVENTION',
     },
     {
       titleMessage: isMedbridge ? 'Study taken elsewhere' : 'Screened elsewhere',
       value: already_screened ?? -1,
       change: calculateValueChange(already_screened, percentage_changes?.pc_already_screened),
+      progressStatus: 'SCREENED_ELSEWHERE',
     },
     {
       titleMessage: 'Declined',
       value: declines ?? -1,
       change: calculateValueChange(declines, percentage_changes?.pc_declined),
+      progressStatus: 'DECLINED',
     },
     {
       titleMessage: 'Opt-out',
       value: opt_out ?? -1,
       change: calculateValueChange(opt_out, percentage_changes?.pc_opt_out),
+      progressStatus: 'OPT_OUT',
     },
     {
       titleMessage: 'Snoozed',
       value: snoozed ?? -1,
       change: calculateValueChange(snoozed, percentage_changes?.pc_snoozed),
+      progressStatus: 'SNOOZED',
     }
   ];
 
@@ -472,9 +554,21 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
     (percentage_changes?.pc_booking_time_distribution?.evening ?? 0)
     + (percentage_changes?.pc_booking_time_distribution?.night ?? 0);
   const afterHoursChange = calculateValueChange(calculateAfterHoursBookings(), previousAfterHours);
+  const messagesFailedCount = calculateMessagesFailed(
+    total_patients_added,
+    total_patients_invited
+  );
+  const previousMessagesFailedCount =
+    percentage_changes?.pc_total_patients_added != null
+    && percentage_changes?.pc_total_patients_invited != null
+      ? calculateMessagesFailed(
+        percentage_changes.pc_total_patients_added,
+        percentage_changes.pc_total_patients_invited
+      )
+      : percentage_changes?.pc_failed_messages;
   const failedMessagesChange = calculateValueChange(
-    total_patients_failed_message_status,
-    percentage_changes?.pc_failed_messages
+    messagesFailedCount,
+    previousMessagesFailedCount
   );
   const deliveredUnengagedChange = calculateValueChange(
     total_patients_read_but_no_response,
@@ -507,14 +601,16 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
     {
       key: 'failed',
       label: 'Messages failed',
-      value: displayValue(total_patients_failed_message_status),
+      value: displayValue(messagesFailedCount),
       change: failedMessagesChange,
+      progressStatus: null,
     },
     {
       key: 'unengaged',
       label: 'Delivered · unengaged',
       value: displayValue(total_patients_read_but_no_response),
       change: deliveredUnengagedChange,
+      progressStatus: 'NO_RESPONSE',
     },
   ];
 
@@ -523,7 +619,11 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
       <SectionCard title="Patient communication flow" extra={previousPeriodLabel} isMobile={isMobile}>
         <Row gutter={[isMobile ? 16 : 28, 16]}>
           <Col xs={24} lg={15}>
-            <ConversionFunnel stages={funnelStages} isMobile={isMobile} />
+            <ConversionFunnel
+              stages={funnelStages}
+              isMobile={isMobile}
+              onStageClick={(stage) => goToBookingProgress(stage.progressStatus)}
+            />
           </Col>
 
           <Col xs={24} lg={9}>
@@ -557,31 +657,61 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
         </Row>
 
         <Row gutter={[12, 12]} style={{ marginTop: isMobile ? 16 : 20 }}>
-          {concernMetrics.map((metric) => (
-            <Col xs={24} sm={12} key={metric.key}>
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  gap: 12,
-                  padding: isMobile ? '12px 14px' : '14px 16px',
-                  borderRadius: 14,
-                  background: 'rgba(229, 72, 77, 0.05)',
-                  border: '1px solid rgba(229, 72, 77, 0.12)',
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#E5484D', flexShrink: 0 }} />
-                  <Text style={{ fontSize: isMobile ? 13 : 14, color: HEADING_COLOR }}>{metric.label}</Text>
+          {concernMetrics.map((metric) => {
+            const isClickable = Boolean(metric.progressStatus);
+            const isHovered = hoveredConcernKey === metric.key;
+
+            return (
+              <Col xs={24} sm={12} key={metric.key}>
+                <div
+                  role={isClickable ? 'button' : undefined}
+                  tabIndex={isClickable ? 0 : undefined}
+                  onClick={isClickable ? () => goToBookingProgress(metric.progressStatus) : undefined}
+                  onKeyDown={isClickable ? (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      goToBookingProgress(metric.progressStatus);
+                    }
+                  } : undefined}
+                  onMouseEnter={isClickable ? () => setHoveredConcernKey(metric.key) : undefined}
+                  onMouseLeave={isClickable ? () => setHoveredConcernKey(null) : undefined}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: 12,
+                    padding: isMobile ? '12px 14px' : '14px 16px',
+                    borderRadius: 14,
+                    background: isClickable && isHovered ? 'rgba(229, 72, 77, 0.1)' : 'rgba(229, 72, 77, 0.05)',
+                    border: isClickable && isHovered ? '1px solid rgba(229, 72, 77, 0.25)' : '1px solid rgba(229, 72, 77, 0.12)',
+                    cursor: isClickable ? 'pointer' : 'default',
+                    transition: 'background 0.2s ease, border-color 0.2s ease',
+                    outline: 'none',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#E5484D', flexShrink: 0 }} />
+                    <Text style={{ fontSize: isMobile ? 13 : 14, color: HEADING_COLOR }}>{metric.label}</Text>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <span style={{ fontSize: isMobile ? 18 : 20, fontWeight: 700, color: HEADING_COLOR }}>{metric.value}</span>
+                    <DeltaBadge change={metric.change} changeType="value" isMobile={isMobile} />
+                    {isClickable ? (
+                      <RightOutlined
+                        style={{
+                          fontSize: isMobile ? 11 : 12,
+                          color: isHovered ? '#E5484D' : MUTED_COLOR,
+                          opacity: isHovered ? 1 : 0.5,
+                          transform: isHovered ? 'translateX(2px)' : 'none',
+                          transition: 'color 0.2s ease, opacity 0.2s ease, transform 0.2s ease',
+                        }}
+                      />
+                    ) : null}
+                  </div>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <span style={{ fontSize: isMobile ? 18 : 20, fontWeight: 700, color: HEADING_COLOR }}>{metric.value}</span>
-                  <DeltaBadge change={metric.change} changeType="value" isMobile={isMobile} />
-                </div>
-              </div>
-            </Col>
-          ))}
+              </Col>
+            );
+          })}
         </Row>
       </SectionCard>
 
@@ -700,6 +830,7 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
                   compact={!isMobile}
                   style={{ width: '100%' }}
                   isMobile={isMobile}
+                  onClick={item.progressStatus ? () => goToBookingProgress(item.progressStatus) : undefined}
                 />
               ))}
             </div>

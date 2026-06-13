@@ -1,18 +1,52 @@
 import { Card, Table, Typography, Grid, Row, Col, Space, Button, Tag, Input } from 'antd';
 import React, { useEffect, useMemo, useState } from 'react';
+import MessagesRequiringImmediateAttentionFilters from './MessagesRequiringImmediateAttentionFilters';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   getMessagesRequiringImmediateAttention,
   setMessagesRequiringImmediateAttentionPage,
   setMessagesRequiringImmediateAttentionOrder,
 } from 'redux/actions/Staff';
+import { getPatientLocations } from 'redux/actions/Patient';
 import { makeSelectMessagesRequiringImmediateAttentionRequestData } from 'redux/selectors/Staff';
-import { DEFAULT_PAGINATION_LIMIT, SET_DEFAULT_PAGINATION_LIMIT } from 'constants/ApiConstant';
-import { ClockCircleOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import { makeSelectPatientLocations } from 'redux/selectors/Patient';
+import { MESSAGES_REQUIRING_IMMEDIATE_ATTENTION_PAGE_SIZE } from 'constants/ApiConstant';
+import { ClockCircleOutlined, ExclamationCircleOutlined, EnvironmentOutlined } from '@ant-design/icons';
 import utils from 'utils';
 import { SearchOutlined } from '@ant-design/icons';
 
 const { useBreakpoint } = Grid;
+
+const FILTER_ATTRIBUTES = {
+  EVENT: 'event',
+  LOCATION: 'location',
+};
+
+const normalizeFilterValue = (value) =>
+  (value || '').toLowerCase().replace(/[-\s]+/g, ' ').trim();
+
+const getRecordLocationId = (homeLocation) => {
+  if (!homeLocation) return null;
+  if (typeof homeLocation === 'object') {
+    return homeLocation.location_id != null
+      ? String(homeLocation.location_id)
+      : null;
+  }
+  return String(homeLocation);
+};
+
+const EVENT_TYPE_FILTER_ALIASES = {
+  'patient intake form not completed': ['patient intake form incomplete'],
+};
+
+const matchesEventTypeFilter = (eventName, filterValue) => {
+  const normalizedEvent = normalizeFilterValue(eventName);
+  const normalizedFilter = normalizeFilterValue(filterValue);
+  if (normalizedEvent === normalizedFilter) return true;
+
+  const aliases = EVENT_TYPE_FILTER_ALIASES[normalizedFilter] || [];
+  return aliases.includes(normalizedEvent);
+};
 
 const MessagesRequiringImmediateAttentionTable = ({
   columns,
@@ -22,26 +56,122 @@ const MessagesRequiringImmediateAttentionTable = ({
   pageSize,
   count,
   handlePaginationChange,
+  handlePageSizeChange,
   page,
   loading,
   title,
 }) => {
+  const dispatch = useDispatch();
   const screens = utils.getBreakPoint(useBreakpoint());
   const isMobile = !screens.includes('lg');
+  const { PASProvider } = useSelector((state) => state.auth.user || {});
+  const isMedbridge = PASProvider?.toLowerCase() === 'medbridge';
+  const { locations } = useSelector(makeSelectPatientLocations());
   const [patientSearch, setPatientSearch] = useState('');
+  const [activeFilters, setActiveFilters] = useState([]);
 
-  const handlePaginationSizeChange = (current, size) => {
-    SET_DEFAULT_PAGINATION_LIMIT(size);
-    handlePaginationChange(1);
+  useEffect(() => {
+    dispatch(getPatientLocations());
+  }, [dispatch]);
+
+  const getFilterValue = (attribute) => {
+    const entry = activeFilters.find((f) => f.attribute === attribute);
+    return entry && entry.values.length > 0 ? entry.values[0] : null;
+  };
+
+  const filterEventType = getFilterValue(FILTER_ATTRIBUTES.EVENT);
+  const filterLocation = getFilterValue(FILTER_ATTRIBUTES.LOCATION);
+
+  const eventTypeOptions = useMemo(() => {
+    const screenedElsewhereLabel = isMedbridge
+      ? 'Study taken elsewhere'
+      : 'Screened elsewhere';
+
+    const baseOptions = [
+      { value: 'Emergency situation', label: 'Emergency situation' },
+      { value: 'Human intervention', label: 'Human intervention' },
+      { value: screenedElsewhereLabel, label: screenedElsewhereLabel },
+      { value: 'Declined', label: 'Declined' },
+      { value: 'Opt-out', label: 'Opt-out' },
+      { value: 'Snoozed', label: 'Snoozed' },
+      {
+        value: 'Patient Intake Form - Not completed',
+        label: 'Patient Intake Form - Not completed',
+      },
+    ];
+
+    const seen = new Set(baseOptions.map((option) => normalizeFilterValue(option.value)));
+    for (const item of items || []) {
+      const eventName = item?.message_requiring_immediate_attention_type?.name;
+      const normalizedName = normalizeFilterValue(eventName);
+      if (!eventName || seen.has(normalizedName)) continue;
+      seen.add(normalizedName);
+      baseOptions.push({ value: eventName, label: eventName });
+    }
+
+    return baseOptions;
+  }, [isMedbridge, items]);
+
+  const locationOptions = useMemo(
+    () =>
+      (locations || [])
+        .filter((location) => location?.location_id)
+        .map((location) => {
+          const id = String(location.location_id);
+          const name = location.location_name || id;
+          return {
+            value: id,
+            label: `${name} (${id})`,
+          };
+        }),
+    [locations]
+  );
+
+  const filterAttributes = useMemo(() => [
+    {
+      id: FILTER_ATTRIBUTES.EVENT,
+      label: 'Event',
+      options: eventTypeOptions,
+    },
+    {
+      id: FILTER_ATTRIBUTES.LOCATION,
+      label: 'Location',
+      options: locationOptions,
+    },
+  ], [eventTypeOptions, locationOptions]);
+
+  const handlePaginationSizeChange = (_, size) => {
+    handlePageSizeChange(1, size);
   };
 
   const filteredItems = useMemo(() => {
+    let result = items || [];
+
+    if (filterEventType) {
+      result = result.filter((item) =>
+        matchesEventTypeFilter(
+          item?.message_requiring_immediate_attention_type?.name,
+          filterEventType
+        )
+      );
+    }
+
+    if (filterLocation) {
+      result = result.filter(
+        (item) =>
+          getRecordLocationId(item?.patient?.home_location) === String(filterLocation)
+      );
+    }
+
     const normalizedSearch = patientSearch.trim().toLowerCase();
-    if (!normalizedSearch) return items || [];
-    return (items || []).filter((item) =>
-      (item?.patient?.full_name || '').toLowerCase().includes(normalizedSearch)
-    );
-  }, [items, patientSearch]);
+    if (normalizedSearch) {
+      result = result.filter((item) =>
+        (item?.patient?.full_name || '').toLowerCase().includes(normalizedSearch)
+      );
+    }
+
+    return result;
+  }, [items, patientSearch, filterEventType, filterLocation]);
 
   const totalCount = count || 0;
   const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
@@ -51,6 +181,9 @@ const MessagesRequiringImmediateAttentionTable = ({
     const dateColumn = columns.find(col => col.dataIndex === 'created_datetime');
     const patientColumn = columns.find(col => col.dataIndex?.[0] === 'patient');
     const eventColumn = columns.find(col => col.dataIndex?.[0] === 'message_requiring_immediate_attention_type');
+    const locationColumn = columns.find(
+      (col) => col.dataIndex?.[0] === 'patient' && col.dataIndex?.[1] === 'home_location'
+    );
     const statusColumn = columns.find(col => col.dataIndex?.[0] === 'status');
     const actionsColumn = columns.find(col => col.key === 'action');
 
@@ -58,6 +191,9 @@ const MessagesRequiringImmediateAttentionTable = ({
     const patientContent = patientColumn?.render ? patientColumn.render(null, item) : item.patient?.full_name;
     const dateContent = dateColumn?.render ? dateColumn.render(null, item) : item.created_datetime;
     const eventContent = eventColumn?.render ? eventColumn.render(null, item) : item.message_requiring_immediate_attention_type?.name;
+    const locationContent = locationColumn?.render
+      ? locationColumn.render(null, item)
+      : null;
     const statusContent = item.status?.name;
 
     return (
@@ -92,6 +228,15 @@ const MessagesRequiringImmediateAttentionTable = ({
             </Space>
           )}
 
+          {locationColumn && locationContent && locationContent !== '-' && (
+            <Space size="small">
+              <EnvironmentOutlined style={{ fontSize: '12px', color: '#8c8c8c' }} />
+              <Typography.Text type="secondary" style={{ fontSize: '13px' }}>
+                {locationContent}
+              </Typography.Text>
+            </Space>
+          )}
+
           <Space style={{ width: '100%', justifyContent: 'space-between', marginTop: '8px' }}>
             {statusColumn && statusContent && (
               <div onClick={(e) => e.stopPropagation()}>
@@ -115,9 +260,14 @@ const MessagesRequiringImmediateAttentionTable = ({
 
   return (
     <Card>
-      <div style={{ marginBottom: 16 }}>
+      <Space
+        direction={isMobile ? 'vertical' : 'horizontal'}
+        align={isMobile ? 'stretch' : 'center'}
+        wrap
+        style={{ width: '100%', marginBottom: 16 }}
+      >
         <Input
-          style={{ width: isMobile ? '100%' : 240, maxWidth: '100%' }}
+          style={{ width: isMobile ? '100%' : 240 }}
           placeholder="Search by patient name"
           prefix={<SearchOutlined />}
           value={patientSearch}
@@ -125,7 +275,14 @@ const MessagesRequiringImmediateAttentionTable = ({
           allowClear
           size="middle"
         />
-      </div>
+        <div style={{ width: isMobile ? '100%' : 'auto', flex: isMobile ? undefined : '1 1 0', minWidth: 0 }}>
+          <MessagesRequiringImmediateAttentionFilters
+            attributes={filterAttributes}
+            value={activeFilters}
+            onChange={setActiveFilters}
+          />
+        </div>
+      </Space>
       {title && <Typography.Title level={4}>{title}</Typography.Title>}
       {isMobile ? (
         // Mobile Card View
@@ -171,6 +328,7 @@ const MessagesRequiringImmediateAttentionTable = ({
         // Desktop Table View
         <div className="responsive-table ant-table-row-pointer">
           <Table
+            tableLayout="fixed"
             columns={columns}
             dataSource={filteredItems.map((item) => ({ ...item, key: item.id || item.key }))}
             onRow={onRow}
@@ -207,7 +365,7 @@ const MessagesRequiringImmediateAttention = ({
 }) => {
   if (!children) throw new Error('Component must have children');
 
-  const { items, loading, page, count } = useSelector(
+  const { items, loading, page, count, pageSize } = useSelector(
     makeSelectMessagesRequiringImmediateAttentionRequestData(field)
   );
 
@@ -219,6 +377,17 @@ const MessagesRequiringImmediateAttention = ({
 
   const handlePaginationChange = (page) => {
     dispatch(setMessagesRequiringImmediateAttentionPage({ page, field, id }));
+  };
+
+  const handlePageSizeChange = (page, nextPageSize) => {
+    dispatch(
+      setMessagesRequiringImmediateAttentionPage({
+        page,
+        pageSize: nextPageSize,
+        field,
+        id,
+      })
+    );
   };
 
   const handleChange = (_, __, sortField, e) => {
@@ -246,11 +415,12 @@ const MessagesRequiringImmediateAttention = ({
     ) {
       return React.cloneElement(child, {
         items,
-        pageSize: DEFAULT_PAGINATION_LIMIT,
+        pageSize: pageSize || MESSAGES_REQUIRING_IMMEDIATE_ATTENTION_PAGE_SIZE,
         loading,
         page,
         count,
         handlePaginationChange,
+        handlePageSizeChange,
         handleChange,
       });
     }
