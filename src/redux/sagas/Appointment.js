@@ -441,10 +441,6 @@ export function* doctorAppointments() {
     GET_APPOINTMENT_CANCELLATION_REASONS,
     getAppointmentCancellationReasonsSaga
   );
-  yield takeEvery(
-    GET_MESSAGE_REQUIRING_IMMEDIATE_ATTENTION_STATUSES,
-    getMessageRequiringImmediateAttentionStatusesSaga
-  );
   yield takeEvery(CANCEL_APPOINTMENT, cancelAppointment);
   yield takeEvery(
     UPDATE_APPOINTMENT_COMMUNICATION_STATUS,
@@ -545,6 +541,7 @@ export default function* rootSaga() {
     fork(getAppointmentCommunicationStatusesSaga),
     fork(getAppointmentMissingReasonsSaga),
     fork(getAppointmentCancellationReasonsSaga),
+    fork(getMessageRequiringImmediateAttentionStatusesSaga),
     fork(saveAppointmentStatusSaga),
     fork(searchPatients),
     fork(getMoreSearchResults),

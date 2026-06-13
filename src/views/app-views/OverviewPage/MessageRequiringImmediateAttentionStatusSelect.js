@@ -5,7 +5,6 @@ import { DownOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   updateAppointmentMessageRequiringImmediateAttentionStatus,
-  getMessageRequiringImmediateAttentionStatuses,
 } from 'redux/actions/Appointment';
 import { makeSelectMessageRequiringImmediateAttentionStatuses } from 'redux/selectors/Appointment';
 import { MESSAGES_REQUIRING_IMMEDIATE_ATTENTION } from 'redux/reducers/Staff';
@@ -46,12 +45,6 @@ const MessageRequiringImmediateAttentionStatusSelect = ({
   const statusList = Array.isArray(messageRequiringImmediateAttentionStatuses)
     ? messageRequiringImmediateAttentionStatuses
     : messageRequiringImmediateAttentionStatuses?.results || [];
-
-  useEffect(() => {
-    if (statusList.length === 0) {
-      dispatch(getMessageRequiringImmediateAttentionStatuses());
-    }
-  }, [dispatch, statusList.length]);
 
   const currentName = row.status?.name;
   const currentColor = getStatusColor(currentName);
