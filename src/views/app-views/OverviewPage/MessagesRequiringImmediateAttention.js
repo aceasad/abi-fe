@@ -79,6 +79,11 @@ const getHomeLocationDisplay = (homeLocation) => {
   return homeLocation;
 };
 
+const getPatientLocation = (row) =>
+  row?.patient?.location
+  ?? row?.patient?.home_location
+  ?? row?.location;
+
 export const NESTED_MODAL = {
   NONE: 0,
   UPDATE_MESSAGE_REQUIRING_IMMEDIATE_ATTENTION_STATUS: 1,
@@ -187,9 +192,10 @@ const MessagesRequiringImmediateAttention = () => {
     ...(isMedbridge
       ? [withColumnMaxWidth('location', {
         title: "Location",
-        dataIndex: ['patient', 'home_location'],
+        key: 'location',
+        dataIndex: ['patient', 'location'],
         render: (_, row) => (
-          <div>{getHomeLocationDisplay(row.patient?.home_location)}</div>
+          <div>{getHomeLocationDisplay(getPatientLocation(row))}</div>
         ),
         onCell: () => ({
           'data-label': "Location",

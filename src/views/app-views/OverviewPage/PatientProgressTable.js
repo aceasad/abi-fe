@@ -61,7 +61,11 @@ const getHomeLocationDisplay = (homeLocation) => {
 };
 
 const getRecordHomeLocation = (record) =>
-  record.home_location ?? record['Home Location'] ?? record.patient?.home_location;
+  record.location
+  ?? record.home_location
+  ?? record['Home Location']
+  ?? record.patient?.location
+  ?? record.patient?.home_location;
 
 const getRecordLocationId = (homeLocation) => {
   if (!homeLocation) return null;
