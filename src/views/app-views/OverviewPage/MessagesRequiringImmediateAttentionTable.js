@@ -71,8 +71,10 @@ const MessagesRequiringImmediateAttentionTable = ({
   const [activeFilters, setActiveFilters] = useState([]);
 
   useEffect(() => {
-    dispatch(getPatientLocations());
-  }, [dispatch]);
+    if (isMedbridge) {
+      dispatch(getPatientLocations());
+    }
+  }, [dispatch, isMedbridge]);
 
   const getFilterValue = (attribute) => {
     const entry = activeFilters.find((f) => f.attribute === attribute);
@@ -133,12 +135,14 @@ const MessagesRequiringImmediateAttentionTable = ({
       label: 'Event',
       options: eventTypeOptions,
     },
-    {
-      id: FILTER_ATTRIBUTES.LOCATION,
-      label: 'Location',
-      options: locationOptions,
-    },
-  ], [eventTypeOptions, locationOptions]);
+    ...(isMedbridge
+      ? [{
+        id: FILTER_ATTRIBUTES.LOCATION,
+        label: 'Location',
+        options: locationOptions,
+      }]
+      : []),
+  ], [eventTypeOptions, locationOptions, isMedbridge]);
 
   const handlePaginationSizeChange = (_, size) => {
     handlePageSizeChange(1, size);
@@ -156,7 +160,7 @@ const MessagesRequiringImmediateAttentionTable = ({
       );
     }
 
-    if (filterLocation) {
+    if (isMedbridge && filterLocation) {
       result = result.filter(
         (item) =>
           getRecordLocationId(item?.patient?.home_location) === String(filterLocation)
@@ -171,7 +175,7 @@ const MessagesRequiringImmediateAttentionTable = ({
     }
 
     return result;
-  }, [items, patientSearch, filterEventType, filterLocation]);
+  }, [items, patientSearch, filterEventType, filterLocation, isMedbridge]);
 
   const totalCount = count || 0;
   const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));

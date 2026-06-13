@@ -195,16 +195,20 @@ const PatientProgressTable = ({
       label: 'Status',
       options: statusFilterOptions,
     },
-    {
-      id: FILTER_ATTRIBUTES.LOCATION,
-      label: 'Location',
-      options: locationOptions,
-    },
-  ], [locationOptions, statusFilterOptions]);
+    ...(isMedbridge
+      ? [{
+        id: FILTER_ATTRIBUTES.LOCATION,
+        label: 'Location',
+        options: locationOptions,
+      }]
+      : []),
+  ], [locationOptions, statusFilterOptions, isMedbridge]);
 
   useEffect(() => {
-    dispatch(getPatientLocations());
-  }, [dispatch]);
+    if (isMedbridge) {
+      dispatch(getPatientLocations());
+    }
+  }, [dispatch, isMedbridge]);
 
   const columns = useMemo(() => [
     withColumnMaxWidth('patientName', {
@@ -221,13 +225,15 @@ const PatientProgressTable = ({
         </Link>
       ),
     }),
-    withColumnMaxWidth('location', {
-      title: 'Location',
-      key: 'Location',
-      render: (_, record) => (
-        <span>{getHomeLocationDisplay(getRecordHomeLocation(record))}</span>
-      ),
-    }),
+    ...(isMedbridge
+      ? [withColumnMaxWidth('location', {
+        title: 'Location',
+        key: 'Location',
+        render: (_, record) => (
+          <span>{getHomeLocationDisplay(getRecordHomeLocation(record))}</span>
+        ),
+      })]
+      : []),
     withColumnMaxWidth('invitationSent', {
       title: 'Invitation Sent',
       dataIndex: 'Invitation Sent',
@@ -288,7 +294,7 @@ const PatientProgressTable = ({
         );
       },
     }),
-  ], [clinic?.country, sortedInfo.columnKey, sortedInfo.order, screenedElsewhereLabel]);
+  ], [clinic?.country, sortedInfo.columnKey, sortedInfo.order, screenedElsewhereLabel, isMedbridge]);
 
   const getProgressData = async () => {
     try {
@@ -351,7 +357,7 @@ const PatientProgressTable = ({
       );
     }
 
-    if (filterLocation) {
+    if (isMedbridge && filterLocation) {
       filteredData = filteredData.filter(
         (item) =>
           getRecordLocationId(getRecordHomeLocation(item)) === String(filterLocation)
@@ -380,6 +386,7 @@ const PatientProgressTable = ({
     filterStatus,
     filterLocation,
     patientSearch,
+    isMedbridge,
   ]);
 
   // Modified handleTableChange to handle both sorting and pagination
@@ -463,7 +470,7 @@ const PatientProgressTable = ({
               {record.Status}
             </Tag>
 
-            {locationDisplay !== '-' && (
+            {isMedbridge && locationDisplay !== '-' && (
               <Space size="small">
                 <EnvironmentOutlined style={{ fontSize: '12px', color: '#8c8c8c' }} />
                 <Typography.Text type="secondary" style={{ fontSize: '12px' }}>
