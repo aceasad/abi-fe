@@ -35,6 +35,11 @@ const getRecordLocationId = (homeLocation) => {
   return String(homeLocation);
 };
 
+const getPatientLocation = (item) =>
+  item?.patient?.location
+  ?? item?.patient?.home_location
+  ?? item?.location;
+
 const EVENT_TYPE_FILTER_ALIASES = {
   'patient intake form not completed': ['patient intake form incomplete'],
 };
@@ -163,7 +168,7 @@ const MessagesRequiringImmediateAttentionTable = ({
     if (isMedbridge && filterLocation) {
       result = result.filter(
         (item) =>
-          getRecordLocationId(item?.patient?.home_location) === String(filterLocation)
+          getRecordLocationId(getPatientLocation(item)) === String(filterLocation)
       );
     }
 
@@ -185,9 +190,7 @@ const MessagesRequiringImmediateAttentionTable = ({
     const dateColumn = columns.find(col => col.dataIndex === 'created_datetime');
     const patientColumn = columns.find(col => col.dataIndex?.[0] === 'patient');
     const eventColumn = columns.find(col => col.dataIndex?.[0] === 'message_requiring_immediate_attention_type');
-    const locationColumn = columns.find(
-      (col) => col.dataIndex?.[0] === 'patient' && col.dataIndex?.[1] === 'home_location'
-    );
+    const locationColumn = columns.find((col) => col.key === 'location');
     const statusColumn = columns.find(col => col.dataIndex?.[0] === 'status');
     const actionsColumn = columns.find(col => col.key === 'action');
 
