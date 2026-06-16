@@ -22,7 +22,7 @@ import { DownOutlined } from '@ant-design/icons';
 import { setPatientShowMessages } from 'redux/actions/Patient';
 import { ROUTES } from 'routes';
 import { Link, useHistory } from 'react-router-dom';
-import { formatDateTimeByCountry } from 'utils/helpers';
+import { formatDateTimeByCountry, formatHomeLocationDisplay } from 'utils/helpers';
 import UpdateMessageRequiringImmediateAttentionStatus from './UpdateMessageRequiringImmediateAttentionStatus';
 import PreAppointmentQuestionnairePreviewModal from './PreAppointmentQuestionnairePreviewModal';
 import MessageRequiringImmediateAttentionStatusSelect from './MessageRequiringImmediateAttentionStatusSelect';
@@ -40,10 +40,10 @@ const columnMap = {
 
 /** Edit these values (px) to tune Human Intervention Needed column max-widths */
 const HUMAN_INTERVENTION_COLUMN_MAX_WIDTHS = {
-  dateTime: 180,
+  dateTime: 150,
   patient: 180,
-  location: 220,
-  event: 220,
+  location: 280,
+  event: 180,
   status: 180,
   actions: 110,
 };
@@ -64,19 +64,6 @@ const withColumnMaxWidth = (widthKey, column) => {
       style: { maxWidth },
     }),
   };
-};
-
-const getHomeLocationDisplay = (homeLocation) => {
-  if (!homeLocation) return '-';
-
-  if (typeof homeLocation === 'object') {
-    if (homeLocation.location_name && homeLocation.location_id) {
-      return `${homeLocation.location_name} (${homeLocation.location_id})`;
-    }
-    return homeLocation.location_name || homeLocation.location_id || '-';
-  }
-
-  return homeLocation;
 };
 
 const getPatientLocation = (row) =>
@@ -195,7 +182,7 @@ const MessagesRequiringImmediateAttention = () => {
         key: 'location',
         dataIndex: ['patient', 'location'],
         render: (_, row) => (
-          <div>{getHomeLocationDisplay(getPatientLocation(row))}</div>
+          <div>{formatHomeLocationDisplay(getPatientLocation(row))}</div>
         ),
         onCell: () => ({
           'data-label': "Location",

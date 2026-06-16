@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { makeSelectClinic } from 'redux/selectors/Clinic';
 import { makeSelectPatientLocations } from 'redux/selectors/Patient';
 import { getPatientLocations } from 'redux/actions/Patient';
-import { formatDateTimeByCountry } from 'utils/helpers';
+import { formatDateTimeByCountry, formatHomeLocationDisplay, formatLocationLabel } from 'utils/helpers';
 import { SearchOutlined } from '@ant-design/icons';
 import MessagesRequiringImmediateAttentionFilters from './MessagesRequiringImmediateAttentionFilters';
 
@@ -45,19 +45,6 @@ const withColumnMaxWidth = (widthKey, column) => {
       style: { maxWidth },
     }),
   };
-};
-
-const getHomeLocationDisplay = (homeLocation) => {
-  if (!homeLocation) return '-';
-
-  if (typeof homeLocation === 'object') {
-    if (homeLocation.location_name && homeLocation.location_id) {
-      return `${homeLocation.location_name} (${homeLocation.location_id})`;
-    }
-    return homeLocation.location_name || homeLocation.location_id || '-';
-  }
-
-  return homeLocation;
 };
 
 const getRecordHomeLocation = (record) =>
@@ -184,10 +171,9 @@ const PatientProgressTable = ({
         .filter((location) => location?.location_id)
         .map((location) => {
           const id = String(location.location_id);
-          const name = location.location_name || id;
           return {
             value: id,
-            label: `${name} (${id})`,
+            label: formatLocationLabel(location, id),
           };
         }),
     [locations]
@@ -234,7 +220,7 @@ const PatientProgressTable = ({
         title: 'Location',
         key: 'Location',
         render: (_, record) => (
-          <span>{getHomeLocationDisplay(getRecordHomeLocation(record))}</span>
+          <span>{formatHomeLocationDisplay(getRecordHomeLocation(record))}</span>
         ),
       })]
       : []),
@@ -444,7 +430,7 @@ const PatientProgressTable = ({
   // Mobile Card Component
   const ProgressCard = ({ record }) => {
     const buttonColor = getProgressColor(record.Status);
-    const locationDisplay = getHomeLocationDisplay(getRecordHomeLocation(record));
+    const locationDisplay = formatHomeLocationDisplay(getRecordHomeLocation(record));
 
     return (
       <Card

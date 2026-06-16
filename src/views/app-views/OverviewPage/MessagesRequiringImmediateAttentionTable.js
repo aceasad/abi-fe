@@ -13,6 +13,7 @@ import { makeSelectPatientLocations } from 'redux/selectors/Patient';
 import { MESSAGES_REQUIRING_IMMEDIATE_ATTENTION_PAGE_SIZE } from 'constants/ApiConstant';
 import { ClockCircleOutlined, ExclamationCircleOutlined, EnvironmentOutlined } from '@ant-design/icons';
 import utils from 'utils';
+import { formatLocationLabel } from 'utils/helpers';
 import { SearchOutlined } from '@ant-design/icons';
 
 const { useBreakpoint } = Grid;
@@ -125,10 +126,9 @@ const MessagesRequiringImmediateAttentionTable = ({
         .filter((location) => location?.location_id)
         .map((location) => {
           const id = String(location.location_id);
-          const name = location.location_name || id;
           return {
             value: id,
-            label: `${name} (${id})`,
+            label: formatLocationLabel(location, id),
           };
         }),
     [locations]

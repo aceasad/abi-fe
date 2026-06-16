@@ -9,6 +9,7 @@ import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
 import {
   chatListItemStyle,
   getDateFormatByCountry,
+  formatLocationLabel,
 } from 'utils/helpers';
 import dayjs from 'utils/dayjs';
 import {
@@ -32,9 +33,8 @@ import Scrollbars from 'react-custom-scrollbars';
 import {
   CHAT_FILTERS,
   FILTER_ATTRIBUTES,
-  buildPatientLocationFilterOptions,
-  getPatientLocationDescription,
 } from 'constants/ChatConstants';
+import patientService from 'services/PatientService';
 import ConversationFilters from './ConversationFilters';
 
 const { useBreakpoint } = Grid;
@@ -90,6 +90,41 @@ const ChatMenu = (props) => {
   );
 
   const [activeFilters, setActiveFilters] = useState([]);
+  const [patientLocationOptions, setPatientLocationOptions] = useState([]);
+
+  useEffect(() => {
+    if (!showPatientLocationFilter) {
+      setPatientLocationOptions([]);
+      return;
+    }
+
+    let cancelled = false;
+    patientService
+      .getPatientLocations()
+      .then(({ data }) => {
+        if (!cancelled) {
+          const options = (Array.isArray(data) ? data : [])
+            .filter((location) => location?.location_id)
+            .map((location) => {
+              const id = String(location.location_id);
+              return {
+                value: id,
+                label: formatLocationLabel(location, id),
+              };
+            });
+          setPatientLocationOptions(options);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setPatientLocationOptions([]);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [showPatientLocationFilter]);
 
   useEffect(() => {
     if (!showPatientLocationFilter) {
@@ -99,38 +134,52 @@ const ChatMenu = (props) => {
     }
   }, [showPatientLocationFilter]);
 
-  // The existing backend filter param is a single string. When multiple status
-  // values are selected we send the first one; the rest is a future migration
-  // (see plan: extend payload to { query, status, location_id }).
-  const statusFilter = useMemo(() => {
+  const conversationFilters = useMemo(() => {
     const statusEntry = activeFilters.find(
       (f) => f.attribute === FILTER_ATTRIBUTES.STATUS
     );
-    return statusEntry && statusEntry.values.length > 0
-      ? statusEntry.values[0]
-      : CHAT_FILTERS.ALL;
+    const locationEntry = activeFilters.find(
+      (f) => f.attribute === FILTER_ATTRIBUTES.LOCATION
+    );
+    return {
+      filter:
+        statusEntry && statusEntry.values.length > 0
+          ? statusEntry.values[0]
+          : CHAT_FILTERS.ALL,
+      location:
+        locationEntry && locationEntry.values.length > 0
+          ? locationEntry.values[0]
+          : undefined,
+    };
   }, [activeFilters]);
+
+  const { filter: statusFilter, location: locationFilter } = conversationFilters;
+
+  const fetchConversations = useCallback(() => {
+    const payload = {
+      filter: statusFilter,
+      ...(locationFilter ? { location: locationFilter } : {}),
+      ...(trimmedQuery ? { query: trimmedQuery } : {}),
+    };
+    if (trimmedQuery || locationFilter || statusFilter !== CHAT_FILTERS.ALL) {
+      dispatch(searchConversations(payload));
+    } else {
+      dispatch(getAllChatsInfo(payload));
+    }
+  }, [dispatch, locationFilter, statusFilter, trimmedQuery]);
 
   useEffect(() => {
     if (query === debouncedSearch) {
-      if (trimmedQuery) {
-        dispatch(searchConversations({ query: trimmedQuery, filter: statusFilter }));
-      } else {
-        dispatch(getAllChatsInfo(statusFilter));
-      }
+      fetchConversations();
     }
-  }, [dispatch, query, statusFilter, debouncedSearch]);
+  }, [query, debouncedSearch, fetchConversations]);
 
   useEffect(() => {
     if (props.triggerSearchConversations) {
-      if (trimmedQuery) {
-        dispatch(searchConversations({ query: trimmedQuery, filter: statusFilter }));
-      } else {
-        dispatch(getAllChatsInfo(statusFilter));
-      }
+      fetchConversations();
       dispatch(clearTriggerSearchConversations());
     }
-  }, [dispatch, query, statusFilter, props.triggerSearchConversations]);
+  }, [dispatch, fetchConversations, props.triggerSearchConversations]);
 
   useEffect(() => {
     nextRef.current = next;
@@ -140,10 +189,11 @@ const ChatMenu = (props) => {
     dispatch(
       getMoreChatsInfo({
         filter: statusFilter,
+        location: locationFilter,
         query: trimmedQuery || undefined,
       })
     );
-  }, [dispatch, statusFilter, trimmedQuery]);
+  }, [dispatch, locationFilter, statusFilter, trimmedQuery]);
 
   useLazyLoad(
     '#chat-menu-scroll div',
@@ -195,22 +245,6 @@ const ChatMenu = (props) => {
     }
   }, [items, scrollDown]);
 
-  const patientLocationOptions = useMemo(
-    () => buildPatientLocationFilterOptions(items),
-    [items]
-  );
-
-  const locationFilter = showPatientLocationFilter
-    ? activeFilters.find((f) => f.attribute === FILTER_ATTRIBUTES.LOCATION)
-    : null;
-  const visibleItems = locationFilter
-    ? items.filter((item) =>
-      locationFilter.values.includes(
-        getPatientLocationDescription(item.patient?.home_location)
-      )
-    )
-    : items;
-
   return (
     <div className="chat-menu">
       <div className="chat-menu-toolbar">
@@ -249,7 +283,7 @@ const ChatMenu = (props) => {
       </div>
       <div className="chat-menu-list">
         <Scrollbars id="chat-menu-scroll" ref={menuRef} autoHide={false}>
-          {visibleItems.map((item, index) => {
+          {items.map((item, index) => {
             const statusColor = getStatusColor(item.patient.conversation_status);
             const lastMessageText = item.last_message?.text || '';
             const lastMessageCreatedAt = item.last_message?.created_at;
@@ -259,7 +293,7 @@ const ChatMenu = (props) => {
                 key={`chat-item-${item.patient.id}${index}`}
                 onClick={() => openChat(item.patient.id)}
                 className={chatListItemStyle(
-                  visibleItems.length,
+                  items.length,
                   item.patient.id,
                   index,
                   currentChatID

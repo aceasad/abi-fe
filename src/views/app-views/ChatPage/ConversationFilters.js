@@ -59,7 +59,7 @@ const ConversationFilters = ({
         getOptions: () => STATUS_OPTIONS,
       },
     };
-    if (showPatientLocationFilter && patientLocationOptions.length > 0) {
+    if (showPatientLocationFilter) {
       attrs[FILTER_ATTRIBUTES.LOCATION] = {
         label: "Patient location",
         getOptions: () => patientLocationOptions,

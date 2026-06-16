@@ -1,0 +1,9 @@
+export const LOCATION_DISPLAY_PREFERENCE_KEY = 'location_display_preference';
+
+export const LOCATION_DISPLAY_PREFERENCES = {
+  DESCRIPTION: 'description',
+  NAME: 'name',
+};
+
+export const DEFAULT_LOCATION_DISPLAY_PREFERENCE =
+  LOCATION_DISPLAY_PREFERENCES.DESCRIPTION;
