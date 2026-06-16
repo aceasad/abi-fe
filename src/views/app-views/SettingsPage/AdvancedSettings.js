@@ -16,6 +16,12 @@ import { TIME_FORMAT_HH_MM } from 'constants/TimeConstant';
 import clinicService from 'services/ClinicService';
 import Loading from 'components/shared-components/Loading';
 import { useSelector } from 'react-redux';
+import { getLocalStorageItem, setLocalStorageItem } from 'utils/localStorage';
+import {
+  DEFAULT_LOCATION_DISPLAY_PREFERENCE,
+  LOCATION_DISPLAY_PREFERENCE_KEY,
+  LOCATION_DISPLAY_PREFERENCES,
+} from 'constants/FrontendSettings';
 
 const { Text } = Typography;
 const { Option } = Select;
@@ -208,7 +214,12 @@ const AdvancedSettings = () => {
       } else {
         setExtraTimezones([]);
       }
-      form.setFieldsValue(apiToFormValues(settings));
+      form.setFieldsValue({
+        ...apiToFormValues(settings),
+        location_display_preference:
+          getLocalStorageItem(LOCATION_DISPLAY_PREFERENCE_KEY) ||
+          DEFAULT_LOCATION_DISPLAY_PREFERENCE,
+      });
     } catch {
       message.error('Failed to load advanced settings');
     } finally {
@@ -223,6 +234,10 @@ const AdvancedSettings = () => {
   const handleSubmit = async (values) => {
     setSaving(true);
     try {
+      setLocalStorageItem(
+        LOCATION_DISPLAY_PREFERENCE_KEY,
+        values.location_display_preference || DEFAULT_LOCATION_DISPLAY_PREFERENCE,
+      );
       const payload = formToApiPayload(values, isEmis);
       const { data } = await clinicService.updateAdvancedSettings(payload);
       const { system_defaults: systemDefaults, ...settings } = data;
@@ -232,7 +247,12 @@ const AdvancedSettings = () => {
       } else {
         setExtraTimezones([]);
       }
-      form.setFieldsValue(apiToFormValues(settings));
+      form.setFieldsValue({
+        ...apiToFormValues(settings),
+        location_display_preference:
+          values.location_display_preference ||
+          DEFAULT_LOCATION_DISPLAY_PREFERENCE,
+      });
       message.success('Advanced settings saved');
     } catch {
       message.error('Failed to save advanced settings');
@@ -254,6 +274,7 @@ const AdvancedSettings = () => {
       message_latest_send_time: null,
       timezone: defaults.timezone,
       email_for_reports: '',
+      location_display_preference: DEFAULT_LOCATION_DISPLAY_PREFERENCE,
       ...(isEmis ? { email_for_docman: '' } : {}),
     });
   };
@@ -393,6 +414,26 @@ const AdvancedSettings = () => {
             </Form.Item>
           </Col>
         )}
+        <Col xs={24} md={12}>
+          <Form.Item
+            label={
+              <FieldLabel
+                label="Frontend location display format"
+                defaultValue="Location description (ID)"
+              />
+            }
+            name="location_display_preference"
+          >
+            <Select>
+              <Option value={LOCATION_DISPLAY_PREFERENCES.DESCRIPTION}>
+                Location description (ID)
+              </Option>
+              <Option value={LOCATION_DISPLAY_PREFERENCES.NAME}>
+                Location name (ID)
+              </Option>
+            </Select>
+          </Form.Item>
+        </Col>
         <Col xs={24} md={12}>
           <NullableBooleanField
             name="disable_csv_upload"

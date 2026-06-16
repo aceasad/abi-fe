@@ -274,10 +274,9 @@ const PatientPASForm = ({
     .map((location) => {
       if (!location?.location_id) return null;
       const id = String(location.location_id);
-      const name = location.location_name || id;
       return {
         id,
-        name: `${name} (${id})`,
+        name: formatLocationLabel(location, id),
       };
     })
     .filter(Boolean);

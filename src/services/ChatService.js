@@ -32,10 +32,16 @@ class ChatService extends ApiService {
   getAllChatInformation = (
     offset = 0,
     limit = ALL_CHATS_PAGINATION_LIMIT,
-    filter = CHAT_FILTERS.ALL
+    filter = CHAT_FILTERS.ALL,
+    location
   ) =>
     this.apiClient.get(ENDPOINTS.ALL_CHATS, {
-      params: { limit, offset, filter },
+      params: {
+        limit,
+        offset,
+        filter,
+        ...(location ? { location } : {}),
+      },
     });
 
   searchConversations = (queryParams, limit = ALL_CHATS_PAGINATION_LIMIT) =>

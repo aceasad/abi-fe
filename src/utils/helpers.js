@@ -6,6 +6,12 @@ import dayjs from './dayjs';
 import { NO_SHOW_SCORE_THRESHOLD } from './constants';
 import { Typography } from 'antd';
 import { getStaffDetails } from 'redux/actions/Staff';
+import { getLocalStorageItem } from 'utils/localStorage';
+import {
+  DEFAULT_LOCATION_DISPLAY_PREFERENCE,
+  LOCATION_DISPLAY_PREFERENCE_KEY,
+  LOCATION_DISPLAY_PREFERENCES,
+} from 'constants/FrontendSettings';
 
 export const prepareFormData = (obj) =>
   Object.keys(obj).reduce((accumulator, currentValue) => {
@@ -72,24 +78,42 @@ export const buildPatientHomeLocationNoTimeslotsError = (
 
 export const formatLocationLabel = (location, fallbackLocationId = '') => {
   const locationId = location?.location_id || location?.LocationId || fallbackLocationId;
+  const locationDescription =
+    location?.location_description || location?.LocationDescription || '';
   const locationName =
-    location?.location_name ||
-    location?.LocationName ||
-    location?.name ||
-    location?.location_description ||
-    location?.LocationDescription ||
-    '';
+    location?.location_name || location?.LocationName || location?.name || '';
+  const locationDisplayPreference =
+    getLocalStorageItem(LOCATION_DISPLAY_PREFERENCE_KEY) ||
+    DEFAULT_LOCATION_DISPLAY_PREFERENCE;
+  const locationLabel =
+    locationDisplayPreference === LOCATION_DISPLAY_PREFERENCES.NAME
+      ? locationName || locationDescription
+      : locationDescription || locationName;
 
-  if (locationName && locationId) {
-    return `${locationName} (${locationId})`;
+  if (locationLabel && locationId) {
+    return `${locationLabel} (${locationId})`;
   }
-  if (locationName) {
-    return locationName;
+  if (locationLabel) {
+    return locationLabel;
   }
   if (locationId) {
     return `Unknown location (${locationId})`;
   }
   return 'Unknown location';
+};
+
+export const formatHomeLocationDisplay = (homeLocation, emptyValue = '-') => {
+  if (!homeLocation) return emptyValue;
+
+  if (typeof homeLocation === 'string') {
+    return formatLocationLabel({ location_id: homeLocation }, homeLocation);
+  }
+
+  if (typeof homeLocation === 'object') {
+    return formatLocationLabel(homeLocation);
+  }
+
+  return String(homeLocation);
 };
 
 const HOME_LOCATION_ZIP_KEYS = [
