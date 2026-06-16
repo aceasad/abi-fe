@@ -16,6 +16,7 @@ import {
     setNotificationAsRead,
     setAllNotificationsAsRead,
 } from 'redux/actions/Notifications';
+import { getVisibleUnreadNotificationCount } from 'utils/notificationVisibility';
 
 function* getNotifications({ payload }) {
     try {
@@ -25,6 +26,9 @@ function* getNotifications({ payload }) {
         // Handle both array and object responses
         const notifications = Array.isArray(responseData) ? responseData : (responseData.results || responseData);
         yield put(setNotifications(notifications));
+        yield put(setUnreadCount(
+            getVisibleUnreadNotificationCount({ notifications })
+        ));
     } catch (error) {
         console.error('Error fetching notifications:', error);
     }
@@ -35,8 +39,11 @@ function* getUnreadNotifications() {
         const response = yield call(NotificationService.getUnreadNotifications);
         // Extract data from Axios response
         const responseData = response.data || response;
-        yield put(setNotifications(responseData.notifications || []));
-        yield put(setUnreadCount(responseData.unread_count || 0));
+        const notifications = responseData.notifications || [];
+        yield put(setNotifications(notifications));
+        yield put(setUnreadCount(
+            getVisibleUnreadNotificationCount({ notifications })
+        ));
     } catch (error) {
         console.error('Error fetching unread notifications:', error);
     }

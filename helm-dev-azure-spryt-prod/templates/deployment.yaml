@@ -16,6 +16,9 @@ spec:
       labels:
         app: abi-fe
     spec:
+      serviceAccountName: abi-fe
+      nodeSelector:
+        iam.gke.io/gke-metadata-server-enabled: "true"
       containers:
       - name: abi-fe
         image: europe-west2-docker.pkg.dev/spryt-nhs/sprytacrproduction/abi-fe:latest
@@ -25,6 +28,8 @@ spec:
         envFrom:
         - configMapRef:
             name: abi-fe-env-configmap
+        - secretRef:
+            name: abi-fe-secrets
         resources:
           requests:
             memory: "512Mi"

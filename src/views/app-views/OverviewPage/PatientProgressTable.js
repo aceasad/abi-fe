@@ -1,16 +1,68 @@
-import { Card, Table, Button, Select, Grid, Space, Typography, Tag, Row, Col, Input } from 'antd';
+import { Card, Table, Button, Grid, Space, Typography, Tag, Row, Col, Input } from 'antd';
 import React, { useState, useEffect, useMemo } from 'react';
 import patientService from 'services/PatientService';
 import dayjs from 'utils/dayjs';
 import { Link } from 'react-router-dom';
-import { CalendarOutlined, ClockCircleOutlined } from '@ant-design/icons';
+import { CalendarOutlined, ClockCircleOutlined, EnvironmentOutlined } from '@ant-design/icons';
 import utils from 'utils';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { makeSelectClinic } from 'redux/selectors/Clinic';
-import { formatDateTimeByCountry } from 'utils/helpers';
+import { makeSelectPatientLocations } from 'redux/selectors/Patient';
+import { getPatientLocations } from 'redux/actions/Patient';
+import { formatDateTimeByCountry, formatHomeLocationDisplay, formatLocationLabel } from 'utils/helpers';
 import { SearchOutlined } from '@ant-design/icons';
+import MessagesRequiringImmediateAttentionFilters from './MessagesRequiringImmediateAttentionFilters';
 
 const { useBreakpoint } = Grid;
+
+const FILTER_ATTRIBUTES = {
+  STATUS: 'status',
+  LOCATION: 'location',
+};
+
+/** Edit these values (px) to tune Booking Progress column max-widths */
+const BOOKING_PROGRESS_COLUMN_MAX_WIDTHS = {
+  patientName: 180,
+  location: 320,
+  invitationSent: 180,
+  lastContact: 180,
+  bookingProgress: 180,
+};
+
+const withColumnMaxWidth = (widthKey, column) => {
+  const maxWidth = BOOKING_PROGRESS_COLUMN_MAX_WIDTHS[widthKey];
+  const existingOnCell = column.onCell;
+
+  return {
+    ...column,
+    width: maxWidth,
+    ellipsis: true,
+    onHeaderCell: () => ({
+      style: { maxWidth },
+    }),
+    onCell: (...args) => ({
+      ...(typeof existingOnCell === 'function' ? existingOnCell(...args) : existingOnCell || {}),
+      style: { maxWidth },
+    }),
+  };
+};
+
+const getRecordHomeLocation = (record) =>
+  record.location
+  ?? record.home_location
+  ?? record['Home Location']
+  ?? record.patient?.location
+  ?? record.patient?.home_location;
+
+const getRecordLocationId = (homeLocation) => {
+  if (!homeLocation) return null;
+  if (typeof homeLocation === 'object') {
+    return homeLocation.location_id != null
+      ? String(homeLocation.location_id)
+      : null;
+  }
+  return String(homeLocation);
+};
 
 const PatientProgressTable = ({
   column,
@@ -19,7 +71,9 @@ const PatientProgressTable = ({
   handleChange,
   loading,
   title,
+  initialFilterStatus,
 }) => {
+  const dispatch = useDispatch();
   const [data, setData] = useState([]); // All patient data
   const [displayData, setDisplayData] = useState([]); // Data for current page
   const [sortedInfo, setSortedInfo] = useState({}); // Sorting info
@@ -29,8 +83,14 @@ const PatientProgressTable = ({
     total: 0, // Total number of records (calculated dynamically based on data length)
     pageSizeOptions: ['10', '20', '50', '100', '200'], // Available page size options
   });
-  const [filterStatus, setFilterStatus] = useState(null); // Add new state for filter
+  const [activeFilters, setActiveFilters] = useState(() => {
+    if (initialFilterStatus && initialFilterStatus !== 'ALL') {
+      return [{ attribute: FILTER_ATTRIBUTES.STATUS, values: [initialFilterStatus] }];
+    }
+    return [];
+  });
   const clinic = useSelector(makeSelectClinic());
+  const { locations } = useSelector(makeSelectPatientLocations());
   const { PASProvider } = useSelector((state) => state.auth.user || {});
   const isMedbridge = PASProvider?.toLowerCase() === 'medbridge';
   const screenedElsewhereLabel = isMedbridge
@@ -79,31 +139,92 @@ const PatientProgressTable = ({
     [screenedElsewhereLabel]
   );
 
-  const statusOptions = useMemo(
-    () => [
-      { value: 'ALL', label: 'All' },
-      ...Object.keys(statusMapping).map((key) => ({
-        value: key,
-        label: statusMapping[key].status,
-      })),
-    ],
-    [statusMapping]
+  const getFilterValue = (attribute) => {
+    const entry = activeFilters.find((f) => f.attribute === attribute);
+    return entry && entry.values.length > 0 ? entry.values[0] : null;
+  };
+
+  const filterStatus = getFilterValue(FILTER_ATTRIBUTES.STATUS);
+  const filterLocation = getFilterValue(FILTER_ATTRIBUTES.LOCATION);
+
+  const statusFilterOptions = useMemo(() => {
+    const options = Object.keys(statusMapping).map((key) => ({
+      value: key,
+      label: statusMapping[key].status,
+    }));
+
+    // A status deep-linked from another page may not exist in the predefined options.
+    if (filterStatus && !options.some((option) => option.value === filterStatus)) {
+      const label = filterStatus
+        .toLowerCase()
+        .replace(/_/g, ' ')
+        .replace(/\b\w/g, (char) => char.toUpperCase());
+      options.push({ value: filterStatus, label });
+    }
+
+    return options;
+  }, [statusMapping, filterStatus]);
+
+  const locationOptions = useMemo(
+    () =>
+      (locations || [])
+        .filter((location) => location?.location_id)
+        .map((location) => {
+          const id = String(location.location_id);
+          return {
+            value: id,
+            label: formatLocationLabel(location, id),
+          };
+        }),
+    [locations]
   );
 
-  const columns = [
+  const filterAttributes = useMemo(() => [
     {
+      id: FILTER_ATTRIBUTES.STATUS,
+      label: 'Status',
+      options: statusFilterOptions,
+    },
+    ...(isMedbridge
+      ? [{
+        id: FILTER_ATTRIBUTES.LOCATION,
+        label: 'Location',
+        options: locationOptions,
+      }]
+      : []),
+  ], [locationOptions, statusFilterOptions, isMedbridge]);
+
+  useEffect(() => {
+    if (isMedbridge) {
+      dispatch(getPatientLocations());
+    }
+  }, [dispatch, isMedbridge]);
+
+  const columns = useMemo(() => [
+    withColumnMaxWidth('patientName', {
       title: 'Patient Name',
       dataIndex: 'Patient Name',
       key: 'Patient Name',
-      sorter: true,
-      sortOrder: sortedInfo.columnKey === 'Patient Name' && sortedInfo.order,
       render: (text, record) => (
-        <Link to={`/pages/conversation/${record.PatientId}`}>
+        <Link
+          to={`/pages/conversation/${record.PatientId}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           {text}
         </Link>
       ),
-    },
-    {
+    }),
+    ...(isMedbridge
+      ? [withColumnMaxWidth('location', {
+        title: 'Location',
+        key: 'Location',
+        render: (_, record) => (
+          <span>{formatHomeLocationDisplay(getRecordHomeLocation(record))}</span>
+        ),
+      })]
+      : []),
+    withColumnMaxWidth('invitationSent', {
       title: 'Invitation Sent',
       dataIndex: 'Invitation Sent',
       key: 'Invitation Sent',
@@ -118,8 +239,8 @@ const PatientProgressTable = ({
         );
         return <div className="text-left text-uppercase">{`${formattedDatetime}`}</div>;
       },
-    },
-    {
+    }),
+    withColumnMaxWidth('lastContact', {
       title: 'Last Contact',
       dataIndex: 'Last Contact',
       key: 'Last Contact',
@@ -139,29 +260,11 @@ const PatientProgressTable = ({
           return <div className="text-left">{`${''}`}</div>;
         }
       },
-    },
-    {
+    }),
+    withColumnMaxWidth('bookingProgress', {
       title: 'Booking progress',
       dataIndex: 'status',
       key: 'status',
-      sorter: (a, b) => {
-        const statusOrder = {
-          'Rescheduled': 2,
-          'Booked': 1,
-          'Asked Question': 3,
-          'Rescheduling': 4,
-          'Cancelling': 5,
-          'Booking': 6,
-          'Cancelled': 7,
-          'No Response': 8,
-          'Invited': 9,
-          'Incomplete': 10,
-          'Unknown': 11,
-        };
-
-        return statusOrder[a.Status] - statusOrder[b.Status];
-      },
-      sortOrder: sortedInfo.columnKey === 'status' && sortedInfo.order,
       render: (_, record) => {
         const buttonColor = getProgressColor(record.Status); // Get the color based on progress
         return (
@@ -180,8 +283,8 @@ const PatientProgressTable = ({
           </div>
         );
       },
-    },
-  ];
+    }),
+  ], [clinic?.country, sortedInfo.columnKey, sortedInfo.order, screenedElsewhereLabel, isMedbridge]);
 
   const getProgressData = async () => {
     try {
@@ -236,10 +339,19 @@ const PatientProgressTable = ({
   }, []);
 
   useEffect(() => {
-    // First apply status filter
     let filteredData = data;
-    if (filterStatus && filterStatus !== 'ALL') {
-      filteredData = data.filter(item => item.originalProcess === filterStatus);
+
+    if (filterStatus) {
+      filteredData = filteredData.filter(
+        (item) => item.originalProcess === filterStatus
+      );
+    }
+
+    if (isMedbridge && filterLocation) {
+      filteredData = filteredData.filter(
+        (item) =>
+          getRecordLocationId(getRecordHomeLocation(item)) === String(filterLocation)
+      );
     }
 
     const normalizedSearch = patientSearch.trim().toLowerCase();
@@ -249,17 +361,23 @@ const PatientProgressTable = ({
       );
     }
 
-    // Then apply pagination
     const startIndex = (pagination.current - 1) * pagination.pageSize;
     const endIndex = startIndex + pagination.pageSize;
     setDisplayData(filteredData.slice(startIndex, endIndex));
 
-    // Update pagination total
     setPagination(prev => ({
       ...prev,
       total: filteredData.length,
     }));
-  }, [pagination.current, pagination.pageSize, data, filterStatus, patientSearch]);
+  }, [
+    pagination.current,
+    pagination.pageSize,
+    data,
+    filterStatus,
+    filterLocation,
+    patientSearch,
+    isMedbridge,
+  ]);
 
   // Modified handleTableChange to handle both sorting and pagination
   const handleTableChange = (paginationParams, filters, sorter) => {
@@ -277,47 +395,24 @@ const PatientProgressTable = ({
       const columnKey = sorter.field;
 
       // Sorting logic based on column
-      if (columnKey === 'status') {
-        // If the sorted column is status, use the custom status order
-        sortedData.sort((a, b) => {
-          const statusOrder = {
-            'Rescheduled': 2,
-            'Booked': 1,
-            'Asked Question': 3,
-            'Rescheduling': 4,
-            'Cancelling': 5,
-            'Booking': 6,
-            'Cancelled': 7,
-            'No Response': 8,
-            'Invited': 9,
-            'Incomplete': 10,
-            'Unknown': 11,
-          };
-          return (statusOrder[a.Status] - statusOrder[b.Status]) * sortOrder;
-        });
-      } else {
-        // Default sorting for other columns
-        sortedData.sort((a, b) => {
-          if (typeof a[columnKey] === 'string') {
-            return a[columnKey].localeCompare(b[columnKey]) * sortOrder;
-          }
-          if (dayjs(a[columnKey]).isValid() && dayjs(b[columnKey]).isValid()) {
-            return (dayjs(a[columnKey]).isBefore(dayjs(b[columnKey])) ? -1 : 1) * sortOrder;
-          }
-          return (a[columnKey] - b[columnKey]) * sortOrder;
-        });
-      }
+      sortedData.sort((a, b) => {
+        if (typeof a[columnKey] === 'string') {
+          return a[columnKey].localeCompare(b[columnKey]) * sortOrder;
+        }
+        if (dayjs(a[columnKey]).isValid() && dayjs(b[columnKey]).isValid()) {
+          return (dayjs(a[columnKey]).isBefore(dayjs(b[columnKey])) ? -1 : 1) * sortOrder;
+        }
+        return (a[columnKey] - b[columnKey]) * sortOrder;
+      });
     }
     setData(sortedData);
   };
 
-  // Add handler for filter change
-  const handleFilterChange = (value) => {
-    setFilterStatus(value);
-    // Reset to page 1 when filter changes
+  const handleFiltersChange = (nextFilters) => {
+    setActiveFilters(nextFilters);
     setPagination(prev => ({
       ...prev,
-      current: 1
+      current: 1,
     }));
   };
 
@@ -335,6 +430,7 @@ const PatientProgressTable = ({
   // Mobile Card Component
   const ProgressCard = ({ record }) => {
     const buttonColor = getProgressColor(record.Status);
+    const locationDisplay = formatHomeLocationDisplay(getRecordHomeLocation(record));
 
     return (
       <Card
@@ -342,7 +438,11 @@ const PatientProgressTable = ({
         styles={{ body: { padding: '16px' } }}
         style={{ height: '100%', borderRadius: '8px' }}
       >
-        <Link to={`/pages/conversation/${record.PatientId}`}>
+        <Link
+          to={`/pages/conversation/${record.PatientId}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           <Space direction="vertical" size="small" style={{ width: '100%' }}>
             <Typography.Text strong style={{ fontSize: '16px', display: 'block' }}>
               {record['Patient Name']}
@@ -359,6 +459,15 @@ const PatientProgressTable = ({
             >
               {record.Status}
             </Tag>
+
+            {isMedbridge && locationDisplay !== '-' && (
+              <Space size="small">
+                <EnvironmentOutlined style={{ fontSize: '12px', color: '#8c8c8c' }} />
+                <Typography.Text type="secondary" style={{ fontSize: '12px' }}>
+                  {locationDisplay}
+                </Typography.Text>
+              </Space>
+            )}
 
             <Space size="small">
               <CalendarOutlined style={{ fontSize: '12px', color: '#8c8c8c' }} />
@@ -393,6 +502,8 @@ const PatientProgressTable = ({
     <Card>
       <Space
         direction={isMobile ? 'vertical' : 'horizontal'}
+        align={isMobile ? 'stretch' : 'center'}
+        wrap
         style={{ width: '100%', marginBottom: 16 }}
       >
         <Input
@@ -402,14 +513,15 @@ const PatientProgressTable = ({
           value={patientSearch}
           onChange={handlePatientSearchChange}
           allowClear
+          size="middle"
         />
-        <Select
-          style={{ width: isMobile ? '100%' : 200 }}
-          placeholder="Filter by status"
-          allowClear
-          options={statusOptions}
-          onChange={handleFilterChange}
-        />
+        <div style={{ width: isMobile ? '100%' : 'auto', flex: isMobile ? undefined : '1 1 0', minWidth: 0 }}>
+          <MessagesRequiringImmediateAttentionFilters
+            attributes={filterAttributes}
+            value={activeFilters}
+            onChange={handleFiltersChange}
+          />
+        </div>
       </Space>
       {isMobile ? (
         // Mobile Card View
@@ -449,6 +561,7 @@ const PatientProgressTable = ({
         // Desktop Table View
         <div className="responsive-table ant-table-row-pointer">
           <Table
+            tableLayout="fixed"
             columns={columns}
             dataSource={displayData}
             onChange={handleTableChange}

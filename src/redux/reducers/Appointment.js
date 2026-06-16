@@ -151,8 +151,11 @@ const appointment = (state = initialState, action) =>
           action.payload;
         break;
       case SET_MESSAGE_REQUIRING_IMMEDIATE_ATTENTION_STATUSES:
-        draft.messageRequiringImmediateAttentionStatuses =
-          action.payload;
+        draft.messageRequiringImmediateAttentionStatuses = Array.isArray(
+          action.payload
+        )
+          ? action.payload
+          : action.payload?.results || [];
         break;
       case SET_MESSAGE_REQUIRING_IMMEDIATE_ATTENTION_STATUSES_FETCHED:
         draft.messageRequiringImmediateAttentionStatusesFetched =

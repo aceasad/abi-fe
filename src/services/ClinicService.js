@@ -5,6 +5,7 @@ const ENDPOINTS = {
   UPDATE_CLINIC: '/clinics/:id/',
   GET_CLINIC: '/clinics/',
   GET_USERS_CLINIC: '/clinics/my-clinic/',
+  ADVANCED_SETTINGS: '/clinics/advanced-settings/',
 };
 
 class ClinicService extends ApiService {
@@ -21,6 +22,14 @@ class ClinicService extends ApiService {
 
   getClinic = () => {
     return this.apiClient.get(ENDPOINTS.GET_USERS_CLINIC);
+  };
+
+  getAdvancedSettings = () => {
+    return this.apiClient.get(ENDPOINTS.ADVANCED_SETTINGS);
+  };
+
+  updateAdvancedSettings = (settings) => {
+    return this.apiClient.patch(ENDPOINTS.ADVANCED_SETTINGS, settings);
   };
 }
 const clinicService = new ClinicService();

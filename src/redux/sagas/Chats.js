@@ -26,6 +26,20 @@ import {
 } from 'redux/selectors/Chats';
 import chatService from 'services/ChatService';
 
+const normalizeConversationFilters = (payload) => {
+  if (typeof payload === 'string') {
+    return { filter: payload, location: undefined, query: undefined };
+  }
+  return {
+    filter: payload?.filter ?? CHAT_FILTERS.ALL,
+    location: payload?.location,
+    query: payload?.query?.trim() || undefined,
+  };
+};
+
+const shouldUseConversationSearch = ({ filter, location, query }) =>
+  !!query || !!location || filter !== CHAT_FILTERS.ALL;
+
 export function* getSingleChat({ payload }) {
   try {
     if (!payload.patientId || isNaN(payload.patientId) || payload.patientId <= 0) {
@@ -71,14 +85,16 @@ export function* getAllChatsInfo({ payload }) {
     yield put(setAllChatsInfoLoading(true));
     const pageSize =
       (yield select(makeSelectChatsPageSize)) || ALL_CHATS_PAGINATION_LIMIT;
-    const filter =
-      typeof payload === 'string' ? payload : payload?.filter ?? CHAT_FILTERS.ALL;
-    const { data } = yield call(
-      chatService.getAllChatInformation,
-      0,
-      pageSize,
-      filter
-    );
+    const filters = normalizeConversationFilters(payload);
+    const { data } = shouldUseConversationSearch(filters)
+      ? yield call(chatService.searchConversations, filters, pageSize)
+      : yield call(
+          chatService.getAllChatInformation,
+          0,
+          pageSize,
+          filters.filter,
+          filters.location
+        );
     yield put(setAllChatsInfo(data));
   } catch (err) {
   } finally {
@@ -93,15 +109,20 @@ export function* getMoreChatsInfo({ payload }) {
       makeSelectAllChatsInfoRequestData
     );
     const limit = pageSize || ALL_CHATS_PAGINATION_LIMIT;
-    const filter = payload?.filter ?? CHAT_FILTERS.ALL;
-    const query = payload?.query?.trim();
-    const { data } = query
+    const filters = normalizeConversationFilters(payload);
+    const { data } = shouldUseConversationSearch(filters)
       ? yield call(
           chatService.searchConversations,
-          { query, filter, offset },
+          { ...filters, offset },
           limit
         )
-      : yield call(chatService.getAllChatInformation, offset, limit, filter);
+      : yield call(
+          chatService.getAllChatInformation,
+          offset,
+          limit,
+          filters.filter,
+          filters.location
+        );
     yield put(addMoreToAllChatsInfo(data));
   } catch (err) {
   } finally {
@@ -112,16 +133,17 @@ export function* getMoreChatsInfo({ payload }) {
 export function* searchConversations({ payload }) {
   try {
     yield put(setAllChatsInfoLoading(true));
-    const hasQuery = !!(payload && payload.query && payload.query.trim());
+    const filters = normalizeConversationFilters(payload);
     const pageSize =
       (yield select(makeSelectChatsPageSize)) || ALL_CHATS_PAGINATION_LIMIT;
-    const { data } = hasQuery
-      ? yield call(chatService.searchConversations, payload, pageSize)
+    const { data } = shouldUseConversationSearch(filters)
+      ? yield call(chatService.searchConversations, filters, pageSize)
       : yield call(
           chatService.getAllChatInformation,
           0,
           pageSize,
-          payload?.filter ?? CHAT_FILTERS.ALL
+          filters.filter,
+          filters.location
         );
     yield put(setAllChatsInfo(data));
   } catch {

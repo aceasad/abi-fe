@@ -17,7 +17,8 @@ import {
 import { makeSelectAppointmentTypes } from 'redux/selectors/Appointment';
 import { patientSchema } from 'utils/validations';
 import { MAX, NHS_MAX } from 'constants/ClinicConstants';
-import { filterNumberInput } from 'utils/helpers';
+import { buildPatientHomeLocationNoTimeslotsError, filterNumberInput, formatLocationLabel, getHomeLocationTimezoneValidationError, joinPhoneNumberWithCountryCode, parsePatientFormApiErrors } from 'utils/helpers';
+import patientService from 'services/PatientService';
 import PatientFormExistingConditions from './PatientFormExistingConditions';
 import PatientFormPreviousOperationss from './PatientFormPreviousOperations';
 import {
@@ -55,6 +56,7 @@ const PatientPASForm = ({
   const { setContext, ...rest } = useContext(BeforeRouteContext);
   const [discardModalVisible, setDiscardModalVisible] = useState(false);
   const formRef = useRef();
+  const initialHomeLocationRef = useRef(initialState?.home_location || '');
   const screens = utils.getBreakPoint(useBreakpoint());
   const isMobile = !screens.includes('lg');
   const isTablet = screens.includes('md') && !screens.includes('lg');
@@ -71,7 +73,7 @@ const PatientPASForm = ({
     message.success("Operation type successfully deleted");
   };
 
-  const handleSubmitWrapper = (values, { setErrors }) => {
+  const handleSubmitWrapper = async (values, { setErrors }) => {
     if (isMedbridge && !values.appointment_type) {
       setErrors({
         appointment_type: "Appointment type",
@@ -86,7 +88,10 @@ const PatientPASForm = ({
     }, {});
     const parsedValues = {
       ...values,
-      phone_number: values.country_code + values.phone_number,
+      phone_number: joinPhoneNumberWithCountryCode(
+        values.country_code,
+        values.phone_number
+      ),
     };
     delete parsedValues.pas_provider;
     if (isMedbridge) {
@@ -100,6 +105,15 @@ const PatientPASForm = ({
           locationsById[String(parsedValues.home_location)] || {
             location_id: parsedValues.home_location,
           };
+
+        const timezoneError = getHomeLocationTimezoneValidationError(
+          parsedValues.home_location
+        );
+        if (timezoneError) {
+          setErrors({ home_location: timezoneError });
+          message.error(timezoneError);
+          return;
+        }
       }
 
       if (Array.isArray(parsedValues.available_location_ids)) {
@@ -127,7 +141,44 @@ const PatientPASForm = ({
       delete parsedValues.date_of_birth;
     }
 
-    console.log('Patient submit payload (PAS)', parsedValues);
+    if (
+      isMedbridge &&
+      id &&
+      parsedValues.home_location?.location_id &&
+      String(parsedValues.home_location.location_id) !==
+        String(initialHomeLocationRef.current || '')
+    ) {
+      try {
+        const { data } = await patientService.validateHomeLocationTimeslots(
+          id,
+          parsedValues.home_location.location_id
+        );
+        if (!data?.has_timeslots) {
+          const locationLabel = formatLocationLabel(
+            locationsById[String(parsedValues.home_location.location_id)] ||
+              parsedValues.home_location,
+            parsedValues.home_location.location_id
+          );
+          const errorMessage = buildPatientHomeLocationNoTimeslotsError(
+            locationLabel,
+            data?.search_days
+          );
+          setErrors({ home_location: errorMessage });
+          message.error(errorMessage);
+          return;
+        }
+      } catch (error) {
+        const formErrors = parsePatientFormApiErrors(error?.response?.data);
+        if (formErrors.home_location) {
+          setErrors({ home_location: formErrors.home_location });
+          message.error(formErrors.home_location);
+          return;
+        }
+        message.error('Unable to verify timeslots for this location.');
+        return;
+      }
+    }
+
     handleSubmit(parsedValues, setErrors, enableRedirect);
   };
 
@@ -176,6 +227,10 @@ const PatientPASForm = ({
   }, [discardModalVisible]);
 
   useEffect(() => {
+    initialHomeLocationRef.current = initialState?.home_location || '';
+  }, [initialState?.home_location]);
+
+  useEffect(() => {
     setContext({ ...rest, proceed: false, action: showDiscardModal });
     const observerOptions = {
       threshold: 1.0,
@@ -219,10 +274,9 @@ const PatientPASForm = ({
     .map((location) => {
       if (!location?.location_id) return null;
       const id = String(location.location_id);
-      const name = location.location_name || id;
       return {
         id,
-        name: `${name} (${id})`,
+        name: formatLocationLabel(location, id),
       };
     })
     .filter(Boolean);
@@ -382,6 +436,7 @@ const PatientPASForm = ({
                               label: "Referral Doctor's Name",
                               maxValue: 20,
                             }}
+                            required={isMedbridge}
                           />
                         </>
                       )}
@@ -490,6 +545,7 @@ const PatientPASForm = ({
                           matchesLabel: "Phone must be in valid format",
                           maxValue: 10,
                         }}
+                        placeholder="e.g. (212) 555-1234"
                         required
                       />
                     </Row>

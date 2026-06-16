@@ -6,67 +6,36 @@ import {
   FilterOutlined,
   RightOutlined,
 } from '@ant-design/icons';
-import { useSelector } from 'react-redux';
-import { CHAT_FILTERS, FILTER_ATTRIBUTES } from 'constants/ChatConstants';
 
-const ConversationFilters = ({
-  value,
+/**
+ * Chip-based facet filter that mirrors the Conversations page filter design
+ * (see ConversationFilters). It reuses the same `conversation-filters-*` CSS
+ * classes so the look and feel stay identical across pages.
+ *
+ * Props:
+ * - attributes: array of { id, label, options: [{ value, label }] }
+ * - value: array of { attribute, values: [singleValue] }
+ * - onChange: (nextValue) => void
+ *
+ * Each attribute supports a single selected value (radio), matching the
+ * Conversations filter behaviour.
+ */
+const MessagesRequiringImmediateAttentionFilters = ({
+  attributes = [],
+  value = [],
   onChange,
-  showPatientLocationFilter = true,
-  patientLocationOptions = [],
 }) => {
-  const { PASProvider } = useSelector((state) => state.auth.user || {});
-  const isMedbridge = PASProvider?.toLowerCase() === 'medbridge';
   const [pickerOpen, setPickerOpen] = useState(false);
   const [editingAttribute, setEditingAttribute] = useState(null);
   const [draftValue, setDraftValue] = useState(null);
 
-  const STATUS_OPTIONS = useMemo(
-    () => [
-      { value: CHAT_FILTERS.BOOKED, label: "Scheduled" },
-      { value: CHAT_FILTERS.RESCHEDULED, label: "Rescheduled" },
-      { value: CHAT_FILTERS.CANCELLED, label: "Cancelled" },
-      { value: CHAT_FILTERS.NO_RESPONSE, label: "No Response" },
-      { value: CHAT_FILTERS.ASKED_QUESTION, label: "Asked Question" },
-      {
-        value: CHAT_FILTERS.HUMAN_INTERVENTION_REQUIRED,
-        label: "Human intervention required",
-      },
-      {
-        value: CHAT_FILTERS.IN_EMERGENCY_SITUATION,
-        label: "In emergency situation",
-      },
-      { value: CHAT_FILTERS.DECLINED, label: "Declined" },
-      {
-        value: CHAT_FILTERS.SCREENED_ELSEWHERE,
-        label: isMedbridge
-          ? "Study taken elsewhere"
-          : "Screened Elsewhere",
-      },
-      { value: CHAT_FILTERS.INCOMPLETE, label: "Incomplete" },
-      { value: CHAT_FILTERS.INVITED, label: "Invited" },
-      { value: CHAT_FILTERS.REMINDED, label: "Reminded" },
-      { value: CHAT_FILTERS.SNOOZED, label: "Snoozed" },
-      { value: CHAT_FILTERS.FAILED, label: "Failed" },
-    ],
-    [isMedbridge]
-  );
-
-  const ATTRIBUTES = useMemo(() => {
-    const attrs = {
-      [FILTER_ATTRIBUTES.STATUS]: {
-        label: "Status",
-        getOptions: () => STATUS_OPTIONS,
-      },
-    };
-    if (showPatientLocationFilter) {
-      attrs[FILTER_ATTRIBUTES.LOCATION] = {
-        label: "Patient location",
-        getOptions: () => patientLocationOptions,
-      };
+  const attributeMap = useMemo(() => {
+    const map = {};
+    for (const attribute of attributes) {
+      map[attribute.id] = attribute;
     }
-    return attrs;
-  }, [STATUS_OPTIONS, showPatientLocationFilter, patientLocationOptions]);
+    return map;
+  }, [attributes]);
 
   const resetPicker = () => {
     setEditingAttribute(null);
@@ -81,7 +50,9 @@ const ConversationFilters = ({
 
   const openAttributeForEdit = (attributeId) => {
     const existing = value.find((f) => f.attribute === attributeId);
-    setDraftValue(existing && existing.values.length > 0 ? existing.values[0] : null);
+    setDraftValue(
+      existing && existing.values.length > 0 ? existing.values[0] : null
+    );
     setEditingAttribute(attributeId);
     setPickerOpen(true);
   };
@@ -110,7 +81,7 @@ const ConversationFilters = ({
   };
 
   const getOptionLabel = (attributeId, optionValue) => {
-    const options = ATTRIBUTES[attributeId]?.getOptions() || [];
+    const options = attributeMap[attributeId]?.options || [];
     const option = options.find((o) => o.value === optionValue);
     return option ? option.label : optionValue;
   };
@@ -122,31 +93,25 @@ const ConversationFilters = ({
 
   const renderAttributeList = () => {
     const usedAttributeIds = value.map((f) => f.attribute);
-    const availableAttributes = Object.entries(ATTRIBUTES).filter(
-      ([id]) => !usedAttributeIds.includes(id)
+    const availableAttributes = attributes.filter(
+      (attribute) => !usedAttributeIds.includes(attribute.id)
     );
 
     if (availableAttributes.length === 0) {
-      return (
-        <div className="conversation-filters-panel-empty">
-          {"All"}
-        </div>
-      );
+      return <div className="conversation-filters-panel-empty">{"All"}</div>;
     }
 
     return (
       <>
-        <div className="conversation-filters-panel-eyebrow">
-          {"Add filter"}
-        </div>
+        <div className="conversation-filters-panel-eyebrow">{"Add filter"}</div>
         <div className="conversation-filters-panel-list">
-          {availableAttributes.map(([id, config]) => (
+          {availableAttributes.map((attribute) => (
             <div
-              key={id}
+              key={attribute.id}
               className="conversation-filters-attribute"
-              onClick={() => openAttributeForEdit(id)}
+              onClick={() => openAttributeForEdit(attribute.id)}
             >
-              <span style={{ flex: 1 }}>{config.label}</span>
+              <span style={{ flex: 1 }}>{attribute.label}</span>
               <RightOutlined />
             </div>
           ))}
@@ -156,9 +121,9 @@ const ConversationFilters = ({
   };
 
   const renderValuePicker = () => {
-    const config = ATTRIBUTES[editingAttribute];
+    const config = attributeMap[editingAttribute];
     if (!config) return null;
-    const options = config.getOptions();
+    const options = config.options || [];
 
     return (
       <>
@@ -177,8 +142,9 @@ const ConversationFilters = ({
             return (
               <div
                 key={option.value}
-                className={`conversation-filters-option${checked ? ' conversation-filters-option-active' : ''
-                  }`}
+                className={`conversation-filters-option${
+                  checked ? ' conversation-filters-option-active' : ''
+                }`}
                 onClick={() => selectDraftValue(option.value)}
               >
                 <Radio
@@ -254,7 +220,7 @@ const ConversationFilters = ({
           onClick={() => openAttributeForEdit(filter.attribute)}
         >
           <span className="conversation-filter-chip-attribute">
-            {ATTRIBUTES[filter.attribute]?.label || filter.attribute}
+            {attributeMap[filter.attribute]?.label || filter.attribute}
           </span>
           <span className="conversation-filter-chip-separator">·</span>
           <span>{getChipValuesText(filter)}</span>
@@ -275,4 +241,4 @@ const ConversationFilters = ({
   );
 };
 
-export default ConversationFilters;
+export default MessagesRequiringImmediateAttentionFilters;

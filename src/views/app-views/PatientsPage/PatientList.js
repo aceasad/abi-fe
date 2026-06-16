@@ -45,7 +45,7 @@ import Modal from 'components/shared-components/Modal';
 import utils from 'utils';
 import UploaderPatient from './UploaderPatient';
 import patientService from 'services/PatientService';
-import { formatDateByCountry } from 'utils/helpers';
+import { formatDateByCountry, formatHomeLocationDisplay } from 'utils/helpers';
 
 const { useBreakpoint } = Grid;
 
@@ -61,19 +61,6 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
   const [isUploadCompleted, setIsUploadCompleted] = useState(false);
   const { count, patients, loading, page } = useSelector(makeSelectPatients());
   const clinic = useSelector(makeSelectClinic());
-
-  const getHomeLocationDisplay = (homeLocation) => {
-    if (!homeLocation) return '-';
-
-    if (typeof homeLocation === 'object') {
-      if (homeLocation.location_name && homeLocation.location_id) {
-        return `${homeLocation.location_name} (${homeLocation.location_id})`;
-      }
-      return homeLocation.location_name || homeLocation.location_id || '-';
-    }
-
-    return homeLocation;
-  };
 
   useEffect(() => {
     dispatch(getPatients());
@@ -136,7 +123,7 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
           {
             title: "Location",
             dataIndex: 'home_location',
-            render: (homeLocation) => <span>{getHomeLocationDisplay(homeLocation)}</span>,
+            render: (homeLocation) => <span>{formatHomeLocationDisplay(homeLocation)}</span>,
             responsive: ['lg'],
           },
         ]
@@ -248,7 +235,7 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
 
         {isMedbridge && (
           <Typography.Text type="secondary" style={{ fontSize: '12px' }}>
-            {"Location"}: {getHomeLocationDisplay(patient.home_location)}
+            {"Location"}: {formatHomeLocationDisplay(patient.home_location)}
           </Typography.Text>
         )}
         {patient.last_appointment && (

@@ -1,10 +1,17 @@
 import { WS_CHAT_URL, WS_NOTIFICATION_URL } from 'constants/ApiConstant';
 import { MESSAGE_TYPE, MESSAGE_STATUS } from 'constants/ChatConstants';
 import { MONTH_FORMAT_MM, YEAR_FORMAT_YYYY } from 'constants/DateConstant';
+import { COUNTRY_CODES } from 'constants/CountryCodesConstants';
 import dayjs from './dayjs';
 import { NO_SHOW_SCORE_THRESHOLD } from './constants';
 import { Typography } from 'antd';
 import { getStaffDetails } from 'redux/actions/Staff';
+import { getLocalStorageItem } from 'utils/localStorage';
+import {
+  DEFAULT_LOCATION_DISPLAY_PREFERENCE,
+  LOCATION_DISPLAY_PREFERENCE_KEY,
+  LOCATION_DISPLAY_PREFERENCES,
+} from 'constants/FrontendSettings';
 
 export const prepareFormData = (obj) =>
   Object.keys(obj).reduce((accumulator, currentValue) => {
@@ -39,6 +46,193 @@ export const mapEmptyStingObjectFeildsToNull = (obj) =>
     }),
     {}
   );
+
+const SORTED_COUNTRY_CODE_IDS = [
+  ...new Set(COUNTRY_CODES.map(({ id }) => id)),
+].sort((a, b) => b.length - a.length);
+
+export const normalizeLocalPhoneNumber = (phoneNumber) => {
+  if (phoneNumber == null || phoneNumber === '') {
+    return '';
+  }
+
+  const digits = String(phoneNumber).replace(/\D/g, '');
+  if (!digits) {
+    return '';
+  }
+
+  return digits.startsWith('0') ? digits.slice(1) : digits;
+};
+
+export const joinPhoneNumberWithCountryCode = (countryCode, localPhoneNumber) =>
+  `${countryCode || ''}${normalizeLocalPhoneNumber(localPhoneNumber)}`;
+
+export const HOME_LOCATION_TIMEZONE_ERROR =
+  'Could not determine patient timezone from this location. The selected location is missing information required to determine the timezone (zip code or state).';
+
+export const buildPatientHomeLocationNoTimeslotsError = (
+  locationLabel,
+  searchDays = 'N/A'
+) =>
+  `No appointment timeslots are available for ${searchDays} days from today at ${locationLabel}.`;
+
+export const formatLocationLabel = (location, fallbackLocationId = '') => {
+  const locationId = location?.location_id || location?.LocationId || fallbackLocationId;
+  const locationDescription =
+    location?.location_description || location?.LocationDescription || '';
+  const locationName =
+    location?.location_name || location?.LocationName || location?.name || '';
+  const locationDisplayPreference =
+    getLocalStorageItem(LOCATION_DISPLAY_PREFERENCE_KEY) ||
+    DEFAULT_LOCATION_DISPLAY_PREFERENCE;
+  const locationLabel =
+    locationDisplayPreference === LOCATION_DISPLAY_PREFERENCES.NAME
+      ? locationName || locationDescription
+      : locationDescription || locationName;
+
+  if (locationLabel && locationId) {
+    return `${locationLabel} (${locationId})`;
+  }
+  if (locationLabel) {
+    return locationLabel;
+  }
+  if (locationId) {
+    return `Unknown location (${locationId})`;
+  }
+  return 'Unknown location';
+};
+
+export const formatHomeLocationDisplay = (homeLocation, emptyValue = '-') => {
+  if (!homeLocation) return emptyValue;
+
+  if (typeof homeLocation === 'string') {
+    return formatLocationLabel({ location_id: homeLocation }, homeLocation);
+  }
+
+  if (typeof homeLocation === 'object') {
+    return formatLocationLabel(homeLocation);
+  }
+
+  return String(homeLocation);
+};
+
+const HOME_LOCATION_ZIP_KEYS = [
+  'location_zip_post_code',
+  'LocationZipPostCode',
+];
+const HOME_LOCATION_STATE_KEYS = [
+  'location_state_county',
+  'LocationStateCounty',
+];
+
+const getHomeLocationFieldValue = (homeLocation, keys) => {
+  if (!homeLocation || typeof homeLocation !== 'object') {
+    return '';
+  }
+  for (const key of keys) {
+    const value = homeLocation[key];
+    if (value != null && String(value).trim() !== '') {
+      return String(value).trim();
+    }
+  }
+  return '';
+};
+
+export const getHomeLocationZipCode = (homeLocation) =>
+  getHomeLocationFieldValue(homeLocation, HOME_LOCATION_ZIP_KEYS);
+
+export const getHomeLocationState = (homeLocation) =>
+  getHomeLocationFieldValue(homeLocation, HOME_LOCATION_STATE_KEYS);
+
+export const getHomeLocationTimezoneValidationError = (homeLocation) => {
+  const zipCode = getHomeLocationZipCode(homeLocation);
+  const state = getHomeLocationState(homeLocation);
+
+  if (!zipCode && !state) {
+    return HOME_LOCATION_TIMEZONE_ERROR;
+  }
+
+  return null;
+};
+
+const parseApiFieldError = (value) => {
+  if (Array.isArray(value)) {
+    return value[0];
+  }
+  return value;
+};
+
+export const parsePatientFormApiErrors = (errorData) => {
+  if (!errorData || typeof errorData !== 'object') {
+    return {};
+  }
+
+  const errors = {};
+
+  if (errorData.home_location) {
+    errors.home_location = parseApiFieldError(errorData.home_location);
+  }
+  if (errorData.ExternalIdentificationNumber) {
+    errors.ExternalIdentificationNumber = parseApiFieldError(
+      errorData.ExternalIdentificationNumber
+    );
+  }
+  if (errorData.phone_number) {
+    const phoneError = parseApiFieldError(errorData.phone_number);
+    errors.phone_number =
+      phoneError === 'patient with this phone number already exists.'
+        ? 'Phone number is already added by another clinic!'
+        : phoneError;
+  }
+  if (errorData.email) {
+    errors.email = parseApiFieldError(errorData.email);
+  }
+  if (errorData.doctor_reference) {
+    errors.doctor_reference = parseApiFieldError(errorData.doctor_reference);
+  }
+  if (errorData.appointment_type) {
+    errors.appointment_type = parseApiFieldError(errorData.appointment_type);
+  }
+  if (errorData.available_location_ids) {
+    errors.available_location_ids = parseApiFieldError(
+      errorData.available_location_ids
+    );
+  }
+
+  return errors;
+};
+
+export const splitPhoneNumberByCountryCode = (fullPhoneNumber) => {
+  const emptyResult = { country_code: '', phone_number: '' };
+
+  if (!fullPhoneNumber) {
+    return emptyResult;
+  }
+
+  const digits = String(fullPhoneNumber).replace(/\D/g, '');
+  if (!digits) {
+    return emptyResult;
+  }
+
+  const matchedCountryCode = SORTED_COUNTRY_CODE_IDS.find(
+    (countryCode) =>
+      digits.startsWith(countryCode) && digits.length > countryCode.length
+  );
+
+  if (matchedCountryCode) {
+    return {
+      country_code: matchedCountryCode,
+      phone_number: normalizeLocalPhoneNumber(
+        digits.slice(matchedCountryCode.length)
+      ),
+    };
+  }
+
+  return {
+    country_code: '',
+    phone_number: normalizeLocalPhoneNumber(digits),
+  };
+};
 
 export const chatListItemStyle = (
   chatListLength,
@@ -313,6 +507,10 @@ export const isUsCountry = (country = '') => {
   );
 };
 
+export const getClinicTimezone = (clinic) =>
+  clinic?.timezone ||
+  (isUsCountry(clinic?.country) ? 'America/New_York' : 'Europe/London');
+
 export const getDateFormatByCountry = (country = '') =>
   isUsCountry(country) ? 'MM/DD/YYYY' : 'DD/MM/YYYY';
 
@@ -369,6 +567,7 @@ export const formatDateTimeByCountry = (
     return dateTimeValue;
   }
 
+  parsedDateTime = parsedDateTime.local();
   const formattedDate = parsedDateTime.format(getDateFormatByCountry(country));
   const formattedTime = parsedDateTime.format(timeFormat);
   return `${formattedDate} ${formattedTime}`.trim();

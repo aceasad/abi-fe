@@ -19,6 +19,7 @@ import {
 } from '../constants/Staff';
 import { produce } from 'immer';
 import { baseState } from 'constants/ClinicConstants';
+import { MESSAGES_REQUIRING_IMMEDIATE_ATTENTION_PAGE_SIZE } from 'constants/ApiConstant';
 
 export const SCHEDULED = 'scheduled_appointments';
 export const HISTORY = 'history_appointments';
@@ -47,7 +48,10 @@ const initialState = {
   [LIKELY_TO_BE_MISSED]: baseState,
   [UPCOMING_REMINDERS_APPOINTMENT]: baseState,
   [UPCOMING_REMINDERS_SYSTEM]: baseState,
-  [MESSAGES_REQUIRING_IMMEDIATE_ATTENTION]: baseState,
+  [MESSAGES_REQUIRING_IMMEDIATE_ATTENTION]: {
+    ...baseState,
+    pageSize: MESSAGES_REQUIRING_IMMEDIATE_ATTENTION_PAGE_SIZE,
+  },
 };
 
 /* eslint-disable default-case */
@@ -138,6 +142,9 @@ const staff = (state = initialState, action) =>
         draft[action.payload.field] = {
           ...state[action.payload.field],
           page: action.payload.page,
+          ...(action.payload.pageSize != null
+            ? { pageSize: action.payload.pageSize }
+            : {}),
         };
         break;
       case SET_MESSAGES_REQUIRING_IMMEDIATE_ATTENTION_LOADING:
