@@ -49,7 +49,11 @@ import {
 } from '../selectors/Patient';
 import { getPreviousOperations } from './Anemnesis';
 import { getMedicalConditions } from './Anemnesis';
-import { parsePatientFormApiErrors } from 'utils/helpers';
+import {
+  getFirstPatientFormErrorMessage,
+  parsePatientFormApiErrors,
+} from 'utils/helpers';
+import { message } from 'antd';
 import dayjs from 'utils/dayjs';
 
 function* getPatients() {
@@ -167,9 +171,17 @@ function* updatePatient({ payload }) {
       const formErrors = parsePatientFormApiErrors(err?.response?.data);
 
       if (Object.keys(formErrors).length > 0) {
+        if (formErrors.home_location && payload.setFieldTouched) {
+          payload.setFieldTouched('home_location', true, false);
+        }
         yield payload.setErrors(formErrors);
+        const errorMessage = getFirstPatientFormErrorMessage(formErrors);
+        if (errorMessage) {
+          message.error(errorMessage);
+        }
       } else {
         yield payload.setErrors({ email: 'Email is already taken' });
+        message.error('Email is already taken');
       }
     }
   } finally {

@@ -58,7 +58,7 @@ const UpdatePatient = ({ showList, patientId }) => {
     message.success("Patient updated");
   };
 
-  const handleSubmit = (values, setErrors, enableRedirect) => {
+  const handleSubmit = (values, setErrors, enableRedirect, setFieldTouched) => {
     dispatch(
       editPatient({
         id: patientId,
@@ -66,6 +66,7 @@ const UpdatePatient = ({ showList, patientId }) => {
         afterUpdate,
         enableRedirect,
         setErrors,
+        setFieldTouched,
       })
     );
   };
@@ -102,7 +103,8 @@ const UpdatePatient = ({ showList, patientId }) => {
                   .map((id) => String(id))
               : [],
             pas_provider: normalizedPasProvider,
-            appointment_type: patient?.appointment_type || '',
+            appointment_type:
+              patient?.appointment_type?.id ?? patient?.appointment_type ?? '',
           }
         : {
             first_name: '',
