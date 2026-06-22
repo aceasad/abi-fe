@@ -17,7 +17,7 @@ import {
 import { makeSelectAppointmentTypes } from 'redux/selectors/Appointment';
 import { patientSchema } from 'utils/validations';
 import { MAX, NHS_MAX } from 'constants/ClinicConstants';
-import { buildPatientHomeLocationNoTimeslotsError, filterNumberInput, formatLocationLabel, getHomeLocationTimezoneValidationError, joinPhoneNumberWithCountryCode, parsePatientFormApiErrors } from 'utils/helpers';
+import { applyPatientFormFieldError, buildPatientHomeLocationNoTimeslotsError, filterNumberInput, formatLocationLabel, getHomeLocationTimezoneValidationError, joinPhoneNumberWithCountryCode, parsePatientFormApiErrors } from 'utils/helpers';
 import patientService from 'services/PatientService';
 import PatientFormExistingConditions from './PatientFormExistingConditions';
 import PatientFormPreviousOperationss from './PatientFormPreviousOperations';
@@ -73,11 +73,17 @@ const PatientPASForm = ({
     message.success("Operation type successfully deleted");
   };
 
-  const handleSubmitWrapper = async (values, { setErrors }) => {
-    if (isMedbridge && !values.appointment_type) {
-      setErrors({
-        appointment_type: "Appointment type",
+  const handleSubmitWrapper = async (values, { setErrors, setFieldTouched }) => {
+    const showFieldError = (fieldName, errorMessage) => {
+      applyPatientFormFieldError(fieldName, errorMessage, {
+        setErrors,
+        setFieldTouched,
       });
+      message.error(errorMessage);
+    };
+
+    if (isMedbridge && !values.appointment_type) {
+      showFieldError('appointment_type', 'Appointment type');
       return;
     }
     const locationsById = locations.reduce((acc, location) => {
@@ -110,8 +116,7 @@ const PatientPASForm = ({
           parsedValues.home_location
         );
         if (timezoneError) {
-          setErrors({ home_location: timezoneError });
-          message.error(timezoneError);
+          showFieldError('home_location', timezoneError);
           return;
         }
       }
@@ -159,19 +164,19 @@ const PatientPASForm = ({
               parsedValues.home_location,
             parsedValues.home_location.location_id
           );
-          const errorMessage = buildPatientHomeLocationNoTimeslotsError(
-            locationLabel,
-            data?.search_days
-          );
-          setErrors({ home_location: errorMessage });
-          message.error(errorMessage);
+          const errorMessage =
+            data?.message ||
+            buildPatientHomeLocationNoTimeslotsError(
+              locationLabel,
+              data?.search_days
+            );
+          showFieldError('home_location', errorMessage);
           return;
         }
       } catch (error) {
         const formErrors = parsePatientFormApiErrors(error?.response?.data);
         if (formErrors.home_location) {
-          setErrors({ home_location: formErrors.home_location });
-          message.error(formErrors.home_location);
+          showFieldError('home_location', formErrors.home_location);
           return;
         }
         message.error('Unable to verify timeslots for this location.');
@@ -179,7 +184,7 @@ const PatientPASForm = ({
       }
     }
 
-    handleSubmit(parsedValues, setErrors, enableRedirect);
+    handleSubmit(parsedValues, setErrors, enableRedirect, setFieldTouched);
   };
 
   const deleteOperationType = ({ item, action }) => {
