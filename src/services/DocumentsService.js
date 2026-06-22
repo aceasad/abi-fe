@@ -26,6 +26,9 @@ class DocumentsService extends ApiService {
     if (payload.location) {
       formData.append('location', JSON.stringify(payload.location));
     }
+    if (payload.language) {
+      formData.append('language', payload.language);
+    }
 
     return this.apiClient.post(ENDPOINTS.DOCUMENTS, formData, {
       headers: {
@@ -53,6 +56,9 @@ class DocumentsService extends ApiService {
     }
     if (payload.file) {
       formData.append('file', payload.file);
+    }
+    if (payload.language) {
+      formData.append('language', payload.language);
     }
     return this.apiClient.patch(`${ENDPOINTS.DOCUMENTS}${payload.id}/`, formData, {
       headers: {

@@ -22,3 +22,13 @@ export const getDocumentTypeTagColor = (documentType) => {
 
 export const formatDocumentTypeLabel = (documentType) =>
   (documentType || 'appointment_type').replace(/_/g, ' ').toUpperCase();
+
+export const DOCUMENT_LANGUAGE_OPTIONS = [
+  { id: 'en', name: 'English' },
+  { id: 'es', name: 'Spanish' },
+];
+
+export const formatDocumentLanguageLabel = (language) => {
+  const option = DOCUMENT_LANGUAGE_OPTIONS.find((item) => item.id === language);
+  return option?.name || (language || 'en').toUpperCase();
+};
