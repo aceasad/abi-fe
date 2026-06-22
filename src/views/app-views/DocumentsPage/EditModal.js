@@ -10,6 +10,7 @@ import Dropzone from './Dropzone';
 import {
   DOCUMENT_TYPE_OPTIONS_DEFAULT,
   DOCUMENT_TYPE_OPTIONS_MEDBRIDGE,
+  DOCUMENT_LANGUAGE_OPTIONS,
   usesAppointmentType,
   usesLocation,
 } from './documentTypeHelpers';
@@ -57,6 +58,7 @@ const EditModal = ({
       location_id: usesLocation(selectedDocumentType) ? values.location_id || null : null,
       location: usesLocation(selectedDocumentType) ? selectedLocation || undefined : undefined,
       file: fileListToUpload[0],
+      language: values.language || 'en',
     };
 
     documentsService
@@ -121,6 +123,7 @@ const EditModal = ({
           document_type: record.document_type || 'appointment_type',
           appointment_type_id: record.appointment_type_id || '',
           location_id: record.location_id ? String(record.location_id) : '',
+          language: record.language || 'en',
         }}
         onSubmit={handleSubmit}
       >
@@ -172,6 +175,14 @@ const EditModal = ({
                   }
                   optionField="name"
                   defaultOption={values.document_type}
+                />
+                <Field
+                  label="Language"
+                  component={FormSelect}
+                  name="language"
+                  options={DOCUMENT_LANGUAGE_OPTIONS}
+                  optionField="name"
+                  defaultOption={values.language}
                 />
                 {usesAppointmentType(values.document_type) && (
                   <Field
