@@ -268,6 +268,24 @@ const PatientForm = ({
                         defaultOption={values.ethnicity}
                         label={"Ethnicity"}
                       />
+                      {id && (
+                        <ColumnField
+                          span={isMobile && !isTablet ? 24 : 8}
+                          component={FormField}
+                          label={"Detected language"}
+                          name="language"
+                          disabled
+                        />
+                      )}
+                      {id && (
+                        <ColumnField
+                          span={isMobile && !isTablet ? 24 : 8}
+                          component={FormField}
+                          label={"Detected timezone"}
+                          name="timezone"
+                          disabled
+                        />
+                      )}
                     </Row>
                   </Col>
                 </Row>

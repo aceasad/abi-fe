@@ -17,6 +17,7 @@ import { makeSelectExistingMedicalConditions } from 'redux/selectors/Anemnesis';
 import PatientPASForm from './PatientPASForm';
 import { makeSelectAppointmentTypes } from 'redux/selectors/Appointment';
 import { getAppointmentTypes } from 'redux/actions/Appointment';
+import { formatDocumentLanguageLabel } from 'views/app-views/DocumentsPage/documentTypeHelpers';
 
 const UpdatePatient = ({ showList, patientId }) => {
   const dispatch = useDispatch();
@@ -59,10 +60,11 @@ const UpdatePatient = ({ showList, patientId }) => {
   };
 
   const handleSubmit = (values, setErrors, enableRedirect, setFieldTouched) => {
+    const { language, timezone, ...patientValues } = values;
     dispatch(
       editPatient({
         id: patientId,
-        data: filterEmptyObjectFeilds(values),
+        data: filterEmptyObjectFeilds(patientValues),
         afterUpdate,
         enableRedirect,
         setErrors,
@@ -105,6 +107,7 @@ const UpdatePatient = ({ showList, patientId }) => {
             pas_provider: normalizedPasProvider,
             appointment_type:
               patient?.appointment_type?.id ?? patient?.appointment_type ?? '',
+            language: formatDocumentLanguageLabel(patient?.language),
           }
         : {
             first_name: '',

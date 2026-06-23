@@ -151,7 +151,7 @@ const PatientPASForm = ({
       id &&
       parsedValues.home_location?.location_id &&
       String(parsedValues.home_location.location_id) !==
-        String(initialHomeLocationRef.current || '')
+      String(initialHomeLocationRef.current || '')
     ) {
       try {
         const { data } = await patientService.validateHomeLocationTimeslots(
@@ -161,7 +161,7 @@ const PatientPASForm = ({
         if (!data?.has_timeslots) {
           const locationLabel = formatLocationLabel(
             locationsById[String(parsedValues.home_location.location_id)] ||
-              parsedValues.home_location,
+            parsedValues.home_location,
             parsedValues.home_location.location_id
           );
           const errorMessage =
@@ -444,6 +444,24 @@ const PatientPASForm = ({
                             required={isMedbridge}
                           />
                         </>
+                      )}
+                      {id && (
+                        <ColumnField
+                          span={isMobile && !isTablet ? 24 : 8}
+                          component={FormField}
+                          label={"Detected language"}
+                          name="language"
+                          disabled
+                        />
+                      )}
+                      {id && (
+                        <ColumnField
+                          span={isMobile && !isTablet ? 24 : 8}
+                          component={FormField}
+                          label={"Detected timezone"}
+                          name="timezone"
+                          disabled
+                        />
                       )}
                       {/* <ColumnField
                       span={8}
