@@ -332,7 +332,7 @@ const AppointmentsReminders = ({ title, startOpen }) => {
         dataIndex: ['reminder', 'date'],
         sorter: true,
         render: (_, row) => {
-          const shouldUseUSFormatting = isUSCountry(clinic?.country);
+          const shouldUseUSFormatting = isUSCountry(clinic?.country) || isMedbridge;
           const formattedReminderDateTime = formatDateAndTimeBySection(
             row.reminder,
             {
@@ -397,7 +397,7 @@ const AppointmentsReminders = ({ title, startOpen }) => {
           dataIndex: ['appointment', 'date'],
           sorter: true,
           render: (_, row) => {
-            const shouldUseUSFormatting = isUSCountry(clinic?.country);
+            const shouldUseUSFormatting = isUSCountry(clinic?.country) || isMedbridge;
             const formattedAppointmentDateTime = formatDateAndTimeBySection(
               row.appointment,
               {
