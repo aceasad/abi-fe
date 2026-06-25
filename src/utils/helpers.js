@@ -648,3 +648,11 @@ export const formatSectionDateTimeByCountry = (section, country = '') => {
 
   return `${formattedDate} ${formattedTime}`.trim();
 };
+
+export const formatPatientNameWithId = (name, patientId) => {
+  const normalizedName = name || '';
+  if (patientId == null || patientId === '') {
+    return normalizedName;
+  }
+  return `${normalizedName} - ${patientId}`;
+};
