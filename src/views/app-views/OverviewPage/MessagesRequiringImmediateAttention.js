@@ -22,7 +22,7 @@ import { DownOutlined } from '@ant-design/icons';
 import { setPatientShowMessages } from 'redux/actions/Patient';
 import { ROUTES } from 'routes';
 import { Link, useHistory } from 'react-router-dom';
-import { formatDateTimeByCountry, formatHomeLocationDisplay } from 'utils/helpers';
+import { formatDateTimeByCountry, formatHomeLocationDisplay, formatPatientNameWithId } from 'utils/helpers';
 import UpdateMessageRequiringImmediateAttentionStatus from './UpdateMessageRequiringImmediateAttentionStatus';
 import PreAppointmentQuestionnairePreviewModal from './PreAppointmentQuestionnairePreviewModal';
 import MessageRequiringImmediateAttentionStatusSelect from './MessageRequiringImmediateAttentionStatusSelect';
@@ -82,6 +82,7 @@ const MessagesRequiringImmediateAttention = () => {
   const clinic = useSelector(makeSelectClinic());
   const { PASProvider } = useSelector((state) => state.auth.user || {});
   const isMedbridge = PASProvider?.toLowerCase() === 'medbridge';
+  const dateTimeCountry = isMedbridge ? 'US' : clinic?.country;
   const { messageRequiringImmediateAttentionStatuses } = useSelector(
     makeSelectMessageRequiringImmediateAttentionStatuses()
   );
@@ -142,7 +143,7 @@ const MessagesRequiringImmediateAttention = () => {
           {
             formatDateTimeByCountry(
               row.created_datetime,
-              clinic?.country,
+              dateTimeCountry,
               'h:mm A',
               [
                 'DD/MM/YYYY HH:mm:ss A',
@@ -162,16 +163,19 @@ const MessagesRequiringImmediateAttention = () => {
     withColumnMaxWidth('patient', {
       title: "Patient",
       dataIndex: ['patient', 'full_name'],
-      render: (_, row) => (
+      render: (_, row) => {
+        const patientId = row.patient?.id;
+        return (
         <Link
-          to={`/pages/conversation/${row.patient.id}`}
+          to={`/pages/conversation/${patientId}`}
           target="_blank"
           rel="noopener noreferrer"
           onClick={(e) => e.stopPropagation()}
         >
-          {row.patient.full_name}
+          {formatPatientNameWithId(row.patient?.full_name, patientId)}
         </Link>
-      ),
+        );
+      },
       onCell: () => ({
         'data-label': "Patient",
       }),
@@ -244,7 +248,7 @@ const MessagesRequiringImmediateAttention = () => {
         </div>
       ),
     }),
-  ], [clinic?.country, messageRequiringImmediateAttentionStatuses, isMedbridge]);
+  ], [dateTimeCountry, messageRequiringImmediateAttentionStatuses, isMedbridge]);
 
   const [
     activePreAppointmentQuestionnaire,
