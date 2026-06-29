@@ -188,6 +188,11 @@ html {
   color: var(--color-red-5) !important;
 }
 
+.ant-form-item-explain-error {
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
 .ant-radio-checked .ant-radio-inner {
   border-color: #5d4ebf !important;
   background-color: white !important;
