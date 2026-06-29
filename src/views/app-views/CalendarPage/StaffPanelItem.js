@@ -1,13 +1,31 @@
 import React from 'react';
 import { Badge, Col, Row, Space, Typography, Tooltip } from 'antd';
-import { NO_SHOW_SCORE_THRESHOLD } from 'utils/constants';
-import { getNoShowScore, removeLeadingZeroFromTime } from 'utils/helpers';
+import { removeLeadingZeroFromTime } from 'utils/helpers';
+
+const APPOINTMENT_STATUSES = {
+  SCHEDULED: 'scheduled',
+  SYSTEM_CANCELLED: 'system cancelled',
+};
+
+const getAppointmentStatusName = (appointment) =>
+  appointment.status?.name || appointment.status_name || appointment.status || '';
+
+const normalizeAppointmentStatus = (status) =>
+  status.toString().trim().toLowerCase().replace(/[_-]+/g, ' ');
 
 const StaffPanelItem = ({ data }) => {
-  const likelyToMiss = 'Likely to miss an appointment';
-  const likelyToAttend = 'Likely to attend an appointment';
-
-  const noShowScore = getNoShowScore(data);
+  const appointmentStatus = getAppointmentStatusName(data);
+  const normalizedAppointmentStatus =
+    normalizeAppointmentStatus(appointmentStatus);
+  const isSystemCancelled =
+    normalizedAppointmentStatus === APPOINTMENT_STATUSES.SYSTEM_CANCELLED;
+  const isScheduled =
+    normalizedAppointmentStatus === APPOINTMENT_STATUSES.SCHEDULED;
+  const badgeStatus = isSystemCancelled
+    ? 'error'
+    : isScheduled
+      ? 'success'
+      : 'default';
 
   return (
     <Row className="pl-2">
@@ -18,20 +36,14 @@ const StaffPanelItem = ({ data }) => {
       </Col>
       <Col span={15}>
         <Space>
-          <Typography.Text strong>{data.patient}</Typography.Text>
+          <Typography.Text strong delete={isSystemCancelled}>
+            {data.patient}
+          </Typography.Text>
           <Tooltip
             placement="bottomRight"
-            title={
-              noShowScore < NO_SHOW_SCORE_THRESHOLD
-                ? likelyToAttend
-                : likelyToMiss
-            }
+            title={appointmentStatus || 'Appointment status unavailable'}
           >
-            <Badge
-              status={
-                noShowScore < NO_SHOW_SCORE_THRESHOLD ? 'success' : 'warning'
-              }
-            />
+            <Badge status={badgeStatus} />
           </Tooltip>
         </Space>
       </Col>
