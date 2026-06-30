@@ -11,6 +11,7 @@ import { FileTextOutlined, DownloadOutlined, TagOutlined, DeleteOutlined, Search
 import { useSelector } from 'react-redux';
 import {
   formatDocumentTypeLabel,
+  formatDocumentLanguageLabel,
   getDocumentTypeTagColor,
   usesLocation,
 } from './documentTypeHelpers';
@@ -228,6 +229,13 @@ const DocumentsPage = () => {
       ),
       responsive: ['md'], // Hide on mobile
     },
+    {
+      title: 'Language',
+      dataIndex: 'language',
+      key: 'language',
+      render: (language) => formatDocumentLanguageLabel(language),
+      responsive: ['md'],
+    },
     ...(isMedbridge
       ? [{
         title: 'Location',
@@ -284,11 +292,13 @@ const DocumentsPage = () => {
     const documentType = (document.document_type || '').toLowerCase();
     const documentName = (document.document_name || '').toLowerCase();
     const locationLabel = getLocationLabel(document.location_id).toLowerCase();
+    const languageLabel = formatDocumentLanguageLabel(document.language).toLowerCase();
     return (
       documentName.includes(query) ||
       documentType.includes(query) ||
       appointmentType.includes(query) ||
-      locationLabel.includes(query)
+      locationLabel.includes(query) ||
+      languageLabel.includes(query)
     );
   });
 
@@ -317,6 +327,11 @@ const DocumentsPage = () => {
           <Tag color={getDocumentTypeTagColor(document.document_type)}>
             {formatDocumentTypeLabel(document.document_type)}
           </Tag>
+        </Space>
+        <Space size="small">
+          <Typography.Text type="secondary">
+            {formatDocumentLanguageLabel(document.language)}
+          </Typography.Text>
         </Space>
         {isMedbridge && usesLocation(document.document_type) && (
           <Space size="small">

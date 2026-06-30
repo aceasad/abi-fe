@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { makeSelectClinic } from 'redux/selectors/Clinic';
 import { makeSelectPatientLocations } from 'redux/selectors/Patient';
 import { getPatientLocations } from 'redux/actions/Patient';
-import { formatDateTimeByCountry, formatHomeLocationDisplay, formatLocationLabel } from 'utils/helpers';
+import { formatDateTimeByCountry, formatHomeLocationDisplay, formatLocationLabel, formatPatientNameWithId } from 'utils/helpers';
 import { SearchOutlined } from '@ant-design/icons';
 import MessagesRequiringImmediateAttentionFilters from './MessagesRequiringImmediateAttentionFilters';
 
@@ -93,6 +93,7 @@ const PatientProgressTable = ({
   const { locations } = useSelector(makeSelectPatientLocations());
   const { PASProvider } = useSelector((state) => state.auth.user || {});
   const isMedbridge = PASProvider?.toLowerCase() === 'medbridge';
+  const dateTimeCountry = isMedbridge ? 'US' : clinic?.country;
   const screenedElsewhereLabel = isMedbridge
     ? 'Study taken elsewhere'
     : 'Screened Elsewhere';
@@ -211,7 +212,7 @@ const PatientProgressTable = ({
           target="_blank"
           rel="noopener noreferrer"
         >
-          {text}
+          {formatPatientNameWithId(text, record.PatientId)}
         </Link>
       ),
     }),
@@ -234,7 +235,7 @@ const PatientProgressTable = ({
         const invitationSent = record['Invitation Sent']; // or whatever field name contains the datetime
         const formattedDatetime = formatDateTimeByCountry(
           invitationSent,
-          clinic?.country,
+          dateTimeCountry,
           'hh:mm A'
         );
         return <div className="text-left text-uppercase">{`${formattedDatetime}`}</div>;
@@ -252,7 +253,7 @@ const PatientProgressTable = ({
         if (lastContacted !== null) {
           const formattedDatetime = formatDateTimeByCountry(
             lastContacted,
-            clinic?.country,
+            dateTimeCountry,
             'hh:mm A'
           );
           return <div className="text-left text-uppercase">{`${formattedDatetime}`}</div>;
@@ -284,16 +285,16 @@ const PatientProgressTable = ({
         );
       },
     }),
-  ], [clinic?.country, sortedInfo.columnKey, sortedInfo.order, screenedElsewhereLabel, isMedbridge]);
+  ], [dateTimeCountry, sortedInfo.columnKey, sortedInfo.order, screenedElsewhereLabel, isMedbridge]);
 
   const getProgressData = async () => {
     try {
       const res = await patientService.getPatientProgress();
-      const formattedData = res.data;
+      const formattedData = Array.isArray(res.data) ? res.data : [];
 
       // Process the data and map status
       formattedData.forEach((item) => {
-        const process = item.Process.toUpperCase();
+        const process = (item.Process ?? '').toUpperCase();
         const mapped = statusMapping[process] || { status: 'Unknown', progressbar: 0 };
 
         // Store the original process value for filtering
@@ -445,7 +446,7 @@ const PatientProgressTable = ({
         >
           <Space direction="vertical" size="small" style={{ width: '100%' }}>
             <Typography.Text strong style={{ fontSize: '16px', display: 'block' }}>
-              {record['Patient Name']}
+              {formatPatientNameWithId(record['Patient Name'], record.PatientId)}
             </Typography.Text>
 
             <Tag
@@ -474,7 +475,7 @@ const PatientProgressTable = ({
               <Typography.Text type="secondary" style={{ fontSize: '12px' }}>
                 Invited: {formatDateTimeByCountry(
                   record['Invitation Sent'],
-                  clinic?.country,
+                  dateTimeCountry,
                   'hh:mm A'
                 )}
               </Typography.Text>
@@ -486,7 +487,7 @@ const PatientProgressTable = ({
                 <Typography.Text type="secondary" style={{ fontSize: '12px' }}>
                   Last Contact: {formatDateTimeByCountry(
                     record['Last Contact'],
-                    clinic?.country,
+                    dateTimeCountry,
                     'hh:mm A'
                   )}
                 </Typography.Text>

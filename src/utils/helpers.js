@@ -162,6 +162,34 @@ const parseApiFieldError = (value) => {
   return value;
 };
 
+export const getFirstPatientFormErrorMessage = (formErrors) => {
+  if (!formErrors || typeof formErrors !== 'object') {
+    return null;
+  }
+
+  return (
+    formErrors.home_location ||
+    formErrors.appointment_type ||
+    formErrors.available_location_ids ||
+    formErrors.ExternalIdentificationNumber ||
+    formErrors.phone_number ||
+    formErrors.email ||
+    formErrors.doctor_reference ||
+    null
+  );
+};
+
+export const applyPatientFormFieldError = (
+  fieldName,
+  errorMessage,
+  { setErrors, setFieldTouched }
+) => {
+  if (setFieldTouched) {
+    setFieldTouched(fieldName, true, false);
+  }
+  setErrors({ [fieldName]: errorMessage });
+};
+
 export const parsePatientFormApiErrors = (errorData) => {
   if (!errorData || typeof errorData !== 'object') {
     return {};
@@ -619,4 +647,12 @@ export const formatSectionDateTimeByCountry = (section, country = '') => {
     : section.time;
 
   return `${formattedDate} ${formattedTime}`.trim();
+};
+
+export const formatPatientNameWithId = (name, patientId) => {
+  const normalizedName = name || '';
+  if (patientId == null || patientId === '') {
+    return normalizedName;
+  }
+  return `${normalizedName} - ${patientId}`;
 };

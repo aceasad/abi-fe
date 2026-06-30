@@ -10,6 +10,7 @@ import { Field, Formik } from 'formik';
 import {
   DOCUMENT_TYPE_OPTIONS_DEFAULT,
   DOCUMENT_TYPE_OPTIONS_MEDBRIDGE,
+  DOCUMENT_LANGUAGE_OPTIONS,
   usesAppointmentType,
   usesLocation,
 } from './documentTypeHelpers';
@@ -48,6 +49,7 @@ const Uploader = ({ handleUpdateDataSource, appointmentTypes, locations, isMedbr
         : null,
       location_id: usesLocation(selectedDocumentType) ? values.location_id : null,
       location: usesLocation(selectedDocumentType) ? selectedLocation || null : null,
+      language: values.language || 'en',
     })
       .then(() => {
         setOpen(false);
@@ -97,6 +99,7 @@ const Uploader = ({ handleUpdateDataSource, appointmentTypes, locations, isMedbr
           document_type: 'appointment_type',
           appointment_type_id: '',
           location_id: '',
+          language: 'en',
         }}
         onSubmit={handleOk}
         enableReinitialize
@@ -151,6 +154,14 @@ const Uploader = ({ handleUpdateDataSource, appointmentTypes, locations, isMedbr
                   }
                   optionField="name"
                   defaultOption={values.document_type}
+                />
+                <Field
+                  label="Language"
+                  component={FormSelect}
+                  name="language"
+                  options={DOCUMENT_LANGUAGE_OPTIONS}
+                  optionField="name"
+                  defaultOption={values.language}
                 />
                 {usesAppointmentType(values.document_type) && (
                   <Field
