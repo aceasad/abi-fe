@@ -45,8 +45,8 @@ const chats = (state = initialState, action) =>
           offset: action.payload.results.items.length,
           chatInfo: {
             patient:
-              action.payload.results.items[0]?.patient ||
-              state.single.chatInfo?.patient,
+              action.payload.results.patient ||
+              action.payload.results.items[0]?.patient,
             isSendEnabled: action.payload.results.is_conversation_enabled,
           },
         };
@@ -191,6 +191,7 @@ const chats = (state = initialState, action) =>
       }
       case CLEAR_SINGLE_CHAT_MESSAGES: {
         draft.single.items = [];
+        draft.single.chatInfo = null;
         break;
       }
       case SET_CHATS_PAGE_SIZE: {
