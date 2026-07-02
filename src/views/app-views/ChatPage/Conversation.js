@@ -9,6 +9,7 @@ import {
 } from 'redux/selectors/Chats';
 import { makeSelectClinic } from 'redux/selectors/Clinic';
 import { addDividers, formatMessageForSocketSend } from 'utils/helpers';
+import { MailOutlined, MessageOutlined } from '@ant-design/icons';
 import ChatContentBody from './ChatContentBody';
 import ChatContentFooter from './ChatContentFooter';
 import ChatContentHeader from './ChatContentHeader';
@@ -138,6 +139,55 @@ const Conversation = ({
     getConversation(patient_id);
   };
 
+  const renderEmptyConversation = () => {
+    if (loading || !chatInfo?.patient) return null;
+    const hasMessages = items && items.length > 0;
+    if (hasMessages) return null;
+
+    const isNotYetInvited = chatInfo.patient.conversation_status === null;
+
+    return (
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100%',
+        padding: '40px 24px',
+        textAlign: 'center',
+        color: '#8c8c8c',
+      }}>
+        <div style={{
+          width: 64,
+          height: 64,
+          borderRadius: '50%',
+          backgroundColor: isNotYetInvited ? '#f0f0ff' : '#f5f5f5',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginBottom: 16,
+          fontSize: 28,
+          color: isNotYetInvited ? '#5d4ebf' : '#bfbfbf',
+        }}>
+          {isNotYetInvited ? <MailOutlined /> : <MessageOutlined />}
+        </div>
+        <div style={{
+          fontWeight: 600,
+          fontSize: 15,
+          color: isNotYetInvited ? '#5d4ebf' : '#595959',
+          marginBottom: 6,
+        }}>
+          {isNotYetInvited ? 'Patient not yet invited' : 'No messages yet'}
+        </div>
+        <div style={{ fontSize: 13, maxWidth: 260, lineHeight: 1.6 }}>
+          {isNotYetInvited
+            ? 'This patient has been added but has not been sent an invitation yet. No conversation has started.'
+            : 'No messages have been exchanged with this patient yet.'}
+        </div>
+      </div>
+    );
+  };
+
   // Updated chatContentBody function to pass all required props
   const chatContentBody = (messages, next, patientPicture) =>
     messages ? (
@@ -199,6 +249,7 @@ const Conversation = ({
         >
           {chatInfo?.patient &&
             chatContentBody(items, next, chatInfo.patient.picture)}
+          {renderEmptyConversation()}
         </Scrollbars>
       </div>
       <ChatStatusIndicators

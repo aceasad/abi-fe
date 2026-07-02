@@ -1,4 +1,5 @@
-import { Avatar, Divider } from 'antd';
+import { Avatar, Divider, Tooltip } from 'antd';
+import { WarningOutlined } from '@ant-design/icons';
 import { MESSAGE_TYPE } from 'constants/ChatConstants';
 import React, { useRef, useEffect } from 'react';
 import {
@@ -6,6 +7,8 @@ import {
   shouldRenderChatListItem,
   singleChatMessageStyle,
 } from 'utils/helpers';
+
+const FAILED_STATUSES = new Set(['FAILED', 'FLOOD_ERROR']);
 
 const ChatContentBody = ({
   messages: chatMessages,
@@ -22,14 +25,36 @@ const ChatContentBody = ({
   }, []);
 
   const renderMessageContent = (message) => {
-    return message.text?.trim() ? (
-      <div className={`bubble`}>
+    if (!message.text?.trim()) return null;
+
+    const isFailed = FAILED_STATUSES.has(message.status);
+    const failedLabel = message.status === 'FLOOD_ERROR' ? 'Flood error' : 'Failed to deliver';
+
+    return (
+      <div className="bubble" style={isFailed ? { opacity: 0.75 } : undefined}>
         <div className="bubble-wrapper">
           <span style={{ whiteSpace: 'pre-wrap' }}>{message.text}</span>
         </div>
-        <span>{formatMessagesTimestampMinutes(message.created_at)}</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, justifyContent: 'flex-end' }}>
+          <span>{formatMessagesTimestampMinutes(message.created_at)}</span>
+          {isFailed && (
+            <Tooltip title={failedLabel}>
+              <span style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 3,
+                color: '#ff4d4f',
+                fontSize: 11,
+                fontWeight: 500,
+              }}>
+                <WarningOutlined style={{ fontSize: 11 }} />
+                Failed
+              </span>
+            </Tooltip>
+          )}
+        </div>
       </div>
-    ) : null;
+    );
   };
 
   const renderSingleMessage = (message) => {

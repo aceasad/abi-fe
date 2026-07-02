@@ -101,6 +101,8 @@ const PatientProgressTable = ({
   const getProgressColor = (status) => {
     if (status === 'Rescheduled' || status === 'Booked' || status === 'Reminded') {
       return '#18D9C5'; // Green
+    } else if (status === 'Added') {
+      return '#A0AEC0'; // Grey — newly added, not yet invited
     } else if (status === 'Asked Question' || status === 'Rescheduling' || status === 'Cancelling' || status === 'Booking' || status === 'Invited' || status === 'Incomplete' || status === screenedElsewhereLabel) {
       return '#FFBF00'; // Yellow
     } else if (status === 'Cancelled' || status === 'No Response' || status === 'Inactive' || status === 'Opt-out' || status === 'Declined' || status === 'Emergency Situation' || status === 'Human Intervention' || status === 'Snoozed') {
@@ -115,6 +117,7 @@ const PatientProgressTable = ({
 
   const statusMapping = useMemo(
     () => ({
+      ADDED: { status: 'Added', progressbar: 0 },
       RESCHEDULING: { status: 'Rescheduling', progressbar: 20 },
       CANCELLING: { status: 'Cancelling', progressbar: 20 },
       BOOKING: { status: 'Booking', progressbar: 20 },
@@ -132,7 +135,6 @@ const PatientProgressTable = ({
       HUMAN_INTERVENTION: { status: 'Human Intervention', progressbar: 100 },
       EMERGENCY_SITUATION: { status: 'Emergency Situation', progressbar: 100 },
       OPT_OUT: { status: 'Opt-out', progressbar: 100 },
-      OPTOUT: { status: 'Opt-out', progressbar: 100 },
       DECLINED: { status: 'Declined', progressbar: 100 },
       FAILED: { status: 'Failed', progressbar: 100 },
     }),
