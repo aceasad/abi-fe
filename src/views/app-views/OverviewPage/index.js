@@ -37,6 +37,12 @@ const OverviewPage = () => {
   const requestedFilterStatus = location.state?.progressFilterStatus;
   const [activeKey, setActiveKey] = useState(requestedTabKey || "1");
 
+  useEffect(() => {
+    if (requestedTabKey) {
+      setActiveKey(requestedTabKey);
+    }
+  }, [requestedTabKey]);
+
   const tabItems = [
     ...(SHOW_MESSAGES_REQUIRING_IMMEDIATE_ATTENTION ? [{
       key: "1",
