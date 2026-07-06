@@ -20,6 +20,13 @@ const FILTER_ATTRIBUTES = {
   LOCATION: 'location',
 };
 
+const normalizeProcessStatus = (status) =>
+  String(status || '')
+    .trim()
+    .toUpperCase()
+    .replace(/[^A-Z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '');
+
 /** Edit these values (px) to tune Booking Progress column max-widths */
 const BOOKING_PROGRESS_COLUMN_MAX_WIDTHS = {
   patientName: 180,
@@ -75,7 +82,7 @@ const PatientProgressTable = ({
 }) => {
   const dispatch = useDispatch();
   const [data, setData] = useState([]); // All patient data
-  const [displayData, setDisplayData] = useState([]); // Data for current page
+  const [internalLoading, setInternalLoading] = useState(false);
   const [sortedInfo, setSortedInfo] = useState({}); // Sorting info
   const [pagination, setPagination] = useState({
     current: 1, // Current page
@@ -85,7 +92,7 @@ const PatientProgressTable = ({
   });
   const [activeFilters, setActiveFilters] = useState(() => {
     if (initialFilterStatus && initialFilterStatus !== 'ALL') {
-      return [{ attribute: FILTER_ATTRIBUTES.STATUS, values: [initialFilterStatus] }];
+      return [{ attribute: FILTER_ATTRIBUTES.STATUS, values: [normalizeProcessStatus(initialFilterStatus)] }];
     }
     return [];
   });
@@ -100,13 +107,13 @@ const PatientProgressTable = ({
   const [patientSearch, setPatientSearch] = useState('');
 
   const getProgressColor = (status) => {
-    if (status === 'Rescheduled' || status === 'Booked' || status === 'Reminded') {
+    if (status === 'Rescheduled' || status === 'Booked' || status === 'Reminded' || status === 'Attended' || status === 'Arrived') {
       return '#18D9C5'; // Green
     } else if (status === 'Added') {
       return '#A0AEC0'; // Grey — newly added, not yet invited
-    } else if (status === 'Asked Question' || status === 'Rescheduling' || status === 'Cancelling' || status === 'Booking' || status === 'Invited' || status === 'Incomplete' || status === screenedElsewhereLabel) {
+    } else if (status === 'Asked Question' || status === 'Rescheduling' || status === 'Cancelling' || status === 'Booking' || status === 'Invited' || status === 'Incomplete' || status === screenedElsewhereLabel || status === 'Sent in' || status === 'Quiet sent in') {
       return '#FFBF00'; // Yellow
-    } else if (status === 'Cancelled' || status === 'No Response' || status === 'Inactive' || status === 'Opt-out' || status === 'Declined' || status === 'Emergency Situation' || status === 'Human Intervention' || status === 'Snoozed') {
+    } else if (status === 'Cancelled' || status === 'No Response' || status === 'Inactive' || status === 'Opt-out' || status === 'Declined' || status === 'Emergency Situation' || status === 'Human Intervention' || status === 'Snoozed' || status === 'Not attended' || status === 'Walked out' || status === 'Not updated') {
       return '#FF474C'; // Red
     } else if (status === 'Failed') {
       return '#100101'; // Default color
@@ -126,6 +133,13 @@ const PatientProgressTable = ({
       BOOKED: { status: 'Booked', progressbar: 100 },
       RESCHEDULED: { status: 'Rescheduled', progressbar: 100 },
       CANCELLED: { status: 'Cancelled', progressbar: 100 },
+      ATTENDED: { status: 'Attended', progressbar: 100 },
+      NOT_ATTENDED: { status: 'Not attended', progressbar: 100 },
+      ARRIVED: { status: 'Arrived', progressbar: 100 },
+      SENT_IN: { status: 'Sent in', progressbar: 100 },
+      QUIET_SENT_IN: { status: 'Quiet sent in', progressbar: 100 },
+      WALKED_OUT: { status: 'Walked out', progressbar: 100 },
+      NOT_UPDATED: { status: 'Not updated', progressbar: 100 },
       INVITED: { status: 'Invited', progressbar: 100 },
       ASKED_QUESTION: { status: 'Asked Question', progressbar: 100 },
       INCOMPLETE: { status: 'Incomplete', progressbar: 100 },
@@ -147,7 +161,7 @@ const PatientProgressTable = ({
     return entry && entry.values.length > 0 ? entry.values[0] : null;
   };
 
-  const filterStatus = getFilterValue(FILTER_ATTRIBUTES.STATUS);
+  const filterStatus = normalizeProcessStatus(getFilterValue(FILTER_ATTRIBUTES.STATUS));
   const filterLocation = getFilterValue(FILTER_ATTRIBUTES.LOCATION);
 
   const statusFilterOptions = useMemo(() => {
@@ -202,6 +216,24 @@ const PatientProgressTable = ({
       dispatch(getPatientLocations());
     }
   }, [dispatch, isMedbridge]);
+
+  useEffect(() => {
+    if (!initialFilterStatus || initialFilterStatus === 'ALL') {
+      setActiveFilters([]);
+      setPagination(prev => ({
+        ...prev,
+        current: 1,
+      }));
+      return;
+    }
+
+    const normalizedInitialFilterStatus = normalizeProcessStatus(initialFilterStatus);
+    setActiveFilters([{ attribute: FILTER_ATTRIBUTES.STATUS, values: [normalizedInitialFilterStatus] }]);
+    setPagination(prev => ({
+      ...prev,
+      current: 1,
+    }));
+  }, [initialFilterStatus]);
 
   const columns = useMemo(() => [
     withColumnMaxWidth('patientName', {
@@ -289,59 +321,55 @@ const PatientProgressTable = ({
     }),
   ], [dateTimeCountry, sortedInfo.columnKey, sortedInfo.order, screenedElsewhereLabel, isMedbridge]);
 
-  const getProgressData = async () => {
-    try {
-      const res = await patientService.getPatientProgress();
-      const formattedData = Array.isArray(res.data) ? res.data : [];
-
-      // Process the data and map status
-      formattedData.forEach((item) => {
-        const process = (item.Process ?? '').toUpperCase();
-        const mapped = statusMapping[process] || { status: 'Unknown', progressbar: 0 };
-
-        // Store the original process value for filtering
-        item.originalProcess = process;
-        // Transform process for display
-        item.Process = process
-          .toLowerCase()
-          .replace(/_/g, ' ')
-          .replace(/\b\w/g, (char) => char.toUpperCase());
-        item.Status = mapped.status;
-        item.Progressbar = mapped.progressbar;
-      });
-
-      // Sort the data based on Last Contact first, then Invitation Sent
-      formattedData.sort((a, b) => {
-        if (a['Last Contact'] && b['Last Contact']) {
-          return new Date(b['Last Contact']) - new Date(a['Last Contact']);
-        } else if (a['Last Contact'] && !b['Last Contact']) {
-          return -1;
-        } else if (!a['Last Contact'] && b['Last Contact']) {
-          return 1;
-        } else {
-          return new Date(b['Invitation Sent']) - new Date(a['Invitation Sent']);
-        }
-      });
-
-      // Set the total records and all data
-      setPagination({
-        ...pagination,
-        total: formattedData.length,
-      });
-
-      setData(formattedData); // Set all data
-      setDisplayData(formattedData.slice(0, pagination.pageSize)); // Display first `pageSize` records
-    } catch (error) {
-      console.error('Error fetching progress data:', error);
-    }
-  };
-
   useEffect(() => {
-    // Fetch data on mount
+    const getProgressData = async () => {
+      setInternalLoading(true);
+      try {
+        const res = await patientService.getPatientProgress();
+        const formattedData = Array.isArray(res.data) ? res.data : [];
+
+        // Process the data and map status
+        formattedData.forEach((item) => {
+          const process = normalizeProcessStatus(item.Process);
+          const mapped = statusMapping[process] || { status: 'Unknown', progressbar: 0 };
+
+          // Store the normalized process value for filtering
+          item.originalProcess = process;
+          // Transform process for display
+          item.Process = process
+            .toLowerCase()
+            .replace(/_/g, ' ')
+            .replace(/\b\w/g, (char) => char.toUpperCase());
+          item.Status = mapped.status;
+          item.Progressbar = mapped.progressbar;
+        });
+
+        // Sort the data based on Last Contact first, then Invitation Sent
+        formattedData.sort((a, b) => {
+          if (a['Last Contact'] && b['Last Contact']) {
+            return new Date(b['Last Contact']) - new Date(a['Last Contact']);
+          } else if (a['Last Contact'] && !b['Last Contact']) {
+            return -1;
+          } else if (!a['Last Contact'] && b['Last Contact']) {
+            return 1;
+          } else {
+            return new Date(b['Invitation Sent']) - new Date(a['Invitation Sent']);
+          }
+        });
+
+        setData(formattedData); // Set all data
+      } catch (error) {
+        console.error('Error fetching progress data:', error);
+        setData([]);
+      } finally {
+        setInternalLoading(false);
+      }
+    };
+
     getProgressData();
-  }, []);
+  }, [statusMapping]);
 
-  useEffect(() => {
+  const filteredData = useMemo(() => {
     let filteredData = data;
 
     if (filterStatus) {
@@ -364,23 +392,27 @@ const PatientProgressTable = ({
       );
     }
 
-    const startIndex = (pagination.current - 1) * pagination.pageSize;
-    const endIndex = startIndex + pagination.pageSize;
-    setDisplayData(filteredData.slice(startIndex, endIndex));
-
-    setPagination(prev => ({
-      ...prev,
-      total: filteredData.length,
-    }));
+    return filteredData;
   }, [
-    pagination.current,
-    pagination.pageSize,
     data,
     filterStatus,
     filterLocation,
     patientSearch,
     isMedbridge,
   ]);
+
+  const displayData = useMemo(() => {
+    const startIndex = (pagination.current - 1) * pagination.pageSize;
+    const endIndex = startIndex + pagination.pageSize;
+    return filteredData.slice(startIndex, endIndex);
+  }, [filteredData, pagination.current, pagination.pageSize]);
+
+  useEffect(() => {
+    setPagination(prev => ({
+      ...prev,
+      total: filteredData.length,
+    }));
+  }, [filteredData.length]);
 
   // Modified handleTableChange to handle both sorting and pagination
   const handleTableChange = (paginationParams, filters, sorter) => {
@@ -577,7 +609,7 @@ const PatientProgressTable = ({
               pageSizeOptions: pagination.pageSizeOptions,
               showSizeChanger: true,
             }}
-            loading={loading}
+            loading={loading || internalLoading}
           />
         </div>
       )}
