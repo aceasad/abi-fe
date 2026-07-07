@@ -48,7 +48,7 @@ const ChatContentFooter = ({ onSend }) => {
 
   const isDisabled = useMemo(() => {
     return (
-      !chatInfo?.patient.is_rasa_paused ||
+      !chatInfo?.patient?.is_rasa_paused ||
       !(isSocketOpen && !!chatInfo?.isSendEnabled)
     );
   }, [chatInfo, isSocketOpen]);
@@ -63,7 +63,7 @@ const ChatContentFooter = ({ onSend }) => {
             placeholder={generatePlaceholderText(
               isSocketOpen,
               !!chatInfo?.isSendEnabled,
-              chatInfo?.patient.is_rasa_paused
+              chatInfo?.patient?.is_rasa_paused
             )}
             disabled={isDisabled}
             onKeyDown={(e) => {
