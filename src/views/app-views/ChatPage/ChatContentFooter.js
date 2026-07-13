@@ -34,13 +34,12 @@ const ChatContentFooter = ({ onSend }) => {
 
   const generatePlaceholderText = (
     isSocketOpen,
-    isSendEnabled,
     isRasaPaused
   ) => {
     if (!isRasaPaused) {
       return "Please pause Asa to send a message";
-    } else if (!(isSocketOpen && !!isSendEnabled)) {
-      return "Last message was more than 24 hours ago";
+    } else if (!isSocketOpen) {
+      return "Reconnecting...";
     } else {
       return "Type a message...";
     }
@@ -49,7 +48,7 @@ const ChatContentFooter = ({ onSend }) => {
   const isDisabled = useMemo(() => {
     return (
       !chatInfo?.patient?.is_rasa_paused ||
-      !(isSocketOpen && !!chatInfo?.isSendEnabled)
+      !isSocketOpen
     );
   }, [chatInfo, isSocketOpen]);
 
@@ -62,7 +61,6 @@ const ChatContentFooter = ({ onSend }) => {
             autoComplete="off"
             placeholder={generatePlaceholderText(
               isSocketOpen,
-              !!chatInfo?.isSendEnabled,
               chatInfo?.patient?.is_rasa_paused
             )}
             disabled={isDisabled}
