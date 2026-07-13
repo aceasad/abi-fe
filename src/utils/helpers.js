@@ -584,9 +584,18 @@ export const formatDateTimeByCountry = (
     return '';
   }
 
-  let parsedDateTime = dayjs(dateTimeValue);
-  if (!parsedDateTime.isValid() && inputFormats.length) {
+  let parsedDateTime = null;
+
+  // Try each input format strictly first to avoid ambiguous parsing.
+  // dayjs's default (unformatted) parser falls back to native Date
+  // parsing, which misreads "DD/MM/YYYY" values as "MM/DD/YYYY"
+  // whenever both day and month are <= 12, silently swapping them.
+  if (inputFormats.length) {
     parsedDateTime = dayjs(dateTimeValue, inputFormats, true);
+  }
+
+  if (!parsedDateTime || !parsedDateTime.isValid()) {
+    parsedDateTime = dayjs(dateTimeValue);
   }
   if (!parsedDateTime.isValid() && inputFormats.length) {
     parsedDateTime = dayjs(dateTimeValue, inputFormats);
