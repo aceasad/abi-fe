@@ -9,6 +9,7 @@ const makeSelectClinicStatsData = createSelector(
     total_patients_added: substate.total_patients_added,
     total_patients_invited: substate.total_patients_invited,
     total_patients_failed_message_status: substate.total_patients_failed_message_status,
+    total_failed_messages_count: substate.total_failed_messages_count,
     total_patients_sent_message_status: substate.total_patients_sent_message_status,
     total_patients_engaged: substate.total_patients_engaged,
     total_patients_read_but_no_response: substate.total_patients_read_but_no_response,

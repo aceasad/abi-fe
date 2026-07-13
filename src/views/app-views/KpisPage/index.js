@@ -240,6 +240,9 @@ const KpisPage = () => {
                 previousPeriod={previousPeriod}
                 isMobile={isMobile}
                 country={clinic?.country}
+                startTime={normalizedDateRange[0] ? normalizedDateRange[0].format('YYYY-MM-DD') : null}
+                endTime={normalizedDateRange[1] ? normalizedDateRange[1].format('YYYY-MM-DD') : null}
+                campaignId={selectedCampaign}
               />
             </Col>
           </Row>
