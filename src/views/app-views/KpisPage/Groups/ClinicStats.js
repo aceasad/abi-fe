@@ -7,6 +7,7 @@ import { RightOutlined } from '@ant-design/icons';
 import { APP_PAGES_PREFIX_PATH } from 'configs/AppConfig';
 import { formatDateByCountry, getDateFormatByCountry } from 'utils/helpers';
 import dayjs from 'utils/dayjs';
+import FailedMessagesModal from './FailedMessagesModal';
 
 const { Text } = Typography;
 
@@ -390,10 +391,11 @@ const SectionCard = ({ title, extra, children, style, isMobile, fillHeight = fal
   </Card>
 );
 
-const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
+const ClinicStats = ({ title, previousPeriod, isMobile = false, country, startTime, endTime, campaignId }) => {
   const history = useHistory();
   const [hoveredOutcome, setHoveredOutcome] = useState(null);
   const [hoveredConcernKey, setHoveredConcernKey] = useState(null);
+  const [failedMessagesModalOpen, setFailedMessagesModalOpen] = useState(false);
   const { PASProvider } = useSelector((state) => state.auth.user || {});
   const isMedbridge = PASProvider?.toLowerCase() === 'medbridge';
 
@@ -422,6 +424,7 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
     total_patients_added,
     total_patients_invited,
     total_patients_failed_message_status,
+    total_failed_messages_count,
     total_patients_engaged,
     total_patients_read_but_no_response,
     bookings,
@@ -555,6 +558,10 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
     messagesFailedCount,
     previousMessagesFailedCount
   );
+  const totalFailedMessagesChange = calculateValueChange(
+    total_failed_messages_count,
+    percentage_changes?.pc_total_failed_messages
+  );
   const deliveredUnengagedChange = calculateValueChange(
     total_patients_read_but_no_response,
     percentage_changes?.pc_delivered_unengaged
@@ -583,19 +590,28 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
   // Concern metrics highlighted with a soft red accent so they read as
   // "needs attention" without shouting.
   const concernMetrics = [
-    {
-      key: 'failed',
-      label: 'Messages failed',
-      value: displayValue(messagesFailedCount),
-      change: failedMessagesChange,
-      progressStatus: null,
-    },
+    // Hidden in favor of "Total failed messages" (raw failed-message count).
+    // Re-enable by uncommenting if the patient-deduped view is needed again.
+    // {
+    //   key: 'failed',
+    //   label: 'Messages failed',
+    //   value: displayValue(messagesFailedCount),
+    //   change: failedMessagesChange,
+    //   onClick: null,
+    // },
     {
       key: 'unengaged',
       label: 'Delivered · unengaged',
       value: displayValue(total_patients_read_but_no_response),
       change: deliveredUnengagedChange,
-      progressStatus: 'NO_RESPONSE',
+      onClick: () => goToBookingProgress('NO_RESPONSE'),
+    },
+    {
+      key: 'totalFailedMessages',
+      label: 'Messages failed',
+      value: displayValue(total_failed_messages_count),
+      change: totalFailedMessagesChange,
+      onClick: () => setFailedMessagesModalOpen(true),
     },
   ];
 
@@ -643,7 +659,7 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
 
         <Row gutter={[12, 12]} style={{ marginTop: isMobile ? 16 : 20 }}>
           {concernMetrics.map((metric) => {
-            const isClickable = Boolean(metric.progressStatus);
+            const isClickable = typeof metric.onClick === 'function';
             const isHovered = hoveredConcernKey === metric.key;
 
             return (
@@ -651,11 +667,11 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
                 <div
                   role={isClickable ? 'button' : undefined}
                   tabIndex={isClickable ? 0 : undefined}
-                  onClick={isClickable ? () => goToBookingProgress(metric.progressStatus) : undefined}
+                  onClick={isClickable ? metric.onClick : undefined}
                   onKeyDown={isClickable ? (e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
                       e.preventDefault();
-                      goToBookingProgress(metric.progressStatus);
+                      metric.onClick();
                     }
                   } : undefined}
                   onMouseEnter={isClickable ? () => setHoveredConcernKey(metric.key) : undefined}
@@ -822,6 +838,14 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country }) => {
           </SectionCard>
         </Col>
       </Row>
+
+      <FailedMessagesModal
+        open={failedMessagesModalOpen}
+        onClose={() => setFailedMessagesModalOpen(false)}
+        startTime={startTime}
+        endTime={endTime}
+        campaignId={campaignId}
+      />
     </Spin>
   );
 };
