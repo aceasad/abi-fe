@@ -26,6 +26,7 @@ const initialState = {
   total_patients_added: 0,
   total_patients_invited: 0,
   total_patients_failed_message_status: 0,
+  total_failed_messages_count: 0,
   total_patients_sent_message_status: 0,
   total_patients_engaged: 0,
   total_patients_read_but_no_response: 0,
@@ -104,6 +105,7 @@ const chats = (state = initialState, action) =>
         draft.total_patients_added = action.payload.total_patients_added;
         draft.total_patients_invited = action.payload.total_patients_invited;
         draft.total_patients_failed_message_status = action.payload.total_patients_failed_message_status;
+        draft.total_failed_messages_count = action.payload.total_failed_messages_count;
         draft.total_patients_sent_message_status = action.payload.total_patients_sent_message_status;
         draft.total_patients_engaged = action.payload.total_patients_engaged;
         draft.total_patients_read_but_no_response = action.payload.total_patients_read_but_no_response;
