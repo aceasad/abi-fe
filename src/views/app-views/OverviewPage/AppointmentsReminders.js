@@ -119,6 +119,8 @@ const AppointmentsReminders = ({ title, startOpen }) => {
   const { PASProvider } = useSelector((state) => state.auth.user || {});
   const clinic = useSelector(makeSelectClinic());
   const isMedbridge = PASProvider?.toLowerCase() === 'medbridge';
+  const isInternal = PASProvider?.toLowerCase() === 'internal';
+  const hideDoctorColumn = isMedbridge || isInternal;
 
   const [activeAppointment, setActiveAppointment] = useState(null);
   const [reminderType, setReminderType] = useState('appointment');
@@ -376,9 +378,9 @@ const AppointmentsReminders = ({ title, startOpen }) => {
     ];
 
     if (reminderType === 'appointment') {
-      // Insert doctor and appointment columns after patient column (omit doctor for MedBridge)
+      // Insert doctor and appointment columns after patient column (omit doctor for MedBridge/Internal)
       const appointmentColumns = [
-        ...(!isMedbridge
+        ...(!hideDoctorColumn
           ? [
             {
               title: "Staff member",

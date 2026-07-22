@@ -135,7 +135,7 @@ export const patientSchema = Yup.object().shape({
     otherwise: (schema) => schema,
   }),
   home_location: Yup.string().max(20).when('pas_provider', {
-    is: 'medbridge',
+    is: (value) => value === 'medbridge' || value === 'internal',
     then: (schema) => schema.required(),
     otherwise: (schema) => schema,
   }),
@@ -196,6 +196,14 @@ export const updateAppointmentValidationSchema = Yup.object().shape({
   time: Yup.string().required(),
   appointmentType: Yup.number().required(),
   price: Yup.number().required(),
+  status: Yup.number().required(),
+});
+
+export const updatePASAppointmentValidationSchema = Yup.object().shape({
+  patient: Yup.number().required(),
+  date: Yup.string().required(),
+  time: Yup.string().required(),
+  appointmentType: Yup.number().required(),
   status: Yup.number().required(),
 });
 

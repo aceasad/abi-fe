@@ -19,6 +19,9 @@ const CalendarCollapseList = () => {
   const [activeAppointment, setActiveAppointment] = useState(null);
   const { isPasIntegrated, PASProvider } = useSelector((state) => state.auth.user || {});
   const isMedbridge = PASProvider?.toLowerCase() === 'medbridge';
+  const isInternal = PASProvider?.toLowerCase() === 'internal';
+  // Internal appointments have no doctor assigned, so group like MedBridge (flat list).
+  const hideDoctorGrouping = isMedbridge || isInternal;
 
   const collapseHeader = (data) => (
     <div className="d-flex justify-content-between">
@@ -27,7 +30,7 @@ const CalendarCollapseList = () => {
           {data.doctor}
         </Text>
         &nbsp;
-        {isPasIntegrated ? (<></>) : (<Text className="text-primary">({data.specialization})</Text>)}
+        {isPasIntegrated || isInternal ? (<></>) : (<Text className="text-primary">({data.specialization})</Text>)}
         {/*  */}
       </div>
       {/* Badge goes here. */}
@@ -75,7 +78,7 @@ const CalendarCollapseList = () => {
   return (
     <div>
       {allAppointments.length ? (
-        isMedbridge ? (
+        hideDoctorGrouping ? (
           <List
             itemLayout="horizontal"
             dataSource={allAppointments}

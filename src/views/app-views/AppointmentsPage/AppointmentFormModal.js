@@ -55,7 +55,11 @@ const AppointmentFormModal = ({
   const [query, setQuery] = useState('');
   const debouncedSearch = useDebounce(query, 500);
   const { patients, patientsLoading } = useSelector(makeSelectClinicPatients());
-  const { isPasIntegrated } = useSelector(state => state.auth.user);
+  const { isPasIntegrated, PASProvider } = useSelector(state => state.auth.user);
+  const isInternal = PASProvider?.toLowerCase() === 'internal';
+  // Internal (Local PAS Broker) orgs are not isPasIntegrated, but they should look and
+  // behave like PAS orgs in this form: no doctor assignment, no manual price entry.
+  const isPasLike = isPasIntegrated || isInternal;
 
   useEffect(() => {
     if (query) {
@@ -158,7 +162,7 @@ const AppointmentFormModal = ({
                   </Button>
                 </Col>
               </Row>
-              {isPasIntegrated ? (<></>) : (<RowColumnField
+              {isPasLike ? (<></>) : (<RowColumnField
                 span={24}
                 label={"Doctor"}
                 name="doctor"
@@ -170,32 +174,19 @@ const AppointmentFormModal = ({
               />)}
               <Row gutter={16}>
                 <Col xs={24} lg={12}>
-                  {isPasIntegrated ? (
-                    <Field
-                      label={"Appointment type"}
-                      name="appointmentType"
-                      component={FormSelect}
-                      options={appointmentTypes}
-                      optionField="name"
-                      defaultOption={values.appointmentType}
-                      afterSelectChange={afterAppointmentTypeSelect}
-                      afterSelectChangeFieldName="price"
-                      required
-                    />
-                  ) : (
-                    <Field
-                      label={"Appointment type"}
-                      name="appointmentType"
-                      component={FormSelect}
-                      options={appointmentTypes}
-                      optionField="name"
-                      defaultOption={values.appointmentType}
-                      afterSelectChange={afterAppointmentTypeSelect}
-                      afterSelectChangeFieldName="price"
-                      required
-                    />
-                  )}                </Col>
-                {isPasIntegrated ? (<></>) : (<Col xs={24} lg={12}>
+                  <Field
+                    label={"Appointment type"}
+                    name="appointmentType"
+                    component={FormSelect}
+                    options={appointmentTypes}
+                    optionField="name"
+                    defaultOption={values.appointmentType}
+                    afterSelectChange={afterAppointmentTypeSelect}
+                    afterSelectChangeFieldName="price"
+                    required
+                  />
+                </Col>
+                {isPasLike ? (<></>) : (<Col xs={24} lg={12}>
                   <DirtyFieldWrapper
                     setFieldDirty={setFieldTouched}
                     name="price"
@@ -214,7 +205,7 @@ const AppointmentFormModal = ({
 
               </Row>
               <Row gutter={16}>
-                {isPasIntegrated ? (<>
+                {isPasLike ? (<>
                   <Col xs={24} lg={12}>
                     <Field
                       component={PASFormDatePicker}

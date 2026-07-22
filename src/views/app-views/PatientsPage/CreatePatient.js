@@ -16,6 +16,7 @@ const CreatePatient = ({ showList }) => {
     (state) => state.auth.user || {}
   );
   const normalizedPasProvider = PASProvider?.toLowerCase();
+  const isInternal = normalizedPasProvider === 'internal';
 
   const GENDER_CHOICES = [
     { id: GENDER.MALE, name: "Male" },
@@ -53,7 +54,7 @@ const CreatePatient = ({ showList }) => {
   };
 
   const renderPatientForm = () => {
-    if (isPasIntegrated) {
+    if (isPasIntegrated || isInternal) {
       return (
         <PatientPASForm
           title={"New PAS patient"}
@@ -77,6 +78,20 @@ const CreatePatient = ({ showList }) => {
             country: '',
             appointment_type: '',
             doctor_reference: '',
+            // Internal-only demographic/address fields (a regular non-PAS patient would have these).
+            height: '',
+            weight: '',
+            ethnicity: '',
+            street_number: '',
+            street_name: '',
+            area_of_living: '',
+            city: '',
+            post_code: '',
+            material_status: '',
+            number_of_dependants: '',
+            employment: '',
+            education: '',
+            insurance: '',
           }}
           genderChoices={GENDER_CHOICES}
         />)

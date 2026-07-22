@@ -1,6 +1,7 @@
 import { MinusOutlined } from '@ant-design/icons';
 import { Button, Col, Form, Radio, Row, Space, Typography, Grid } from 'antd';
 import FormField from 'components/custom-components/Form/FormField';
+import FormSelect from 'components/custom-components/Form/FormSelect';
 import FormImageUpload from 'components/custom-components/Form/FormImageUpload';
 import { Field, Formik } from 'formik';
 import React, { useState } from 'react';
@@ -23,6 +24,17 @@ import Checkbox from 'antd/lib/checkbox/Checkbox';
 import utils from 'utils';
 
 const { useBreakpoint } = Grid;
+
+// Providers that mean a real external PAS/EHR system is wired up (isPasIntegrated=true).
+// 'None' has no broker at all (our own built-in scheduler); 'Internal' also runs locally
+// (Local PAS Broker, manually managed Timeslots) but is NOT a real external integration.
+const PAS_INTEGRATED_PROVIDERS = ['EMIS', 'MedBridge'];
+const PAS_PROVIDER_OPTIONS = [
+  { id: 'None', label: 'None (manual scheduling)' },
+  { id: 'EMIS', label: 'EMIS' },
+  { id: 'MedBridge', label: 'MedBridge' },
+  { id: 'Internal', label: 'Internal (local test broker)' },
+];
 
 const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
   const dispatch = useDispatch();
@@ -54,8 +66,11 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
     if (!values.photo) {
       formData.append('photo', '');
     }
+    const pasProvider = values.PASProvider || 'None';
     formData.delete('isPasIntegrated')
-    formData.append('isPasIntegrated', true)
+    formData.append('isPasIntegrated', PAS_INTEGRATED_PROVIDERS.includes(pasProvider))
+    formData.delete('PASProvider')
+    formData.append('PASProvider', pasProvider === 'None' ? '' : pasProvider)
     if (clinicData) {
       dispatch(
         updateClinic({
@@ -99,6 +114,7 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
           end_of_work: clinicData?.end_of_work || initialWorkTime,
           PasAPIEndpoint: clinicData?.PasAPIEndpoint || '',
           isPasIntegrated: clinicData?.isPasIntegrated || isPasIntegrated,
+          PASProvider: clinicData?.PASProvider || (isPasIntegrated ? 'EMIS' : 'None'),
         }}
         enableReinitialize
         validationSchema={clinicSchema}
@@ -250,6 +266,17 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
                       matchesLabel: "Google maps link",
                       maxValue: 500,
                     }}
+                  />
+                </Row>
+                <Row gutter={16}>
+                  <ColumnField
+                    span={isMobile && !isTablet ? 24 : 12}
+                    component={FormSelect}
+                    label={"PAS Provider"}
+                    name={'PASProvider'}
+                    options={PAS_PROVIDER_OPTIONS}
+                    optionField={'label'}
+                    required
                   />
                 </Row>
                 <Row gutter={16}>
