@@ -106,14 +106,12 @@ const PatientPASForm = ({
       ),
     };
     delete parsedValues.pas_provider;
-    // Internal orgs have no external identity system, but ExternalIdentificationNumber
-    // is unique=True on the backend and used as the broker patient key, so generate a
-    // dummy value client-side rather than exposing the field in the form.
+    // Internal orgs have no external identity system, and ExternalIdentificationNumber
+    // is unique=True on the backend across ALL organizations, so the backend generates
+    // a collision-checked dummy value server-side when this is left blank rather than
+    // exposing the field in the form or risking a client-generated collision.
     if (isInternal && !parsedValues.ExternalIdentificationNumber) {
-      parsedValues.ExternalIdentificationNumber = `INT-${Date.now()}-${Math.random()
-        .toString(36)
-        .slice(2, 8)
-        .toUpperCase()}`;
+      delete parsedValues.ExternalIdentificationNumber;
     }
     if (isLocationAware) {
       // ensure appointment_type is null or a primitive id
