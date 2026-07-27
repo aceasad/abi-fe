@@ -7,7 +7,10 @@ import {
   apexBarChartDefaultOption,
   apexAreaChartDefaultOption,
 } from 'constants/ChartConstant';
-import ReactResizeDetector from 'react-resize-detector';
+// Ships as an antd dependency (used internally by Table, Tabs, etc.), so it
+// stays in lockstep with antd's React version support instead of relying on
+// a separately-versioned resize-detection library.
+import ResizeObserver from 'rc-resize-observer';
 
 const titleStyle = {
   position: 'absolute',
@@ -84,7 +87,7 @@ const ChartWidget = ({
   };
 
   const renderChart = (
-    <ReactResizeDetector onResize={onResize()}>
+    <ResizeObserver onResize={onResize}>
       <div className="chartRef" ref={chartRef}>
         <ApexChart
           options={options}
@@ -94,7 +97,7 @@ const ChartWidget = ({
           height={height}
         />
       </div>
-    </ReactResizeDetector>
+    </ResizeObserver>
   );
 
   return (

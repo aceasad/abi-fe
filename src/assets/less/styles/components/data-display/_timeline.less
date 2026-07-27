@@ -2,3 +2,16 @@
     border-left-style: dashed;
     border-color: @border-color-base;
 }
+
+// Custom `dot` render (e.g. ConversationStatusTimeline) supplies its own
+// colored circle, so strip antd's own head border/background - otherwise it
+// shows through as a colored pill/box behind the custom dot. Scoped to our
+// own wrapper class so generic (non-custom) Timeline dots elsewhere keep
+// antd's default styling.
+.conversation-status-timeline {
+    .ant-timeline-item-head,
+    .ant-timeline-item-head-custom {
+        background: transparent !important;
+        border: 0 !important;
+    }
+}

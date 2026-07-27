@@ -20,6 +20,7 @@ const ENDPOINTS = {
   GET_PATIENTS_DETAILS_NEW_PATIENT_FORM: '/patients/patient-details/',
   GET_PATIENT_LOCATIONS: '/patients/locations/',
   VALIDATE_HOME_LOCATION_TIMESLOTS: '/patients/:id/validate-home-location-timeslots/',
+  GET_CONVERSATION_STATUS_HISTORY: '/patients/:id/conversation-status-history/',
   UPLOADPATIENTSCSV: '/patients/uploadcsv/',
   PATIENTPROGRESS: '/patients/get-all-communication-status-for-patient/',
   DOWNLOADPATIENTSNOTONWHATSAPP: '/patients/download_not_on_whatsapp_patients_text_file/',
@@ -165,6 +166,11 @@ class PatientService extends ApiService {
   getOrganizationCampaigns = () => {
     return this.apiClient.get(ENDPOINTS.GET_CAMPAIGNS);
   }
+
+  getConversationStatusHistory = (id) =>
+    this.apiClient.get(
+      ENDPOINTS.GET_CONVERSATION_STATUS_HISTORY.replace(':id', id)
+    );
 }
 
 const patientService = new PatientService();
