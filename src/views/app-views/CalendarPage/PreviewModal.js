@@ -29,6 +29,10 @@ function PreviewModal({
   const isLoading = singleLoading || !appointment;
   const { isPasIntegrated, PASProvider } = useSelector((state) => state.auth.user || {});
   const isMedbridge = PASProvider?.toLowerCase() === 'medbridge';
+  const isInternal = PASProvider?.toLowerCase() === 'internal';
+  // Internal appointments have no doctor assigned, so hide the Doctor row like MedBridge.
+  const hideDoctorRow = isMedbridge || isInternal;
+  const isLocationAware = isMedbridge || isInternal;
   const getLocationDisplay = () => {
     const location =
       appointment?.location ||
@@ -91,7 +95,7 @@ function PreviewModal({
         </Typography.Text>
       ),
     },
-    ...(!isMedbridge
+    ...(!hideDoctorRow
       ? [
           {
             label: "Doctor",
@@ -100,7 +104,7 @@ function PreviewModal({
                 <Typography.Text strong>
                   {appointment?.doctor?.full_name}{' '}
                 </Typography.Text>
-                {isPasIntegrated ? (<></>) : (<span className="text-primary">({appointment?.specialization})</span>)}
+                {isPasIntegrated || isInternal ? (<></>) : (<span className="text-primary">({appointment?.specialization})</span>)}
               </>
             ),
           },
@@ -126,7 +130,7 @@ function PreviewModal({
       label: "Time",
       value: formatTimeByCountry(appointment?.time, clinic?.country),
     },
-    ...(isMedbridge && locationDisplay
+    ...(isLocationAware && locationDisplay
       ? [
           {
             label: "Location",

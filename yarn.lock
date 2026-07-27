@@ -486,6 +486,11 @@
   resolved "https://registry.npmjs.org/@esbuild/darwin-arm64/-/darwin-arm64-0.25.8.tgz"
   integrity sha512-Jw0mxgIaYX6R8ODrdkLLPwBqHTtYHJSmzzd+QeytSugzQ0Vg4c5rDky5VgkoowbZQahCbsv1rT1KW72MPIkevw==
 
+"@esbuild/darwin-x64@0.25.8":
+  version "0.25.8"
+  resolved "https://registry.npmjs.org/@esbuild/darwin-x64/-/darwin-x64-0.25.8.tgz"
+  integrity sha512-Vh2gLxxHnuoQ+GjPNvDSDRpoBCUzY4Pu0kBqMBDlK4fuWbKgGtmDIeEC081xi26PPjn+1tct+Bh8FjyLlw1Zlg==
+
 "@icons/material@^0.2.4":
   version "0.2.4"
   resolved "https://registry.npmjs.org/@icons/material/-/material-0.2.4.tgz"
@@ -577,6 +582,11 @@
   version "2.5.1"
   resolved "https://registry.npmjs.org/@parcel/watcher-darwin-arm64/-/watcher-darwin-arm64-2.5.1.tgz"
   integrity sha512-eAzPv5osDmZyBhou8PoF4i6RQXAfeKL9tjb3QzYuccXFMQU0ruIc/POh30ePnaOyD1UXdlKguHBmsTs53tVoPw==
+
+"@parcel/watcher-darwin-x64@2.5.1":
+  version "2.5.1"
+  resolved "https://registry.npmjs.org/@parcel/watcher-darwin-x64/-/watcher-darwin-x64-2.5.1.tgz"
+  integrity sha512-1ZXDthrnNmwv10A0/3AJNZ9JGlzrF82i3gNQcWOzd7nJ8aj+ILyW1MTxVk35Db0u91oD5Nlk9MBiujMlwmeXZg==
 
 "@parcel/watcher@^2.4.1":
   version "2.5.1"
@@ -746,6 +756,11 @@
   resolved "https://registry.npmjs.org/@rollup/rollup-darwin-arm64/-/rollup-darwin-arm64-4.45.1.tgz"
   integrity sha512-FSncqHvqTm3lC6Y13xncsdOYfxGSLnP+73k815EfNmpewPs+EyM49haPS105Rh4aF5mJKywk9X0ogzLXZzN9lA==
 
+"@rollup/rollup-darwin-x64@4.45.1":
+  version "4.45.1"
+  resolved "https://registry.npmjs.org/@rollup/rollup-darwin-x64/-/rollup-darwin-x64-4.45.1.tgz"
+  integrity sha512-2/vVn/husP5XI7Fsf/RlhDaQJ7x9zjvC81anIVbr4b/f0xtSmXQTFcGIQ/B1cXIYM6h2nAhJkdMHTnD7OtQ9Og==
+
 "@sinclair/typebox@^0.34.0":
   version "0.34.38"
   resolved "https://registry.npmjs.org/@sinclair/typebox/-/typebox-0.34.38.tgz"
@@ -838,6 +853,11 @@
   version "1.13.2"
   resolved "https://registry.npmjs.org/@swc/core-darwin-arm64/-/core-darwin-arm64-1.13.2.tgz"
   integrity sha512-44p7ivuLSGFJ15Vly4ivLJjg3ARo4879LtEBAabcHhSZygpmkP8eyjyWxrH3OxkY1eRZSIJe8yRZPFw4kPXFPw==
+
+"@swc/core-darwin-x64@1.13.2":
+  version "1.13.2"
+  resolved "https://registry.npmjs.org/@swc/core-darwin-x64/-/core-darwin-x64-1.13.2.tgz"
+  integrity sha512-Lb9EZi7X2XDAVmuUlBm2UvVAgSCbD3qKqDCxSI4jEOddzVOpNCnyZ/xEampdngUIyDDhhJLYU9duC+Mcsv5Y+A==
 
 "@swc/core@^1.12.11":
   version "1.13.2"
@@ -3234,11 +3254,6 @@ pump@^3.0.0:
     end-of-stream "^1.1.0"
     once "^1.3.1"
 
-raf-schd@^4.0.2:
-  version "4.0.3"
-  resolved "https://registry.npmjs.org/raf-schd/-/raf-schd-4.0.3.tgz"
-  integrity sha512-tQkJl2GRWh83ui2DiPTJz9wEiMN20syf+5oKfB03yYP7ioZcJwsIK8FjrtLwH1m7C7e+Tt2yYBlrOpdT+dyeIQ==
-
 raf@^3.1.0:
   version "3.4.1"
   resolved "https://registry.npmjs.org/raf/-/raf-3.4.1.tgz"
@@ -3759,16 +3774,6 @@ react-redux@7.2.2:
     loose-envify "^1.4.0"
     prop-types "^15.7.2"
     react-is "^16.13.1"
-
-react-resize-detector@5.2.0:
-  version "5.2.0"
-  resolved "https://registry.npmjs.org/react-resize-detector/-/react-resize-detector-5.2.0.tgz"
-  integrity sha512-PQAc03J2eyhvaiWgEdQ8+bKbbyGJzLEr70KuivBd1IEmP/iewNakLUMkxm6MWnDqsRPty85pioyg8MvGb0qC8A==
-  dependencies:
-    lodash "^4.17.20"
-    prop-types "^15.7.2"
-    raf-schd "^4.0.2"
-    resize-observer-polyfill "^1.5.1"
 
 react-router-dom@5.2.0:
   version "5.2.0"

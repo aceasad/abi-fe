@@ -3,15 +3,16 @@ import React, { useState, useEffect, useMemo } from 'react';
 import patientService from 'services/PatientService';
 import dayjs from 'utils/dayjs';
 import { Link } from 'react-router-dom';
-import { CalendarOutlined, ClockCircleOutlined, EnvironmentOutlined } from '@ant-design/icons';
+import { CalendarOutlined, ClockCircleOutlined, EnvironmentOutlined, HistoryOutlined } from '@ant-design/icons';
 import utils from 'utils';
 import { useDispatch, useSelector } from 'react-redux';
 import { makeSelectClinic } from 'redux/selectors/Clinic';
 import { makeSelectPatientLocations } from 'redux/selectors/Patient';
 import { getPatientLocations } from 'redux/actions/Patient';
-import { formatDateTimeByCountry, formatHomeLocationDisplay, formatLocationLabel, formatPatientNameWithId } from 'utils/helpers';
+import { formatDateTimeByCountry, formatHomeLocationDisplay, formatLocationLabel, formatPatientNameWithId, getConversationProgressColor } from 'utils/helpers';
 import { SearchOutlined } from '@ant-design/icons';
 import MessagesRequiringImmediateAttentionFilters from './MessagesRequiringImmediateAttentionFilters';
+import ConversationStatusHistoryModal from 'components/shared-components/ConversationStatusHistory/ConversationStatusHistoryModal';
 
 const { useBreakpoint } = Grid;
 
@@ -105,23 +106,10 @@ const PatientProgressTable = ({
     ? 'Study taken elsewhere'
     : 'Screened Elsewhere';
   const [patientSearch, setPatientSearch] = useState('');
+  const [historyPatient, setHistoryPatient] = useState(null);
 
-  const getProgressColor = (status) => {
-    if (status === 'Rescheduled' || status === 'Booked' || status === 'Reminded' || status === 'Attended' || status === 'Arrived') {
-      return '#18D9C5'; // Green
-    } else if (status === 'Added') {
-      return '#A0AEC0'; // Grey — newly added, not yet invited
-    } else if (status === 'Asked Question' || status === 'Rescheduling' || status === 'Cancelling' || status === 'Booking' || status === 'Invited' || status === 'Incomplete' || status === screenedElsewhereLabel || status === 'Sent in' || status === 'Quiet sent in') {
-      return '#FFBF00'; // Yellow
-    } else if (status === 'Cancelled' || status === 'No Response' || status === 'Inactive' || status === 'Opt-out' || status === 'Declined' || status === 'Emergency Situation' || status === 'Human Intervention' || status === 'Snoozed' || status === 'Not attended' || status === 'Walked out' || status === 'Not updated') {
-      return '#FF474C'; // Red
-    } else if (status === 'Failed') {
-      return '#100101'; // Default color
-    }
-    else {
-      return '#E880FF'; // Default color
-    }
-  };
+  const getProgressColor = (status) =>
+    getConversationProgressColor(status, { screenedElsewhereLabel });
 
   const statusMapping = useMemo(
     () => ({
@@ -319,6 +307,21 @@ const PatientProgressTable = ({
         );
       },
     }),
+    {
+      title: 'History',
+      key: 'history',
+      width: 90,
+      render: (_, record) => (
+        <Button
+          type="text"
+          icon={<HistoryOutlined />}
+          onClick={() =>
+            setHistoryPatient({ id: record.PatientId, name: record['Patient Name'] })
+          }
+          aria-label="View booking history"
+        />
+      ),
+    },
   ], [dateTimeCountry, sortedInfo.columnKey, sortedInfo.order, screenedElsewhereLabel, isMedbridge]);
 
   useEffect(() => {
@@ -473,62 +476,73 @@ const PatientProgressTable = ({
         styles={{ body: { padding: '16px' } }}
         style={{ height: '100%', borderRadius: '8px' }}
       >
-        <Link
-          to={`/pages/conversation/${record.PatientId}`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Space direction="vertical" size="small" style={{ width: '100%' }}>
-            <Typography.Text strong style={{ fontSize: '16px', display: 'block' }}>
-              {formatPatientNameWithId(record['Patient Name'], record.PatientId)}
-            </Typography.Text>
-
-            <Tag
-              style={{
-                backgroundColor: `${buttonColor}1A`,
-                border: 'none',
-                color: buttonColor,
-                fontWeight: 400,
-                borderRadius: '25px'
-              }}
+        <Space direction="vertical" size="small" style={{ width: '100%' }}>
+          <Space style={{ width: '100%', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+            <Link
+              to={`/pages/conversation/${record.PatientId}`}
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              {record.Status}
-            </Tag>
+              <Typography.Text strong style={{ fontSize: '16px', display: 'block' }}>
+                {formatPatientNameWithId(record['Patient Name'], record.PatientId)}
+              </Typography.Text>
+            </Link>
+            <Button
+              type="text"
+              size="small"
+              icon={<HistoryOutlined />}
+              onClick={() =>
+                setHistoryPatient({ id: record.PatientId, name: record['Patient Name'] })
+              }
+              aria-label="View booking history"
+            />
+          </Space>
 
-            {isMedbridge && locationDisplay !== '-' && (
-              <Space size="small">
-                <EnvironmentOutlined style={{ fontSize: '12px', color: '#8c8c8c' }} />
-                <Typography.Text type="secondary" style={{ fontSize: '12px' }}>
-                  {locationDisplay}
-                </Typography.Text>
-              </Space>
-            )}
+          <Tag
+            style={{
+              backgroundColor: `${buttonColor}1A`,
+              border: 'none',
+              color: buttonColor,
+              fontWeight: 400,
+              borderRadius: '25px'
+            }}
+          >
+            {record.Status}
+          </Tag>
 
+          {isMedbridge && locationDisplay !== '-' && (
             <Space size="small">
-              <CalendarOutlined style={{ fontSize: '12px', color: '#8c8c8c' }} />
+              <EnvironmentOutlined style={{ fontSize: '12px', color: '#8c8c8c' }} />
               <Typography.Text type="secondary" style={{ fontSize: '12px' }}>
-                Invited: {formatDateTimeByCountry(
-                  record['Invitation Sent'],
+                {locationDisplay}
+              </Typography.Text>
+            </Space>
+          )}
+
+          <Space size="small">
+            <CalendarOutlined style={{ fontSize: '12px', color: '#8c8c8c' }} />
+            <Typography.Text type="secondary" style={{ fontSize: '12px' }}>
+              Invited: {formatDateTimeByCountry(
+                record['Invitation Sent'],
+                dateTimeCountry,
+                'hh:mm A'
+              )}
+            </Typography.Text>
+          </Space>
+
+          {record['Last Contact'] && (
+            <Space size="small">
+              <ClockCircleOutlined style={{ fontSize: '12px', color: '#8c8c8c' }} />
+              <Typography.Text type="secondary" style={{ fontSize: '12px' }}>
+                Last Contact: {formatDateTimeByCountry(
+                  record['Last Contact'],
                   dateTimeCountry,
                   'hh:mm A'
                 )}
               </Typography.Text>
             </Space>
-
-            {record['Last Contact'] && (
-              <Space size="small">
-                <ClockCircleOutlined style={{ fontSize: '12px', color: '#8c8c8c' }} />
-                <Typography.Text type="secondary" style={{ fontSize: '12px' }}>
-                  Last Contact: {formatDateTimeByCountry(
-                    record['Last Contact'],
-                    dateTimeCountry,
-                    'hh:mm A'
-                  )}
-                </Typography.Text>
-              </Space>
-            )}
-          </Space>
-        </Link>
+          )}
+        </Space>
       </Card>
     );
   };
@@ -612,6 +626,14 @@ const PatientProgressTable = ({
             loading={loading || internalLoading}
           />
         </div>
+      )}
+      {historyPatient && (
+        <ConversationStatusHistoryModal
+          patientId={historyPatient.id}
+          patientName={historyPatient.name}
+          country={dateTimeCountry}
+          onClose={() => setHistoryPatient(null)}
+        />
       )}
     </Card>
   );

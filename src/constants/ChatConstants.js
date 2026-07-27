@@ -16,6 +16,13 @@ export const MESSAGE_STATUS = {
   READ: 'READ',
 };
 
+export const MESSAGE_ROLE = {
+  ASA: 'ASA',
+  SYSTEM: 'SYSTEM',
+  STAFF: 'STAFF',
+  PATIENT: 'PATIENT',
+};
+
 export const chatBaseState = {
   items: [],
   count: 0,

@@ -14,6 +14,7 @@ import FormCheckbox from 'components/custom-components/Form/FormCheckbox';
 import PatientOverviewDetails from './PatientOverviewDetails';
 import PatientOverviewScheduledCard from './PatientOverviewScheduledCard';
 import PatientOverviewHistoryCard from './PatientOverviewHistoryCard';
+import PatientOverviewBookingHistoryCard from './PatientOverviewBookingHistoryCard';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   changePatient,
@@ -291,6 +292,10 @@ const PatientOverview = ({
               <PatientOverviewHistoryCard
                 patient={patient}
                 showAppointment={setActiveAppointment}
+              />
+              <PatientOverviewBookingHistoryCard
+                patient={patient}
+                country={isMedbridge ? 'US' : clinic?.country}
               />
             </>
           )}
