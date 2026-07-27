@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Typography, Spin, Empty } from 'antd';
+import { Card, Typography, Spin, Empty, Row, Col } from 'antd';
+import Chart from 'react-apexcharts';
 import overviewService from 'services/OverviewService';
-import ChartWidget from 'components/shared-components/ChartWidget';
+import { apexPieChartDefaultOption } from 'constants/ChartConstant';
 
 const { Text } = Typography;
 
@@ -10,28 +11,97 @@ const CARD_RADIUS = 16;
 const CARD_BORDER = '1px solid #eef0f4';
 const CARD_SHADOW = '0 1px 2px rgba(26, 51, 83, 0.04), 0 8px 24px -16px rgba(26, 51, 83, 0.18)';
 
-// Blue for "before first reply", green for "before first booking" - matches
-// the two color keys requested for this chart.
-const ENGAGEMENT_COLOR = '#1890FF';
-const BOOKING_COLOR = '#52C41A';
+// Shades of blue for "before first reply" slices, shades of green for
+// "before first booking" slices - keeps the two-color-family distinction
+// requested for this chart, while still giving each message-count slice its
+// own shade within that family.
+const BLUE_SHADES = ['#0B3D91', '#1450B8', '#1890FF', '#4DA6FF', '#82C4FF', '#B3DBFF', '#D6ECFF', '#EAF5FF'];
+const GREEN_SHADES = ['#135200', '#237804', '#389E0D', '#52C41A', '#73D13D', '#95DE64', '#B7EB8F', '#D9F7BE'];
 
-// Merge the two independent {messages, patients} histograms into a shared,
-// sorted set of x-axis categories so both series line up on the same chart.
-const buildChartData = (engagementRows, bookingRows) => {
-  const allMessageCounts = new Set([
-    ...engagementRows.map((row) => row.messages),
-    ...bookingRows.map((row) => row.messages),
-  ]);
-  const categories = Array.from(allMessageCounts).sort((a, b) => a - b);
+const messageLabel = (count) => `${count} message${count === 1 ? '' : 's'}`;
 
-  const engagementByMessages = new Map(engagementRows.map((row) => [row.messages, row.patients]));
-  const bookingByMessages = new Map(bookingRows.map((row) => [row.messages, row.patients]));
-
+const buildSlices = (rows, palette) => {
+  const sorted = [...rows].sort((a, b) => a.messages - b.messages);
   return {
-    categories: categories.map((count) => String(count)),
-    engagementData: categories.map((count) => engagementByMessages.get(count) ?? 0),
-    bookingData: categories.map((count) => bookingByMessages.get(count) ?? 0),
+    labels: sorted.map((row) => messageLabel(row.messages)),
+    series: sorted.map((row) => row.patients),
+    colors: sorted.map((_, index) => palette[index % palette.length]),
+    total: sorted.reduce((sum, row) => sum + row.patients, 0),
   };
+};
+
+const MilestonePie = ({ title, rows, palette, isMobile }) => {
+  const { labels, series, colors, total } = buildSlices(rows, palette);
+  const hasData = series.some((value) => value > 0);
+
+  const options = {
+    ...apexPieChartDefaultOption,
+    labels,
+    colors,
+    legend: {
+      show: true,
+      position: 'bottom',
+      fontSize: isMobile ? '11px' : '12px',
+    },
+    plotOptions: {
+      pie: {
+        donut: {
+          size: '65%',
+          labels: {
+            show: true,
+            total: {
+              show: true,
+              showAlways: true,
+              label: 'Patients',
+              fontSize: '13px',
+              color: HEADING_COLOR,
+              formatter: () => total.toLocaleString(),
+            },
+            value: {
+              fontSize: '18px',
+              fontWeight: 700,
+              color: HEADING_COLOR,
+            },
+          },
+        },
+      },
+    },
+    dataLabels: {
+      enabled: true,
+      formatter: (val) => `${val.toFixed(0)}%`,
+    },
+    tooltip: {
+      y: {
+        formatter: (val) => `${val} patient${val === 1 ? '' : 's'}`,
+      },
+    },
+  };
+
+  return (
+    <div>
+      <Text
+        style={{
+          display: 'block',
+          textAlign: 'center',
+          fontSize: isMobile ? 13 : 14,
+          color: HEADING_COLOR,
+          fontWeight: 600,
+          marginBottom: 8,
+        }}
+      >
+        {title}
+      </Text>
+      {hasData ? (
+        <Chart type="donut" options={options} series={series} height={isMobile ? 260 : 300} />
+      ) : (
+        <Empty
+          description="No data for the selected period"
+          image={Empty.PRESENTED_IMAGE_SIMPLE}
+          style={{ margin: isMobile ? '30px 0' : '48px 0' }}
+        />
+      )}
+    </div>
+  );
 };
 
 const MessagesBeforeMilestones = ({ startTime, endTime, campaignId, isMobile = false }) => {
@@ -66,17 +136,6 @@ const MessagesBeforeMilestones = ({ startTime, endTime, campaignId, isMobile = f
     };
   }, [startTime, endTime, campaignId]);
 
-  const { categories, engagementData, bookingData } = buildChartData(engagementRows, bookingRows);
-  const hasData = categories.length > 0;
-
-  const totalEngagementPatients = engagementRows.reduce((sum, row) => sum + row.patients, 0);
-  const totalBookingPatients = bookingRows.reduce((sum, row) => sum + row.patients, 0);
-
-  const series = [
-    { name: 'Before first reply', data: engagementData },
-    { name: 'Before first booking', data: bookingData },
-  ];
-
   return (
     <Card
       title={
@@ -91,64 +150,24 @@ const MessagesBeforeMilestones = ({ startTime, endTime, campaignId, isMobile = f
       }}
     >
       <Spin spinning={loading}>
-        <div style={{ display: 'flex', gap: 20, marginBottom: 12, flexWrap: 'wrap' }}>
-          <Text type="secondary" style={{ fontSize: isMobile ? 12 : 13 }}>
-            <span
-              style={{
-                display: 'inline-block',
-                width: 8,
-                height: 8,
-                borderRadius: '50%',
-                background: ENGAGEMENT_COLOR,
-                marginRight: 6,
-              }}
+        <Row gutter={[isMobile ? 16 : 24, 16]}>
+          <Col xs={24} md={12}>
+            <MilestonePie
+              title="Before first reply"
+              rows={engagementRows}
+              palette={BLUE_SHADES}
+              isMobile={isMobile}
             />
-            {totalEngagementPatients.toLocaleString()} patients replied at least once
-          </Text>
-          <Text type="secondary" style={{ fontSize: isMobile ? 12 : 13 }}>
-            <span
-              style={{
-                display: 'inline-block',
-                width: 8,
-                height: 8,
-                borderRadius: '50%',
-                background: BOOKING_COLOR,
-                marginRight: 6,
-              }}
+          </Col>
+          <Col xs={24} md={12}>
+            <MilestonePie
+              title="Before first booking"
+              rows={bookingRows}
+              palette={GREEN_SHADES}
+              isMobile={isMobile}
             />
-            {totalBookingPatients.toLocaleString()} patients booked at least once
-          </Text>
-        </div>
-
-        {hasData ? (
-          <ChartWidget
-            series={series}
-            xAxis={categories}
-            type="bar"
-            height={300}
-            card={false}
-            customOptions={{
-              colors: [ENGAGEMENT_COLOR, BOOKING_COLOR],
-              plotOptions: {
-                bar: {
-                  horizontal: false,
-                  columnWidth: isMobile ? '55%' : '35%',
-                  borderRadius: 4,
-                },
-              },
-              xaxis: {
-                categories,
-                title: { text: 'Number of messages sent' },
-              },
-              yaxis: {
-                title: { text: 'Number of patients' },
-                allowDecimals: false,
-              },
-            }}
-          />
-        ) : (
-          <Empty description="No data for the selected period" image={Empty.PRESENTED_IMAGE_SIMPLE} />
-        )}
+          </Col>
+        </Row>
       </Spin>
     </Card>
   );
