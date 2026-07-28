@@ -18,20 +18,33 @@ const CARD_SHADOW = '0 1px 2px rgba(26, 51, 83, 0.04), 0 8px 24px -16px rgba(26,
 const BLUE_SHADES = ['#0B3D91', '#1450B8', '#1890FF', '#4DA6FF', '#82C4FF', '#B3DBFF', '#D6ECFF', '#EAF5FF'];
 const GREEN_SHADES = ['#135200', '#237804', '#389E0D', '#52C41A', '#73D13D', '#95DE64', '#B7EB8F', '#D9F7BE'];
 
-const messageLabel = (count) => `${count} message${count === 1 ? '' : 's'}`;
+// Engagement chart: which outbound template the patient replied after.
+// 1 = Invitation, 2–5 = 1st–4th intro, 6+ = raw message count.
+const ENGAGEMENT_TEMPLATE_LABELS = {
+  1: 'Invitation',
+  2: '1st intro',
+  3: '2nd intro',
+  4: '3rd intro',
+  5: '4th intro',
+};
 
-const buildSlices = (rows, palette) => {
+const engagementLabel = (count) =>
+  ENGAGEMENT_TEMPLATE_LABELS[count] ?? `${count} messages`;
+
+const bookingLabel = (count) => `${count} message${count === 1 ? '' : 's'}`;
+
+const buildSlices = (rows, palette, labelFn) => {
   const sorted = [...rows].sort((a, b) => a.messages - b.messages);
   return {
-    labels: sorted.map((row) => messageLabel(row.messages)),
+    labels: sorted.map((row) => labelFn(row.messages)),
     series: sorted.map((row) => row.patients),
     colors: sorted.map((_, index) => palette[index % palette.length]),
     total: sorted.reduce((sum, row) => sum + row.patients, 0),
   };
 };
 
-const MilestonePie = ({ title, rows, palette, isMobile }) => {
-  const { labels, series, colors, total } = buildSlices(rows, palette);
+const MilestonePie = ({ title, rows, palette, isMobile, labelFn }) => {
+  const { labels, series, colors, total } = buildSlices(rows, palette, labelFn);
   const hasData = series.some((value) => value > 0);
 
   const options = {
@@ -157,6 +170,7 @@ const MessagesBeforeMilestones = ({ startTime, endTime, campaignId, isMobile = f
               rows={engagementRows}
               palette={BLUE_SHADES}
               isMobile={isMobile}
+              labelFn={engagementLabel}
             />
           </Col>
           <Col xs={24} md={12}>
@@ -165,6 +179,7 @@ const MessagesBeforeMilestones = ({ startTime, endTime, campaignId, isMobile = f
               rows={bookingRows}
               palette={GREEN_SHADES}
               isMobile={isMobile}
+              labelFn={bookingLabel}
             />
           </Col>
         </Row>
