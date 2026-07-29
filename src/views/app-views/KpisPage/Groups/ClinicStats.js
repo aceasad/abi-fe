@@ -792,7 +792,7 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country, startTi
                         <div
                           style={{
                             height: '100%',
-                            width: `${Math.max(pct, value > 0 ? 2 : 0)}%`,
+                            width: Math.max(pct, value > 0 ? 2 : 0) + '%',
                             borderRadius: 999,
                             background: color,
                             transition: 'width 0.7s cubic-bezier(0.22, 1, 0.36, 1)',
