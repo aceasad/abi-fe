@@ -72,6 +72,8 @@ const PatientOverviewScheduledCard = ({ patient, showAppointment }) => {
   };
 
   const isMedbridge = PASProvider?.toLowerCase() === 'medbridge';
+  const isInternal = PASProvider?.toLowerCase() === 'internal';
+  const hideDoctorColumn = isMedbridge || isInternal;
 
   const columnsScheduled = [
     {
@@ -90,7 +92,7 @@ const PatientOverviewScheduledCard = ({ patient, showAppointment }) => {
       sorter: false,
       render: (time) => removeLeadingZeroFromTime(dayjs(time, ['HH:mm', 'h:mm A']).format('hh:mm A')),
     },
-    ...(!isMedbridge
+    ...(!hideDoctorColumn
       ? [
           {
             title: "Doctor",
@@ -145,7 +147,7 @@ const PatientOverviewScheduledCard = ({ patient, showAppointment }) => {
           </Space>
         </Space>
 
-        {!isMedbridge && (
+        {!hideDoctorColumn && (
           <Space size="small">
             <UserOutlined style={{ fontSize: '12px', color: '#8c8c8c' }} />
             <Text type="secondary" style={{ fontSize: '13px' }}>

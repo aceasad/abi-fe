@@ -25,7 +25,9 @@ const CreateAppointment = ({
   isCalendar = true,
 }) => {
   const dispatch = useDispatch();
-  const { isPasIntegrated } = useSelector(state => state.auth.user);
+  const { isPasIntegrated, PASProvider } = useSelector(state => state.auth.user);
+  const isInternal = PASProvider?.toLowerCase() === 'internal';
+  const isPasLike = isPasIntegrated || isInternal;
 
   const afterCreate = (newAppointmentStartDatetime) => {
     message.success("New appointment created");
@@ -71,7 +73,7 @@ const CreateAppointment = ({
         date: '',
         time: '',
       }}
-      validationSchema={isPasIntegrated ? createPASAppointmentValidationSchema : createAppointmentValidationSchema}
+      validationSchema={isPasLike ? createPASAppointmentValidationSchema : createAppointmentValidationSchema}
       isEditForm={false}
       doctors={doctors}
       patients={[]}

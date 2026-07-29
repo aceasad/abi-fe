@@ -61,6 +61,12 @@ const PatientPASForm = ({
   const isMobile = !screens.includes('lg');
   const isTablet = screens.includes('md') && !screens.includes('lg');
   const isMedbridge = pasProvider === 'medbridge';
+  // Internal (Local PAS Broker) orgs are not isPasIntegrated, but they still need the
+  // location + appointment_type booking fields that MedBridge/EMIS patients use, plus all
+  // of the regular demographic/address fields a non-PAS patient would have (this form is
+  // otherwise stripped down to just PAS-relevant fields).
+  const isInternal = pasProvider === 'internal';
+  const isLocationAware = isMedbridge || isInternal;
   const { education, employment, material_status, ethnicities } = useSelector(
     makeSelectPatientDetails()
   );
@@ -82,7 +88,7 @@ const PatientPASForm = ({
       message.error(errorMessage);
     };
 
-    if (isMedbridge && !values.appointment_type) {
+    if (isLocationAware && !values.appointment_type) {
       showFieldError('appointment_type', 'Appointment type');
       return;
     }
@@ -100,7 +106,14 @@ const PatientPASForm = ({
       ),
     };
     delete parsedValues.pas_provider;
-    if (isMedbridge) {
+    // Internal orgs have no external identity system, and ExternalIdentificationNumber
+    // is unique=True on the backend across ALL organizations, so the backend generates
+    // a collision-checked dummy value server-side when this is left blank rather than
+    // exposing the field in the form or risking a client-generated collision.
+    if (isInternal && !parsedValues.ExternalIdentificationNumber) {
+      delete parsedValues.ExternalIdentificationNumber;
+    }
+    if (isLocationAware) {
       // ensure appointment_type is null or a primitive id
       if (!parsedValues.appointment_type) {
         parsedValues.appointment_type = null;
@@ -147,7 +160,7 @@ const PatientPASForm = ({
     }
 
     if (
-      isMedbridge &&
+      isLocationAware &&
       id &&
       parsedValues.home_location?.location_id &&
       String(parsedValues.home_location.location_id) !==
@@ -264,16 +277,16 @@ const PatientPASForm = ({
   }, []);
 
   useEffect(() => {
-    if (isMedbridge) {
+    if (isLocationAware) {
       dispatch(getPatientLocations());
     }
-  }, [dispatch, isMedbridge]);
+  }, [dispatch, isLocationAware]);
 
   useEffect(() => {
-    if (isMedbridge && !appointmentTypes?.length && !appointmentTypesLoading) {
+    if (isLocationAware && !appointmentTypes?.length && !appointmentTypesLoading) {
       dispatch(getAppointmentTypes());
     }
-  }, [dispatch, isMedbridge, appointmentTypes?.length, appointmentTypesLoading]);
+  }, [dispatch, isLocationAware, appointmentTypes?.length, appointmentTypesLoading]);
 
   const locationOptions = locations
     .map((location) => {
@@ -357,31 +370,56 @@ const PatientPASForm = ({
                         }}
                         required
                       />
-                      <ColumnField
-                        span={isMobile && !isTablet ? 24 : 8}
-                        component={FormField}
-                        label={isMedbridge ? "Patient Identification ID" : "Patient NHS Number"}
-                        name="ExternalIdentificationNumber"
-                        errorTexts={{
-                          label: isMedbridge ? "Patient Identification ID" : "Patient NHS Number",
-                          matchesLabel: "Patient Identification Number must be 7 or 10 digits",
-                          maxValue: NHS_MAX,
-                        }}
-                        required
-                      />
-                      {isMedbridge && (
+                      {!isInternal && (
+                        <ColumnField
+                          span={isMobile && !isTablet ? 24 : 8}
+                          component={FormField}
+                          label={isMedbridge ? "Patient Identification ID" : "Patient NHS Number"}
+                          name="ExternalIdentificationNumber"
+                          errorTexts={{
+                            label: isMedbridge ? "Patient Identification ID" : "Patient NHS Number",
+                            matchesLabel: "Patient Identification Number must be 7 or 10 digits",
+                            maxValue: NHS_MAX,
+                          }}
+                          required
+                        />
+                      )}
+                      {isInternal && (
                         <>
                           <ColumnField
                             span={isMobile && !isTablet ? 24 : 8}
-                            component={FormField}
-                            label={"Case ID"}
-                            name="case_id"
-                            errorTexts={{
-                              label: "Case ID",
-                              maxValue: 20,
-                            }}
-                            required={isMedbridge}
+                            maxDate={new Date()}
+                            component={FormDatePicker}
+                            disablePastDates
+                            label={"Date of birth"}
+                            name="date_of_birth"
                           />
+                          <ColumnField
+                            span={isMobile && !isTablet ? 24 : 8}
+                            component={FormSelect}
+                            name="gender"
+                            options={genderChoices}
+                            optionField="name"
+                            defaultOption={values.gender}
+                            label={"Gender"}
+                          />
+                        </>
+                      )}
+                      {isLocationAware && (
+                        <>
+                          {isMedbridge && (
+                            <ColumnField
+                              span={isMobile && !isTablet ? 24 : 8}
+                              component={FormField}
+                              label={"Case ID"}
+                              name="case_id"
+                              errorTexts={{
+                                label: "Case ID",
+                                maxValue: 20,
+                              }}
+                              required={isMedbridge}
+                            />
+                          )}
                           <ColumnField
                             span={isMobile && !isTablet ? 24 : 8}
                             component={FormSelect}
@@ -399,7 +437,7 @@ const PatientPASForm = ({
                               label: "Location",
                               maxValue: 20,
                             }}
-                            required={isMedbridge}
+                            required={isLocationAware}
                           />
                           <ColumnField
                             span={isMobile && !isTablet ? 24 : 8}
@@ -411,7 +449,7 @@ const PatientPASForm = ({
                             errorTexts={{
                               label: "Appointment type",
                             }}
-                            required={isMedbridge}
+                            required={isLocationAware}
                           />
                           <ColumnField
                             span={isMobile && !isTablet ? 24 : 8}
@@ -432,17 +470,19 @@ const PatientPASForm = ({
                               maxValue: 20,
                             }}
                           />
-                          <ColumnField
-                            span={isMobile && !isTablet ? 24 : 8}
-                            component={FormField}
-                            label={"Referral Doctor's Name"}
-                            name="doctor_reference"
-                            errorTexts={{
-                              label: "Referral Doctor's Name",
-                              maxValue: 20,
-                            }}
-                            required={isMedbridge}
-                          />
+                          {isMedbridge && (
+                            <ColumnField
+                              span={isMobile && !isTablet ? 24 : 8}
+                              component={FormField}
+                              label={"Referral Doctor's Name"}
+                              name="doctor_reference"
+                              errorTexts={{
+                                label: "Referral Doctor's Name",
+                                maxValue: 20,
+                              }}
+                              required={isMedbridge}
+                            />
+                          )}
                         </>
                       )}
                       {id && (
@@ -572,17 +612,209 @@ const PatientPASForm = ({
                         required
                       />
                     </Row>
-                    {/* <Row gutter={16}>
-                    <ColumnField
-                      span={12}
-                      component={FormField}
-                      label={"Email"}
-                      name="email"
-                      required
-                    />
-                  </Row> */}
+                    {isInternal && (
+                      <Row gutter={isMobile ? 12 : 16}>
+                        <ColumnField
+                          span={isMobile && !isTablet ? 24 : 12}
+                          component={FormField}
+                          label={"Email"}
+                          name="email"
+                        />
+                      </Row>
+                    )}
                   </Col>
                 </Row>
+
+                {isInternal && (
+                  <Row gutter={isMobile ? 12 : 16}>
+                    {!isMobile && (
+                      <Col xs={24} lg={6}>
+                        <Title type="secondary" level={2} className="mt-4">
+                          {"Address details"}
+                        </Title>
+                      </Col>
+                    )}
+
+                    <Col xs={24} lg={18}>
+                      {isMobile && (
+                        <Title type="secondary" level={3} className="mb-3 mt-4">
+                          {"Address details"}
+                        </Title>
+                      )}
+                      <Row gutter={isMobile ? 12 : 16}>
+                        <ColumnField
+                          span={isMobile && !isTablet ? 24 : 12}
+                          component={FormField}
+                          label={"Street name"}
+                          name="street_name"
+                          errorTexts={{
+                            label: "Street name",
+                            maxValue: 128,
+                          }}
+                          autoComplete="new-address"
+                        />
+                        <ColumnField
+                          span={isMobile && !isTablet ? 24 : 12}
+                          component={FormField}
+                          label={"Apartment/House"}
+                          name="street_number"
+                          errorTexts={{
+                            label: "Apartment/House",
+                            maxValue: 8,
+                          }}
+                          autoComplete="new-address"
+                        />
+                      </Row>
+                      <Row gutter={isMobile ? 12 : 16}>
+                        <ColumnField
+                          span={isMobile && !isTablet ? 24 : 12}
+                          component={FormField}
+                          label={"Area"}
+                          name="area_of_living"
+                          errorTexts={{
+                            label: "Area",
+                            maxValue: 128,
+                          }}
+                        />
+                        <ColumnField
+                          span={isMobile && !isTablet ? 24 : 12}
+                          component={FormField}
+                          label={"City"}
+                          name="city"
+                          errorTexts={{
+                            label: "City",
+                            maxValue: 64,
+                          }}
+                        />
+                      </Row>
+                      <Row gutter={isMobile ? 12 : 16}>
+                        <ColumnField
+                          span={isMobile && !isTablet ? 24 : 12}
+                          component={FormField}
+                          label={"Postcode"}
+                          name="post_code"
+                          errorTexts={{
+                            label: "Postcode",
+                            maxValue: 16,
+                          }}
+                        />
+                        <ColumnField
+                          span={isMobile && !isTablet ? 24 : 12}
+                          component={FormField}
+                          label={"Country"}
+                          name="country"
+                          errorTexts={{
+                            label: "Country",
+                            maxValue: 64,
+                          }}
+                        />
+                      </Row>
+                    </Col>
+                  </Row>
+                )}
+
+                {isInternal && (
+                  <Row gutter={isMobile ? 12 : 16}>
+                    {!isMobile && (
+                      <Col xs={24} lg={6}>
+                        <Title type="secondary" level={2} className="mt-4">
+                          {"Other details"}
+                        </Title>
+                      </Col>
+                    )}
+
+                    <Col xs={24} lg={18}>
+                      {isMobile && (
+                        <Title type="secondary" level={3} className="mb-3 mt-4">
+                          {"Other details"}
+                        </Title>
+                      )}
+                      <Row gutter={isMobile ? 12 : 16}>
+                        <ColumnField
+                          span={isMobile && !isTablet ? 24 : 12}
+                          component={FormField}
+                          label={"Height"}
+                          name="height"
+                          type={'number'}
+                          onKeyDown={filterNumberInput}
+                          min={0}
+                          suffix="CMs"
+                        />
+                        <ColumnField
+                          span={isMobile && !isTablet ? 24 : 12}
+                          component={FormField}
+                          label={"Weight"}
+                          name="weight"
+                          type={'number'}
+                          onKeyDown={filterNumberInput}
+                          min={0}
+                          suffix="KGs"
+                        />
+                      </Row>
+                      <Row gutter={isMobile ? 12 : 16}>
+                        <ColumnField
+                          span={isMobile && !isTablet ? 24 : 12}
+                          component={FormSelect}
+                          name="ethnicity"
+                          options={ethnicities}
+                          optionField="name"
+                          defaultOption={values.ethnicity}
+                          label={"Ethnicity"}
+                        />
+                        <ColumnField
+                          span={isMobile && !isTablet ? 24 : 12}
+                          component={FormSelect}
+                          name="material_status"
+                          options={material_status}
+                          optionField="name"
+                          defaultOption={values.material_status}
+                          label={"Marital status"}
+                        />
+                      </Row>
+                      <Row gutter={isMobile ? 12 : 16}>
+                        <ColumnField
+                          span={isMobile && !isTablet ? 24 : 12}
+                          component={FormSelect}
+                          name="employment"
+                          options={employment}
+                          optionField="name"
+                          defaultOption={values.employment}
+                          label={"Employment status"}
+                        />
+                        <ColumnField
+                          span={isMobile && !isTablet ? 24 : 12}
+                          component={FormSelect}
+                          name="education"
+                          options={education}
+                          optionField="name"
+                          defaultOption={values.education}
+                          label={"Education"}
+                        />
+                      </Row>
+                      <Row gutter={isMobile ? 12 : 16}>
+                        <ColumnField
+                          span={isMobile && !isTablet ? 24 : 12}
+                          component={FormField}
+                          label={"Number of dependants"}
+                          name="number_of_dependants"
+                          onKeyDown={filterNumberInput}
+                          type={'number'}
+                          min={0}
+                        />
+                        <ColumnField
+                          span={isMobile && !isTablet ? 24 : 12}
+                          component={FormField}
+                          label={"Insurance"}
+                          name="insurance"
+                          errorTexts={{
+                            label: "Insurance",
+                            maxValue: MAX,
+                          }}
+                        />
+                      </Row>
+                    </Col>
+                  </Row>
+                )}
                 {/* 
                 <Row gutter={isMobile ? 12 : 16}>
                   {!isMobile && (

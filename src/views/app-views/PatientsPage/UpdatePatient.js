@@ -26,6 +26,8 @@ const UpdatePatient = ({ showList, patientId }) => {
   );
   const normalizedPasProvider = PASProvider?.toLowerCase();
   const isMedbridge = normalizedPasProvider === 'medbridge';
+  const isInternal = normalizedPasProvider === 'internal';
+  const isLocationAware = isMedbridge || isInternal;
 
   const { patient, loading } = useSelector(makeSelectPatientSingle());
   const { items } = useSelector(makeSelectExistingMedicalConditions());
@@ -44,12 +46,12 @@ const UpdatePatient = ({ showList, patientId }) => {
   }, [dispatch, patientId]);
 
   useEffect(() => {
-    if (isMedbridge && !appointmentTypes?.length && !appointmentTypesLoading) {
+    if (isLocationAware && !appointmentTypes?.length && !appointmentTypesLoading) {
       dispatch(getAppointmentTypes());
     }
   }, [
     dispatch,
-    isMedbridge,
+    isLocationAware,
     appointmentTypes?.length,
     appointmentTypesLoading,
   ]);
@@ -138,7 +140,7 @@ const UpdatePatient = ({ showList, patientId }) => {
   );
 
   const renderUpdatePatientForm = () => {
-    if (isPasIntegrated) {
+    if (isPasIntegrated || isInternal) {
       return (
         <PatientPASForm
           id={patientId}

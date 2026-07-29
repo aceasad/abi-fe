@@ -10,6 +10,7 @@ import {
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import ClinicStats from './Groups/ClinicStats';
+import MessagesBeforeMilestones from './Groups/MessagesBeforeMilestones';
 import { getOverviewClinicStatsData } from 'redux/actions/Overview';
 import { getCampaigns } from 'redux/actions/Patient';
 import { makeSelectCampaigns } from 'redux/selectors/Patient';
@@ -240,6 +241,17 @@ const KpisPage = () => {
                 previousPeriod={previousPeriod}
                 isMobile={isMobile}
                 country={clinic?.country}
+                startTime={normalizedDateRange[0] ? normalizedDateRange[0].format('YYYY-MM-DD') : null}
+                endTime={normalizedDateRange[1] ? normalizedDateRange[1].format('YYYY-MM-DD') : null}
+                campaignId={selectedCampaign}
+              />
+            </Col>
+          </Row>
+
+          <Row gutter={isMobile ? 12 : 12} style={{ marginTop: isMobile ? 12 : 16 }}>
+            <Col span={24}>
+              <MessagesBeforeMilestones
+                isMobile={isMobile}
                 startTime={normalizedDateRange[0] ? normalizedDateRange[0].format('YYYY-MM-DD') : null}
                 endTime={normalizedDateRange[1] ? normalizedDateRange[1].format('YYYY-MM-DD') : null}
                 campaignId={selectedCampaign}

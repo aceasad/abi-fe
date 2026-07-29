@@ -44,9 +44,7 @@ const chats = (state = initialState, action) =>
             1,
           offset: action.payload.results.items.length,
           chatInfo: {
-            patient:
-              action.payload.results.patient ||
-              action.payload.results.items[0]?.patient,
+            patient: action.payload.results.patient,
             isSendEnabled: action.payload.results.is_conversation_enabled,
           },
         };

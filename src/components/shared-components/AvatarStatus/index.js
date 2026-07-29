@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Avatar } from 'antd';
+import { getConversationProgressColor, humanizeConversationStatus } from 'utils/helpers';
 
 const renderAvatar = (props) => {
   return (
@@ -10,20 +11,10 @@ const renderAvatar = (props) => {
   );
 };
 
-const getStatusColor = (status) => {
-  if (status === 'RESCHEDULED' || status === 'BOOKED' || status === 'REMINDED') {
-    return '#18D9C5'; // Green
-  } else if (status === 'ASKED_QUESTION' || status === 'RESCHEDULING' || status === 'CANCELLING' || status === 'BOOKING' || status === 'INVITED' || status === 'INCOMPLETE' || status === 'SCREENED_ELSEWHERE' || status === 'HUMAN_INTERVENTION' || status === 'SNOOZED') {
-    return '#FFBF00'; // Yellow
-  } else if (status === 'CANCELLED' || status === 'NO_RESPONSE' || status === 'INACTIVE' || status === 'INCOMPLETE' || status === 'OPT_OUT' || status === 'DECLINED' || status === 'EMERGENCY_SITUATION') {
-    return '#FF474C'; // Red
-  } else if (status === 'FAILED') {
-    return '#100101'; // Default color
-  }
-  else {
-    return '#E880FF'; // Default color
-  }
-};
+// Reuses the same color coding as the "Booking progress" page so a given
+// status always looks the same wherever it's shown.
+const getStatusColor = (status) =>
+  getConversationProgressColor(humanizeConversationStatus(status));
 
 export const AvatarStatus = (props) => {
   const {

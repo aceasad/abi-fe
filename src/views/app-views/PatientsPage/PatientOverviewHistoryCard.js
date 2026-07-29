@@ -45,6 +45,8 @@ const PatientOverviewHistoryCard = ({ patient, showAppointment }) => {
 
   const { PASProvider } = useSelector((state) => state.auth.user || {});
   const isMedbridge = PASProvider?.toLowerCase() === 'medbridge';
+  const isInternal = PASProvider?.toLowerCase() === 'internal';
+  const hideDoctorColumn = isMedbridge || isInternal;
 
   const columnsHistory = [
     {
@@ -61,7 +63,7 @@ const PatientOverviewHistoryCard = ({ patient, showAppointment }) => {
       dataIndex: 'time',
       render: (time) => removeLeadingZeroFromTime(dayjs(time, ['HH:mm', 'h:mm A']).format('hh:mm A')),
     },
-    ...(!isMedbridge
+    ...(!hideDoctorColumn
       ? [
           {
             title: "Doctor",
@@ -116,7 +118,7 @@ const PatientOverviewHistoryCard = ({ patient, showAppointment }) => {
           </Text>
         </Space>
 
-        {!isMedbridge && (
+        {!hideDoctorColumn && (
           <Space size="small">
             <UserOutlined style={{ fontSize: '12px', color: '#8c8c8c' }} />
             <Text type="secondary" style={{ fontSize: '13px' }}>

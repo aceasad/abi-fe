@@ -1,7 +1,10 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import AppointmentFormModal from './AppointmentFormModal';
-import { updateAppointmentValidationSchema } from 'utils/validations';
+import {
+  updateAppointmentValidationSchema,
+  updatePASAppointmentValidationSchema,
+} from 'utils/validations';
 import { message } from 'antd';
 import { prepareAppointmentData } from 'utils/helpers';
 import { updateAppointment } from 'redux/actions/Appointment';
@@ -37,6 +40,9 @@ const UpdateAppointment = ({
   updateFrom = null,
 }) => {
   const dispatch = useDispatch();
+  const { isPasIntegrated, PASProvider } = useSelector(state => state.auth.user);
+  const isInternal = PASProvider?.toLowerCase() === 'internal';
+  const isPasLike = isPasIntegrated || isInternal;
 
   const { appointment, singleLoading } = useSelector(
     makeSelectSingleAppointment()
@@ -88,7 +94,7 @@ const UpdateAppointment = ({
   const initialState = appointment
     ? {
       patient: appointment.patient.id,
-      doctor: appointment.doctor.id,
+      doctor: appointment.doctor?.id,
       appointmentType: appointment.appointment_type.id,
       price: appointment.price,
       date: dayjs(appointment.date, 'DD/MM/YYYY').format(
@@ -123,7 +129,7 @@ const UpdateAppointment = ({
     <AppointmentFormModal
       title={"Edit appointment"}
       initialState={initialState}
-      validationSchema={updateAppointmentValidationSchema}
+      validationSchema={isPasLike ? updatePASAppointmentValidationSchema : updateAppointmentValidationSchema}
       isEditForm
       doctors={doctors}
       appointmentTypes={appointmentTypes}

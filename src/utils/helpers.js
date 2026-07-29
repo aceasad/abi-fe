@@ -1,5 +1,5 @@
 import { WS_CHAT_URL, WS_NOTIFICATION_URL } from 'constants/ApiConstant';
-import { MESSAGE_TYPE, MESSAGE_STATUS } from 'constants/ChatConstants';
+import { MESSAGE_TYPE, MESSAGE_STATUS, MESSAGE_ROLE } from 'constants/ChatConstants';
 import { MONTH_FORMAT_MM, YEAR_FORMAT_YYYY } from 'constants/DateConstant';
 import { COUNTRY_CODES } from 'constants/CountryCodesConstants';
 import dayjs from './dayjs';
@@ -274,11 +274,17 @@ export const chatListItemStyle = (
   return `chat-menu-list-item ${lastItem} ${selectedItem}`;
 };
 
+const MESSAGE_ROLE_STYLES = {
+  [MESSAGE_ROLE.STAFF]: 'msg-staff',
+  [MESSAGE_ROLE.SYSTEM]: 'msg-system',
+};
+
 export const singleChatMessageStyle = (message) => {
   const messageTypeStyle =
     message?.type === MESSAGE_TYPE.DIVIDER ? 'datetime' : '';
   const messageFromStyle = message.is_answer ? 'msg-sent' : 'msg-recipient';
-  return `msg ${messageTypeStyle} ${messageFromStyle}`;
+  const messageRoleStyle = MESSAGE_ROLE_STYLES[message.role] || '';
+  return `msg ${messageTypeStyle} ${messageFromStyle} ${messageRoleStyle}`;
 };
 
 export const filterNumberInput = (e) =>
@@ -664,4 +670,65 @@ export const formatPatientNameWithId = (name, patientId) => {
     return normalizedName;
   }
   return `${normalizedName} - ${patientId}`;
+};
+
+const CONVERSATION_STATUS_LABELS = {
+  ADDED: 'Added',
+  INVITED: 'Invited',
+  REMINDED: 'Reminded',
+  BOOKING: 'Booking',
+  BOOKED: 'Booked',
+  RESCHEDULING: 'Rescheduling',
+  RESCHEDULED: 'Rescheduled',
+  CANCELLING: 'Cancelling',
+  CANCELLED: 'Cancelled',
+  ATTENDED: 'Attended',
+  NO_RESPONSE: 'No Response',
+  ASKED_QUESTION: 'Asked Question',
+  INCOMPLETE: 'Incomplete',
+  SCREENED_ELSEWHERE: 'Screened Elsewhere',
+  DECLINED: 'Declined',
+  OPT_OUT: 'Opt out',
+  EMERGENCY_SITUATION: 'Emergency Situation',
+  HUMAN_INTERVENTION: 'Human Intervention',
+  SNOOZED: 'Snoozed',
+  FAILED: 'Failed',
+};
+
+// Turns a raw backend conversation_status enum value (e.g. 'HUMAN_INTERVENTION')
+// into the human-readable label (e.g. 'Human Intervention') that
+// getConversationProgressColor below and the rest of the UI expect.
+export const humanizeConversationStatus = (status) => {
+  if (!status) return 'Unknown';
+  return (
+    CONVERSATION_STATUS_LABELS[status] ||
+    String(status)
+      .toLowerCase()
+      .replace(/_/g, ' ')
+      .replace(/\b\w/g, (char) => char.toUpperCase())
+  );
+};
+
+// Shared with the "Booking progress" page (PatientProgressTable) and anywhere
+// else that displays a human-readable conversation/booking status label, so
+// the color coding stays consistent (e.g. the booking history timeline, the
+// chat list status dots).
+export const getConversationProgressColor = (
+  status,
+  { screenedElsewhereLabel = 'Screened Elsewhere' } = {}
+) => {
+  if (status === 'Rescheduled' || status === 'Booked' || status === 'Reminded' || status === 'Attended' || status === 'Arrived') {
+    return '#18D9C5'; // Green
+  } else if (status === 'Added') {
+    return '#A0AEC0'; // Grey — newly added, not yet invited
+  } else if (status === 'Asked Question' || status === 'Rescheduling' || status === 'Cancelling' || status === 'Booking' || status === 'Invited' || status === 'Incomplete' || status === screenedElsewhereLabel || status === 'Sent in' || status === 'Quiet sent in') {
+    return '#FFBF00'; // Yellow
+  } else if (status === 'Cancelled' || status === 'No Response' || status === 'Inactive' || status === 'Opt-out' || status === 'Declined' || status === 'Emergency Situation' || status === 'Human Intervention' || status === 'Snoozed' || status === 'Not attended' || status === 'Walked out' || status === 'Not updated') {
+    return '#FF474C'; // Red
+  } else if (status === 'Failed') {
+    return '#100101'; // Default color
+  }
+  else {
+    return '#E880FF'; // Default color
+  }
 };
