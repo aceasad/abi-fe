@@ -1,50 +1,69 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Typography, Spin, Empty, Row, Col } from 'antd';
+import { Card, Spin, Empty } from 'antd';
 import Chart from 'react-apexcharts';
 import overviewService from 'services/OverviewService';
 import { apexPieChartDefaultOption } from 'constants/ChartConstant';
-
-const { Text } = Typography;
 
 const HEADING_COLOR = '#1a3353';
 const CARD_RADIUS = 16;
 const CARD_BORDER = '1px solid #eef0f4';
 const CARD_SHADOW = '0 1px 2px rgba(26, 51, 83, 0.04), 0 8px 24px -16px rgba(26, 51, 83, 0.18)';
 
-// Shades of blue for "before first reply" slices, shades of green for
-// "before first booking" slices - keeps the two-color-family distinction
-// requested for this chart, while still giving each message-count slice its
-// own shade within that family.
-const BLUE_SHADES = ['#0B3D91', '#1450B8', '#1890FF', '#4DA6FF', '#82C4FF', '#B3DBFF', '#D6ECFF', '#EAF5FF'];
-const GREEN_SHADES = ['#135200', '#237804', '#389E0D', '#52C41A', '#73D13D', '#95DE64', '#B7EB8F', '#D9F7BE'];
+// Same palette as the Booking statuses bar chart in ClinicStats.
+const SLICE_COLORS = ['#6366F1', '#10B981', '#F59E0B', '#EF4444', '#6B7280'];
 
-// Engagement chart: which outbound template the patient replied after.
-// 1 = Invitation, 2–5 = 1st–4th intro, 6+ = raw message count.
+// Which outbound template the patient replied after (1–5 only; 6+ excluded).
 const ENGAGEMENT_TEMPLATE_LABELS = {
-  1: 'Invitation',
-  2: '1st intro',
-  3: '2nd intro',
-  4: '3rd intro',
-  5: '4th intro',
+  1: 'Intro',
+  2: 'Reminder 1',
+  3: 'Reminder 2',
+  4: 'Reminder 3',
+  5: 'Reminder 4',
 };
 
-const engagementLabel = (count) =>
-  ENGAGEMENT_TEMPLATE_LABELS[count] ?? `${count} messages`;
+const buildSlices = (rows) => {
+  const sorted = [...rows]
+    .filter((row) => row.messages >= 1 && row.messages <= 5)
+    .sort((a, b) => a.messages - b.messages);
 
-const bookingLabel = (count) => `${count} message${count === 1 ? '' : 's'}`;
-
-const buildSlices = (rows, palette, labelFn) => {
-  const sorted = [...rows].sort((a, b) => a.messages - b.messages);
   return {
-    labels: sorted.map((row) => labelFn(row.messages)),
+    labels: sorted.map((row) => ENGAGEMENT_TEMPLATE_LABELS[row.messages]),
     series: sorted.map((row) => row.patients),
-    colors: sorted.map((_, index) => palette[index % palette.length]),
+    colors: sorted.map((row) => SLICE_COLORS[row.messages - 1]),
     total: sorted.reduce((sum, row) => sum + row.patients, 0),
   };
 };
 
-const MilestonePie = ({ title, rows, palette, isMobile, labelFn }) => {
-  const { labels, series, colors, total } = buildSlices(rows, palette, labelFn);
+const MessagesBeforeMilestones = ({ startTime, endTime, campaignId, isMobile = false }) => {
+  const [loading, setLoading] = useState(false);
+  const [engagementRows, setEngagementRows] = useState([]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const { data } = await overviewService.getMessagesBeforeMilestones(startTime, endTime, campaignId);
+        if (cancelled) return;
+        setEngagementRows(data?.messages_before_first_engagement ?? []);
+      } catch (err) {
+        if (!cancelled) {
+          setEngagementRows([]);
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+
+    fetchData();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [startTime, endTime, campaignId]);
+
+  const { labels, series, colors, total } = buildSlices(engagementRows);
   const hasData = series.some((value) => value > 0);
 
   const options = {
@@ -91,69 +110,10 @@ const MilestonePie = ({ title, rows, palette, isMobile, labelFn }) => {
   };
 
   return (
-    <div>
-      <Text
-        style={{
-          display: 'block',
-          textAlign: 'center',
-          fontSize: isMobile ? 13 : 14,
-          color: HEADING_COLOR,
-          fontWeight: 600,
-          marginBottom: 8,
-        }}
-      >
-        {title}
-      </Text>
-      {hasData ? (
-        <Chart type="donut" options={options} series={series} height={isMobile ? 260 : 300} />
-      ) : (
-        <Empty
-          description="No data for the selected period"
-          image={Empty.PRESENTED_IMAGE_SIMPLE}
-          style={{ margin: isMobile ? '30px 0' : '48px 0' }}
-        />
-      )}
-    </div>
-  );
-};
-
-const MessagesBeforeMilestones = ({ startTime, endTime, campaignId, isMobile = false }) => {
-  const [loading, setLoading] = useState(false);
-  const [engagementRows, setEngagementRows] = useState([]);
-  const [bookingRows, setBookingRows] = useState([]);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const { data } = await overviewService.getMessagesBeforeMilestones(startTime, endTime, campaignId);
-        if (cancelled) return;
-        setEngagementRows(data?.messages_before_first_engagement ?? []);
-        setBookingRows(data?.messages_before_first_booking ?? []);
-      } catch (err) {
-        if (!cancelled) {
-          setEngagementRows([]);
-          setBookingRows([]);
-        }
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    };
-
-    fetchData();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [startTime, endTime, campaignId]);
-
-  return (
     <Card
       title={
         <span style={{ fontSize: isMobile ? 15 : 16, fontWeight: 600, color: HEADING_COLOR }}>
-          Messages sent before key milestones
+          Patient’s first engagement
         </span>
       }
       style={{ borderRadius: CARD_RADIUS, border: CARD_BORDER, boxShadow: CARD_SHADOW }}
@@ -163,26 +123,15 @@ const MessagesBeforeMilestones = ({ startTime, endTime, campaignId, isMobile = f
       }}
     >
       <Spin spinning={loading}>
-        <Row gutter={[isMobile ? 16 : 24, 16]}>
-          <Col xs={24} md={12}>
-            <MilestonePie
-              title="Before first reply"
-              rows={engagementRows}
-              palette={BLUE_SHADES}
-              isMobile={isMobile}
-              labelFn={engagementLabel}
-            />
-          </Col>
-          <Col xs={24} md={12}>
-            <MilestonePie
-              title="Before first booking"
-              rows={bookingRows}
-              palette={GREEN_SHADES}
-              isMobile={isMobile}
-              labelFn={bookingLabel}
-            />
-          </Col>
-        </Row>
+        {hasData ? (
+          <Chart type="donut" options={options} series={series} height={isMobile ? 280 : 320} />
+        ) : (
+          <Empty
+            description="No data for the selected period"
+            image={Empty.PRESENTED_IMAGE_SIMPLE}
+            style={{ margin: isMobile ? '30px 0' : '48px 0' }}
+          />
+        )}
       </Spin>
     </Card>
   );
