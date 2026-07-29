@@ -35,11 +35,10 @@ const FUNNEL_STAGES_META = [
 
 const PLACEHOLDER_APPOINTMENT_OUTCOMES = [
   { name: 'Scheduled', value: 35 },
-  { name: 'Attended', value: 22 },
+  { name: 'Attended', value: 25 },
   { name: 'Not attended', value: 8 },
   { name: 'Cancelled', value: 5 },
   { name: 'Rescheduled', value: 4 },
-  { name: 'Arrived', value: 3 },
 ];
 
 // The "Booking progress" tab on the Overview page is keyed "5". Clicking a
@@ -467,14 +466,15 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country, startTi
     + (not_updated ?? 0);
 
   const scheduledOnlyCount = Math.max((bookings ?? 0) - otherAppointmentOutcomeCounts, 0);
+  // Arrived is treated as Attended for the Booking statuses chart (combined count, no separate row).
+  const attendedCombinedCount = (attended ?? 0) + (arrived ?? 0);
 
   const appointmentOutcomeValues = [
     scheduledOnlyCount,
-    attended,
+    attendedCombinedCount,
     non_attended,
     cancelled,
     reschedule,
-    arrived,
     sent_in,
     quiet_sent_in,
     walked_out,
@@ -483,11 +483,10 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country, startTi
 
   const appointmentOutcomes = [
     { name: 'Scheduled', value: scheduledOnlyCount, color: '#6366F1' },
-    { name: 'Attended', value: attended ?? -1, color: '#10B981' },
+    { name: 'Attended', value: attendedCombinedCount, color: '#10B981' },
     { name: 'Not attended', value: non_attended ?? -1, color: '#F59E0B' },
     { name: 'Cancelled', value: cancelled ?? -1, color: '#EF4444' },
     { name: 'Rescheduled', value: reschedule ?? -1, color: '#6B7280' },
-    { name: 'Arrived', value: arrived ?? -1, color: '#8B5CF6' },
     { name: 'Sent in', value: sent_in ?? -1, color: '#06B6D4' },
     { name: 'Quiet sent in', value: quiet_sent_in ?? -1, color: '#84CC16' },
     { name: 'Walked out', value: walked_out ?? -1, color: '#F97316' },
