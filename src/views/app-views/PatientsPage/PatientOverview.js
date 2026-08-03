@@ -24,7 +24,7 @@ import {
 import { makeSelectPatientOverview } from 'redux/selectors/Patient';
 import Loading from 'components/shared-components/Loading';
 import { PATIENT_PAGE } from './index';
-import { formatDateByCountry, prepareFormData } from 'utils/helpers';
+import { formatDateByCountry, isUsCountry, prepareFormData } from 'utils/helpers';
 import Conversation from '../ChatPage/Conversation';
 import PatientOverviewExistingConditions from './PatientOverviewExistingConditions';
 import PatientOverviewPreviousOperations from './PatientOverviewPreviousOperations';
@@ -53,6 +53,7 @@ const PatientOverview = ({
   const isMedbridge = PASProvider?.toLowerCase() === 'medbridge';
   const isEmis = PASProvider?.toLowerCase() === 'emis';
   const shouldHideDobAndGender = isMedbridge || isEmis;
+  const isUSA = isUsCountry(clinic?.country);
 
   const [activeAppointmnet, setActiveAppointment] = useState(null);
 
@@ -83,8 +84,10 @@ const PatientOverview = ({
     street_name: "Street name",
     area_of_living: "Area",
     city: "City",
-    post_code: "Postcode",
+    ...(isUSA ? { state: "State" } : {}),
+    post_code: isUSA ? "Zip Code" : "Postcode",
     country: "Country",
+    ...(isUSA ? { latitude: "Latitude", longitude: "Longitude" } : {}),
     material_status: "Marital status",
     number_of_dependants: "Number of dependants",
     employment: "Employment status",
@@ -193,6 +196,7 @@ const PatientOverview = ({
                 </Formik>
                 <PatientOverviewDetails
                   fields={patientDetailsFields}
+                  isUSA={isUSA}
                   patient={{
                     ...patient,
                     date_of_birth: formatDateByCountry(

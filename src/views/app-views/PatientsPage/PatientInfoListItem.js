@@ -4,7 +4,7 @@ import { Typography } from 'antd';
 
 const { Text } = Typography;
 
-const PatientInfoListItem = ({ children, className }) => {
+const PatientInfoListItem = ({ children, className, isUSA }) => {
   return (
     <div className={className}>
       <Flex justifyContent="between" className="mb-3">
@@ -13,8 +13,12 @@ const PatientInfoListItem = ({ children, className }) => {
         </Text>
         <Text className="text-right text-break">
           {children[1]}
-          {children[0] === 'Height' && <span className="ml-1">cm</span>}
-          {children[0] === 'Weight' && <span className="ml-1">kg</span>}
+          {children[0] === 'Height' && (
+            <span className="ml-1">{isUSA ? 'in' : 'cm'}</span>
+          )}
+          {children[0] === 'Weight' && (
+            <span className="ml-1">{isUSA ? 'lbs' : 'kg'}</span>
+          )}
         </Text>
       </Flex>
     </div>

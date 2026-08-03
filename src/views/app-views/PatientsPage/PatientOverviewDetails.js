@@ -2,7 +2,7 @@ import { Divider } from 'antd';
 import React from 'react';
 import PatientInfoListItem from './PatientInfoListItem';
 
-const PatientOverviewDetails = ({ fields, patient }) => {
+const PatientOverviewDetails = ({ fields, patient, isUSA }) => {
   const visibleFields = Object.keys(fields).filter((field) => !!patient[field]);
   const firstDivider = 4;
   const secondDivider = 11;
@@ -13,7 +13,7 @@ const PatientOverviewDetails = ({ fields, patient }) => {
     <>
       {visibleFields.map((field, index) => (
         <div key={index}>
-          <PatientInfoListItem>
+          <PatientInfoListItem isUSA={isUSA}>
             {fields[field]}
             {patient[field]}
           </PatientInfoListItem>

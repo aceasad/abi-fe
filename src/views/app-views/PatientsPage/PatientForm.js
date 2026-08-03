@@ -11,9 +11,10 @@ import FormDatePicker from 'components/custom-components/Form/FormDatePicker';
 import FormSelect from 'components/custom-components/Form/FormSelect';
 import ColumnField from 'components/custom-components/Form/ColumnField';
 import { makeSelectPatientDetails } from 'redux/selectors/Patient';
+import { makeSelectClinic } from 'redux/selectors/Clinic';
 import { patientSchema } from 'utils/validations';
 import { MAX } from 'constants/ClinicConstants';
-import { filterNumberInput, joinPhoneNumberWithCountryCode } from 'utils/helpers';
+import { filterNumberInput, isUsCountry, joinPhoneNumberWithCountryCode } from 'utils/helpers';
 import PatientFormExistingConditions from './PatientFormExistingConditions';
 import PatientFormPreviousOperationss from './PatientFormPreviousOperations';
 import {
@@ -53,12 +54,15 @@ const PatientForm = ({
   const { education, employment, material_status, ethnicities } = useSelector(
     makeSelectPatientDetails()
   );
+  const clinic = useSelector(makeSelectClinic());
+  const isUSA = isUsCountry(clinic?.country);
 
   const afterDelete = () => {
     message.success("Operation type successfully deleted");
   };
 
   const handleSubmitWrapper = (values, { setErrors }) => {
+    console.log('[PatientForm] onSubmit — validation passed, raw values:', values);
     const parsedValues = {
       ...values,
       date_of_birth: dayjs(values.date_of_birth, 'DD/MM/YYYY').format(
@@ -69,6 +73,7 @@ const PatientForm = ({
         values.phone_number
       ),
     };
+    console.log('[PatientForm] calling parent handleSubmit with:', parsedValues);
     handleSubmit(parsedValues, setErrors, enableRedirect);
   };
 
@@ -161,7 +166,7 @@ const PatientForm = ({
         onSubmit={handleSubmitWrapper}
         validationSchema={patientSchema}
       >
-        {({ values, dirty, isValid, handleSubmit, setFieldValue }) => (
+        {({ values, dirty, isValid, errors, handleSubmit, setFieldValue }) => (
           <>
             <div ref={headerRef}>
               <PatientHeader
@@ -170,6 +175,7 @@ const PatientForm = ({
                   showDiscardModal(true);
                 }}
                 primaryAction={() => {
+                  console.log('[PatientForm] Save (header) clicked — dirty:', dirty, 'isValid:', isValid, 'errors:', errors, 'values:', values);
                   handleSubmit();
                 }}
                 primaryDisabled={!dirty || loading}
@@ -245,7 +251,7 @@ const PatientForm = ({
                         type={'number'}
                         onKeyDown={filterNumberInput}
                         min={0}
-                        suffix="CMs"
+                        suffix={isUSA ? "in" : "CMs"}
                       />
                       <ColumnField
                         span={isMobile && !isTablet ? 24 : 8}
@@ -255,7 +261,7 @@ const PatientForm = ({
                         type={'number'}
                         onKeyDown={filterNumberInput}
                         min={0}
-                        suffix="KGs"
+                        suffix={isUSA ? "lbs" : "KGs"}
                       />
                     </Row>
                     <Row gutter={isMobile ? 12 : 16}>
@@ -415,15 +421,29 @@ const PatientForm = ({
                         }}
                         required
                       />
+                      {isUSA && (
+                        <ColumnField
+                          span={isMobile && !isTablet ? 24 : 12}
+                          component={FormField}
+                          label={"State"}
+                          name="state"
+                          maxLength={2}
+                          placeholder="e.g. NY"
+                          errorTexts={{
+                            label: "State",
+                            maxValue: 2,
+                          }}
+                        />
+                      )}
                     </Row>
                     <Row gutter={isMobile ? 12 : 16}>
                       <ColumnField
                         span={isMobile && !isTablet ? 24 : 12}
                         component={FormField}
-                        label={"Postcode"}
+                        label={isUSA ? "Zip Code" : "Postcode"}
                         name="post_code"
                         errorTexts={{
-                          label: "Postcode",
+                          label: isUSA ? "Zip Code" : "Postcode",
                           maxValue: 16,
                         }}
                         required
@@ -439,6 +459,24 @@ const PatientForm = ({
                         }}
                       />
                     </Row>
+                    {isUSA && id && (
+                      <Row gutter={isMobile ? 12 : 16}>
+                        <ColumnField
+                          span={isMobile && !isTablet ? 24 : 12}
+                          component={FormField}
+                          label={"Latitude"}
+                          name="latitude"
+                          disabled
+                        />
+                        <ColumnField
+                          span={isMobile && !isTablet ? 24 : 12}
+                          component={FormField}
+                          label={"Longitude"}
+                          name="longitude"
+                          disabled
+                        />
+                      </Row>
+                    )}
                   </Col>
                 </Row>
 
@@ -530,6 +568,7 @@ const PatientForm = ({
 
             <Button
               onClick={() => {
+                console.log('[PatientForm] Save (floating) clicked — dirty:', dirty, 'isValid:', isValid, 'errors:', errors, 'values:', values);
                 handleSubmit();
               }}
               type="primary"

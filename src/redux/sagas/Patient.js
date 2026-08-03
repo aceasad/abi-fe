@@ -160,13 +160,16 @@ function* getPatientSingle({ payload }) {
 }
 
 function* updatePatient({ payload }) {
+  console.log('[saga updatePatient] PUT request starting — id:', payload.id, 'data:', payload.data);
   try {
     yield put(setPatientLoading(true));
-    yield call(patientService.updatePatient, payload.id, payload.data);
+    const response = yield call(patientService.updatePatient, payload.id, payload.data);
+    console.log('[saga updatePatient] PUT request succeeded — response:', response);
     yield payload.enableRedirect();
     yield payload.afterUpdate();
     yield put(modifyPatient(payload.data));
   } catch (err) {
+    console.log('[saga updatePatient] PUT request failed — status:', err?.response?.status, 'data:', err?.response?.data, 'error:', err);
     if (err?.response?.status === 400) {
       const formErrors = parsePatientFormApiErrors(err?.response?.data);
 

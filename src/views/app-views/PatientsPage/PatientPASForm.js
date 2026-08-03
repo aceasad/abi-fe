@@ -15,9 +15,10 @@ import {
   makeSelectPatientLocations,
 } from 'redux/selectors/Patient';
 import { makeSelectAppointmentTypes } from 'redux/selectors/Appointment';
+import { makeSelectClinic } from 'redux/selectors/Clinic';
 import { patientSchema } from 'utils/validations';
 import { MAX, NHS_MAX } from 'constants/ClinicConstants';
-import { applyPatientFormFieldError, buildPatientHomeLocationNoTimeslotsError, filterNumberInput, formatLocationLabel, getHomeLocationTimezoneValidationError, joinPhoneNumberWithCountryCode, parsePatientFormApiErrors } from 'utils/helpers';
+import { applyPatientFormFieldError, buildPatientHomeLocationNoTimeslotsError, filterNumberInput, formatLocationLabel, getHomeLocationTimezoneValidationError, isUsCountry, joinPhoneNumberWithCountryCode, parsePatientFormApiErrors } from 'utils/helpers';
 import patientService from 'services/PatientService';
 import PatientFormExistingConditions from './PatientFormExistingConditions';
 import PatientFormPreviousOperationss from './PatientFormPreviousOperations';
@@ -74,13 +75,17 @@ const PatientPASForm = ({
   const { appointmentTypes, appointmentTypesLoading } = useSelector(
     makeSelectAppointmentTypes()
   );
+  const clinic = useSelector(makeSelectClinic());
+  const isUSA = isUsCountry(clinic?.country);
 
   const afterDelete = () => {
     message.success("Operation type successfully deleted");
   };
 
   const handleSubmitWrapper = async (values, { setErrors, setFieldTouched }) => {
+    console.log('[PatientPASForm] onSubmit — validation passed, raw values:', values);
     const showFieldError = (fieldName, errorMessage) => {
+      console.log('[PatientPASForm] aborting submit — field error on', fieldName, ':', errorMessage);
       applyPatientFormFieldError(fieldName, errorMessage, {
         setErrors,
         setFieldTouched,
@@ -107,10 +112,15 @@ const PatientPASForm = ({
     };
     delete parsedValues.pas_provider;
     // Internal orgs have no external identity system, and ExternalIdentificationNumber
-    // is unique=True on the backend across ALL organizations, so the backend generates
-    // a collision-checked dummy value server-side when this is left blank rather than
-    // exposing the field in the form or risking a client-generated collision.
-    if (isInternal && !parsedValues.ExternalIdentificationNumber) {
+    // is unique=True on the backend across ALL organizations. This field is never exposed
+    // in the form for Internal orgs, so we never submit it at all:
+    // - On create, the backend generates a collision-checked dummy value server-side when
+    //   it's left out of the payload (see local_generate_unique_external_identification_number).
+    // - On edit, omitting it entirely (rather than resending whatever was spread into the
+    //   form's initial values, or worse, an empty string) means the backend's update() never
+    //   touches the column, so the value assigned at creation stays persistent forever and
+    //   is never overwritten/blanked out on a later save.
+    if (isInternal) {
       delete parsedValues.ExternalIdentificationNumber;
     }
     if (isLocationAware) {
@@ -187,6 +197,7 @@ const PatientPASForm = ({
           return;
         }
       } catch (error) {
+        console.log('[PatientPASForm] aborting submit — timeslot validation request failed:', error);
         const formErrors = parsePatientFormApiErrors(error?.response?.data);
         if (formErrors.home_location) {
           showFieldError('home_location', formErrors.home_location);
@@ -197,6 +208,7 @@ const PatientPASForm = ({
       }
     }
 
+    console.log('[PatientPASForm] calling parent handleSubmit with:', parsedValues);
     handleSubmit(parsedValues, setErrors, enableRedirect, setFieldTouched);
   };
 
@@ -316,7 +328,7 @@ const PatientPASForm = ({
         onSubmit={handleSubmitWrapper}
         validationSchema={patientSchema}
       >
-        {({ values, dirty, isValid, handleSubmit, setFieldValue }) => (
+        {({ values, dirty, isValid, errors, handleSubmit, setFieldValue }) => (
           <>
             <div ref={headerRef}>
               <PatientHeader
@@ -325,6 +337,7 @@ const PatientPASForm = ({
                   showDiscardModal(true);
                 }}
                 primaryAction={() => {
+                  console.log('[PatientPASForm] Save (header) clicked — dirty:', dirty, 'isValid:', isValid, 'errors:', errors, 'values:', values);
                   handleSubmit();
                 }}
                 primaryDisabled={!dirty || loading}
@@ -686,15 +699,29 @@ const PatientPASForm = ({
                             maxValue: 64,
                           }}
                         />
+                        {isUSA && (
+                          <ColumnField
+                            span={isMobile && !isTablet ? 24 : 12}
+                            component={FormField}
+                            label={"State"}
+                            name="state"
+                            maxLength={2}
+                            placeholder="e.g. NY"
+                            errorTexts={{
+                              label: "State",
+                              maxValue: 2,
+                            }}
+                          />
+                        )}
                       </Row>
                       <Row gutter={isMobile ? 12 : 16}>
                         <ColumnField
                           span={isMobile && !isTablet ? 24 : 12}
                           component={FormField}
-                          label={"Postcode"}
+                          label={isUSA ? "Zip Code" : "Postcode"}
                           name="post_code"
                           errorTexts={{
-                            label: "Postcode",
+                            label: isUSA ? "Zip Code" : "Postcode",
                             maxValue: 16,
                           }}
                         />
@@ -709,6 +736,24 @@ const PatientPASForm = ({
                           }}
                         />
                       </Row>
+                      {isUSA && id && (
+                        <Row gutter={isMobile ? 12 : 16}>
+                          <ColumnField
+                            span={isMobile && !isTablet ? 24 : 12}
+                            component={FormField}
+                            label={"Latitude"}
+                            name="latitude"
+                            disabled
+                          />
+                          <ColumnField
+                            span={isMobile && !isTablet ? 24 : 12}
+                            component={FormField}
+                            label={"Longitude"}
+                            name="longitude"
+                            disabled
+                          />
+                        </Row>
+                      )}
                     </Col>
                   </Row>
                 )}
@@ -738,7 +783,7 @@ const PatientPASForm = ({
                           type={'number'}
                           onKeyDown={filterNumberInput}
                           min={0}
-                          suffix="CMs"
+                          suffix={isUSA ? "in" : "CMs"}
                         />
                         <ColumnField
                           span={isMobile && !isTablet ? 24 : 12}
@@ -748,7 +793,7 @@ const PatientPASForm = ({
                           type={'number'}
                           onKeyDown={filterNumberInput}
                           min={0}
-                          suffix="KGs"
+                          suffix={isUSA ? "lbs" : "KGs"}
                         />
                       </Row>
                       <Row gutter={isMobile ? 12 : 16}>
@@ -993,6 +1038,7 @@ const PatientPASForm = ({
 
             <Button
               onClick={() => {
+                console.log('[PatientPASForm] Save (floating) clicked — dirty:', dirty, 'isValid:', isValid, 'errors:', errors, 'values:', values);
                 handleSubmit();
               }}
               type="primary"
