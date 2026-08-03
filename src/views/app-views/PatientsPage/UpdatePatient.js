@@ -63,10 +63,12 @@ const UpdatePatient = ({ showList, patientId }) => {
 
   const handleSubmit = (values, setErrors, enableRedirect, setFieldTouched) => {
     const { language, timezone, ...patientValues } = values;
+    const data = filterEmptyObjectFeilds(patientValues);
+    console.log('[UpdatePatient] dispatching editPatient — id:', patientId, 'data:', data);
     dispatch(
       editPatient({
         id: patientId,
-        data: filterEmptyObjectFeilds(patientValues),
+        data,
         afterUpdate,
         enableRedirect,
         setErrors,
@@ -79,63 +81,64 @@ const UpdatePatient = ({ showList, patientId }) => {
     () =>
       patient
         ? {
-            ...mapNullObjectFeildsToString(patient),
-            date_of_birth: (() => {
-              if (!patient.date_of_birth) return '';
-              const parsed = dayjs(
-                patient.date_of_birth,
-                ['YYYY-MM-DD', 'DD/MM/YYYY', DATE_FORMAT_DD_MM_YYYY],
-                true
-              );
-              return parsed.isValid()
-                ? parsed.format(DATE_FORMAT_DD_MM_YYYY)
-                : '';
-            })(),
-            education: patient?.education?.id,
-            ethnicity: patient?.ethnicity?.id,
-            material_status: patient?.material_status?.id,
-            employment: patient?.employment?.id,
-            medicalConditions: items.map((condition) => condition.id),
-            ...splitPhoneNumberByCountryCode(patient?.phone_number),
-            home_location: patient?.home_location?.location_id
-              ? String(patient.home_location.location_id)
-              : '',
-            available_location_ids: Array.isArray(patient?.available_location_ids)
-              ? patient.available_location_ids
-                  .map((location) => location?.location_id)
-                  .filter(Boolean)
-                  .map((id) => String(id))
-              : [],
-            pas_provider: normalizedPasProvider,
-            appointment_type:
-              patient?.appointment_type?.id ?? patient?.appointment_type ?? '',
-            language: formatDocumentLanguageLabel(patient?.language),
-          }
+          ...mapNullObjectFeildsToString(patient),
+          date_of_birth: (() => {
+            if (!patient.date_of_birth) return '';
+            const parsed = dayjs(
+              patient.date_of_birth,
+              ['YYYY-MM-DD', 'DD/MM/YYYY', DATE_FORMAT_DD_MM_YYYY],
+              true
+            );
+            return parsed.isValid()
+              ? parsed.format(DATE_FORMAT_DD_MM_YYYY)
+              : '';
+          })(),
+          education: patient?.education?.id,
+          ethnicity: patient?.ethnicity?.id,
+          material_status: patient?.material_status?.id,
+          employment: patient?.employment?.id,
+          medicalConditions: items.map((condition) => condition.id),
+          ...splitPhoneNumberByCountryCode(patient?.phone_number),
+          home_location: patient?.home_location?.location_id
+            ? String(patient.home_location.location_id)
+            : '',
+          available_location_ids: Array.isArray(patient?.available_location_ids)
+            ? patient.available_location_ids
+              .map((location) => location?.location_id)
+              .filter(Boolean)
+              .map((id) => String(id))
+            : [],
+          pas_provider: normalizedPasProvider,
+          appointment_type:
+            patient?.appointment_type?.id ?? patient?.appointment_type ?? '',
+          language: formatDocumentLanguageLabel(patient?.language),
+        }
         : {
-            first_name: '',
-            last_name: '',
-            date_of_birth: '',
-            gender: '',
-            height: '',
-            weight: '',
-            ethnicity: '',
-            phone_number: '',
-            email: '',
-            street_number: '',
-            street_name: '',
-            area_of_living: '',
-            city: '',
-            post_code: '',
-            country: '',
-            material_status: '',
-            number_of_dependants: '',
-            employment: '',
-            education: '',
-            insurance: '',
-            medicalConditions: [],
-            pas_provider: normalizedPasProvider,
-            available_location_ids: [],
-          },
+          first_name: '',
+          last_name: '',
+          date_of_birth: '',
+          gender: '',
+          height: '',
+          weight: '',
+          ethnicity: '',
+          phone_number: '',
+          email: '',
+          street_number: '',
+          street_name: '',
+          area_of_living: '',
+          city: '',
+          post_code: '',
+          state: '',
+          country: '',
+          material_status: '',
+          number_of_dependants: '',
+          employment: '',
+          education: '',
+          insurance: '',
+          medicalConditions: [],
+          pas_provider: normalizedPasProvider,
+          available_location_ids: [],
+        },
     [patient, items, normalizedPasProvider]
   );
 

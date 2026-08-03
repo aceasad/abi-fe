@@ -32,6 +32,12 @@ const passwordRepeatValidation = (refField) =>
 const usernameSchema = Yup.string().email();
 const nameSchema = Yup.string().trim().max(MAX).required();
 const externalIdentificationFormat = /^(?:\d{7}|\d{10})$/;
+// Yup.number() casts '' to NaN (not null), so an untouched optional number field fails
+// validation even without .required() unless we explicitly treat '' as null first.
+const optionalNumberSchema = () =>
+  Yup.number()
+    .transform((value, originalValue) => (originalValue === '' ? null : value))
+    .nullable();
 const digitsOnlyPhoneSchema = Yup.string()
   .transform((value) => normalizeLocalPhoneNumber(value))
   .matches(/^[0-9]+$/, { excludeEmptyString: true })
@@ -113,22 +119,33 @@ export const patientSchema = Yup.object().shape({
   last_name: Yup.string().trim().max(MAX).required(),
   gender: Yup.string(),
   date_of_birth: Yup.string().nullable(),
-  height: Yup.number(),
-  weight: Yup.number(),
+  height: optionalNumberSchema(),
+  weight: optionalNumberSchema(),
   country_code: digitsOnlyPhoneSchema,
   phone_number: digitsOnlyPhoneSchema,
   email: usernameSchema,
-  number_of_dependants: Yup.number(),
+  number_of_dependants: optionalNumberSchema(),
   insurance: Yup.string().max(MAX),
   street_number: Yup.string().max(8),
   street_name: Yup.string().max(128),
   area_of_living: Yup.string().max(128),
   city: Yup.string().max(64),
   post_code: Yup.string().max(16),
+  state: Yup.string().max(2),
   country: Yup.string().max(64),
-  ExternalIdentificationNumber: Yup.string()
-    .matches(externalIdentificationFormat, { excludeEmptyString: true })
-    .max(10),
+  // Only PatientPASForm renders this as an editable, staff-entered field, and only for
+  // PAS-integrated providers other than Internal (see the `{!isInternal && (...)}` guard
+  // there) — plain non-PAS patients (PatientForm) never show it at all, and Internal orgs
+  // get an opaque, backend-generated dummy value (see
+  // local_generate_unique_external_identification_number) that staff never type in. So the
+  // strict NHS/PAS-identifier format only makes sense to enforce for a real, non-internal
+  // PAS provider.
+  ExternalIdentificationNumber: Yup.string().when('pas_provider', {
+    is: (value) => Boolean(value) && value !== 'internal',
+    then: (schema) =>
+      schema.matches(externalIdentificationFormat, { excludeEmptyString: true }).max(10),
+    otherwise: (schema) => schema,
+  }),
   case_id: Yup.string().max(20).when('pas_provider', {
     is: 'medbridge',
     then: (schema) => schema.required(),
