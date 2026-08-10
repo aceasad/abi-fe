@@ -5,6 +5,7 @@ import {
   BarChartOutlined,
   TeamOutlined,
   SettingOutlined,
+  EnvironmentOutlined,
 } from '@ant-design/icons';
 import { Card, Layout, Menu, Typography, Grid, Select } from 'antd';
 import { Link, Redirect, Route, Switch, useHistory } from 'react-router-dom';
@@ -13,6 +14,7 @@ import ProfileSettings from './ProfileSettings';
 import IndustryAverage from '../IndustryAveragePage';
 import UserSettings from '../UserSettings';
 import AdvancedSettings from './AdvancedSettings';
+import ClinicLocations from './ClinicLocations';
 import { useSelector } from 'react-redux';
 import { makeSelectIsOrganizationOwner } from 'redux/selectors/Auth';
 import utils from 'utils';
@@ -21,7 +23,7 @@ const { Title } = Typography;
 const { useBreakpoint } = Grid;
 const { Option } = Select;
 
-const SettingOption = ({ match, location, isOrganizationOwner, isMobile, isTablet }) => {
+const SettingOption = ({ match, location, isOrganizationOwner, isMobile, isTablet, showLocations }) => {
   const history = useHistory();
 
   const menuItems = [
@@ -49,6 +51,14 @@ const SettingOption = ({ match, location, isOrganizationOwner, isMobile, isTable
         icon: <SettingOutlined />,
         label: "Advanced Settings",
         path: 'advanced-settings'
+      },
+    ] : []),
+    ...(showLocations ? [
+      {
+        key: `${match.url}/clinic-locations`,
+        icon: <EnvironmentOutlined />,
+        label: "Clinic Locations",
+        path: 'clinic-locations'
       },
     ] : []),
     {
@@ -102,7 +112,7 @@ const SettingOption = ({ match, location, isOrganizationOwner, isMobile, isTable
   );
 };
 
-const SettingContent = ({ match, isOrganizationOwner }) => {
+const SettingContent = ({ match, isOrganizationOwner, showLocations }) => {
   return (
     <Switch>
       <Redirect exact from={`${match.url}`} to={`${match.url}/edit-clinic`} />
@@ -115,6 +125,12 @@ const SettingContent = ({ match, isOrganizationOwner }) => {
         path={`${match.url}/industry-average`}
         component={IndustryAverage}
       />
+      {showLocations && (
+        <Route
+          path={`${match.url}/clinic-locations`}
+          component={ClinicLocations}
+        />
+      )}
       {isOrganizationOwner && (
         <>
           <Route path={`${match.url}/user-settings`} component={UserSettings} />
@@ -130,6 +146,9 @@ const SettingContent = ({ match, isOrganizationOwner }) => {
 
 const SettingsPage = (props) => {
   const isOrganizationOwner = useSelector(makeSelectIsOrganizationOwner());
+  const { PASProvider, isPasIntegrated } = useSelector((state) => state.auth.user || {});
+  const showLocations =
+    (PASProvider || '').toLowerCase() === 'internal' && !isPasIntegrated;
   const screens = utils.getBreakPoint(useBreakpoint());
   const isMobile = !screens.includes('lg');
   const isTablet = screens.includes('md') && !screens.includes('lg');
@@ -144,11 +163,18 @@ const SettingsPage = (props) => {
 
       <Layout>
         <Card styles={{ body: { padding: isMobile ? '16px' : '24px' } }}>
-          <SettingOption {...props} isOrganizationOwner={isOrganizationOwner} isMobile={isMobile} isTablet={isTablet} />
+          <SettingOption
+            {...props}
+            isOrganizationOwner={isOrganizationOwner}
+            isMobile={isMobile}
+            isTablet={isTablet}
+            showLocations={showLocations}
+          />
           <div style={{ marginTop: isMobile ? '16px' : '24px' }} />
           <SettingContent
             {...props}
             isOrganizationOwner={isOrganizationOwner}
+            showLocations={showLocations}
           />
         </Card>
       </Layout>

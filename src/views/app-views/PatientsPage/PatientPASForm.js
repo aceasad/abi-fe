@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { interpolate } from 'utils/interpolate';
 import { useDispatch, useSelector } from 'react-redux';
 import { Field, Formik } from 'formik';
-import { Button, Card, Col, message, Row, Typography, Modal, Grid } from 'antd';
+import { Button, Card, Col, Form as AntForm, Input, message, Row, Typography, Modal, Grid, Tooltip } from 'antd';
 import Form from 'antd/lib/form/Form';
 
 import PatientHeader from './PatientHeader';
@@ -77,6 +77,27 @@ const PatientPASForm = ({
   );
   const clinic = useSelector(makeSelectClinic());
   const isUSA = isUsCountry(clinic?.country);
+  const { isTMSEnabled: userIsTMSEnabled } = useSelector(
+    (state) => state.auth.user || {}
+  );
+  // Prefer organization flag from clinic; fall back to /users/me auth payload.
+  const isTMSEnabled = Boolean(
+    clinic?.isTMSEnabled ?? userIsTMSEnabled
+  );
+
+  const isEligibleForTransport = (homeLocationId) => {
+    if (!isTMSEnabled || !homeLocationId) {
+      return false;
+    }
+    const selected = locations.find(
+      (loc) => String(loc?.location_id) === String(homeLocationId)
+    );
+    const hasLob = Boolean(selected?.location_tms_lob_id);
+    const patientGeocoded = Boolean(
+      initialState?.latitude != null && initialState?.longitude != null
+    );
+    return hasLob && patientGeocoded;
+  };
 
   const afterDelete = () => {
     message.success("Operation type successfully deleted");
@@ -452,6 +473,27 @@ const PatientPASForm = ({
                             }}
                             required={isLocationAware}
                           />
+                          {isTMSEnabled && id && (
+                            <Col span={isMobile && !isTablet ? 24 : 8}>
+                              <AntForm.Item label="Eligible for Transport">
+                                <Tooltip
+                                  placement="topLeft"
+                                  title="Live transport availability is checked at booking with a service type with pickup and dropoff location."
+                                >
+                                  <span style={{ display: 'block' }}>
+                                    <Input
+                                      disabled
+                                      value={
+                                        isEligibleForTransport(values.home_location)
+                                          ? 'True'
+                                          : 'False'
+                                      }
+                                    />
+                                  </span>
+                                </Tooltip>
+                              </AntForm.Item>
+                            </Col>
+                          )}
                           <ColumnField
                             span={isMobile && !isTablet ? 24 : 8}
                             component={FormSelect}

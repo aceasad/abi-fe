@@ -3,6 +3,9 @@ import dayjs from 'utils/dayjs';
 
 const ENDPOINTS = {
   AVAILABLE_TIMESLOTS: '/appointments/timeslots/available/',
+  // Inventory CRUD is on TimeslotViewSet at /timeslots/ (not under /appointments/)
+  TIMESLOTS: '/timeslots/',
+  TIMESLOTS_BULK_CREATE: '/timeslots/bulk-create/',
   CREATE_APPOINTMENT: '/appointments/',
   UPDATE_APPOINTMENT: '/appointments/:id/',
   GET_DOCTOR_APPOINTMNETS: '/appointments/doctors/scheduled/',
@@ -54,6 +57,15 @@ class AppointmentService extends ApiService {
         date: dayjs(date).format('YYYY-MM-DD'),
       },
     });
+
+  listTimeslots = (params = {}) =>
+    this.apiClient.get(ENDPOINTS.TIMESLOTS, { params });
+
+  bulkCreateTimeslots = (payload) =>
+    this.apiClient.post(ENDPOINTS.TIMESLOTS_BULK_CREATE, payload);
+
+  deleteTimeslot = (id) =>
+    this.apiClient.delete(`${ENDPOINTS.TIMESLOTS}${id}/`);
 
   getDoctorAppointments = (date) =>
     this.apiClient.get(ENDPOINTS.GET_DOCTOR_APPOINTMNETS, {
