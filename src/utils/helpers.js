@@ -175,6 +175,8 @@ export const getFirstPatientFormErrorMessage = (formErrors) => {
     formErrors.phone_number ||
     formErrors.email ||
     formErrors.doctor_reference ||
+    formErrors.case_id ||
+    formErrors.case_ids ||
     null
   );
 };
@@ -220,6 +222,15 @@ export const parsePatientFormApiErrors = (errorData) => {
   }
   if (errorData.appointment_type) {
     errors.appointment_type = parseApiFieldError(errorData.appointment_type);
+  }
+  if (errorData.case_id) {
+    errors.case_id = parseApiFieldError(errorData.case_id);
+  }
+  // Grouped appointment types (e.g. MSLT) validate completeness of the per-member `case_ids`
+  // list server-side (see validate_case_ids_completeness in abi-be) - surface it under the
+  // same `case_ids` key PatientPASForm reads for its inline error.
+  if (errorData.case_ids) {
+    errors.case_ids = parseApiFieldError(errorData.case_ids);
   }
   if (errorData.available_location_ids) {
     errors.available_location_ids = parseApiFieldError(

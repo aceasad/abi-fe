@@ -114,7 +114,13 @@ export const changePasswordSchema = Yup.object().shape({
     .oneOf([Yup.ref('newPassword')]),
 });
 
-export const patientSchema = Yup.object().shape({
+// Grouped appointment types (e.g. MSLT) collect one Case ID per member appointment type
+// (see PatientPASForm's `case_ids` field) instead of the single `case_id` field, since
+// MedBridge issues a separate case per member type for the same referral. `patientSchema`
+// stays a plain object for call sites that never deal with grouped types (e.g. PatientForm);
+// PatientPASForm uses `getPatientSchema(groupedAppointmentTypeIds)` so the single `case_id`
+// field isn't required when the selected appointment_type is one of those group ids.
+export const getPatientSchema = (groupedAppointmentTypeIds = []) => Yup.object().shape({
   first_name: Yup.string().trim().max(MAX).required(),
   last_name: Yup.string().trim().max(MAX).required(),
   gender: Yup.string(),
@@ -146,8 +152,10 @@ export const patientSchema = Yup.object().shape({
       schema.matches(externalIdentificationFormat, { excludeEmptyString: true }).max(10),
     otherwise: (schema) => schema,
   }),
-  case_id: Yup.string().max(20).when('pas_provider', {
-    is: 'medbridge',
+  case_id: Yup.string().max(20).when(['pas_provider', 'appointment_type'], {
+    is: (pasProvider, appointmentType) =>
+      pasProvider === 'medbridge' &&
+      !groupedAppointmentTypeIds.map(String).includes(String(appointmentType)),
     then: (schema) => schema.required(),
     otherwise: (schema) => schema,
   }),
@@ -164,6 +172,8 @@ export const patientSchema = Yup.object().shape({
   }),
   isPASPatient: Yup.boolean(),
 });
+
+export const patientSchema = getPatientSchema();
 
 export const userSchema = Yup.object().shape({
   name: nameSchema,
