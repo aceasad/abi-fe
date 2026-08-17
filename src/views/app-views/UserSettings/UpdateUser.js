@@ -35,7 +35,12 @@ function UpdateUser({ closeModal, userId }) {
     <UserSettingsFormModal
       title={"Edit User"}
       closeModal={closeModal}
-      initialValues={{ ...user, password: '', confirmPassword: '' }}
+      initialValues={{
+        ...user,
+        password: '',
+        confirmPassword: '',
+        receive_email_notifications: user?.receive_email_notifications !== false,
+      }}
       handleSubmit={handleSubmit}
       loadginData={loading}
       validationSchema={updateUserSchema}

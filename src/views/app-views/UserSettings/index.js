@@ -89,6 +89,12 @@ const UserSettings = () => {
       key: 'username',
     },
     {
+      title: "Email notifications",
+      dataIndex: 'receive_email_notifications',
+      key: 'receive_email_notifications',
+      render: (value) => (value === false ? "Off" : "On"),
+    },
+    {
       title: '',
       dataIndex: 'actions',
       render: (_, elm) => (

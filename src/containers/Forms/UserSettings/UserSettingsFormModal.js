@@ -1,6 +1,7 @@
 import { Button } from 'antd';
 import Form from 'antd/lib/form/Form';
 import Modal from 'antd/lib/modal/Modal';
+import FormCheckbox from 'components/custom-components/Form/FormCheckbox';
 import FormField from 'components/custom-components/Form/FormField';
 import { Field, Formik } from 'formik';
 import React from 'react';
@@ -93,6 +94,11 @@ const UserSettingsFormModal = ({
                   matchesLabel: "Password must be in valid format",
                   value: "Password",
                 }}
+              />
+              <Field
+                label={"Receive email notifications"}
+                component={FormCheckbox}
+                name="receive_email_notifications"
               />
             </Form>
           )}

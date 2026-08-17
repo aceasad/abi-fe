@@ -28,6 +28,7 @@ function CreateUser({ closeModal }) {
         username: '',
         password: '',
         confirmPassword: '',
+        receive_email_notifications: true,
       }}
     />
   );
