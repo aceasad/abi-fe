@@ -798,6 +798,7 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country, startTi
                           }}
                         />
                       </div>
+                      */}
                     </div>
                   );
                 })}
