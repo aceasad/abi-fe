@@ -36,6 +36,15 @@ const PAS_PROVIDER_OPTIONS = [
   { id: 'Internal', label: 'Internal (local test broker)' },
 ];
 
+const normalizePasProvider = (value) => {
+  const lower = String(value || '').trim().toLowerCase();
+  if (lower === 'emis') return 'EMIS';
+  if (lower === 'medbridge') return 'MedBridge';
+  if (lower === 'internal') return 'Internal';
+  if (!lower || lower === 'none') return 'None';
+  return value;
+};
+
 const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
   const dispatch = useDispatch();
   const loading = useSelector(makeSelectIsLoading());
@@ -66,11 +75,11 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
     if (!values.photo) {
       formData.append('photo', '');
     }
-    const pasProvider = values.PASProvider || 'None';
-    formData.delete('isPasIntegrated')
-    formData.append('isPasIntegrated', PAS_INTEGRATED_PROVIDERS.includes(pasProvider))
-    formData.delete('PASProvider')
-    formData.append('PASProvider', pasProvider === 'None' ? '' : pasProvider)
+    const pasProvider = normalizePasProvider(values.PASProvider);
+    formData.delete('isPasIntegrated');
+    formData.append('isPasIntegrated', PAS_INTEGRATED_PROVIDERS.includes(pasProvider));
+    formData.delete('PASProvider');
+    formData.append('PASProvider', pasProvider === 'None' ? '' : pasProvider);
     if (clinicData) {
       dispatch(
         updateClinic({
@@ -114,7 +123,9 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
           end_of_work: clinicData?.end_of_work || initialWorkTime,
           PasAPIEndpoint: clinicData?.PasAPIEndpoint || '',
           isPasIntegrated: clinicData?.isPasIntegrated || isPasIntegrated,
-          PASProvider: clinicData?.PASProvider || (isPasIntegrated ? 'EMIS' : 'None'),
+          PASProvider: normalizePasProvider(
+            clinicData?.PASProvider || (isPasIntegrated ? 'EMIS' : 'None')
+          ),
         }}
         enableReinitialize
         validationSchema={clinicSchema}
