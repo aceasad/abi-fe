@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { interpolate } from 'utils/interpolate';
 import { useDispatch, useSelector } from 'react-redux';
 import { Field, Formik } from 'formik';
@@ -16,7 +16,7 @@ import {
 } from 'redux/selectors/Patient';
 import { makeSelectAppointmentTypes } from 'redux/selectors/Appointment';
 import { makeSelectClinic } from 'redux/selectors/Clinic';
-import { patientSchema } from 'utils/validations';
+import { getPatientSchema } from 'utils/validations';
 import { MAX, NHS_MAX } from 'constants/ClinicConstants';
 import { applyPatientFormFieldError, buildPatientHomeLocationNoTimeslotsError, filterNumberInput, formatLocationLabel, getHomeLocationTimezoneValidationError, isUsCountry, joinPhoneNumberWithCountryCode, parsePatientFormApiErrors } from 'utils/helpers';
 import patientService from 'services/PatientService';
@@ -53,6 +53,7 @@ const PatientPASForm = ({
 }) => {
   const headerRef = useRef(null);
   const [isSaveVisible, setIsSaveVisible] = useState(false);
+  const [caseIdsError, setCaseIdsError] = useState('');
   const dispatch = useDispatch();
   const { setContext, ...rest } = useContext(BeforeRouteContext);
   const [discardModalVisible, setDiscardModalVisible] = useState(false);
@@ -75,6 +76,30 @@ const PatientPASForm = ({
   const { appointmentTypes, appointmentTypesLoading } = useSelector(
     makeSelectAppointmentTypes()
   );
+  // Grouped face types (e.g. MSLT) need one Case ID per member appointment type instead of
+  // the single `case_id` field - MedBridge issues a separate case per member type (e.g.
+  // Overnight Sleep Study vs Day Studies) for the same referral. See `case_ids` rendering
+  // below and PatientAppointmentTypeCaseId on the backend.
+  const groupedAppointmentTypeIds = useMemo(
+    () => (appointmentTypes || []).filter((type) => type.is_grouped).map((type) => type.id),
+    [appointmentTypes]
+  );
+  const patientValidationSchema = useMemo(
+    () => getPatientSchema(groupedAppointmentTypeIds),
+    [groupedAppointmentTypeIds]
+  );
+  // Resolves whether a given appointment_type id is a grouped face type (e.g. MSLT) and, if
+  // so, its member AppointmentTypes - used both for rendering the per-member Case ID inputs
+  // and for validating/building the `case_ids` payload on submit.
+  const getGroupInfo = (appointmentTypeId) => {
+    const type = (appointmentTypes || []).find(
+      (t) => String(t.id) === String(appointmentTypeId)
+    );
+    return {
+      isGrouped: isMedbridge && Boolean(type?.is_grouped),
+      memberTypes: type?.member_types || [],
+    };
+  };
   const clinic = useSelector(makeSelectClinic());
   const isUSA = isUsCountry(clinic?.country);
   const { isTMSEnabled: userIsTMSEnabled } = useSelector(
@@ -118,6 +143,28 @@ const PatientPASForm = ({
       showFieldError('appointment_type', 'Appointment type');
       return;
     }
+    const { isGrouped: isGroupedAppointmentType, memberTypes: groupMemberTypes } =
+      getGroupInfo(values.appointment_type);
+    const providedCaseIds = new Map(
+      (values.case_ids || []).map((entry) => [
+        Number(entry.appointment_type_id),
+        (entry.case_id || '').trim(),
+      ])
+    );
+    if (isGroupedAppointmentType) {
+      const missingMembers = groupMemberTypes.filter(
+        (member) => !providedCaseIds.get(member.appointment_type_id)
+      );
+      if (missingMembers.length) {
+        const errorMessage = `Case ID is required for ${missingMembers
+          .map((member) => member.appointment_type_name)
+          .join(' and ')}`;
+        setCaseIdsError(errorMessage);
+        showFieldError('case_ids', errorMessage);
+        return;
+      }
+    }
+    setCaseIdsError('');
     const locationsById = locations.reduce((acc, location) => {
       if (location?.location_id) {
         acc[String(location.location_id)] = location;
@@ -132,6 +179,17 @@ const PatientPASForm = ({
       ),
     };
     delete parsedValues.pas_provider;
+    if (isGroupedAppointmentType) {
+      // Only submit exactly the current group's member entries - if the staff member
+      // switched appointment_type mid-edit, stale entries for a previous group shouldn't
+      // linger in the payload.
+      parsedValues.case_ids = groupMemberTypes.map((member) => ({
+        appointment_type_id: member.appointment_type_id,
+        case_id: providedCaseIds.get(member.appointment_type_id),
+      }));
+    } else {
+      delete parsedValues.case_ids;
+    }
     // Internal orgs have no external identity system, and ExternalIdentificationNumber
     // is unique=True on the backend across ALL organizations. This field is never exposed
     // in the form for Internal orgs, so we never submit it at all:
@@ -347,9 +405,32 @@ const PatientPASForm = ({
         }}
         innerRef={formRef}
         onSubmit={handleSubmitWrapper}
-        validationSchema={patientSchema}
+        validationSchema={patientValidationSchema}
       >
-        {({ values, dirty, isValid, errors, handleSubmit, setFieldValue }) => (
+        {({ values, dirty, isValid, errors, handleSubmit, setFieldValue }) => {
+          const { isGrouped: isGroupedAppointmentType, memberTypes: groupMemberTypes } =
+            getGroupInfo(values.appointment_type);
+          const caseIdsByType = new Map(
+            (values.case_ids || []).map((entry) => [
+              Number(entry.appointment_type_id),
+              entry.case_id || '',
+            ])
+          );
+          const updateGroupCaseId = (appointmentTypeId, caseId) => {
+            const next = groupMemberTypes.map((member) => ({
+              appointment_type_id: member.appointment_type_id,
+              case_id:
+                member.appointment_type_id === appointmentTypeId
+                  ? caseId
+                  : caseIdsByType.get(member.appointment_type_id) || '',
+            }));
+            setFieldValue('case_ids', next);
+            if (caseIdsError) {
+              setCaseIdsError('');
+            }
+          };
+
+          return (
           <>
             <div ref={headerRef}>
               <PatientHeader
@@ -441,7 +522,7 @@ const PatientPASForm = ({
                       )}
                       {isLocationAware && (
                         <>
-                          {isMedbridge && (
+                          {isMedbridge && !isGroupedAppointmentType && (
                             <ColumnField
                               span={isMobile && !isTablet ? 24 : 8}
                               component={FormField}
@@ -454,6 +535,37 @@ const PatientPASForm = ({
                               required={isMedbridge}
                             />
                           )}
+                          {isMedbridge && isGroupedAppointmentType &&
+                            groupMemberTypes.map((member, index) => (
+                              <Col
+                                key={member.appointment_type_id}
+                                span={isMobile && !isTablet ? 24 : 8}
+                              >
+                                <AntForm.Item
+                                  label={`Case ID (${member.appointment_type_name})`}
+                                  required
+                                  validateStatus={caseIdsError ? 'error' : ''}
+                                  help={
+                                    // Only surface the shared error once, under the last
+                                    // input, so it doesn't repeat under every member field.
+                                    index === groupMemberTypes.length - 1
+                                      ? caseIdsError
+                                      : undefined
+                                  }
+                                >
+                                  <Input
+                                    value={caseIdsByType.get(member.appointment_type_id) || ''}
+                                    maxLength={20}
+                                    onChange={(event) =>
+                                      updateGroupCaseId(
+                                        member.appointment_type_id,
+                                        event.target.value
+                                      )
+                                    }
+                                  />
+                                </AntForm.Item>
+                              </Col>
+                            ))}
                           <ColumnField
                             span={isMobile && !isTablet ? 24 : 8}
                             component={FormSelect}
@@ -1090,7 +1202,8 @@ const PatientPASForm = ({
               {"Save"}
             </Button>
           </>
-        )}
+          );
+        }}
       </Formik>
     </div>
   );

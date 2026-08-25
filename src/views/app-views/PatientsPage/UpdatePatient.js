@@ -138,6 +138,7 @@ const UpdatePatient = ({ showList, patientId }) => {
           medicalConditions: [],
           pas_provider: normalizedPasProvider,
           available_location_ids: [],
+          case_ids: [],
         },
     [patient, items, normalizedPasProvider]
   );
