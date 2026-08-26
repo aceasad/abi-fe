@@ -165,7 +165,7 @@ export const getPatientSchema = (groupedAppointmentTypeIds = []) => Yup.object()
     otherwise: (schema) => schema,
   }),
   available_location_ids: Yup.array().of(Yup.string()),
-  doctor_reference: Yup.string().trim().max(20).when('pas_provider', {
+  doctor_reference: Yup.string().trim().max(100).when('pas_provider', {
     is: 'medbridge',
     then: (schema) => schema.required(),
     otherwise: (schema) => schema,
