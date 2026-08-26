@@ -31,7 +31,8 @@ const passwordRepeatValidation = (refField) =>
 
 const usernameSchema = Yup.string().email();
 const nameSchema = Yup.string().trim().max(MAX).required();
-const externalIdentificationFormat = /^(?:\d{7}|\d{10})$/;
+const nhsIdentificationFormat = /^(?:\d{7}|\d{10})$/;
+const digitsOnlyIdFormat = /^\d+$/;
 // Yup.number() casts '' to NaN (not null), so an untouched optional number field fails
 // validation even without .required() unless we explicitly treat '' as null first.
 const optionalNumberSchema = () =>
@@ -139,24 +140,27 @@ export const getPatientSchema = (groupedAppointmentTypeIds = []) => Yup.object()
   post_code: Yup.string().max(16),
   state: Yup.string().max(2),
   country: Yup.string().max(64),
-  // Only PatientPASForm renders this as an editable, staff-entered field, and only for
-  // PAS-integrated providers other than Internal (see the `{!isInternal && (...)}` guard
-  // there) — plain non-PAS patients (PatientForm) never show it at all, and Internal orgs
-  // get an opaque, backend-generated dummy value (see
-  // local_generate_unique_external_identification_number) that staff never type in. So the
-  // strict NHS/PAS-identifier format only makes sense to enforce for a real, non-internal
-  // PAS provider.
+  // PatientPASForm is the only place staff type this. Internal orgs never show it
+  // (backend generates a dummy EIN). MedBridge: digits only, no fixed length (Lab
+  // Retriever IDs can be as short as 3). Other PAS (NHS): 7 or 10 digits.
   ExternalIdentificationNumber: Yup.string().when('pas_provider', {
-    is: (value) => Boolean(value) && value !== 'internal',
+    is: 'medbridge',
     then: (schema) =>
-      schema.matches(externalIdentificationFormat, { excludeEmptyString: true }).max(10),
-    otherwise: (schema) => schema,
+      schema.matches(digitsOnlyIdFormat, { excludeEmptyString: true }).max(64),
+    otherwise: (schema) =>
+      schema.when('pas_provider', {
+        is: (value) => Boolean(value) && value !== 'internal',
+        then: (inner) =>
+          inner.matches(nhsIdentificationFormat, { excludeEmptyString: true }).max(10),
+        otherwise: (inner) => inner,
+      }),
   }),
   case_id: Yup.string().max(20).when(['pas_provider', 'appointment_type'], {
     is: (pasProvider, appointmentType) =>
       pasProvider === 'medbridge' &&
       !groupedAppointmentTypeIds.map(String).includes(String(appointmentType)),
-    then: (schema) => schema.required(),
+    then: (schema) =>
+      schema.required().matches(digitsOnlyIdFormat, { excludeEmptyString: true }),
     otherwise: (schema) => schema,
   }),
   home_location: Yup.string().max(20).when('pas_provider', {

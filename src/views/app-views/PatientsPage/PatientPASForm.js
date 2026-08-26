@@ -17,7 +17,7 @@ import {
 import { makeSelectAppointmentTypes } from 'redux/selectors/Appointment';
 import { makeSelectClinic } from 'redux/selectors/Clinic';
 import { getPatientSchema } from 'utils/validations';
-import { MAX, NHS_MAX } from 'constants/ClinicConstants';
+import { MAX, NHS_MAX, EIN_MAX } from 'constants/ClinicConstants';
 import { applyPatientFormFieldError, buildPatientHomeLocationNoTimeslotsError, filterNumberInput, formatLocationLabel, getHomeLocationTimezoneValidationError, isUsCountry, joinPhoneNumberWithCountryCode, parsePatientFormApiErrors } from 'utils/helpers';
 import patientService from 'services/PatientService';
 import PatientFormExistingConditions from './PatientFormExistingConditions';
@@ -159,6 +159,16 @@ const PatientPASForm = ({
         const errorMessage = `Case ID is required for ${missingMembers
           .map((member) => member.appointment_type_name)
           .join(' and ')}`;
+        setCaseIdsError(errorMessage);
+        showFieldError('case_ids', errorMessage);
+        return;
+      }
+      const nonDigitMembers = groupMemberTypes.filter((member) => {
+        const value = providedCaseIds.get(member.appointment_type_id);
+        return value && !/^\d+$/.test(value);
+      });
+      if (nonDigitMembers.length) {
+        const errorMessage = 'Case ID must contain digits only';
         setCaseIdsError(errorMessage);
         showFieldError('case_ids', errorMessage);
         return;
@@ -493,8 +503,10 @@ const PatientPASForm = ({
                           name="ExternalIdentificationNumber"
                           errorTexts={{
                             label: isMedbridge ? "Patient Identification ID" : "Patient NHS Number",
-                            matchesLabel: "Patient Identification Number must be 7 or 10 digits",
-                            maxValue: NHS_MAX,
+                            matchesLabel: isMedbridge
+                              ? "Patient Identification ID must contain digits only"
+                              : "Patient Identification Number must be 7 or 10 digits",
+                            maxValue: isMedbridge ? EIN_MAX : NHS_MAX,
                           }}
                           required
                         />
@@ -530,6 +542,7 @@ const PatientPASForm = ({
                               name="case_id"
                               errorTexts={{
                                 label: "Case ID",
+                                matchesLabel: "Case ID must contain digits only",
                                 maxValue: 20,
                               }}
                               required={isMedbridge}
