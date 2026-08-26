@@ -645,7 +645,7 @@ const PatientPASForm = ({
                               name="doctor_reference"
                               errorTexts={{
                                 label: "Referral Doctor's Name",
-                                maxValue: 20,
+                                maxValue: 100,
                               }}
                               required={isMedbridge}
                             />
