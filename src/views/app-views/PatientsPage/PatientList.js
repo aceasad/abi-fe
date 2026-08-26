@@ -61,6 +61,9 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
   const [isUploadCompleted, setIsUploadCompleted] = useState(false);
   const { count, patients, loading, page } = useSelector(makeSelectPatients());
   const clinic = useSelector(makeSelectClinic());
+  const disablePatientDelete =
+    clinic?.disable_patient_delete_resolved === true ||
+    clinic?.disable_patient_delete === true;
 
   useEffect(() => {
     dispatch(getPatients());
@@ -166,16 +169,18 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
                 size="small"
               />
             </Tooltip>
-            <Tooltip title={"Delete patient"}>
-              <Button
-                icon={<DeleteOutlined />}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setPatientForDelete(row);
-                }}
-                size="small"
-              />
-            </Tooltip>
+            {!disablePatientDelete && (
+              <Tooltip title={"Delete patient"}>
+                <Button
+                  icon={<DeleteOutlined />}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setPatientForDelete(row);
+                  }}
+                  size="small"
+                />
+              </Tooltip>
+            )}
           </Space>
         </div>
       ),
@@ -258,17 +263,19 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
               size="small"
             />
           </Tooltip>
-          <Tooltip title={"Delete patient"}>
-            <Button
-              icon={<DeleteOutlined />}
-              onClick={(e) => {
-                e.stopPropagation();
-                setPatientForDelete(patient);
-              }}
-              size="small"
-              danger
-            />
-          </Tooltip>
+          {!disablePatientDelete && (
+            <Tooltip title={"Delete patient"}>
+              <Button
+                icon={<DeleteOutlined />}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setPatientForDelete(patient);
+                }}
+                size="small"
+                danger
+              />
+            </Tooltip>
+          )}
         </Space>
       </Space>
     </Card>
