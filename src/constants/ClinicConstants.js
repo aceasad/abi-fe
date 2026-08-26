@@ -4,6 +4,7 @@ export const AVAILABLE = 'AVAILABLE';
 
 export const MAX = '100';
 export const NHS_MAX = '11'
+export const EIN_MAX = '64'
 export const baseState = {
   items: [],
   count: 0,
