@@ -1,5 +1,5 @@
 import { Card, Table, Typography, Grid, Space, Button, Tag, Row, Col } from 'antd';
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   getAppointmentsReminders,
@@ -25,7 +25,6 @@ const AppointmentsRemindersTable = ({
   loading,
   title,
   reminderType,
-  patientSearch = '',
 }) => {
   const screens = utils.getBreakPoint(useBreakpoint());
   const isMobile = !screens.includes('lg');
@@ -35,13 +34,7 @@ const AppointmentsRemindersTable = ({
     handlePaginationChange(1);
   };
 
-  const filteredItems = useMemo(() => {
-    const normalizedSearch = patientSearch.trim().toLowerCase();
-    if (!normalizedSearch) return items || [];
-    return (items || []).filter((item) =>
-      (item?.patient?.full_name || '').toLowerCase().includes(normalizedSearch)
-    );
-  }, [items, patientSearch]);
+  const tableItems = items || [];
 
   const totalCount = count || 0;
   const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
@@ -131,7 +124,7 @@ const AppointmentsRemindersTable = ({
           ) : (
             <>
               <Row gutter={[12, 12]}>
-                {filteredItems.map((item) => (
+                {tableItems.map((item) => (
                   <Col xs={24} sm={12} key={item.id || item.key}>
                     <ReminderCard item={item} />
                   </Col>
@@ -168,7 +161,7 @@ const AppointmentsRemindersTable = ({
         <div className="table-responsive ant-table-row-pointer">
           <Table
             columns={columns}
-            dataSource={filteredItems.map((item) => ({
+            dataSource={tableItems.map((item) => ({
               ...item,
               key: item.id || item.key
             }))}

@@ -20,6 +20,7 @@ import {
   SET_APPOINTMENTS_REMINDERS_PAGE,
   SET_APPOINTMENTS_REMINDERS_LOADING,
   SET_APPOINTMENTS_REMINDERS_ORDER,
+  SET_APPOINTMENTS_REMINDERS_SEARCH,
   CANCEL_APPOINTMENT_REMINDER,
   REVERSE_APPOINTMENT_REMINDER_CANCELLATION,
   RESCHEDULE_APPOINTMENT_REMINDER,
@@ -135,6 +136,11 @@ export const setAppointmentsRemindersLoading = (payload) => ({
 
 export const setAppointmentsRemindersOrder = (payload) => ({
   type: SET_APPOINTMENTS_REMINDERS_ORDER,
+  payload,
+});
+
+export const setAppointmentsRemindersSearch = (payload) => ({
+  type: SET_APPOINTMENTS_REMINDERS_SEARCH,
   payload,
 });
 

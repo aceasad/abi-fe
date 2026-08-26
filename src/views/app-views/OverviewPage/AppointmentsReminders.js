@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Card,
   Collapse,
@@ -30,9 +30,11 @@ import {
   cancelAppointmentReminder,
   reverseAppointmentReminderCancellation,
   rescheduleAppointmentReminder,
+  setAppointmentsRemindersSearch,
 } from 'redux/actions/Staff';
 import { makeSelectClinic } from 'redux/selectors/Clinic';
 import { SearchOutlined } from '@ant-design/icons';
+import { useDebounce } from 'utils/hooks';
 
 const { Panel } = Collapse;
 
@@ -125,13 +127,34 @@ const AppointmentsReminders = ({ title, startOpen }) => {
   const [activeAppointment, setActiveAppointment] = useState(null);
   const [reminderType, setReminderType] = useState('appointment');
   const [patientSearch, setPatientSearch] = useState('');
+  const debouncedPatientSearch = useDebounce(patientSearch, 400);
+  const skipSearchFetch = useRef(true);
   const remindersField =
     reminderType === 'system'
       ? UPCOMING_REMINDERS_SYSTEM
       : UPCOMING_REMINDERS_APPOINTMENT;
+  const remindersFieldRef = useRef(remindersField);
+  const reminderTypeRef = useRef(reminderType);
+  remindersFieldRef.current = remindersField;
+  reminderTypeRef.current = reminderType;
   const handleReminderTypeChange = (value) => {
     setReminderType(value);
   };
+
+  useEffect(() => {
+    if (skipSearchFetch.current) {
+      skipSearchFetch.current = false;
+      return;
+    }
+    dispatch(
+      setAppointmentsRemindersSearch({
+        search: debouncedPatientSearch.trim(),
+        field: remindersFieldRef.current,
+        id: '',
+        reminderType: reminderTypeRef.current,
+      })
+    );
+  }, [debouncedPatientSearch, dispatch]);
 
   useEffect(() => {
     if (activeAppointment) {
@@ -453,7 +476,6 @@ const AppointmentsReminders = ({ title, startOpen }) => {
       >
         <AppointmentsRemindersTable.Table
           columns={tableColumns}
-          patientSearch={patientSearch}
         />
       </AppointmentsRemindersTable>
       {/* <AppointmentsRemindersTable

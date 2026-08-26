@@ -74,7 +74,7 @@ class StaffService extends ApiService {
       }
     );
 
-  getAppointmentsReminders = (id, { order, field, page }, params, state_field) =>
+  getAppointmentsReminders = (id, { order, field, page, search }, params, state_field) =>
     this.apiClient.get(
       !id
         ? `${ENDPOINTS.GET_APPOINTMENTS_REMINDERS[state_field]}`
@@ -87,6 +87,7 @@ class StaffService extends ApiService {
             .join(),
           limit: DEFAULT_PAGINATION_LIMIT,
           offset: (page - 1) * DEFAULT_PAGINATION_LIMIT,
+          ...(search ? { search } : {}),
           ...params
         },
       }
