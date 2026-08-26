@@ -12,6 +12,7 @@ import {
   SET_APPOINTMENTS_REMINDERS_PAGE,
   SET_APPOINTMENTS_REMINDERS_LOADING,
   SET_APPOINTMENTS_REMINDERS_ORDER,
+  SET_APPOINTMENTS_REMINDERS_SEARCH,
   SET_MESSAGES_REQUIRING_IMMEDIATE_ATTENTION,
   SET_MESSAGES_REQUIRING_IMMEDIATE_ATTENTION_PAGE,
   SET_MESSAGES_REQUIRING_IMMEDIATE_ATTENTION_LOADING,
@@ -130,6 +131,19 @@ const staff = (state = initialState, action) =>
           order: action.payload.order || '',
         };
         break;
+      case SET_APPOINTMENTS_REMINDERS_SEARCH: {
+        const search = action.payload.search || '';
+        [UPCOMING_REMINDERS_APPOINTMENT, UPCOMING_REMINDERS_SYSTEM].forEach(
+          (field) => {
+            draft[field] = {
+              ...state[field],
+              search,
+              page: 1,
+            };
+          }
+        );
+        break;
+      }
       // Human intervention needed
       case SET_MESSAGES_REQUIRING_IMMEDIATE_ATTENTION:
         draft[action.payload.field] = {
