@@ -15,7 +15,8 @@ import dayjs from 'utils/dayjs';
 import { TIME_FORMAT_HH_MM } from 'constants/TimeConstant';
 import clinicService from 'services/ClinicService';
 import Loading from 'components/shared-components/Loading';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { getClinic } from 'redux/actions/Clinic';
 import { getLocalStorageItem, setLocalStorageItem } from 'utils/localStorage';
 import {
   DEFAULT_LOCATION_DISPLAY_PREFERENCE,
@@ -112,6 +113,7 @@ const NullableTimeField = ({ name, label, defaultValue, hourOnly = false }) => (
 
 const apiToFormValues = (settings) => ({
   disable_csv_upload: settings.disable_csv_upload,
+  disable_patient_delete: settings.disable_patient_delete,
   patient_invite_now: settings.patient_invite_now,
   patient_invite_send_time: toDayjsFromHourMinute(
     settings.patient_invite_send_hour,
@@ -149,6 +151,7 @@ const formToApiPayload = (values, isEmis) => {
 
   const payload = {
     disable_csv_upload: values.disable_csv_upload ?? null,
+    disable_patient_delete: values.disable_patient_delete ?? null,
     patient_invite_now: values.patient_invite_now ?? null,
     patient_invite_send_hour: inviteTime ? inviteTime.hour() : null,
     patient_invite_send_minute: inviteTime ? inviteTime.minute() : null,
@@ -194,6 +197,7 @@ const formToApiPayload = (values, isEmis) => {
 };
 
 const AdvancedSettings = () => {
+  const dispatch = useDispatch();
   const { PASProvider } = useSelector((state) => state.auth.user || {});
   const isEmis = PASProvider?.toLowerCase() === 'emis';
 
@@ -253,6 +257,7 @@ const AdvancedSettings = () => {
           values.location_display_preference ||
           DEFAULT_LOCATION_DISPLAY_PREFERENCE,
       });
+      dispatch(getClinic());
       message.success('Advanced settings saved');
     } catch {
       message.error('Failed to save advanced settings');
@@ -264,6 +269,7 @@ const AdvancedSettings = () => {
   const resetAllToDefaults = () => {
     form.setFieldsValue({
       disable_csv_upload: null,
+      disable_patient_delete: null,
       patient_invite_now: null,
       patient_invite_send_time: null,
       appointment_reminder_morning_time: null,
@@ -439,6 +445,13 @@ const AdvancedSettings = () => {
             name="disable_csv_upload"
             label="Disable CSV upload"
             defaultValue={defaults.disable_csv_upload}
+          />
+        </Col>
+        <Col xs={24} md={12}>
+          <NullableBooleanField
+            name="disable_patient_delete"
+            label="Disable patient delete"
+            defaultValue={defaults.disable_patient_delete}
           />
         </Col>
       </Row>
