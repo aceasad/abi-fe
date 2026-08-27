@@ -4,6 +4,7 @@ import {
   Col,
   Form,
   Input,
+  InputNumber,
   Row,
   Select,
   TimePicker,
@@ -111,6 +112,22 @@ const NullableTimeField = ({ name, label, defaultValue, hourOnly = false }) => (
   </Form.Item>
 );
 
+const NullableNumberField = ({ name, label, defaultValue, min = 0, max, suffix }) => (
+  <Form.Item
+    label={<FieldLabel label={label} defaultValue={defaultValue} />}
+    name={name}
+    normalize={(value) => (value === undefined ? null : value)}
+  >
+    <InputNumber
+      style={{ width: '100%' }}
+      min={min}
+      max={max}
+      placeholder="Use system default"
+      addonAfter={suffix}
+    />
+  </Form.Item>
+);
+
 const apiToFormValues = (settings) => ({
   disable_csv_upload: settings.disable_csv_upload,
   disable_patient_delete: settings.disable_patient_delete,
@@ -131,6 +148,7 @@ const apiToFormValues = (settings) => ({
   appointment_reminder_afternoon_time: toDayjsFromHour(
     settings.appointment_reminder_afternoon_hour,
   ),
+  appointment_reminder_quiet_period_hours: settings.appointment_reminder_quiet_period_hours,
   message_earliest_send_time: toDayjsFromHourMinute(
     settings.message_earliest_send_hour,
     settings.message_earliest_send_minute,
@@ -167,6 +185,8 @@ const formToApiPayload = (values, isEmis) => {
     appointment_reminder_afternoon_hour: values.appointment_reminder_afternoon_time
       ? values.appointment_reminder_afternoon_time.hour()
       : null,
+    appointment_reminder_quiet_period_hours:
+      values.appointment_reminder_quiet_period_hours ?? null,
     message_earliest_send_hour: earliestTime ? earliestTime.hour() : null,
     message_earliest_send_minute: earliestTime ? earliestTime.minute() : null,
     timezone: values.timezone || null,
@@ -276,6 +296,7 @@ const AdvancedSettings = () => {
       appointment_reminder_default_time: null,
       appointment_reminder_midday_time: null,
       appointment_reminder_afternoon_time: null,
+      appointment_reminder_quiet_period_hours: null,
       message_earliest_send_time: null,
       message_latest_send_time: null,
       timezone: defaults.timezone,
@@ -361,6 +382,15 @@ const AdvancedSettings = () => {
             label="Afternoon reminder time (day before)"
             defaultValue={formatTimeDefault(defaults.appointment_reminder_afternoon_hour)}
             hourOnly
+          />
+        </Col>
+        <Col xs={24} md={12}>
+          <NullableNumberField
+            name="appointment_reminder_quiet_period_hours"
+            label="Reminder quiet period (hours after booking)"
+            defaultValue={`${defaults.appointment_reminder_quiet_period_hours ?? 48}h`}
+            max={720}
+            suffix="hours"
           />
         </Col>
 
