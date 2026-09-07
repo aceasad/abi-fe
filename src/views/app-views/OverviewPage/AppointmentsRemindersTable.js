@@ -191,7 +191,7 @@ AppointmentsRemindersTable.defaultProps = {
   handleChange: () => { },
 };
 
-const AppointmentsReminders = ({ id, field, children, columnMap, reminderType }) => {
+const AppointmentsReminders = ({ id, field, children, columnMap, reminderType, patientId }) => {
   if (!children) throw new Error('Component must have children');
 
   const { items, loading, page, count } = useSelector(
@@ -201,11 +201,11 @@ const AppointmentsReminders = ({ id, field, children, columnMap, reminderType })
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getAppointmentsReminders({ id, field, reminderType }));
-  }, [dispatch, id, field, reminderType]);
+    dispatch(getAppointmentsReminders({ id, field, reminderType, patientId }));
+  }, [dispatch, id, field, reminderType, patientId]);
 
   const handlePaginationChange = (page) => {
-    dispatch(setAppointmentsRemindersPage({ page, field, id, reminderType }));
+    dispatch(setAppointmentsRemindersPage({ page, field, id, reminderType, patientId }));
   };
 
   const handleChange = (_, __, sortField, e) => {
@@ -222,7 +222,8 @@ const AppointmentsReminders = ({ id, field, children, columnMap, reminderType })
             : sortField.field,
           field,
           id,
-          reminderType,  // Add this parameter
+          reminderType,
+          patientId,
         })
       );
   };

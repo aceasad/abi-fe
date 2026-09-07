@@ -16,7 +16,7 @@ import {
   removeLeadingZeroFromTime,
   RenderPredictionText,
 } from 'utils/helpers';
-import { CalendarOutlined, ClockCircleOutlined, UserOutlined, FileTextOutlined } from '@ant-design/icons';
+import { CalendarOutlined, ClockCircleOutlined, UserOutlined, FileTextOutlined, CarOutlined } from '@ant-design/icons';
 import utils from 'utils';
 import { makeSelectClinic } from 'redux/selectors/Clinic';
 import dayjs from 'utils/dayjs';
@@ -47,8 +47,9 @@ const PatientOverviewScheduledCard = ({ patient, showAppointment }) => {
     makeSelectScheduledAppointments()
   );
 
-  const { PASProvider } = useSelector((state) => state.auth.user || {});
+  const { PASProvider, isTMSEnabled: userIsTMSEnabled } = useSelector((state) => state.auth.user || {});
   const clinic = useSelector(makeSelectClinic());
+  const isTMSEnabled = Boolean(clinic?.isTMSEnabled ?? userIsTMSEnabled);
 
   const handlePaginationChange = (page) => {
     dispatch(setScheduledPage({ page, id: patient.id }));
@@ -108,6 +109,23 @@ const PatientOverviewScheduledCard = ({ patient, showAppointment }) => {
       sorter: true,
       responsive: ['lg'],
     },
+    ...(isTMSEnabled
+      ? [
+          {
+            title: "Transport",
+            dataIndex: 'trips',
+            sorter: false,
+            render: (trips) =>
+              trips?.length ? (
+                <Tag icon={<CarOutlined />} color="blue">
+                  Ride booked
+                </Tag>
+              ) : (
+                <Text type="secondary">None</Text>
+              ),
+          },
+        ]
+      : []),
     // {
     //   title: "Prediction",
     //   dataIndex: 'no_show_score',
@@ -162,6 +180,12 @@ const PatientOverviewScheduledCard = ({ patient, showAppointment }) => {
             {appointment.appointment_type?.name}
           </Text>
         </Space>
+
+        {isTMSEnabled && appointment.trips?.length > 0 && (
+          <Tag icon={<CarOutlined />} color="blue">
+            Ride booked
+          </Tag>
+        )}
 
         {appointment.no_show_score !== null && appointment.no_show_score !== undefined && (
           <div style={{ marginTop: '8px' }}>

@@ -115,7 +115,7 @@ const formatDateAndTimeBySection = (section, options = {}) => {
   return `${section.date} ${formattedTime}`;
 };
 
-const AppointmentsReminders = ({ title, startOpen }) => {
+const AppointmentsReminders = ({ title, startOpen, patientId, embedded }) => {
   const history = useHistory();
   const dispatch = useDispatch();
   const { PASProvider } = useSelector((state) => state.auth.user || {});
@@ -142,6 +142,7 @@ const AppointmentsReminders = ({ title, startOpen }) => {
   };
 
   useEffect(() => {
+    if (embedded) return;
     if (skipSearchFetch.current) {
       skipSearchFetch.current = false;
       return;
@@ -152,9 +153,10 @@ const AppointmentsReminders = ({ title, startOpen }) => {
         field: remindersFieldRef.current,
         id: '',
         reminderType: reminderTypeRef.current,
+        patientId,
       })
     );
-  }, [debouncedPatientSearch, dispatch]);
+  }, [debouncedPatientSearch, dispatch, embedded, patientId]);
 
   useEffect(() => {
     if (activeAppointment) {
@@ -162,81 +164,87 @@ const AppointmentsReminders = ({ title, startOpen }) => {
     }
   }, [activeAppointment, dispatch]);
 
-  const [cancelReminderId, setCancelReminderId] = useState(null);
+  const fieldForType = (type) =>
+    type === 'system' ? UPCOMING_REMINDERS_SYSTEM : UPCOMING_REMINDERS_APPOINTMENT;
+
+  const [cancelReminderRequest, setCancelReminderRequest] = useState(null);
   useEffect(() => {
-    if (cancelReminderId) {
+    if (cancelReminderRequest) {
       dispatch(
         cancelAppointmentReminder({
           id: '',
-          cancelReminderId,
-          field: remindersField,
-          reminderType,
+          cancelReminderId: cancelReminderRequest.id,
+          field: fieldForType(cancelReminderRequest.reminderType),
+          reminderType: cancelReminderRequest.reminderType,
+          patientId,
         })
       );
     }
-  }, [cancelReminderId, dispatch, reminderType, remindersField]);
+  }, [cancelReminderRequest, dispatch, patientId]);
 
-  const cancelReminder = (row) => {
+  const cancelReminder = (row, type) => {
     if (
       window.confirm(
         `Reminder: ${row.reminder.message_template}\n\nPatient: ${row.patient.full_name}\n\nScheduled on: ${row.reminder.date} ${row.reminder.time}\n\nAre you sure that you want to cancel the reminder?`
       )
     ) {
-      setCancelReminderId(row.reminder.id);
+      setCancelReminderRequest({ id: row.reminder.id, reminderType: type });
     }
   };
 
-  const [
-    reverseReminderCancellationId,
-    setReverseReminderCancellationId,
-  ] = useState(null);
+  const [reverseReminderRequest, setReverseReminderRequest] = useState(null);
   useEffect(() => {
-    if (reverseReminderCancellationId) {
+    if (reverseReminderRequest) {
       dispatch(
         reverseAppointmentReminderCancellation({
           id: '',
-          reverseReminderCancellationId,
-          field: remindersField,
-          reminderType
+          reverseReminderCancellationId: reverseReminderRequest.id,
+          field: fieldForType(reverseReminderRequest.reminderType),
+          reminderType: reverseReminderRequest.reminderType,
+          patientId,
         })
       );
     }
-  }, [reverseReminderCancellationId, dispatch, reminderType, remindersField]);
+  }, [reverseReminderRequest, dispatch, patientId]);
 
-  const reverseReminderCancellation = (row) => {
+  const reverseReminderCancellation = (row, type) => {
     if (
       window.confirm(
         `Reminder: ${row.reminder.message_template}\n\nPatient: ${row.patient.full_name}\n\nWas scheduled on: ${row.reminder.date} ${row.reminder.time}\n\nAre you sure that you want to reverse the cancellation?`
       )
     ) {
-      setReverseReminderCancellationId(row.reminder.id);
+      setReverseReminderRequest({ id: row.reminder.id, reminderType: type });
     }
   };
 
-  const [rescheduleReminderData, setRescheduleReminderData] = useState(null);
+  const [rescheduleReminderRequest, setRescheduleReminderRequest] = useState(null);
   useEffect(() => {
-    if (rescheduleReminderData) {
+    if (rescheduleReminderRequest) {
       dispatch(
         rescheduleAppointmentReminder({
           id: '',
-          rescheduleReminderData,
-          field: remindersField,
-          reminderType,
+          rescheduleReminderData: rescheduleReminderRequest.data,
+          field: fieldForType(rescheduleReminderRequest.reminderType),
+          reminderType: rescheduleReminderRequest.reminderType,
+          patientId,
         })
       );
     }
-  }, [rescheduleReminderData, dispatch, reminderType, remindersField]);
+  }, [rescheduleReminderRequest, dispatch, patientId]);
 
-  const rescheduleReminder = (row) => {
+  const rescheduleReminder = (row, type) => {
     const new_reminder_datetime = window.prompt(
       `Please enter the new reminder datetime for reminder: ${row.reminder.message_template} as follows:`,
       '2022-01-10T09:00:00'
     );
     if (new_reminder_datetime != null && isIsoDate(new_reminder_datetime)) {
-      setRescheduleReminderData({
-        id: row.reminder.id,
-        new_reminder_datetime,
-        send_now: false,
+      setRescheduleReminderRequest({
+        reminderType: type,
+        data: {
+          id: row.reminder.id,
+          new_reminder_datetime,
+          send_now: false,
+        },
       });
     } else {
       alert(
@@ -245,16 +253,19 @@ const AppointmentsReminders = ({ title, startOpen }) => {
     }
   };
 
-  const sendReminderNow = (row) => {
+  const sendReminderNow = (row, type) => {
     if (
       window.confirm(
         `Reminder: ${row.reminder.message_template}\n\nPatient: ${row.patient.full_name}\n\nScheduled on: ${row.reminder.date} ${row.reminder.time}\n\nAre you sure that you want to send the reminder now?`
       )
     ) {
-      setRescheduleReminderData({
-        id: row.reminder.id,
-        new_reminder_datetime: null,
-        send_now: true,
+      setRescheduleReminderRequest({
+        reminderType: type,
+        data: {
+          id: row.reminder.id,
+          new_reminder_datetime: null,
+          send_now: true,
+        },
       });
     }
   };
@@ -279,19 +290,21 @@ const AppointmentsReminders = ({ title, startOpen }) => {
     </>
   );
 
-  const getMenuItems = (row) => {
-    const items = [
-      {
-        key: "1",
-        label: "Message",
-        onClick: ({ domEvent }) => {
-          domEvent.stopPropagation();
-          goToPatientShowMessages({ id: row.patient.id });
-        },
-      },
-    ];
+  const getMenuItems = (row, type) => {
+    const items = embedded
+      ? []
+      : [
+          {
+            key: "1",
+            label: "Message",
+            onClick: ({ domEvent }) => {
+              domEvent.stopPropagation();
+              goToPatientShowMessages({ id: row.patient.id });
+            },
+          },
+        ];
 
-    if (reminderType === 'appointment' && row.appointment?.id) {
+    if (type === 'appointment' && row.appointment?.id) {
       items.unshift({
         key: "0",
         label: "See appointment",
@@ -312,7 +325,7 @@ const AppointmentsReminders = ({ title, startOpen }) => {
         label: "Cancel reminder",
         onClick: ({ domEvent }) => {
           domEvent.stopPropagation();
-          cancelReminder(row);
+          cancelReminder(row, type);
         },
       });
     }
@@ -323,7 +336,7 @@ const AppointmentsReminders = ({ title, startOpen }) => {
         label: "Reverse reminder cancellation",
         onClick: ({ domEvent }) => {
           domEvent.stopPropagation();
-          reverseReminderCancellation(row);
+          reverseReminderCancellation(row, type);
         },
       });
     }
@@ -333,20 +346,24 @@ const AppointmentsReminders = ({ title, startOpen }) => {
       label: <span style={{ color: '#CC0000' }}>Send reminder now</span>,
       onClick: ({ domEvent }) => {
         domEvent.stopPropagation();
-        sendReminderNow(row);
+        sendReminderNow(row, type);
       },
     });
 
     return items;
   };
 
-  const getTableColumns = () => {
+  const getTableColumns = (type) => {
     const baseColumns = [
-      {
-        title: "Patient",
-        dataIndex: ['patient', 'full_name'],
-        sorter: true,
-      },
+      ...(!embedded
+        ? [
+            {
+              title: "Patient",
+              dataIndex: ['patient', 'full_name'],
+              sorter: true,
+            },
+          ]
+        : []),
       {
         title: "Reminder",
         dataIndex: ['reminder', 'message_template'],
@@ -386,7 +403,7 @@ const AppointmentsReminders = ({ title, startOpen }) => {
         render: (_, row) => (
           <div className="text-right">
             <Dropdown
-              menu={{ items: getMenuItems(row) }}
+              menu={{ items: getMenuItems(row, type) }}
               trigger={['click']}
               placement="bottomRight"
             >
@@ -400,7 +417,7 @@ const AppointmentsReminders = ({ title, startOpen }) => {
       },
     ];
 
-    if (reminderType === 'appointment') {
+    if (type === 'appointment') {
       // Insert doctor and appointment columns after patient column (omit doctor for MedBridge/Internal)
       const appointmentColumns = [
         ...(!hideDoctorColumn
@@ -439,15 +456,31 @@ const AppointmentsReminders = ({ title, startOpen }) => {
           },
         },
       ];
-      baseColumns.splice(1, 0, ...appointmentColumns);
+      baseColumns.splice(embedded ? 0 : 1, 0, ...appointmentColumns);
     }
 
     return baseColumns;
   };
 
-  const tableColumns = getTableColumns();
+  const renderReminderTable = (type, tableTitle) => (
+    <AppointmentsRemindersTable
+      field={fieldForType(type)}
+      id={''}
+      columnMap={columnMap}
+      reminderType={type}
+      patientId={patientId}
+    >
+      <AppointmentsRemindersTable.Table
+        columns={getTableColumns(type)}
+        title={tableTitle}
+      />
+    </AppointmentsRemindersTable>
+  );
+
   return (
     <>
+      <div className={embedded ? 'mt-3' : undefined}>
+      {!embedded && (
       <div className="mb-3">
         <Space wrap size="middle">
           <Select
@@ -468,16 +501,18 @@ const AppointmentsReminders = ({ title, startOpen }) => {
           />
         </Space>
       </div>
-      <AppointmentsRemindersTable
-        field={remindersField}
-        id={''}
-        columnMap={columnMap}
-        reminderType={reminderType}  // Add this prop
-      >
-        <AppointmentsRemindersTable.Table
-          columns={tableColumns}
-        />
-      </AppointmentsRemindersTable>
+      )}
+      {embedded ? (
+        <>
+          <div className="mb-3">
+            {renderReminderTable('system', 'System Reminders')}
+          </div>
+          {renderReminderTable('appointment', 'Appointment Reminders')}
+        </>
+      ) : (
+        renderReminderTable(reminderType)
+      )}
+      </div>
       {/* <AppointmentsRemindersTable
         field={UPCOMING_REMINDERS}
         id={''}

@@ -14,6 +14,7 @@ import {
   formatTimeByCountry,
   RenderPredictionText,
 } from 'utils/helpers';
+import AppointmentTransportDetails from '../AppointmentsPage/AppointmentTransportDetails';
 
 function PreviewModal({
   handleClose,
@@ -27,7 +28,8 @@ function PreviewModal({
   );
   const clinic = useSelector(makeSelectClinic());
   const isLoading = singleLoading || !appointment;
-  const { isPasIntegrated, PASProvider } = useSelector((state) => state.auth.user || {});
+  const { isPasIntegrated, PASProvider, isTMSEnabled: userIsTMSEnabled } = useSelector((state) => state.auth.user || {});
+  const isTMSEnabled = Boolean(clinic?.isTMSEnabled ?? userIsTMSEnabled);
   const isMedbridge = PASProvider?.toLowerCase() === 'medbridge';
   const isInternal = PASProvider?.toLowerCase() === 'internal';
   // Internal appointments have no doctor assigned, so hide the Doctor row like MedBridge.
@@ -210,6 +212,11 @@ function PreviewModal({
               <Typography.Paragraph>
                 {appointment.missing_reason_details}
               </Typography.Paragraph>
+            </div>
+          )}
+          {isTMSEnabled && (
+            <div className="mt-4">
+              <AppointmentTransportDetails trips={appointment.trips} />
             </div>
           )}
         </div>

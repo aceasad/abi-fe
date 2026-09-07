@@ -137,7 +137,10 @@ export function* getAppointmentsReminders({ payload }) {
       staffService.getAppointmentsReminders,
       payload.id,
       requestData,
-      { reminderType: payload.reminderType },
+      {
+        reminderType: payload.reminderType,
+        ...(payload.patientId ? { patient_id: payload.patientId } : {}),
+      },
       payload.field
     );
     yield put(setAppointmentsReminders({ ...data, field: payload.field }));

@@ -15,6 +15,8 @@ import PatientOverviewDetails from './PatientOverviewDetails';
 import PatientOverviewScheduledCard from './PatientOverviewScheduledCard';
 import PatientOverviewHistoryCard from './PatientOverviewHistoryCard';
 import PatientOverviewBookingHistoryCard from './PatientOverviewBookingHistoryCard';
+import PatientOverviewTransportCard from './PatientOverviewTransportCard';
+import AppointmentsReminders from '../OverviewPage/AppointmentsReminders';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   changePatient,
@@ -45,9 +47,10 @@ const PatientOverview = ({
 }) => {
   const dispatch = useDispatch();
   const { patient, loading } = useSelector(makeSelectPatientOverview());
-  const { PASProvider } = useSelector((state) => state.auth.user || {});
+  const { PASProvider, isTMSEnabled: userIsTMSEnabled } = useSelector((state) => state.auth.user || {});
   const [showMessages, setShowMessages] = useState();
   const clinic = useSelector(makeSelectClinic());
+  const isTMSEnabled = Boolean(clinic?.isTMSEnabled ?? userIsTMSEnabled);
   const screens = utils.getBreakPoint(useBreakpoint());
   const isMobile = !screens.includes('lg');
   const isMedbridge = PASProvider?.toLowerCase() === 'medbridge';
@@ -291,6 +294,18 @@ const PatientOverview = ({
                 patient={patient}
                 showAppointment={setActiveAppointment}
               />
+              {isTMSEnabled && (
+                <PatientOverviewTransportCard
+                  showAppointment={setActiveAppointment}
+                />
+              )}
+              {patient?.id && (
+                <AppointmentsReminders
+                  embedded
+                  patientId={patient.id}
+                  title="Reminders"
+                />
+              )}
               {/* <PatientOverviewExistingConditions patientId={patientId} />
             <PatientOverviewPreviousOperations patientId={patientId} /> */}
               <PatientOverviewHistoryCard
