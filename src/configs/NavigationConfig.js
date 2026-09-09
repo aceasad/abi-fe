@@ -2,6 +2,7 @@ import React from 'react';
 import {
   PieChartOutlined,
   CalendarOutlined,
+  CarOutlined,
   TeamOutlined,
   UserOutlined,
   WhatsAppOutlined,
@@ -12,6 +13,7 @@ import {
 } from '@ant-design/icons';
 import { useSelector } from 'react-redux';
 import { APP_PAGES_PREFIX_PATH } from 'configs/AppConfig';
+import { makeSelectClinic } from 'redux/selectors/Clinic';
 
 const pagesNavTree = [
   {
@@ -55,6 +57,14 @@ const pagesNavTree = [
     submenu: [],
   },
   {
+    key: 'transport',
+    path: `${APP_PAGES_PREFIX_PATH}/transport`,
+    title: 'Transport',
+    icon: CarOutlined,
+    breadcrumb: false,
+    submenu: [],
+  },
+  {
     key: 'patients',
     path: `${APP_PAGES_PREFIX_PATH}/patients`,
     title: 'Patients',
@@ -88,17 +98,28 @@ const pagesNavTree = [
   },
 ];
 
-export const getNavigationConfig = (pasProvider) => {
+export const getNavigationConfig = (pasProvider, isTMSEnabled = false) => {
   const isMedbridge = pasProvider?.toLowerCase() === 'medbridge';
+  const hiddenKeys = new Set();
   if (isMedbridge) {
-    return pagesNavTree.filter((item) => item.key !== 'staff');
+    hiddenKeys.add('staff');
   }
-  return [...pagesNavTree];
+  // Transport only exists for clinics running MediDrive TMS.
+  if (!isTMSEnabled) {
+    hiddenKeys.add('transport');
+  }
+  return pagesNavTree.filter((item) => !hiddenKeys.has(item.key));
 };
 
 export const useNavigationConfig = () => {
-  const { PASProvider } = useSelector((state) => state.auth.user || {});
-  return getNavigationConfig(PASProvider);
+  const { PASProvider, isTMSEnabled: userIsTMSEnabled } = useSelector(
+    (state) => state.auth.user || {}
+  );
+  const clinic = useSelector(makeSelectClinic());
+  return getNavigationConfig(
+    PASProvider,
+    Boolean(clinic?.isTMSEnabled ?? userIsTMSEnabled)
+  );
 };
 
 const navigationConfig = [...pagesNavTree];
