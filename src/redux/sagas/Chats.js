@@ -1,5 +1,6 @@
 import { ALL_CHATS_PAGINATION_LIMIT } from 'constants/ApiConstant';
 import { CHAT_FILTERS } from 'constants/ChatConstants';
+import { message } from 'antd';
 import { all, call, fork, put, select, takeEvery } from 'redux-saga/effects';
 import {
   addMoreToAllChatsInfo,
@@ -20,6 +21,7 @@ import {
 } from 'redux/constants/Chats';
 import {
   makeSelectAllChatsInfoRequestData,
+  makeSelectAllChatsInfo,
   makeSelectChatsPageSize,
   makeSelectSingleChatInfo,
   makeSelectSingleChatRequestData,
@@ -39,6 +41,15 @@ const normalizeConversationFilters = (payload) => {
 
 const shouldUseConversationSearch = ({ filter, location, query }) =>
   !!query || !!location || filter !== CHAT_FILTERS.ALL;
+
+const maybeNotifyWindowedResults = (data) => {
+  if (data?.windowed) {
+    message.warning(
+      `Showing the most recent conversations window (max offset ${data.max_offset || 20000}). Refine filters to narrow results.`,
+      4
+    );
+  }
+};
 
 export function* getSingleChat({ payload }) {
   try {
@@ -95,6 +106,7 @@ export function* getAllChatsInfo({ payload }) {
           filters.filter,
           filters.location
         );
+    maybeNotifyWindowedResults(data);
     yield put(setAllChatsInfo(data));
   } catch (err) {
   } finally {
@@ -123,8 +135,21 @@ export function* getMoreChatsInfo({ payload }) {
           filters.filter,
           filters.location
         );
+    maybeNotifyWindowedResults(data);
     yield put(addMoreToAllChatsInfo(data));
   } catch (err) {
+    if (err?.response?.status === 400) {
+      const currentList = yield select(makeSelectAllChatsInfo);
+      const requestData = yield select(makeSelectAllChatsInfoRequestData);
+      yield put(
+        setAllChatsInfo({
+          results: currentList.items,
+          count: requestData.count || currentList.items.length,
+          next: null,
+        })
+      );
+      message.warning('Reached conversation pagination guardrail. Refine search filters to continue.');
+    }
   } finally {
     yield put(setAllChatsInfoLoading(false));
   }
@@ -145,6 +170,7 @@ export function* searchConversations({ payload }) {
           filters.filter,
           filters.location
         );
+    maybeNotifyWindowedResults(data);
     yield put(setAllChatsInfo(data));
   } catch {
   } finally {

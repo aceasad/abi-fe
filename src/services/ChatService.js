@@ -16,6 +16,14 @@ const ENDPOINTS = {
   SEND_MASS_INVITE: '/messages/send-mass-invite/',
 };
 
+const MAX_CHAT_PAGE_SIZE = 100;
+const MAX_CHAT_OFFSET = 20000;
+
+const clampChatPagination = ({ offset = 0, limit }) => ({
+  offset: Math.max(0, Math.min(Number(offset) || 0, MAX_CHAT_OFFSET)),
+  limit: Math.max(1, Math.min(Number(limit) || ALL_CHATS_PAGINATION_LIMIT, MAX_CHAT_PAGE_SIZE)),
+});
+
 class ChatService extends ApiService {
   getSingleChat = (
     patientId,
@@ -34,20 +42,31 @@ class ChatService extends ApiService {
     limit = ALL_CHATS_PAGINATION_LIMIT,
     filter = CHAT_FILTERS.ALL,
     location
-  ) =>
-    this.apiClient.get(ENDPOINTS.ALL_CHATS, {
+  ) => {
+    const pagination = clampChatPagination({ offset, limit });
+    return this.apiClient.get(ENDPOINTS.ALL_CHATS, {
       params: {
-        limit,
-        offset,
+        limit: pagination.limit,
+        offset: pagination.offset,
         filter,
         ...(location ? { location } : {}),
       },
     });
+  }
 
-  searchConversations = (queryParams, limit = ALL_CHATS_PAGINATION_LIMIT) =>
-    this.apiClient.get(ENDPOINTS.SEARCH_CHATS, {
-      params: { ...queryParams, limit },
+  searchConversations = (queryParams, limit = ALL_CHATS_PAGINATION_LIMIT) => {
+    const pagination = clampChatPagination({
+      offset: queryParams?.offset,
+      limit,
     });
+    return this.apiClient.get(ENDPOINTS.SEARCH_CHATS, {
+      params: {
+        ...queryParams,
+        limit: pagination.limit,
+        ...(queryParams?.offset !== undefined ? { offset: pagination.offset } : {}),
+      },
+    });
+  }
 
   markConversationAsRead = (patientId) =>
     this.apiClient.put(
