@@ -324,6 +324,9 @@ const LocationTimeslotsDrawer = ({
         <Text type="secondary">
           Generates slots for each day in the date range within the daily time window.
         </Text>
+        <Text type="secondary">
+          Times are interpreted in the location timezone and converted to UTC when saved.
+        </Text>
 
         <Form form={addForm} layout="vertical">
           <Row gutter={16}>
