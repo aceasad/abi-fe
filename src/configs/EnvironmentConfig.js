@@ -15,6 +15,7 @@ const dev = {
   SHOW_KPIS: import.meta.env.VITE_APP_SHOW_KPIS,
   SHOW_PATIENT_PROGRESS: import.meta.env.VITE_APP_SHOW_PATIENT_PROGRESS,
   CAPTCHA_CLIENT_KEY_V2: import.meta.env.VITE_APP_CAPTCHA_CLIENT_KEY_V2,
+  MEDIDRIVE_BOOKING_URL: import.meta.env.VITE_APP_MEDIDRIVE_BOOKING_URL,
 };
 
 const prod = {
@@ -34,6 +35,7 @@ const prod = {
   SHOW_KPIS: import.meta.env.VITE_APP_SHOW_KPIS,
   SHOW_PATIENT_PROGRESS: import.meta.env.VITE_APP_SHOW_PATIENT_PROGRESS,
   CAPTCHA_CLIENT_KEY_V2: import.meta.env.VITE_APP_CAPTCHA_CLIENT_KEY_V2,
+  MEDIDRIVE_BOOKING_URL: import.meta.env.VITE_APP_MEDIDRIVE_BOOKING_URL,
 };
 
 const test = {
@@ -53,6 +55,7 @@ const test = {
   SHOW_KPIS: import.meta.env.VITE_APP_SHOW_KPIS,
   SHOW_PATIENT_PROGRESS: import.meta.env.VITE_APP_SHOW_PATIENT_PROGRESS,
   CAPTCHA_CLIENT_KEY_V2: import.meta.env.VITE_APP_CAPTCHA_CLIENT_KEY_V2,
+  MEDIDRIVE_BOOKING_URL: import.meta.env.VITE_APP_MEDIDRIVE_BOOKING_URL,
 };
 
 const getEnv = () => {
