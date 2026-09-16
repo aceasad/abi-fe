@@ -1,5 +1,5 @@
 import Yup from './yupValidations';
-import { normalizeLocalPhoneNumber } from './helpers';
+import { isUsCountry, extractNanpDigits, normalizeLocalPhoneNumber } from './helpers';
 import {
   maxDigits,
   passwordFormat,
@@ -16,6 +16,36 @@ import {
   MASS_INVITE_MAX_AGE,
   MASS_INVITE_MIN_AGE,
 } from 'constants/ChatConstants';
+import {
+  UK_POSTCODE_ERROR,
+  UK_POSTCODE_REGEX,
+  US_STATE_CODES,
+  US_STATE_ERROR,
+  US_ZIP_ERROR,
+  US_ZIP_REGEX,
+  US_PHONE_ERROR,
+} from 'constants/AddressConstants';
+
+const postalCodeSchemaForOrg = ({ isUSA, required = false }) => {
+  let schema = Yup.string().trim().max(16);
+  if (required) {
+    schema = schema.required();
+  }
+  return schema.matches(isUSA ? US_ZIP_REGEX : UK_POSTCODE_REGEX, {
+    excludeEmptyString: !required,
+    message: isUSA ? US_ZIP_ERROR : UK_POSTCODE_ERROR,
+  });
+};
+
+const usStateSchema = ({ required = false } = {}) => {
+  let schema = Yup.string()
+    .trim()
+    .transform((value) => (value ? String(value).toUpperCase() : value));
+  if (required) {
+    schema = schema.required();
+  }
+  return schema.oneOf(US_STATE_CODES, US_STATE_ERROR);
+};
 
 const passwordValidation = Yup.string()
   .matches(passwordFormat)
@@ -57,17 +87,45 @@ export const forgotPasswordSchema = Yup.object().shape({
 export const clinicSchema = Yup.object().shape({
   name: nameSchema,
   google_maps_link: Yup.string().trim().url().max(MAX_GOOGLE_LINK_LENGTH),
-  phone_number: Yup.string()
-    .trim()
-    .required()
-    .matches(phoneFormat)
-    .max(MAX_PHONE_LENGTH)
-    .min(MIN_PHONE_LENGTH),
+  phone_number: Yup.string().when('country', {
+    is: (country) => isUsCountry(country),
+    then: Yup.string()
+      .trim()
+      .required()
+      .test(
+        'us-phone',
+        US_PHONE_ERROR,
+        (value) => extractNanpDigits(value).length === 10
+      ),
+    otherwise: Yup.string()
+      .trim()
+      .required()
+      .matches(phoneFormat)
+      .max(MAX_PHONE_LENGTH)
+      .min(MIN_PHONE_LENGTH),
+  }),
   street_number: Yup.string().trim().max(8),
   street_name: Yup.string().trim().max(128).required(),
   area_of_living: Yup.string().trim().max(128),
   city: Yup.string().trim().required().max(64).required(),
-  post_code: Yup.string().trim().max(16).required(),
+  state: Yup.string().when('country', {
+    is: (country) => isUsCountry(country),
+    then: usStateSchema({ required: true }),
+    otherwise: Yup.string().max(2).nullable(),
+  }),
+  post_code: Yup.string().when('country', {
+    is: (country) => isUsCountry(country),
+    then: Yup.string()
+      .trim()
+      .max(16)
+      .required()
+      .matches(US_ZIP_REGEX, { message: US_ZIP_ERROR }),
+    otherwise: Yup.string()
+      .trim()
+      .max(16)
+      .required()
+      .matches(UK_POSTCODE_REGEX, { message: UK_POSTCODE_ERROR }),
+  }),
   country: Yup.string().trim().max(64),
   parking_availability: Yup.string().required(),
   start_of_work: Yup.string().required(),
@@ -119,9 +177,12 @@ export const changePasswordSchema = Yup.object().shape({
 // (see PatientPASForm's `case_ids` field) instead of the single `case_id` field, since
 // MedBridge issues a separate case per member type for the same referral. `patientSchema`
 // stays a plain object for call sites that never deal with grouped types (e.g. PatientForm);
-// PatientPASForm uses `getPatientSchema(groupedAppointmentTypeIds)` so the single `case_id`
+// PatientPASForm uses `getPatientSchema(groupedAppointmentTypeIds, { isUSA })` so the single `case_id`
 // field isn't required when the selected appointment_type is one of those group ids.
-export const getPatientSchema = (groupedAppointmentTypeIds = []) => Yup.object().shape({
+export const getPatientSchema = (
+  groupedAppointmentTypeIds = [],
+  { isUSA = false } = {}
+) => Yup.object().shape({
   first_name: Yup.string().trim().max(MAX).required(),
   last_name: Yup.string().trim().max(MAX).required(),
   gender: Yup.string(),
@@ -137,9 +198,9 @@ export const getPatientSchema = (groupedAppointmentTypeIds = []) => Yup.object()
   street_name: Yup.string().max(128),
   area_of_living: Yup.string().max(128),
   city: Yup.string().max(64),
-  post_code: Yup.string().max(16),
-  state: Yup.string().max(2),
-  country: Yup.string().max(64),
+  post_code: postalCodeSchemaForOrg({ isUSA }),
+  state: isUSA ? usStateSchema({ required: true }) : Yup.string().max(2),
+  country: Yup.string().trim().max(64),
   // PatientPASForm is the only place staff type this. Internal orgs never show it
   // (backend generates a dummy EIN). MedBridge: digits only, no fixed length (Lab
   // Retriever IDs can be as short as 3). Other PAS (NHS): 7 or 10 digits.

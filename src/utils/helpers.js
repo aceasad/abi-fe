@@ -51,6 +51,47 @@ const SORTED_COUNTRY_CODE_IDS = [
   ...new Set(COUNTRY_CODES.map(({ id }) => id)),
 ].sort((a, b) => b.length - a.length);
 
+export const US_PHONE_COUNTRY_CODE = '1';
+
+export const extractNanpDigits = (phoneNumber) => {
+  const raw = String(phoneNumber || '');
+  let digits = raw.replace(/\D/g, '');
+  // "+1 ..." in the field means the leading 1 is the country code, even when
+  // fewer than 10 local digits remain (backspace). Only treat a leading 1 as
+  // the country code when the value is prefixed with +1 or already E.164.
+  const hasUsCountryPrefix =
+    /^\s*\+1/.test(raw) ||
+    (digits.startsWith(US_PHONE_COUNTRY_CODE) && digits.length === 11);
+  if (hasUsCountryPrefix && digits.startsWith(US_PHONE_COUNTRY_CODE)) {
+    digits = digits.slice(1);
+  }
+  return digits.slice(0, 10);
+};
+
+export const formatUsLocalPhone = (phoneNumber) => {
+  const digits = extractNanpDigits(phoneNumber);
+  if (!digits) {
+    return '';
+  }
+  if (digits.length <= 3) {
+    return digits;
+  }
+  if (digits.length <= 6) {
+    return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+  }
+  return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+};
+
+export const formatUsInternationalPhone = (phoneNumber) => {
+  const local = formatUsLocalPhone(phoneNumber);
+  return local ? `+1 ${local}` : '';
+};
+
+export const toUsE164Phone = (phoneNumber) => {
+  const digits = extractNanpDigits(phoneNumber);
+  return digits.length === 10 ? `+1${digits}` : String(phoneNumber || '').trim();
+};
+
 export const normalizeLocalPhoneNumber = (phoneNumber) => {
   if (phoneNumber == null || phoneNumber === '') {
     return '';
@@ -549,6 +590,30 @@ export const isUsCountry = (country = '') => {
     normalizedCountry.startsWith('us') ||
     normalizedCountry.includes('unitedstates') ||
     normalizedCountry.includes('america')
+  );
+};
+
+const UK_COUNTRY_IDENTIFIERS = new Set([
+  'uk',
+  'gb',
+  'unitedkingdom',
+  'greatbritain',
+  'england',
+  'scotland',
+  'wales',
+  'northernireland',
+]);
+
+export const isUkCountry = (country = '') => {
+  const normalizedCountry = String(country)
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z]/g, '');
+  if (!normalizedCountry) return false;
+  if (UK_COUNTRY_IDENTIFIERS.has(normalizedCountry)) return true;
+  return (
+    normalizedCountry.includes('unitedkingdom') ||
+    normalizedCountry.includes('greatbritain')
   );
 };
 

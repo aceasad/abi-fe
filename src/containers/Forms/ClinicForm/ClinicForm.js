@@ -2,6 +2,8 @@ import { MinusOutlined } from '@ant-design/icons';
 import { Button, Col, Form, Radio, Row, Space, Typography, Grid } from 'antd';
 import FormField from 'components/custom-components/Form/FormField';
 import FormSelect from 'components/custom-components/Form/FormSelect';
+import CityFormSelect from 'components/custom-components/Form/CityFormSelect';
+import FormPhoneField from 'components/custom-components/Form/FormPhoneField';
 import FormImageUpload from 'components/custom-components/Form/FormImageUpload';
 import { Field, Formik } from 'formik';
 import React, { useState } from 'react';
@@ -17,33 +19,31 @@ import {
   MAX_PHONE_LENGTH,
 } from 'constants/ClinicConstants';
 import ColumnField from 'components/custom-components/Form/ColumnField';
-import { isUsCountry, prepareFormData } from 'utils/helpers';
+import {
+  formatUsInternationalPhone,
+  isUsCountry,
+  prepareFormData,
+  toUsE164Phone,
+} from 'utils/helpers';
+import {
+  COUNTRY_ERROR,
+  getCountrySelectOptions,
+  normalizeCountryForSelect,
+  UK_POSTCODE_ERROR,
+  UK_POSTCODE_PLACEHOLDER,
+  US_PHONE_ERROR,
+  US_PHONE_PLACEHOLDER,
+  US_STATE_ERROR,
+  US_STATES,
+  US_ZIP_ERROR,
+  US_ZIP_PLACEHOLDER,
+} from 'constants/AddressConstants';
 import { useLocation } from 'react-router-dom';
 import FormTimePicker from 'components/custom-components/Form/FormTimePicker';
 import Checkbox from 'antd/lib/checkbox/Checkbox';
 import utils from 'utils';
 
 const { useBreakpoint } = Grid;
-
-// Providers that mean a real external PAS/EHR system is wired up (isPasIntegrated=true).
-// 'None' has no broker at all (our own built-in scheduler); 'Internal' also runs locally
-// (Local PAS Broker, manually managed Timeslots) but is NOT a real external integration.
-const PAS_INTEGRATED_PROVIDERS = ['EMIS', 'MedBridge'];
-const PAS_PROVIDER_OPTIONS = [
-  { id: 'None', label: 'None (manual scheduling)' },
-  { id: 'EMIS', label: 'EMIS' },
-  { id: 'MedBridge', label: 'MedBridge' },
-  { id: 'Internal', label: 'Internal (local test broker)' },
-];
-
-const normalizePasProvider = (value) => {
-  const lower = String(value || '').trim().toLowerCase();
-  if (lower === 'emis') return 'EMIS';
-  if (lower === 'medbridge') return 'MedBridge';
-  if (lower === 'internal') return 'Internal';
-  if (!lower || lower === 'none') return 'None';
-  return value;
-};
 
 const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
   const dispatch = useDispatch();
@@ -55,7 +55,6 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
     clinicData?.start_of_work === '00:00:00' &&
     clinicData?.end_of_work === '00:00:00'
   );
-  const { isPasIntegrated } = useSelector(state => state.auth.user);
   const screens = utils.getBreakPoint(useBreakpoint());
   const isMobile = !screens.includes('lg');
   const isTablet = screens.includes('md') && !screens.includes('lg');
@@ -69,17 +68,18 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
     location.pathname.endsWith(editClinicSlug);
 
   const handleSubmit = (values) => {
-    const formData = prepareFormData({ ...values });
+    const payload = { ...values };
+    if (!isUsCountry(payload.country || '')) {
+      payload.state = '';
+    } else {
+      payload.phone_number = toUsE164Phone(payload.phone_number);
+    }
+    const formData = prepareFormData(payload);
     if (!(values.photo instanceof File) || !values.photo)
       formData.delete('photo');
     if (!values.photo) {
       formData.append('photo', '');
     }
-    const pasProvider = normalizePasProvider(values.PASProvider);
-    formData.delete('isPasIntegrated');
-    formData.append('isPasIntegrated', PAS_INTEGRATED_PROVIDERS.includes(pasProvider));
-    formData.delete('PASProvider');
-    formData.append('PASProvider', pasProvider === 'None' ? '' : pasProvider);
     if (clinicData) {
       dispatch(
         updateClinic({
@@ -109,23 +109,23 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
         initialValues={{
           photo: clinicData?.photo?.thumbnail || null,
           name: clinicData?.name || '',
-          phone_number: clinicData?.phone_number || '',
+          phone_number: isUsCountry(clinicData?.country)
+            ? formatUsInternationalPhone(clinicData?.phone_number)
+            : clinicData?.phone_number || '',
           street_number: clinicData?.street_number || '',
           street_name: clinicData?.street_name || '',
           area_of_living: clinicData?.area_of_living || '',
           city: clinicData?.city || '',
+          state: clinicData?.state
+            ? String(clinicData.state).trim().toUpperCase()
+            : '',
           post_code: clinicData?.post_code || '',
-          country: clinicData?.country || '',
+          country: normalizeCountryForSelect(clinicData?.country),
           google_maps_link: clinicData?.google_maps_link || '',
           parking_availability: clinicData?.parking_availability || NO,
           parking_size: clinicData?.parking_size || 0,
           start_of_work: clinicData?.start_of_work || initialWorkTime,
           end_of_work: clinicData?.end_of_work || initialWorkTime,
-          PasAPIEndpoint: clinicData?.PasAPIEndpoint || '',
-          isPasIntegrated: clinicData?.isPasIntegrated || isPasIntegrated,
-          PASProvider: normalizePasProvider(
-            clinicData?.PASProvider || (isPasIntegrated ? 'EMIS' : 'None')
-          ),
         }}
         enableReinitialize
         validationSchema={clinicSchema}
@@ -136,6 +136,7 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
             ? 'h:mm A'
             : 'HH:mm';
           const isWorkingHours12h = workingHoursDisplayFormat === 'h:mm A';
+          const isUSAClinic = isUsCountry(values.country || '');
           return (
           <Form
             layout="vertical"
@@ -185,16 +186,22 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
                 <Row gutter={16}>
                   <ColumnField
                     span={16}
-                    component={FormField}
+                    component={FormPhoneField}
                     label={"Phone number"}
                     name={'phone_number'}
+                    usFormat={isUSAClinic}
+                    withCountryPrefix
+                    placeholder={
+                      isUSAClinic ? US_PHONE_PLACEHOLDER : '+xxxxxxxxxxxxxx'
+                    }
                     errorTexts={{
                       label: "Phone number",
-                      matchesLabel: "Phone number format is +xxxxxxxxxxxxxxx",
+                      matchesLabel: isUSAClinic
+                        ? US_PHONE_ERROR
+                        : "Phone number format is +xxxxxxxxxxxxxxx",
                       minValue: MIN_PHONE_LENGTH,
                       maxValue: MAX_PHONE_LENGTH,
                     }}
-                  // disabled
                   />
                 </Row>
                 <Row gutter={isMobile ? 16 : 24}>
@@ -231,11 +238,37 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
                       maxValue: 128,
                     }}
                   />
+                  {isUSAClinic && (
+                    <ColumnField
+                      span={isMobile && !isTablet ? 24 : 12}
+                      component={FormSelect}
+                      label={"State"}
+                      name={'state'}
+                      options={US_STATES.map((stateOption) => ({
+                        id: stateOption.id,
+                        name: `${stateOption.id} — ${stateOption.name}`,
+                      }))}
+                      optionField="name"
+                      showSearch
+                      optionFilterProp="children"
+                      placeholder="Select state"
+                      required
+                      afterSelectChange={(nextSetFieldValue) =>
+                        nextSetFieldValue('city', '')
+                      }
+                      errorTexts={{
+                        label: "State",
+                        matchesLabel: US_STATE_ERROR,
+                      }}
+                    />
+                  )}
                   <ColumnField
                     span={isMobile && !isTablet ? 24 : 12}
-                    component={FormField}
+                    component={CityFormSelect}
                     label={"City"}
                     name={'city'}
+                    country={values.country}
+                    state={values.state}
                     errorTexts={{
                       label: "City",
                       maxValue: 64,
@@ -247,22 +280,58 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
                   <ColumnField
                     span={isMobile && !isTablet ? 24 : 12}
                     component={FormField}
-                    label={"Postcode"}
+                    label={isUSAClinic ? "Zip Code" : "Postcode"}
                     name={'post_code'}
+                    placeholder={
+                      isUSAClinic ? US_ZIP_PLACEHOLDER : UK_POSTCODE_PLACEHOLDER
+                    }
                     errorTexts={{
-                      label: "Postcode",
+                      label: isUSAClinic ? "Zip Code" : "Postcode",
                       maxValue: 16,
+                      matchesLabel: isUSAClinic ? US_ZIP_ERROR : UK_POSTCODE_ERROR,
                     }}
                     required
                   />
                   <ColumnField
                     span={isMobile && !isTablet ? 24 : 12}
-                    component={FormField}
+                    component={FormSelect}
                     label={"Country"}
                     name={'country'}
+                    options={getCountrySelectOptions(values.country)}
+                    optionField="name"
+                    showSearch
+                    optionFilterProp="children"
+                    placeholder="Select country"
+                    afterSelectChange={(nextSetFieldValue, _, country) => {
+                      nextSetFieldValue('city', '');
+                      nextSetFieldValue('state', '');
+                      const digits = String(values.phone_number || '').replace(
+                        /\D/g,
+                        ''
+                      );
+                      if (isUsCountry(country)) {
+                        if (
+                          digits.length === 10 ||
+                          (digits.length === 11 && digits.startsWith('1'))
+                        ) {
+                          nextSetFieldValue(
+                            'phone_number',
+                            formatUsInternationalPhone(digits)
+                          );
+                        } else {
+                          nextSetFieldValue('phone_number', '');
+                        }
+                      } else {
+                        nextSetFieldValue(
+                          'phone_number',
+                          digits ? `+${digits}` : ''
+                        );
+                      }
+                    }}
                     errorTexts={{
                       label: "Country",
                       maxValue: 64,
+                      matchesLabel: COUNTRY_ERROR,
                     }}
                   />
                 </Row>
@@ -277,17 +346,6 @@ const ClinicForm = ({ clinicData = null, showSuccess, showError }) => {
                       matchesLabel: "Google maps link",
                       maxValue: 500,
                     }}
-                  />
-                </Row>
-                <Row gutter={16}>
-                  <ColumnField
-                    span={isMobile && !isTablet ? 24 : 12}
-                    component={FormSelect}
-                    label={"PAS Provider"}
-                    name={'PASProvider'}
-                    options={PAS_PROVIDER_OPTIONS}
-                    optionField={'label'}
-                    required
                   />
                 </Row>
                 <Row gutter={16}>

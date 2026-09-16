@@ -6,6 +6,7 @@ const ENDPOINTS = {
   GET_CLINIC: '/clinics/',
   GET_USERS_CLINIC: '/clinics/my-clinic/',
   ADVANCED_SETTINGS: '/clinics/advanced-settings/',
+  CITIES: '/clinics/cities/',
 };
 
 class ClinicService extends ApiService {
@@ -22,6 +23,10 @@ class ClinicService extends ApiService {
 
   getClinic = () => {
     return this.apiClient.get(ENDPOINTS.GET_USERS_CLINIC);
+  };
+
+  listCities = ({ state } = {}) => {
+    return this.apiClient.get(ENDPOINTS.CITIES, { params: { state } });
   };
 
   getAdvancedSettings = () => {

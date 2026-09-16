@@ -9,6 +9,8 @@ import PatientHeader from './PatientHeader';
 import FormField from 'components/custom-components/Form/FormField';
 import FormDatePicker from 'components/custom-components/Form/FormDatePicker';
 import FormSelect from 'components/custom-components/Form/FormSelect';
+import CityFormSelect from 'components/custom-components/Form/CityFormSelect';
+import FormPhoneField from 'components/custom-components/Form/FormPhoneField';
 import ColumnField from 'components/custom-components/Form/ColumnField';
 import {
   makeSelectPatientDetails,
@@ -18,7 +20,19 @@ import { makeSelectAppointmentTypes } from 'redux/selectors/Appointment';
 import { makeSelectClinic } from 'redux/selectors/Clinic';
 import { getPatientSchema } from 'utils/validations';
 import { MAX, NHS_MAX, EIN_MAX } from 'constants/ClinicConstants';
-import { applyPatientFormFieldError, buildPatientHomeLocationNoTimeslotsError, filterNumberInput, formatLocationLabel, getHomeLocationTimezoneValidationError, isUsCountry, joinPhoneNumberWithCountryCode, parsePatientFormApiErrors } from 'utils/helpers';
+import {
+  COUNTRY_ERROR,
+  getCountrySelectOptions,
+  normalizeCountryForSelect,
+  UK_POSTCODE_ERROR,
+  UK_POSTCODE_PLACEHOLDER,
+  US_STATE_ERROR,
+  US_STATES,
+  US_ZIP_ERROR,
+  US_ZIP_PLACEHOLDER,
+  US_LOCAL_PHONE_PLACEHOLDER,
+} from 'constants/AddressConstants';
+import { applyPatientFormFieldError, buildPatientHomeLocationNoTimeslotsError, filterNumberInput, formatLocationLabel, formatUsLocalPhone, getHomeLocationTimezoneValidationError, isUsCountry, joinPhoneNumberWithCountryCode, parsePatientFormApiErrors, US_PHONE_COUNTRY_CODE } from 'utils/helpers';
 import patientService from 'services/PatientService';
 import PatientFormExistingConditions from './PatientFormExistingConditions';
 import PatientFormPreviousOperationss from './PatientFormPreviousOperations';
@@ -76,6 +90,8 @@ const PatientPASForm = ({
   const { appointmentTypes, appointmentTypesLoading } = useSelector(
     makeSelectAppointmentTypes()
   );
+  const clinic = useSelector(makeSelectClinic());
+  const isUSA = isUsCountry(clinic?.country);
   // Grouped face types (e.g. MSLT) need one Case ID per member appointment type instead of
   // the single `case_id` field - MedBridge issues a separate case per member type (e.g.
   // Overnight Sleep Study vs Day Studies) for the same referral. See `case_ids` rendering
@@ -85,8 +101,8 @@ const PatientPASForm = ({
     [appointmentTypes]
   );
   const patientValidationSchema = useMemo(
-    () => getPatientSchema(groupedAppointmentTypeIds),
-    [groupedAppointmentTypeIds]
+    () => getPatientSchema(groupedAppointmentTypeIds, { isUSA }),
+    [groupedAppointmentTypeIds, isUSA]
   );
   // Resolves whether a given appointment_type id is a grouped face type (e.g. MSLT) and, if
   // so, its member AppointmentTypes - used both for rendering the per-member Case ID inputs
@@ -100,8 +116,6 @@ const PatientPASForm = ({
       memberTypes: type?.member_types || [],
     };
   };
-  const clinic = useSelector(makeSelectClinic());
-  const isUSA = isUsCountry(clinic?.country);
   const { isTMSEnabled: userIsTMSEnabled } = useSelector(
     (state) => state.auth.user || {}
   );
@@ -411,7 +425,18 @@ const PatientPASForm = ({
         enableReinitialize
         initialValues={{
           ...initialState,
-          // country_code: '44',
+          state: initialState?.state
+            ? String(initialState.state).trim().toUpperCase()
+            : '',
+          country: normalizeCountryForSelect(initialState?.country),
+          country_code:
+            initialState?.country_code ||
+            (isUSA ? US_PHONE_COUNTRY_CODE : '44'),
+          phone_number:
+            (initialState?.country_code ||
+              (isUSA ? US_PHONE_COUNTRY_CODE : '44')) === US_PHONE_COUNTRY_CODE
+              ? formatUsLocalPhone(initialState?.phone_number)
+              : initialState?.phone_number || '',
         }}
         innerRef={formRef}
         onSubmit={handleSubmitWrapper}
@@ -771,6 +796,15 @@ const PatientPASForm = ({
                             .toLowerCase()
                             .includes(input.toLowerCase())
                         }
+                        afterSelectChange={(nextSetFieldValue, _, countryCode) => {
+                          const localNumber = values.phone_number;
+                          nextSetFieldValue(
+                            'phone_number',
+                            countryCode === US_PHONE_COUNTRY_CODE
+                              ? formatUsLocalPhone(localNumber)
+                              : String(localNumber || '').replace(/\D/g, '')
+                          );
+                        }}
                         errorTexts={{
                           label: "Country code",
                           matchesLabel: "Country code must be in valid format",
@@ -780,15 +814,20 @@ const PatientPASForm = ({
                       />
                       <ColumnField
                         span={isMobile && !isTablet ? 24 : 12}
-                        component={FormField}
+                        component={FormPhoneField}
                         label={"Phone number"}
                         name="phone_number"
+                        usFormat={values.country_code === US_PHONE_COUNTRY_CODE}
                         errorTexts={{
                           label: "Phone number",
                           matchesLabel: "Phone must be in valid format",
                           maxValue: 10,
                         }}
-                        placeholder="e.g. (212) 555-1234"
+                        placeholder={
+                          values.country_code === US_PHONE_COUNTRY_CODE
+                            ? US_LOCAL_PHONE_PLACEHOLDER
+                            : 'e.g. 7911123456'
+                        }
                         required
                       />
                     </Row>
@@ -856,30 +895,42 @@ const PatientPASForm = ({
                             maxValue: 128,
                           }}
                         />
+                        {isUSA && (
+                          <ColumnField
+                            span={isMobile && !isTablet ? 24 : 12}
+                            component={FormSelect}
+                            label={"State"}
+                            name="state"
+                            options={US_STATES.map((state) => ({
+                              id: state.id,
+                              name: `${state.id} — ${state.name}`,
+                            }))}
+                            optionField="name"
+                            showSearch
+                            optionFilterProp="children"
+                            placeholder="Select state"
+                            required
+                            afterSelectChange={(setFieldValue) =>
+                              setFieldValue('city', '')
+                            }
+                            errorTexts={{
+                              label: "State",
+                              matchesLabel: US_STATE_ERROR,
+                            }}
+                          />
+                        )}
                         <ColumnField
                           span={isMobile && !isTablet ? 24 : 12}
-                          component={FormField}
+                          component={CityFormSelect}
                           label={"City"}
                           name="city"
+                          country={isUSA ? 'United States' : 'United Kingdom'}
+                          state={values.state}
                           errorTexts={{
                             label: "City",
                             maxValue: 64,
                           }}
                         />
-                        {isUSA && (
-                          <ColumnField
-                            span={isMobile && !isTablet ? 24 : 12}
-                            component={FormField}
-                            label={"State"}
-                            name="state"
-                            maxLength={2}
-                            placeholder="e.g. NY"
-                            errorTexts={{
-                              label: "State",
-                              maxValue: 2,
-                            }}
-                          />
-                        )}
                       </Row>
                       <Row gutter={isMobile ? 12 : 16}>
                         <ColumnField
@@ -887,19 +938,29 @@ const PatientPASForm = ({
                           component={FormField}
                           label={isUSA ? "Zip Code" : "Postcode"}
                           name="post_code"
+                          placeholder={
+                            isUSA ? US_ZIP_PLACEHOLDER : UK_POSTCODE_PLACEHOLDER
+                          }
                           errorTexts={{
                             label: isUSA ? "Zip Code" : "Postcode",
                             maxValue: 16,
+                            matchesLabel: isUSA ? US_ZIP_ERROR : UK_POSTCODE_ERROR,
                           }}
                         />
                         <ColumnField
                           span={isMobile && !isTablet ? 24 : 12}
-                          component={FormField}
+                          component={FormSelect}
                           label={"Country"}
                           name="country"
+                          options={getCountrySelectOptions(values.country)}
+                          optionField="name"
+                          showSearch
+                          optionFilterProp="children"
+                          placeholder="Select country"
                           errorTexts={{
                             label: "Country",
                             maxValue: 64,
+                            matchesLabel: COUNTRY_ERROR,
                           }}
                         />
                       </Row>
