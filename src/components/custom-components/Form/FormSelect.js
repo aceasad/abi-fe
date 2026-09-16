@@ -20,6 +20,9 @@ const FormSelect = ({
   showSearch,
   optionFilterProp,
   filterOption,
+  disabled,
+  loading,
+  allowClear,
 }) => {
 
   const placeholderText = placeholder || "Select option";
@@ -62,6 +65,9 @@ const FormSelect = ({
         showSearch={showSearch}
         optionFilterProp={optionFilterProp}
         filterOption={filterOption}
+        disabled={disabled}
+        loading={loading}
+        allowClear={allowClear}
       >
         {options.map((item, index) => (
           <Option key={index} value={item.id}>

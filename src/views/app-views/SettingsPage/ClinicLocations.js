@@ -7,6 +7,7 @@ import {
   Modal,
   Popconfirm,
   Row,
+  Select,
   Space,
   Switch,
   Table,
@@ -23,6 +24,14 @@ import locationService from 'services/LocationService';
 import appointmentService from 'services/AppointmentService';
 import Loading from 'components/shared-components/Loading';
 import LocationTimeslotsDrawer from './LocationTimeslotsDrawer';
+import {
+  US_STATE_ERROR,
+  US_STATE_SELECT_OPTIONS,
+  US_ZIP_ERROR,
+  US_ZIP_PLACEHOLDER,
+  US_ZIP_REGEX,
+} from 'constants/AddressConstants';
+import { useCityOptions } from 'utils/useCityOptions';
 
 const { Text } = Typography;
 
@@ -53,6 +62,17 @@ const ClinicLocations = () => {
   const [editing, setEditing] = useState(null);
   const [timeslotLocation, setTimeslotLocation] = useState(null);
   const [form] = Form.useForm();
+  const selectedState = Form.useWatch('state', form);
+  const selectedCity = Form.useWatch('city', form);
+  const {
+    options: cityOptions,
+    loading: citiesLoading,
+    disabled: cityDisabled,
+  } = useCityOptions({
+    country: 'United States',
+    state: selectedState,
+    currentCity: selectedCity,
+  });
 
   const loadLocations = useCallback(async () => {
     setLoading(true);
@@ -98,7 +118,7 @@ const ClinicLocations = () => {
       street1: record.street1 || '',
       street2: record.street2 || '',
       city: record.city || '',
-      state: record.state || '',
+      state: (record.state || '').trim().toUpperCase(),
       postcode: record.postcode || '',
       phone: record.phone || '',
       scheduling_phone: record.scheduling_phone || '',
@@ -117,7 +137,15 @@ const ClinicLocations = () => {
       setSaving(true);
       if (editing) {
         await locationService.updateLocation(editing.id, values);
-        message.success('Location updated');
+        if (isTMSEnabled && editing.tms_lob_id) {
+          message.success('Location updated — MediDrive LOB will be updated');
+        } else if (isTMSEnabled) {
+          message.success(
+            'Location updated — MediDrive will update an existing LOB with this name, or create one if none exists'
+          );
+        } else {
+          message.success('Location updated');
+        }
       } else {
         await locationService.createLocation(values);
         message.success(
@@ -254,9 +282,10 @@ const ClinicLocations = () => {
       >
         <Col flex="auto">
           <Text type="secondary">
-            Manage clinic locations used for booking. When transport (TMS) is enabled for
-            this organization, creating a location automatically creates a MediDrive line of
-            business.
+            Manage clinic locations used for booking. When transport (TMS) is enabled,
+            adding a location creates a MediDrive line of business. Saving changes on an
+            existing location updates that LOB. If TMS LOB ID is still pending, save will
+            attach an existing MediDrive LOB with the same name or create one.
           </Text>
         </Col>
         <Col flex="none" style={{ paddingLeft: 24 }}>
@@ -291,7 +320,16 @@ const ClinicLocations = () => {
         width={720}
         destroyOnClose
       >
-        <Form form={form} layout="vertical" initialValues={EMPTY_FORM}>
+        <Form
+          form={form}
+          layout="vertical"
+          initialValues={EMPTY_FORM}
+          onValuesChange={(changed) => {
+            if (Object.prototype.hasOwnProperty.call(changed, 'state')) {
+              form.setFieldsValue({ city: undefined });
+            }
+          }}
+        >
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
@@ -326,18 +364,45 @@ const ClinicLocations = () => {
               </Form.Item>
             </Col>
             <Col span={8}>
+              <Form.Item
+                name="state"
+                label="State"
+                rules={[{ required: true, message: US_STATE_ERROR }]}
+              >
+                <Select
+                  showSearch
+                  optionFilterProp="label"
+                  placeholder="Select state"
+                  options={US_STATE_SELECT_OPTIONS}
+                />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
               <Form.Item name="city" label="City">
-                <Input />
+                <Select
+                  showSearch
+                  allowClear
+                  optionFilterProp="label"
+                  placeholder={cityDisabled ? 'Select state first' : 'Select city'}
+                  options={cityOptions.map((city) => ({
+                    value: city.id,
+                    label: city.name,
+                  }))}
+                  loading={citiesLoading}
+                  disabled={cityDisabled}
+                />
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item name="state" label="State">
-                <Input maxLength={2} placeholder="NY" />
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item name="postcode" label="Zip Code">
-                <Input />
+              <Form.Item
+                name="postcode"
+                label="Zip Code"
+                rules={[
+                  { required: true, message: 'Zip Code is required' },
+                  { pattern: US_ZIP_REGEX, message: US_ZIP_ERROR },
+                ]}
+              >
+                <Input placeholder={US_ZIP_PLACEHOLDER} />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -360,6 +425,13 @@ const ClinicLocations = () => {
                 <Form.Item label="TMS LOB ID">
                   <Input value={editing.tms_lob_id || ''} disabled />
                 </Form.Item>
+                <Text type="secondary">
+                  {editing.tms_lob_id
+                    ? 'Saving this location updates the linked MediDrive LOB.'
+                    : isTMSEnabled
+                      ? 'No LOB ID yet. Saving will update an existing MediDrive LOB with this name, or create one.'
+                      : 'TMS is disabled for this organization.'}
+                </Text>
               </Col>
             )}
             {editing && (editing.latitude != null || editing.longitude != null) && (
