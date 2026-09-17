@@ -179,9 +179,11 @@ export const changePasswordSchema = Yup.object().shape({
 // stays a plain object for call sites that never deal with grouped types (e.g. PatientForm);
 // PatientPASForm uses `getPatientSchema(groupedAppointmentTypeIds, { isUSA })` so the single `case_id`
 // field isn't required when the selected appointment_type is one of those group ids.
+// requireUsAddress: Internal/non-PAS US forms show state/zip. MedBridge/EMIS hide
+// those fields, so state must not be required just because the clinic country is US.
 export const getPatientSchema = (
   groupedAppointmentTypeIds = [],
-  { isUSA = false } = {}
+  { isUSA = false, requireUsAddress = isUSA } = {}
 ) => Yup.object().shape({
   first_name: Yup.string().trim().max(MAX).required(),
   last_name: Yup.string().trim().max(MAX).required(),
@@ -199,7 +201,9 @@ export const getPatientSchema = (
   area_of_living: Yup.string().max(128),
   city: Yup.string().max(64),
   post_code: postalCodeSchemaForOrg({ isUSA }),
-  state: isUSA ? usStateSchema({ required: true }) : Yup.string().max(2),
+  state: requireUsAddress
+    ? usStateSchema({ required: true })
+    : Yup.string().max(2).nullable(),
   country: Yup.string().trim().max(64),
   // PatientPASForm is the only place staff type this. Internal orgs never show it
   // (backend generates a dummy EIN). MedBridge: digits only, no fixed length (Lab
