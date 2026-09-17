@@ -101,8 +101,12 @@ const PatientPASForm = ({
     [appointmentTypes]
   );
   const patientValidationSchema = useMemo(
-    () => getPatientSchema(groupedAppointmentTypeIds, { isUSA }),
-    [groupedAppointmentTypeIds, isUSA]
+    () =>
+      getPatientSchema(groupedAppointmentTypeIds, {
+        isUSA,
+        requireUsAddress: isUSA && isInternal,
+      }),
+    [groupedAppointmentTypeIds, isUSA, isInternal]
   );
   // Resolves whether a given appointment_type id is a grouped face type (e.g. MSLT) and, if
   // so, its member AppointmentTypes - used both for rendering the per-member Case ID inputs
