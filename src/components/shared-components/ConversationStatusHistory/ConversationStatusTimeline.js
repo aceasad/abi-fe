@@ -2,6 +2,7 @@ import React from 'react';
 import { Timeline, Typography, Empty, Spin } from 'antd';
 import {
   formatDateTimeByCountry,
+  formatDateTimeByCountryInTimezone,
   getConversationProgressColor,
   humanizeConversationStatus,
 } from 'utils/helpers';
@@ -13,7 +14,12 @@ const { Text } = Typography;
 const getStatusDotColor = (status) =>
   getConversationProgressColor(humanizeConversationStatus(status));
 
-const ConversationStatusTimeline = ({ items = [], loading, country }) => {
+const ConversationStatusTimeline = ({
+  items = [],
+  loading,
+  country,
+  patientTimezone,
+}) => {
   if (loading) {
     return (
       <div style={{ textAlign: 'center', padding: '32px 0' }}>
@@ -58,7 +64,13 @@ const ConversationStatusTimeline = ({ items = [], loading, country }) => {
                 )}
                 <div>
                   <Text type="secondary" style={{ fontSize: 12 }}>
-                    {formatDateTimeByCountry(item.changed_at, country)}
+                    {formatDateTimeByCountryInTimezone(
+                      item.changed_at,
+                      country,
+                      'hh:mm A',
+                      [],
+                      patientTimezone
+                    )}
                   </Text>
                 </div>
               </div>

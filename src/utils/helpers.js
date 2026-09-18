@@ -692,6 +692,50 @@ export const formatDateTimeByCountry = (
   return `${formattedDate} ${formattedTime}`.trim();
 };
 
+export const formatDateTimeByCountryInTimezone = (
+  dateTimeValue,
+  country = '',
+  timeFormat = 'hh:mm A',
+  inputFormats = [],
+  displayTimezone = null
+) => {
+  if (!dateTimeValue) {
+    return '';
+  }
+
+  if (!displayTimezone) {
+    return formatDateTimeByCountry(dateTimeValue, country, timeFormat, inputFormats);
+  }
+
+  let parsedDateTime = null;
+  if (inputFormats.length) {
+    parsedDateTime = dayjs(dateTimeValue, inputFormats, true);
+  }
+
+  if (!parsedDateTime || !parsedDateTime.isValid()) {
+    parsedDateTime = dayjs(dateTimeValue);
+  }
+  if (!parsedDateTime.isValid() && inputFormats.length) {
+    parsedDateTime = dayjs(dateTimeValue, inputFormats);
+  }
+  if (!parsedDateTime.isValid()) {
+    return dateTimeValue;
+  }
+
+  try {
+    parsedDateTime = parsedDateTime.tz(displayTimezone);
+    if (!parsedDateTime.isValid()) {
+      return formatDateTimeByCountry(dateTimeValue, country, timeFormat, inputFormats);
+    }
+  } catch (_error) {
+    return formatDateTimeByCountry(dateTimeValue, country, timeFormat, inputFormats);
+  }
+
+  const formattedDate = parsedDateTime.format(getDateFormatByCountry(country));
+  const formattedTime = parsedDateTime.format(timeFormat);
+  return `${formattedDate} ${formattedTime}`.trim();
+};
+
 export const formatTimeTo12Hour = (time) => {
   if (!time) return '';
   const match = /^(\d{1,2}):(\d{2})(?:\s*([aApP][mM]))?$/.exec(

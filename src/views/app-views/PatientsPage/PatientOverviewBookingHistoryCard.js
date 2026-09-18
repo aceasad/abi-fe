@@ -41,7 +41,12 @@ const PatientOverviewBookingHistoryCard = ({ patient, country }) => {
           {"Booking history"}
         </Title>
       </div>
-      <ConversationStatusTimeline items={items} loading={loading} country={country} />
+      <ConversationStatusTimeline
+        items={items}
+        loading={loading}
+        country={country}
+        patientTimezone={patient?.timezone}
+      />
     </Card>
   );
 };
