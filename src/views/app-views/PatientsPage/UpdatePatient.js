@@ -111,6 +111,8 @@ const UpdatePatient = ({ showList, patientId }) => {
           pas_provider: normalizedPasProvider,
           appointment_type:
             patient?.appointment_type?.id ?? patient?.appointment_type ?? '',
+          booking_blocked: Boolean(patient?.booking_blocked),
+          booking_block_reason: patient?.booking_block_reason || '',
           language: formatDocumentLanguageLabel(patient?.language),
         }
         : {
@@ -135,6 +137,8 @@ const UpdatePatient = ({ showList, patientId }) => {
           employment: '',
           education: '',
           insurance: '',
+          booking_blocked: false,
+          booking_block_reason: '',
           medicalConditions: [],
           pas_provider: normalizedPasProvider,
           available_location_ids: [],

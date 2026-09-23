@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { interpolate } from 'utils/interpolate';
 import { useDispatch, useSelector } from 'react-redux';
 import { Field, Formik } from 'formik';
-import { Button, Card, Col, message, Row, Typography, Modal, Grid } from 'antd';
+import { Button, Card, Col, message, Row, Typography, Modal, Grid, Switch, Form as AntForm } from 'antd';
 import Form from 'antd/lib/form/Form';
 
 import PatientHeader from './PatientHeader';
@@ -51,6 +51,12 @@ import utils from 'utils';
 
 const { Title } = Typography;
 const { useBreakpoint } = Grid;
+const BOOKING_BLOCK_REASON_OPTIONS = [
+  { id: 'insurance_not_approved', name: 'Insurance not approved' },
+  { id: 'study_denied', name: 'Study denied' },
+  { id: 'referral_not_approved', name: 'Referral not approved' },
+  { id: 'clinical_hold', name: 'Clinical hold' },
+];
 
 const PatientForm = ({
   title,
@@ -93,6 +99,9 @@ const PatientForm = ({
         values.phone_number
       ),
     };
+    if (!values.booking_blocked) {
+      parsedValues.booking_block_reason = null;
+    }
     console.log('[PatientForm] calling parent handleSubmit with:', parsedValues);
     handleSubmit(parsedValues, setErrors, enableRedirect);
   };
@@ -615,6 +624,41 @@ const PatientForm = ({
                         />
                       </Col>
                     </Row>
+                    {id && (
+                      <Row gutter={isMobile ? 12 : 16}>
+                        <Col xs={24} sm={isMobile && !isTablet ? 24 : 12}>
+                          <AntForm.Item
+                            label="Block booking"
+                            extra="When enabled, Asa will not allow this patient to book."
+                          >
+                            <Field name="booking_blocked">
+                              {({ field, form }) => (
+                                <Switch
+                                  checked={Boolean(field.value)}
+                                  onChange={(checked) => {
+                                    form.setFieldValue('booking_blocked', checked);
+                                    if (!checked) {
+                                      form.setFieldValue('booking_block_reason', '');
+                                    }
+                                  }}
+                                />
+                              )}
+                            </Field>
+                          </AntForm.Item>
+                        </Col>
+                        {values.booking_blocked && (
+                          <ColumnField
+                            span={isMobile && !isTablet ? 24 : 12}
+                            component={FormSelect}
+                            name="booking_block_reason"
+                            options={BOOKING_BLOCK_REASON_OPTIONS}
+                            optionField="name"
+                            label={"Block reason"}
+                            required
+                          />
+                        )}
+                      </Row>
+                    )}
                   </Col>
                 </Row>
               </Form>
