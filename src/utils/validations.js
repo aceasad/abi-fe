@@ -239,6 +239,12 @@ export const getPatientSchema = (
     then: (schema) => schema.required(),
     otherwise: (schema) => schema,
   }),
+  booking_blocked: Yup.boolean(),
+  booking_block_reason: Yup.string().max(64).when('booking_blocked', {
+    is: true,
+    then: (schema) => schema.required(),
+    otherwise: (schema) => schema,
+  }),
   isPASPatient: Yup.boolean(),
 });
 
