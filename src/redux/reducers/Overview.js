@@ -4,10 +4,19 @@ import {
   SET_OVERVIEW_CLINICSTATS_DATA,
   SET_OVERVIEW_SUMMARY_DATA_LOADING,
   SET_OVERVIEW_CLINICSTATS_DATA_LOADING,
+  SET_OVERVIEW_KPI_FUNNEL_LOADING,
+  SET_OVERVIEW_KPI_BOOKING_LOADING,
+  SET_OVERVIEW_KPI_INTERVENTIONS_LOADING,
+  SET_OVERVIEW_KPI_FUNNEL_DATA,
+  SET_OVERVIEW_KPI_BOOKING_DATA,
+  SET_OVERVIEW_KPI_INTERVENTIONS_DATA,
 } from 'redux/constants/Overview';
 
 const initialState = {
   loading: true,
+  funnelLoading: true,
+  bookingLoading: true,
+  interventionsLoading: true,
   bookingEfficiency: 0,
   bookingMadeAfterInvite: 0,
   invitationRate: 0,
@@ -30,10 +39,33 @@ const initialState = {
   total_patients_sent_message_status: 0,
   total_patients_engaged: 0,
   total_patients_read_but_no_response: 0,
-
+  patients_waiting_added: 0,
+  patients_booked: 0,
 
   open_conversations: 0,
   bookings: 0,
+  booked_by_asa: 0,
+  booked_asa: 0,
+  booked_asa_assisted: 0,
+  booked_human: 0,
+  scheduled_asa: 0,
+  scheduled_asa_assisted: 0,
+  scheduled_human: 0,
+  attended_asa: 0,
+  attended_asa_assisted: 0,
+  attended_human: 0,
+  arrived_asa: 0,
+  arrived_asa_assisted: 0,
+  arrived_human: 0,
+  cancelled_asa: 0,
+  cancelled_asa_assisted: 0,
+  cancelled_human: 0,
+  reschedule_asa: 0,
+  reschedule_asa_assisted: 0,
+  reschedule_human: 0,
+  non_attended_asa: 0,
+  non_attended_asa_assisted: 0,
+  non_attended_human: 0,
   reschedule: 0,
   cancelled: 0,
   attended: 0,
@@ -78,6 +110,13 @@ const initialState = {
   },
 };
 
+const mergePercentageChanges = (draft, next) => {
+  draft.percentage_changes = {
+    ...(draft.percentage_changes || {}),
+    ...(next || {}),
+  };
+};
+
 /* eslint-disable default-case */
 const chats = (state = initialState, action) =>
   produce(state, (draft) => {
@@ -109,9 +148,33 @@ const chats = (state = initialState, action) =>
         draft.total_patients_sent_message_status = action.payload.total_patients_sent_message_status;
         draft.total_patients_engaged = action.payload.total_patients_engaged;
         draft.total_patients_read_but_no_response = action.payload.total_patients_read_but_no_response;
+        draft.patients_waiting_added = action.payload.patients_waiting_added ?? 0;
+        draft.patients_booked = action.payload.patients_booked;
         draft.open_conversations = action.payload.open_conversations;
         draft.snoozed = action.payload.snoozed;
         draft.bookings = action.payload.bookings;
+        draft.booked_by_asa = action.payload.booked_by_asa;
+        draft.booked_asa = action.payload.booked_asa ?? 0;
+        draft.booked_asa_assisted = action.payload.booked_asa_assisted ?? 0;
+        draft.booked_human = action.payload.booked_human ?? 0;
+        draft.scheduled_asa = action.payload.scheduled_asa ?? 0;
+        draft.scheduled_asa_assisted = action.payload.scheduled_asa_assisted ?? 0;
+        draft.scheduled_human = action.payload.scheduled_human ?? 0;
+        draft.attended_asa = action.payload.attended_asa ?? 0;
+        draft.attended_asa_assisted = action.payload.attended_asa_assisted ?? 0;
+        draft.attended_human = action.payload.attended_human ?? 0;
+        draft.arrived_asa = action.payload.arrived_asa ?? 0;
+        draft.arrived_asa_assisted = action.payload.arrived_asa_assisted ?? 0;
+        draft.arrived_human = action.payload.arrived_human ?? 0;
+        draft.cancelled_asa = action.payload.cancelled_asa ?? 0;
+        draft.cancelled_asa_assisted = action.payload.cancelled_asa_assisted ?? 0;
+        draft.cancelled_human = action.payload.cancelled_human ?? 0;
+        draft.reschedule_asa = action.payload.reschedule_asa ?? 0;
+        draft.reschedule_asa_assisted = action.payload.reschedule_asa_assisted ?? 0;
+        draft.reschedule_human = action.payload.reschedule_human ?? 0;
+        draft.non_attended_asa = action.payload.non_attended_asa ?? 0;
+        draft.non_attended_asa_assisted = action.payload.non_attended_asa_assisted ?? 0;
+        draft.non_attended_human = action.payload.non_attended_human ?? 0;
         draft.reschedule = action.payload.reschedule;
         draft.cancelled = action.payload.cancelled;
         draft.non_attended = action.payload.non_attended;
@@ -131,8 +194,88 @@ const chats = (state = initialState, action) =>
         draft.booking_rate = action.payload.booking_rate;
         draft.percentage_changes = action.payload.percentage_changes;
         break;
+      case SET_OVERVIEW_KPI_FUNNEL_DATA: {
+        const p = action.payload || {};
+        draft.total_patients_added = p.total_patients_added;
+        draft.total_patients_invited = p.total_patients_invited;
+        draft.total_patients_engaged = p.total_patients_engaged;
+        draft.patients_booked = p.patients_booked;
+        draft.total_patients_read_but_no_response = p.total_patients_read_but_no_response;
+        draft.patients_waiting_added = p.patients_waiting_added ?? 0;
+        draft.total_failed_messages_count = p.total_failed_messages_count;
+        draft.engagement_rate = p.engagement_rate;
+        draft.booking_rate = p.booking_rate;
+        if (p.booking_time_distribution) {
+          draft.booking_time_distribution = p.booking_time_distribution;
+        }
+        mergePercentageChanges(draft, p.percentage_changes);
+        break;
+      }
+      case SET_OVERVIEW_KPI_BOOKING_DATA: {
+        const p = action.payload || {};
+        draft.bookings = p.bookings;
+        draft.patients_booked = p.patients_booked ?? draft.patients_booked;
+        draft.booked_by_asa = p.booked_by_asa;
+        draft.booked_asa = p.booked_asa ?? 0;
+        draft.booked_asa_assisted = p.booked_asa_assisted ?? 0;
+        draft.booked_human = p.booked_human ?? 0;
+        draft.scheduled_asa = p.scheduled_asa ?? 0;
+        draft.scheduled_asa_assisted = p.scheduled_asa_assisted ?? 0;
+        draft.scheduled_human = p.scheduled_human ?? 0;
+        draft.attended_asa = p.attended_asa ?? 0;
+        draft.attended_asa_assisted = p.attended_asa_assisted ?? 0;
+        draft.attended_human = p.attended_human ?? 0;
+        draft.arrived_asa = p.arrived_asa ?? 0;
+        draft.arrived_asa_assisted = p.arrived_asa_assisted ?? 0;
+        draft.arrived_human = p.arrived_human ?? 0;
+        draft.cancelled_asa = p.cancelled_asa ?? 0;
+        draft.cancelled_asa_assisted = p.cancelled_asa_assisted ?? 0;
+        draft.cancelled_human = p.cancelled_human ?? 0;
+        draft.reschedule_asa = p.reschedule_asa ?? 0;
+        draft.reschedule_asa_assisted = p.reschedule_asa_assisted ?? 0;
+        draft.reschedule_human = p.reschedule_human ?? 0;
+        draft.non_attended_asa = p.non_attended_asa ?? 0;
+        draft.non_attended_asa_assisted = p.non_attended_asa_assisted ?? 0;
+        draft.non_attended_human = p.non_attended_human ?? 0;
+        draft.attended = p.attended;
+        draft.non_attended = p.non_attended;
+        draft.cancelled = p.cancelled;
+        draft.reschedule = p.reschedule;
+        draft.arrived = p.arrived;
+        draft.sent_in = p.sent_in;
+        draft.quiet_sent_in = p.quiet_sent_in;
+        draft.walked_out = p.walked_out;
+        draft.not_updated = p.not_updated;
+        if (p.booking_time_distribution) {
+          draft.booking_time_distribution = p.booking_time_distribution;
+        }
+        break;
+      }
+      case SET_OVERVIEW_KPI_INTERVENTIONS_DATA: {
+        const p = action.payload || {};
+        draft.declines = p.declines;
+        draft.snoozed = p.snoozed;
+        draft.opt_out = p.opt_out;
+        draft.human_intervention = p.human_intervention;
+        draft.emergency_situation = p.emergency_situation;
+        draft.already_screened = p.already_screened;
+        mergePercentageChanges(draft, p.percentage_changes);
+        break;
+      }
       case SET_OVERVIEW_CLINICSTATS_DATA_LOADING:
         draft.loading = action.payload;
+        break;
+      case SET_OVERVIEW_KPI_FUNNEL_LOADING:
+        draft.funnelLoading = action.payload;
+        draft.loading = draft.funnelLoading || draft.bookingLoading || draft.interventionsLoading;
+        break;
+      case SET_OVERVIEW_KPI_BOOKING_LOADING:
+        draft.bookingLoading = action.payload;
+        draft.loading = draft.funnelLoading || draft.bookingLoading || draft.interventionsLoading;
+        break;
+      case SET_OVERVIEW_KPI_INTERVENTIONS_LOADING:
+        draft.interventionsLoading = action.payload;
+        draft.loading = draft.funnelLoading || draft.bookingLoading || draft.interventionsLoading;
         break;
       case SET_OVERVIEW_SUMMARY_DATA_LOADING:
         draft.loading = action.payload;
