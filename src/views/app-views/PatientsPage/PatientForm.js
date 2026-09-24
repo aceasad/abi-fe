@@ -53,9 +53,6 @@ const { Title } = Typography;
 const { useBreakpoint } = Grid;
 const BOOKING_BLOCK_REASON_OPTIONS = [
   { id: 'insurance_not_approved', name: 'Insurance not approved' },
-  { id: 'study_denied', name: 'Study denied' },
-  { id: 'referral_not_approved', name: 'Referral not approved' },
-  { id: 'clinical_hold', name: 'Clinical hold' },
 ];
 
 const PatientForm = ({
