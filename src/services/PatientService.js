@@ -52,11 +52,16 @@ class PatientService extends ApiService {
       params: location_id ? { location_id: location_id } : undefined,
     });
 
-  validateHomeLocationTimeslots = (patientId, locationId) =>
+  validateHomeLocationTimeslots = (patientId, locationId, appointmentTypeId) =>
     this.apiClient.get(
       ENDPOINTS.VALIDATE_HOME_LOCATION_TIMESLOTS.replace(':id', patientId),
       {
-        params: { location_id: locationId },
+        params: {
+          location_id: locationId,
+          ...(appointmentTypeId
+            ? { appointment_type: appointmentTypeId }
+            : {}),
+        },
       }
     );
 

@@ -290,9 +290,15 @@ const PatientPASForm = ({
       String(initialHomeLocationRef.current || '')
     ) {
       try {
+        const selectedAppointmentTypeId =
+          parsedValues.appointment_type &&
+          typeof parsedValues.appointment_type === 'object'
+            ? parsedValues.appointment_type.id
+            : parsedValues.appointment_type;
         const { data } = await patientService.validateHomeLocationTimeslots(
           id,
-          parsedValues.home_location.location_id
+          parsedValues.home_location.location_id,
+          selectedAppointmentTypeId
         );
         if (!data?.has_timeslots) {
           const locationLabel = formatLocationLabel(
