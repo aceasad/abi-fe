@@ -1,18 +1,24 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Spin, Empty } from 'antd';
+import { Card, Spin, Empty, Tooltip } from 'antd';
+import { InfoCircleOutlined } from '@ant-design/icons';
 import Chart from 'react-apexcharts';
 import overviewService from 'services/OverviewService';
 import { apexPieChartDefaultOption } from 'constants/ChartConstant';
 
 const HEADING_COLOR = '#1a3353';
+const MUTED_COLOR = '#72849a';
 const CARD_RADIUS = 16;
 const CARD_BORDER = '1px solid #eef0f4';
 const CARD_SHADOW = '0 1px 2px rgba(26, 51, 83, 0.04), 0 8px 24px -16px rgba(26, 51, 83, 0.18)';
 
+const FIRST_ENGAGEMENT_TIP =
+  'Among patients we successfully messaged, how many first replied after the intro vs after reminder 1–4. “Other” is everyone else (no prior outbound, or 6+ messages before their first reply). Closely related to Engaged, but grouped by which message they answered.';
+
 // Same palette as the Booking statuses bar chart in ClinicStats.
 const SLICE_COLORS = ['#6366F1', '#10B981', '#F59E0B', '#EF4444', '#6B7280'];
+const SLICE_COLORS_EXTENDED = [...SLICE_COLORS, '#94A3B8'];
 
-// Which outbound template the patient replied after (1–5 only; 6+ excluded).
+// Which outbound touch the patient replied after. 6+ collapsed into "Other".
 const ENGAGEMENT_TEMPLATE_LABELS = {
   1: 'Intro',
   2: 'Reminder 1',
@@ -22,15 +28,22 @@ const ENGAGEMENT_TEMPLATE_LABELS = {
 };
 
 const buildSlices = (rows) => {
-  const sorted = [...rows]
-    .filter((row) => row.messages >= 1 && row.messages <= 5)
-    .sort((a, b) => a.messages - b.messages);
+  const byMessages = new Map();
+  (rows || []).forEach((row) => {
+    const n = Number(row.messages);
+    const patients = Number(row.patients) || 0;
+    if (!Number.isFinite(n) || patients <= 0) return;
+    // 1–5 = Intro…Reminder 4; 0 or 6+ → Other so chart total matches delivered patients who replied.
+    const key = (n >= 1 && n <= 5) ? n : 6;
+    byMessages.set(key, (byMessages.get(key) || 0) + patients);
+  });
 
+  const keys = [...byMessages.keys()].sort((a, b) => a - b);
   return {
-    labels: sorted.map((row) => ENGAGEMENT_TEMPLATE_LABELS[row.messages]),
-    series: sorted.map((row) => row.patients),
-    colors: sorted.map((row) => SLICE_COLORS[row.messages - 1]),
-    total: sorted.reduce((sum, row) => sum + row.patients, 0),
+    labels: keys.map((k) => (k >= 6 ? 'Other' : ENGAGEMENT_TEMPLATE_LABELS[k])),
+    series: keys.map((k) => byMessages.get(k)),
+    colors: keys.map((k) => (k >= 6 ? SLICE_COLORS_EXTENDED[5] : SLICE_COLORS[k - 1])),
+    total: keys.reduce((sum, k) => sum + byMessages.get(k), 0),
   };
 };
 
@@ -111,11 +124,16 @@ const MessagesBeforeMilestones = ({ startTime, endTime, campaignId, isMobile = f
 
   return (
     <Card
-      title={
-        <span style={{ fontSize: isMobile ? 15 : 16, fontWeight: 600, color: HEADING_COLOR }}>
+      title={(
+        <span style={{ fontSize: isMobile ? 15 : 16, fontWeight: 600, color: HEADING_COLOR, display: 'inline-flex', alignItems: 'center' }}>
           Patient’s first engagement
+          <Tooltip title={FIRST_ENGAGEMENT_TIP}>
+            <InfoCircleOutlined
+              style={{ color: MUTED_COLOR, fontSize: 12, marginLeft: 6, cursor: 'help' }}
+            />
+          </Tooltip>
         </span>
-      }
+      )}
       style={{ borderRadius: CARD_RADIUS, border: CARD_BORDER, boxShadow: CARD_SHADOW }}
       styles={{
         header: { borderBottom: 'none', paddingInline: 16, minHeight: 'auto' },
