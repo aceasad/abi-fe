@@ -31,78 +31,51 @@ const initialState = {
 
   engagement_rate: 0,
   booking_rate: 0,
-  booking_rate_of_invited: 0,
-  booking_rate_of_engaged: 0,
 
   total_patients_added: 0,
   total_patients_invited: 0,
   total_patients_failed_message_status: 0,
   total_failed_messages_count: 0,
-  total_patients_sent_message_status: 0,
   total_patients_engaged: 0,
   total_patients_read_but_no_response: 0,
-  patients_waiting_added: 0,
   patients_booked: 0,
+  funnel_stages: [],
 
   open_conversations: 0,
   bookings: 0,
-  booked_by_asa: 0,
   booked_asa: 0,
-  booked_asa_assisted: 0,
   booked_human: 0,
-  booked_unknown: 0,
-  patients_asa: 0,
-  patients_asa_assisted: 0,
-  patients_human: 0,
-  patients_unknown: 0,
-  booking_rate_asa: 0,
-  booking_rate_asa_assisted: 0,
-  booking_rate_human: 0,
-  asa_booking_share: 0,
+  booked_asa_end_to_end: 0,
+  booked_human_started: 0,
+  booked_staff_managed: 0,
+  booked_asa_end_to_end_percent: 0,
+  booked_human_started_percent: 0,
+  booked_staff_managed_percent: 0,
+  staff_messages_sent: 0,
+  staff_rescheduled_by_asa: 0,
+  status_scheduled: 0,
+  status_attended: 0,
+  status_no_show: 0,
+  status_cancelled: 0,
+  status_outcome_pending: 0,
+  status_scheduled_percent: 0,
+  status_attended_percent: 0,
+  status_no_show_percent: 0,
+  status_cancelled_percent: 0,
+  status_outcome_pending_percent: 0,
+  attendance_rate: 0,
+  billed_appointments: 0,
+  engaged_who_booked: 0,
   after_hours_bookings: 0,
   after_hours_share: 0,
-  after_hours_asa: 0,
-  after_hours_asa_assisted: 0,
-  after_hours_human: 0,
-  total_messages_sent: 0,
-  total_messages_received: 0,
-  reminders_scheduled: 0,
-  reminders_sent: 0,
-  reminders_failed: 0,
-  reminders_sent_patients_responded: 0,
-  scheduled_asa: 0,
-  scheduled_asa_assisted: 0,
-  scheduled_human: 0,
-  attended_asa: 0,
-  attended_asa_assisted: 0,
-  attended_human: 0,
-  arrived_asa: 0,
-  arrived_asa_assisted: 0,
-  arrived_human: 0,
-  cancelled_asa: 0,
-  cancelled_asa_assisted: 0,
-  cancelled_human: 0,
-  reschedule_asa: 0,
-  reschedule_asa_assisted: 0,
-  reschedule_human: 0,
-  non_attended_asa: 0,
-  non_attended_asa_assisted: 0,
-  non_attended_human: 0,
+  handled_without_human_rate: 0,
+  handled_without_human_numerator: 0,
+  handled_without_human_denominator: 0,
   reschedule: 0,
   cancelled: 0,
   attended: 0,
   non_attended: 0,
-  walked_out: 0,
-  quiet_sent_in: 0,
-  sent_in: 0,
-  arrived: 0,
   not_updated: 0,
-  booking_time_distribution: {
-    morning: 0,
-    afternoon: 0,
-    evening: 0,
-    night: 0
-  },
 
   declines: 0,
   opt_out: 0,
@@ -162,111 +135,72 @@ const chats = (state = initialState, action) =>
           byPeriod: action.payload.preferences.by_period,
         };
         break;
-      case SET_OVERVIEW_CLINICSTATS_DATA:
-        draft.total_patients_added = action.payload.total_patients_added;
-        draft.total_patients_invited = action.payload.total_patients_invited;
-        draft.total_patients_failed_message_status = action.payload.total_patients_failed_message_status;
-        draft.total_failed_messages_count = action.payload.total_failed_messages_count;
-        draft.total_patients_sent_message_status = action.payload.total_patients_sent_message_status;
-        draft.total_patients_engaged = action.payload.total_patients_engaged;
-        draft.total_patients_read_but_no_response = action.payload.total_patients_read_but_no_response;
-        draft.patients_waiting_added = action.payload.patients_waiting_added ?? 0;
-        draft.patients_booked = action.payload.patients_booked;
-        draft.open_conversations = action.payload.open_conversations;
-        draft.snoozed = action.payload.snoozed;
-        draft.bookings = action.payload.bookings;
-        draft.booked_by_asa = action.payload.booked_by_asa;
-        draft.booked_asa = action.payload.booked_asa ?? 0;
-        draft.booked_asa_assisted = action.payload.booked_asa_assisted ?? 0;
-        draft.booked_human = action.payload.booked_human ?? 0;
-        draft.booked_unknown = action.payload.booked_unknown ?? 0;
-        draft.patients_asa = action.payload.patients_asa ?? 0;
-        draft.patients_asa_assisted = action.payload.patients_asa_assisted ?? 0;
-        draft.patients_human = action.payload.patients_human ?? 0;
-        draft.patients_unknown = action.payload.patients_unknown ?? 0;
-        draft.scheduled_asa = action.payload.scheduled_asa ?? 0;
-        draft.scheduled_asa_assisted = action.payload.scheduled_asa_assisted ?? 0;
-        draft.scheduled_human = action.payload.scheduled_human ?? 0;
-        draft.attended_asa = action.payload.attended_asa ?? 0;
-        draft.attended_asa_assisted = action.payload.attended_asa_assisted ?? 0;
-        draft.attended_human = action.payload.attended_human ?? 0;
-        draft.arrived_asa = action.payload.arrived_asa ?? 0;
-        draft.arrived_asa_assisted = action.payload.arrived_asa_assisted ?? 0;
-        draft.arrived_human = action.payload.arrived_human ?? 0;
-        draft.cancelled_asa = action.payload.cancelled_asa ?? 0;
-        draft.cancelled_asa_assisted = action.payload.cancelled_asa_assisted ?? 0;
-        draft.cancelled_human = action.payload.cancelled_human ?? 0;
-        draft.reschedule_asa = action.payload.reschedule_asa ?? 0;
-        draft.reschedule_asa_assisted = action.payload.reschedule_asa_assisted ?? 0;
-        draft.reschedule_human = action.payload.reschedule_human ?? 0;
-        draft.non_attended_asa = action.payload.non_attended_asa ?? 0;
-        draft.non_attended_asa_assisted = action.payload.non_attended_asa_assisted ?? 0;
-        draft.non_attended_human = action.payload.non_attended_human ?? 0;
-        draft.reschedule = action.payload.reschedule;
-        draft.cancelled = action.payload.cancelled;
-        draft.non_attended = action.payload.non_attended;
-        draft.attended = action.payload.attended;
-        draft.booking_time_distribution = action.payload.booking_time_distribution;
-        draft.walked_out = action.payload.walked_out;
-        draft.quiet_sent_in = action.payload.quiet_sent_in;
-        draft.sent_in = action.payload.sent_in;
-        draft.arrived = action.payload.arrived;
-        draft.not_updated = action.payload.not_updated;
-        draft.declines = action.payload.declines;
-        draft.opt_out = action.payload.opt_out;
-        draft.emergency_situation = action.payload.emergency_situation;
-        draft.human_intervention = action.payload.human_intervention;
-        draft.already_screened = action.payload.already_screened;
-        draft.engagement_rate = action.payload.engagement_rate;
-        draft.booking_rate = action.payload.booking_rate;
-        draft.booking_rate_of_invited = action.payload.booking_rate_of_invited ?? 0;
-        draft.booking_rate_of_engaged = action.payload.booking_rate_of_engaged ?? 0;
-        draft.booking_rate_asa = action.payload.booking_rate_asa ?? 0;
-        draft.booking_rate_asa_assisted = action.payload.booking_rate_asa_assisted ?? 0;
-        draft.booking_rate_human = action.payload.booking_rate_human ?? 0;
-        draft.asa_booking_share = action.payload.asa_booking_share ?? 0;
-        draft.after_hours_bookings = action.payload.after_hours_bookings ?? 0;
-        draft.after_hours_share = action.payload.after_hours_share ?? 0;
-        draft.after_hours_asa = action.payload.after_hours_asa ?? 0;
-        draft.after_hours_asa_assisted = action.payload.after_hours_asa_assisted ?? 0;
-        draft.after_hours_human = action.payload.after_hours_human ?? 0;
-        draft.percentage_changes = action.payload.percentage_changes;
+      case SET_OVERVIEW_CLINICSTATS_DATA: {
+        const p = action.payload || {};
+        draft.total_patients_added = p.total_patients_added;
+        draft.total_patients_invited = p.total_patients_invited;
+        draft.total_patients_failed_message_status = p.total_patients_failed_message_status;
+        draft.total_failed_messages_count = p.total_failed_messages_count;
+        draft.total_patients_engaged = p.total_patients_engaged;
+        draft.total_patients_read_but_no_response = p.total_patients_read_but_no_response;
+        draft.patients_booked = p.patients_booked;
+        draft.open_conversations = p.open_conversations;
+        draft.snoozed = p.snoozed;
+        draft.bookings = p.bookings;
+        draft.booked_asa = p.booked_asa ?? 0;
+        draft.booked_human = p.booked_human ?? 0;
+        draft.booked_asa_end_to_end = p.booked_asa_end_to_end ?? 0;
+        draft.booked_human_started = p.booked_human_started ?? 0;
+        draft.booked_staff_managed = p.booked_staff_managed ?? 0;
+        draft.staff_messages_sent = p.staff_messages_sent ?? 0;
+        draft.staff_rescheduled_by_asa = p.staff_rescheduled_by_asa ?? 0;
+        draft.status_scheduled = p.status_scheduled ?? 0;
+        draft.status_attended = p.status_attended ?? 0;
+        draft.status_no_show = p.status_no_show ?? 0;
+        draft.status_cancelled = p.status_cancelled ?? 0;
+        draft.status_outcome_pending = p.status_outcome_pending ?? 0;
+        draft.attendance_rate = p.attendance_rate ?? 0;
+        draft.billed_appointments = p.billed_appointments ?? 0;
+        draft.engaged_who_booked = p.engaged_who_booked ?? 0;
+        draft.reschedule = p.reschedule;
+        draft.cancelled = p.cancelled;
+        draft.non_attended = p.non_attended;
+        draft.attended = p.attended;
+        draft.not_updated = p.not_updated;
+        draft.declines = p.declines;
+        draft.opt_out = p.opt_out;
+        draft.emergency_situation = p.emergency_situation;
+        draft.human_intervention = p.human_intervention;
+        draft.already_screened = p.already_screened;
+        draft.engagement_rate = p.engagement_rate;
+        draft.booking_rate = p.booking_rate;
+        draft.after_hours_bookings = p.after_hours_bookings ?? 0;
+        draft.after_hours_share = p.after_hours_share ?? 0;
+        draft.percentage_changes = p.percentage_changes;
         break;
+      }
       case SET_OVERVIEW_KPI_FUNNEL_DATA: {
         const p = action.payload || {};
         draft.total_patients_added = p.total_patients_added;
         draft.total_patients_invited = p.total_patients_invited;
         draft.total_patients_engaged = p.total_patients_engaged;
         draft.patients_booked = p.patients_booked;
-        draft.patients_asa = p.patients_asa ?? draft.patients_asa;
-        draft.patients_asa_assisted = p.patients_asa_assisted ?? draft.patients_asa_assisted;
-        draft.patients_human = p.patients_human ?? draft.patients_human;
-        draft.patients_unknown = p.patients_unknown ?? draft.patients_unknown;
+        draft.funnel_stages = p.funnel_stages || [];
         draft.total_patients_read_but_no_response = p.total_patients_read_but_no_response;
-        draft.patients_waiting_added = p.patients_waiting_added ?? 0;
         draft.total_failed_messages_count = p.total_failed_messages_count;
+        draft.total_patients_failed_message_status = p.total_patients_failed_message_status
+          ?? draft.total_patients_failed_message_status;
+        draft.engaged_who_booked = p.engaged_who_booked ?? 0;
         draft.engagement_rate = p.engagement_rate;
         draft.booking_rate = p.booking_rate;
-        draft.booking_rate_of_invited = p.booking_rate_of_invited ?? 0;
-        draft.booking_rate_of_engaged = p.booking_rate_of_engaged ?? 0;
-        draft.booking_rate_asa = p.booking_rate_asa ?? 0;
-        draft.booking_rate_asa_assisted = p.booking_rate_asa_assisted ?? 0;
-        draft.booking_rate_human = p.booking_rate_human ?? 0;
-        draft.asa_booking_share = p.asa_booking_share ?? 0;
         draft.after_hours_bookings = p.after_hours_bookings ?? 0;
         draft.after_hours_share = p.after_hours_share ?? 0;
-        draft.after_hours_asa = p.after_hours_asa ?? 0;
-        draft.after_hours_asa_assisted = p.after_hours_asa_assisted ?? 0;
-        draft.after_hours_human = p.after_hours_human ?? 0;
-        draft.total_messages_sent = p.total_messages_sent ?? 0;
-        draft.total_messages_received = p.total_messages_received ?? 0;
-        draft.reminders_scheduled = p.reminders_scheduled ?? 0;
-        draft.reminders_sent = p.reminders_sent ?? 0;
-        draft.reminders_failed = p.reminders_failed ?? 0;
-        draft.reminders_sent_patients_responded = p.reminders_sent_patients_responded ?? 0;
-        if (p.booking_time_distribution) {
-          draft.booking_time_distribution = p.booking_time_distribution;
+        if (p.booked_asa != null) {
+          draft.booked_asa = p.booked_asa;
         }
+        draft.handled_without_human_rate = p.handled_without_human_rate ?? 0;
+        draft.handled_without_human_numerator = p.handled_without_human_numerator ?? 0;
+        draft.handled_without_human_denominator = p.handled_without_human_denominator ?? 0;
         mergePercentageChanges(draft, p.percentage_changes);
         break;
       }
@@ -274,59 +208,38 @@ const chats = (state = initialState, action) =>
         const p = action.payload || {};
         draft.bookings = p.bookings;
         draft.patients_booked = p.patients_booked ?? draft.patients_booked;
-        draft.booked_by_asa = p.booked_by_asa;
         draft.booked_asa = p.booked_asa ?? 0;
-        draft.booked_asa_assisted = p.booked_asa_assisted ?? 0;
         draft.booked_human = p.booked_human ?? 0;
-        draft.booked_unknown = p.booked_unknown ?? 0;
-        draft.patients_asa = p.patients_asa ?? 0;
-        draft.patients_asa_assisted = p.patients_asa_assisted ?? 0;
-        draft.patients_human = p.patients_human ?? 0;
-        draft.patients_unknown = p.patients_unknown ?? 0;
-        draft.scheduled_asa = p.scheduled_asa ?? 0;
-        draft.scheduled_asa_assisted = p.scheduled_asa_assisted ?? 0;
-        draft.scheduled_human = p.scheduled_human ?? 0;
-        draft.attended_asa = p.attended_asa ?? 0;
-        draft.attended_asa_assisted = p.attended_asa_assisted ?? 0;
-        draft.attended_human = p.attended_human ?? 0;
-        draft.arrived_asa = p.arrived_asa ?? 0;
-        draft.arrived_asa_assisted = p.arrived_asa_assisted ?? 0;
-        draft.arrived_human = p.arrived_human ?? 0;
-        draft.cancelled_asa = p.cancelled_asa ?? 0;
-        draft.cancelled_asa_assisted = p.cancelled_asa_assisted ?? 0;
-        draft.cancelled_human = p.cancelled_human ?? 0;
-        draft.reschedule_asa = p.reschedule_asa ?? 0;
-        draft.reschedule_asa_assisted = p.reschedule_asa_assisted ?? 0;
-        draft.reschedule_human = p.reschedule_human ?? 0;
-        draft.non_attended_asa = p.non_attended_asa ?? 0;
-        draft.non_attended_asa_assisted = p.non_attended_asa_assisted ?? 0;
-        draft.non_attended_human = p.non_attended_human ?? 0;
+        draft.booked_asa_end_to_end = p.booked_asa_end_to_end ?? 0;
+        draft.booked_human_started = p.booked_human_started ?? 0;
+        draft.booked_staff_managed = p.booked_staff_managed ?? 0;
+        draft.booked_asa_end_to_end_percent = p.booked_asa_end_to_end_percent ?? 0;
+        draft.booked_human_started_percent = p.booked_human_started_percent ?? 0;
+        draft.booked_staff_managed_percent = p.booked_staff_managed_percent ?? 0;
+        draft.staff_messages_sent = p.staff_messages_sent ?? 0;
+        draft.staff_rescheduled_by_asa = p.staff_rescheduled_by_asa ?? 0;
+        draft.status_scheduled = p.status_scheduled ?? 0;
+        draft.status_attended = p.status_attended ?? 0;
+        draft.status_no_show = p.status_no_show ?? 0;
+        draft.status_cancelled = p.status_cancelled ?? 0;
+        draft.status_outcome_pending = p.status_outcome_pending ?? 0;
+        draft.status_scheduled_percent = p.status_scheduled_percent ?? 0;
+        draft.status_attended_percent = p.status_attended_percent ?? 0;
+        draft.status_no_show_percent = p.status_no_show_percent ?? 0;
+        draft.status_cancelled_percent = p.status_cancelled_percent ?? 0;
+        draft.status_outcome_pending_percent = p.status_outcome_pending_percent ?? 0;
+        draft.attendance_rate = p.attendance_rate ?? 0;
+        draft.billed_appointments = p.billed_appointments ?? 0;
         draft.attended = p.attended;
         draft.non_attended = p.non_attended;
         draft.cancelled = p.cancelled;
         draft.reschedule = p.reschedule;
-        draft.arrived = p.arrived;
-        draft.sent_in = p.sent_in;
-        draft.quiet_sent_in = p.quiet_sent_in;
-        draft.walked_out = p.walked_out;
         draft.not_updated = p.not_updated;
-        if (p.booking_time_distribution) {
-          draft.booking_time_distribution = p.booking_time_distribution;
-        }
         if (p.after_hours_bookings != null) {
           draft.after_hours_bookings = p.after_hours_bookings;
         }
         if (p.after_hours_share != null) {
           draft.after_hours_share = p.after_hours_share;
-        }
-        if (p.after_hours_asa != null) {
-          draft.after_hours_asa = p.after_hours_asa;
-        }
-        if (p.after_hours_asa_assisted != null) {
-          draft.after_hours_asa_assisted = p.after_hours_asa_assisted;
-        }
-        if (p.after_hours_human != null) {
-          draft.after_hours_human = p.after_hours_human;
         }
         break;
       }

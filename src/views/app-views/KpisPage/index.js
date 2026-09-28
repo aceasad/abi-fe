@@ -45,17 +45,19 @@ const KpisPage = () => {
   const isMobile = !screens.includes('lg');
   const datePickerFormat = getDateFormatByCountry(clinic?.country);
 
-  const startDate = dayjs('2024-05-01');
+  const startDate = dayjs('2026-05-01').startOf('day');
+  const endDate = dayjs().endOf('day');
 
-  const [dateRange, setDateRange] = useState([
-    startDate.clone().startOf('day'),
-    dayjs().endOf('day')
-  ]);
+  const equalLengthPrevious = (start, end) => {
+    const rangeDays = end.startOf('day').diff(start.startOf('day'), 'day') + 1;
+    const previousEnd = start.clone().subtract(1, 'day').endOf('day');
+    const previousStart = previousEnd.clone().subtract(rangeDays - 1, 'day').startOf('day');
+    return [previousStart, previousEnd];
+  };
 
-  const [previousPeriod, setPreviousPeriod] = useState([
-    startDate.clone().subtract(30, 'days').startOf('day'),
-    startDate.clone().subtract(1, 'days').endOf('day')
-  ]);
+  const [dateRange, setDateRange] = useState([startDate, endDate]);
+
+  const [previousPeriod, setPreviousPeriod] = useState(() => equalLengthPrevious(startDate, endDate));
 
   const [selectedCampaign, setSelectedCampaign] = useState(null);
   const normalizedDateRange = Array.isArray(dateRange) ? dateRange : [];
@@ -68,10 +70,7 @@ const KpisPage = () => {
   const handleDateRangeChange = (dates) => {
     if (dates) {
       setDateRange(dates);
-      const startDate = dates[0];
-      const previousStart = dayjs(startDate).subtract(30, 'days');
-      const previousEnd = dayjs(startDate).subtract(1, 'days');
-      setPreviousPeriod([previousStart, previousEnd]);
+      setPreviousPeriod(equalLengthPrevious(dates[0], dates[1]));
     } else {
       setDateRange(null);
       setPreviousPeriod(null);
@@ -87,23 +86,16 @@ const KpisPage = () => {
         const campaignIndex = campaigns.findIndex(campaign => campaign.id === value);
         const nextCampaign = campaigns[campaignIndex + 1];
 
-        // Set start date to selected campaign's created_at
-        const startDate = dayjs(selectedCampaignData.created_at);
-
-        // Set end date to next campaign's created_at or current date if it's the last campaign
-        let endDate;
+        const campaignStart = dayjs(selectedCampaignData.created_at);
+        let campaignEnd;
         if (nextCampaign) {
-          endDate = dayjs(nextCampaign.created_at);
+          campaignEnd = dayjs(nextCampaign.created_at);
         } else {
-          endDate = dayjs().endOf('day');
+          campaignEnd = dayjs().endOf('day');
         }
 
-        setDateRange([startDate, endDate]);
-
-        // Update previous period
-        const previousStart = dayjs(startDate).subtract(30, 'days');
-        const previousEnd = dayjs(startDate).subtract(1, 'days');
-        setPreviousPeriod([previousStart, previousEnd]);
+        setDateRange([campaignStart, campaignEnd]);
+        setPreviousPeriod(equalLengthPrevious(campaignStart, campaignEnd));
       }
     }
   };

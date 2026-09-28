@@ -44,7 +44,11 @@ class OverviewService extends ApiService {
     });
   getMessagesBeforeMilestones = (start_time, end_time, campaign_id) =>
     this.apiClient.get(ENDPOINTS.GET_MESSAGES_BEFORE_MILESTONES, {
-      params: { start_time, end_time, campaign_id },
+      params: {
+        start_time,
+        end_time,
+        ...(campaign_id != null && campaign_id !== '' ? { campaign_id } : {}),
+      },
     });
 
 }

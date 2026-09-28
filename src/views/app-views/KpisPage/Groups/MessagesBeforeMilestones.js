@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Spin, Empty, Tooltip } from 'antd';
+import { Card, Spin, Empty, Tooltip, Row, Col } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import Chart from 'react-apexcharts';
 import overviewService from 'services/OverviewService';
@@ -12,13 +12,12 @@ const CARD_BORDER = '1px solid #eef0f4';
 const CARD_SHADOW = '0 1px 2px rgba(26, 51, 83, 0.04), 0 8px 24px -16px rgba(26, 51, 83, 0.18)';
 
 const FIRST_ENGAGEMENT_TIP =
-  'Among patients we successfully messaged, how many first replied after the intro vs after reminder 1–4. “Other” is everyone else (no prior outbound, or 6+ messages before their first reply). Closely related to Engaged, but grouped by which message they answered.';
+  'Among people who replied, which outreach they first answered. Does not include people who never messaged back.';
+const BOOKING_ATTRIBUTION_TIP =
+  'For each booking, the last successful outreach before the patient replied and booked. After sequence is outreach beyond Reminder 4. Booked by staff is clinic-system bookings.';
 
-// Same palette as the Booking statuses bar chart in ClinicStats.
-const SLICE_COLORS = ['#6366F1', '#10B981', '#F59E0B', '#EF4444', '#6B7280'];
-const SLICE_COLORS_EXTENDED = [...SLICE_COLORS, '#94A3B8'];
+const DONUT_PURPLE_RAMP = ['#3D2E9E', '#5D4EBF', '#6E5FD8', '#8C7DEC', '#9B8AE8', '#7A68C9', '#5B4CB8'];
 
-// Which outbound touch the patient replied after. 6+ collapsed into "Other".
 const ENGAGEMENT_TEMPLATE_LABELS = {
   1: 'Intro',
   2: 'Reminder 1',
@@ -27,62 +26,54 @@ const ENGAGEMENT_TEMPLATE_LABELS = {
   5: 'Reminder 4',
 };
 
-const buildSlices = (rows) => {
+const BOOKING_STEP_META = [
+  { step: 'INTRO', label: 'Intro' },
+  { step: 'R1', label: 'Reminder 1' },
+  { step: 'R2', label: 'Reminder 2' },
+  { step: 'R3', label: 'Reminder 3' },
+  { step: 'R4', label: 'Reminder 4' },
+  { step: 'POST_SEQUENCE', label: 'After sequence' },
+  { step: 'NONE', label: 'Booked by staff' },
+];
+
+const buildEngagementSlices = (rows, total) => {
   const byMessages = new Map();
   (rows || []).forEach((row) => {
     const n = Number(row.messages);
     const patients = Number(row.patients) || 0;
     if (!Number.isFinite(n) || patients <= 0) return;
-    // 1–5 = Intro…Reminder 4; 0 or 6+ → Other so chart total matches delivered patients who replied.
     const key = (n >= 1 && n <= 5) ? n : 6;
     byMessages.set(key, (byMessages.get(key) || 0) + patients);
   });
 
-  const keys = [...byMessages.keys()].sort((a, b) => a - b);
+  const keys = [1, 2, 3, 4, 5];
+  if ((byMessages.get(6) || 0) > 0) keys.push(6);
   return {
     labels: keys.map((k) => (k >= 6 ? 'Other' : ENGAGEMENT_TEMPLATE_LABELS[k])),
-    series: keys.map((k) => byMessages.get(k)),
-    colors: keys.map((k) => (k >= 6 ? SLICE_COLORS_EXTENDED[5] : SLICE_COLORS[k - 1])),
-    total: keys.reduce((sum, k) => sum + byMessages.get(k), 0),
+    series: keys.map((k) => byMessages.get(k) || 0),
+    colors: keys.map((k) => DONUT_PURPLE_RAMP[k - 1] || DONUT_PURPLE_RAMP[DONUT_PURPLE_RAMP.length - 1]),
+    total: Number(total ?? 0),
   };
 };
 
-const MessagesBeforeMilestones = ({ startTime, endTime, campaignId, isMobile = false }) => {
-  const [loading, setLoading] = useState(false);
-  const [engagementRows, setEngagementRows] = useState([]);
+const buildBookingSlices = (rows, total) => {
+  const byStep = new Map((rows || []).map((row) => [row.step, Number(row.count) || 0]));
+  const series = BOOKING_STEP_META.map((item) => byStep.get(item.step) || 0);
+  return {
+    labels: BOOKING_STEP_META.map((item) => item.label),
+    series,
+    colors: DONUT_PURPLE_RAMP.slice(0, BOOKING_STEP_META.length),
+    total: Number(total ?? 0),
+  };
+};
 
-  useEffect(() => {
-    let cancelled = false;
-
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const { data } = await overviewService.getMessagesBeforeMilestones(startTime, endTime, campaignId);
-        if (cancelled) return;
-        setEngagementRows(data?.messages_before_first_engagement ?? []);
-      } catch (err) {
-        if (!cancelled) {
-          setEngagementRows([]);
-        }
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    };
-
-    fetchData();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [startTime, endTime, campaignId]);
-
-  const { labels, series, colors, total } = buildSlices(engagementRows);
-  const hasData = series.some((value) => value > 0);
-
+const DonutCard = ({ title, tip, centreLabel, slices, loading, isMobile, chartKey }) => {
+  const hasData = slices.series.some((value) => value > 0);
+  const centreTotal = Number(slices.total || 0).toLocaleString();
   const options = {
     ...apexPieChartDefaultOption,
-    labels,
-    colors,
+    labels: slices.labels,
+    colors: slices.colors,
     legend: {
       show: true,
       position: 'bottom',
@@ -97,10 +88,10 @@ const MessagesBeforeMilestones = ({ startTime, endTime, campaignId, isMobile = f
             total: {
               show: true,
               showAlways: true,
-              label: 'Patients',
-              fontSize: '13px',
+              label: centreLabel,
+              fontSize: '12px',
               color: HEADING_COLOR,
-              formatter: () => total.toLocaleString(),
+              formatter: () => centreTotal,
             },
             value: {
               fontSize: '18px',
@@ -117,7 +108,19 @@ const MessagesBeforeMilestones = ({ startTime, endTime, campaignId, isMobile = f
     },
     tooltip: {
       y: {
-        formatter: (val) => `${val} patient${val === 1 ? '' : 's'}`,
+        formatter: (val) => `${val}`,
+      },
+    },
+    states: {
+      hover: {
+        filter: {
+          type: 'none',
+        },
+      },
+      active: {
+        filter: {
+          type: 'none',
+        },
       },
     },
   };
@@ -126,15 +129,15 @@ const MessagesBeforeMilestones = ({ startTime, endTime, campaignId, isMobile = f
     <Card
       title={(
         <span style={{ fontSize: isMobile ? 15 : 16, fontWeight: 600, color: HEADING_COLOR, display: 'inline-flex', alignItems: 'center' }}>
-          Patient’s first engagement
-          <Tooltip title={FIRST_ENGAGEMENT_TIP}>
+          {title}
+          <Tooltip title={tip}>
             <InfoCircleOutlined
               style={{ color: MUTED_COLOR, fontSize: 12, marginLeft: 6, cursor: 'help' }}
             />
           </Tooltip>
         </span>
       )}
-      style={{ borderRadius: CARD_RADIUS, border: CARD_BORDER, boxShadow: CARD_SHADOW }}
+      style={{ borderRadius: CARD_RADIUS, border: CARD_BORDER, boxShadow: CARD_SHADOW, height: '100%' }}
       styles={{
         header: { borderBottom: 'none', paddingInline: 16, minHeight: 'auto' },
         body: { paddingTop: 8 },
@@ -142,7 +145,13 @@ const MessagesBeforeMilestones = ({ startTime, endTime, campaignId, isMobile = f
     >
       <Spin spinning={loading}>
         {hasData ? (
-          <Chart type="donut" options={options} series={series} height={isMobile ? 280 : 320} />
+          <Chart
+            key={chartKey}
+            type="donut"
+            options={options}
+            series={slices.series}
+            height={isMobile ? 280 : 320}
+          />
         ) : (
           <Empty
             description="No data for the selected period"
@@ -152,6 +161,76 @@ const MessagesBeforeMilestones = ({ startTime, endTime, campaignId, isMobile = f
         )}
       </Spin>
     </Card>
+  );
+};
+
+const MessagesBeforeMilestones = ({ startTime, endTime, campaignId, isMobile = false }) => {
+  const [loading, setLoading] = useState(false);
+  const [engagementRows, setEngagementRows] = useState([]);
+  const [engagementTotal, setEngagementTotal] = useState(0);
+  const [bookingByStep, setBookingByStep] = useState([]);
+  const [bookingTotal, setBookingTotal] = useState(0);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const { data } = await overviewService.getMessagesBeforeMilestones(startTime, endTime, campaignId);
+        if (cancelled) return;
+        setEngagementRows(data?.messages_before_first_engagement ?? []);
+        setEngagementTotal(Number(data?.first_engagement_patients ?? 0));
+        setBookingByStep(data?.booking_by_step ?? []);
+        setBookingTotal(Number(data?.booking_total ?? 0));
+      } catch (err) {
+        if (!cancelled) {
+          setEngagementRows([]);
+          setEngagementTotal(0);
+          setBookingByStep([]);
+          setBookingTotal(0);
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+
+    fetchData();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [startTime, endTime, campaignId]);
+
+  const engagementSlices = buildEngagementSlices(engagementRows, engagementTotal);
+  const bookingSlices = buildBookingSlices(bookingByStep, bookingTotal);
+  const chartScopeKey = `${startTime || ''}-${endTime || ''}-${campaignId || 'all'}`;
+
+  return (
+    <Row gutter={[isMobile ? 12 : 16, isMobile ? 12 : 16]}>
+      <Col xs={24} lg={12}>
+        <DonutCard
+          title="Patients first engagement"
+          tip={FIRST_ENGAGEMENT_TIP}
+          centreLabel="people replied"
+          slices={engagementSlices}
+          loading={loading}
+          isMobile={isMobile}
+          chartKey={`engagement-${chartScopeKey}-${engagementSlices.total}`}
+        />
+      </Col>
+      <Col xs={24} lg={12}>
+        <DonutCard
+          title="Which message led to the booking"
+          tip={BOOKING_ATTRIBUTION_TIP}
+          centreLabel="bookings"
+          slices={bookingSlices}
+          loading={loading}
+          isMobile={isMobile}
+          chartKey={`booking-${chartScopeKey}-${bookingSlices.total}`}
+        />
+      </Col>
+    </Row>
   );
 };
 

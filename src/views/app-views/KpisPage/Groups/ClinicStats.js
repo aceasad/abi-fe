@@ -20,70 +20,84 @@ const CARD_SHADOW = '0 1px 2px rgba(26, 51, 83, 0.04), 0 8px 24px -16px rgba(26,
 const ASA_COLOR = '#14C2B0';
 const ASSISTED_COLOR = '#7DD3C8';
 const HUMAN_COLOR = '#94A3B8';
-
-const pieChartColors = ['#5D4EBF', '#E880FF', '#FFBFB0', '#18D9C5', '#121E38', '#8C3B87', '#e8fbf9'];
+const ALERT_COLOR = '#E5484D';
+const STATUS_COLORS = {
+  scheduled: '#5D4EBF',
+  attended: '#14C2B0',
+  no_show: '#F59E0B',
+  cancelled: '#94A3B8',
+  outcome_pending: '#CBD5E1',
+};
 
 const KPI_TOOLTIPS = {
   invited:
-    'Everyone added in this date range — the full patient list for the campaign. Includes people we never reached and failed sends. Percentages under other funnel stages are out of this total.',
+    'Everyone added in this date range. Does not exclude people we never reached or whose first message failed.',
   delivered:
-    'Patients who successfully got at least one message from ASA (sent/delivered/read). Failed-only sends are not counted here.',
+    'People who successfully received at least one message from Asa. Does not include failed-only sends.',
   engaged:
-    'Patients we successfully messaged who also replied at least once in this period.',
+    'People we successfully messaged who also replied at least once. Does not include people who never answered.',
   booked_funnel:
-    'Patients with at least one booking in this period — people, not appointment rows.',
-  waiting_added:
-    'Patients still marked as Added (not yet moved on). Can mix never-messaged and some failed sends — hidden from the funnel for now.',
+    'People who booked at least one appointment in this period. Does not include people who only rescheduled.',
   engagement_rate:
-    'Of patients we successfully messaged, what share replied? Engaged ÷ Delivered.',
-  outreach_conversion:
-    'Of patients we successfully messaged, what share booked? Booked ÷ Delivered. Hover the % to see ASA / assisted / staff mix of Delivered.',
-  cohort_conversion:
-    'Of everyone added (including never reached), what share booked? Booked ÷ Invited. Hover the % for the handling mix of Invited.',
-  close_rate:
-    'Of patients who replied, what share booked? Booked ÷ Engaged. Different from Engagement rate (which is replies ÷ Delivered). Hover the % for the mix of Engaged.',
-  asa_booking_share:
-    'Of patients who booked, what share booked only with ASA (no staff bookings)? Hover the % for ASA / assisted / staff mix of all booked patients.',
-  booking_rate_asa:
-    'Share of Delivered patients who booked with ASA only.',
-  booking_rate_asa_assisted:
-    'Share of Delivered patients who booked with both ASA and staff.',
-  booking_rate_human:
-    'Share of Delivered patients who booked with staff only.',
+    'Of people we successfully messaged, how many replied. Does not include failed sends or people never messaged.',
+  booking_rate:
+    'Of people who replied, how many also booked. Does not include people who booked by phone without ever messaging Asa.',
   bookings_after_hours:
-    'Of patients ASA helped book (ASA-only or assisted), what share booked in evening or night clinic hours?',
+    'Appointments Asa booked after the clinic closed, in clinic local time. Does not include staff bookings — those timestamps are when the clinic system synced, not when the patient booked.',
   delivered_unengaged:
-    'Patients we successfully messaged who have not replied yet. Same as Delivered minus Engaged.',
+    'People we successfully messaged who have not replied yet. Does not include failed sends.',
   messages_failed:
-    'Outbound messages that failed to send (including flood errors). Click to see the list.',
-  total_messages_sent:
-    'All messages ASA, the system, or staff sent to these patients in the period — successful and failed.',
-  total_messages_received:
-    'All messages patients sent back in the period.',
-  reminders_scheduled:
-    'Reminders due in this period that were not cancelled — still waiting to send or already sent.',
-  reminders_sent:
-    'Reminders that were successfully handed to the messaging provider (status Sent).',
-  reminders_failed:
-    'Reminders past their send time that never marked Sent, plus Sent reminders whose message later failed to deliver.',
-  reminders_sent_patients_responded:
-    'How many patients replied after at least one successfully sent reminder. Subtitle shows this out of reminders sent.',
+    'People whose messages could not be delivered. The count is people, not message rows.',
   bookings:
-    'Total appointment bookings in this period (paired MSLT slots count as one). This is appointment rows, not unique patients.',
-  booked_handling:
-    'How those appointments were booked: ASA or staff. Each appointment counts once. “Assisted” is only used on the patient Booked funnel bar, not here.',
+    'Appointments booked in this period. Paired overnight slots count as one. Does not include reschedules — those sit under Changes and attendance.',
+  booked_asa_end_to_end:
+    'Asa booked this appointment with no staff in the conversation before it was confirmed.',
+  booked_human_started:
+    'Staff entered the conversation, then Asa finished the booking.',
+  booked_staff_managed:
+    'Staff booked this in the clinic system. Asa still messages the patient and can reschedule.',
+  resolved_by_asa:
+    'People who replied and never needed a staff takeover. Does not include people flagged for human intervention.',
+  status_scheduled:
+    'Upcoming appointments that have not happened yet. Does not include attended, no-show, cancelled, or pending outcomes.',
+  status_attended:
+    'Appointments the patient attended. Does not include no-shows, cancellations, or still-scheduled bookings.',
+  status_no_show:
+    'Appointments the patient missed. Does not include cancelled or still-scheduled bookings.',
+  status_cancelled:
+    'Appointments cancelled and not replaced. Does not include reschedules.',
+  status_outcome_pending:
+    'The clinic has not recorded whether the patient attended. Does not include scheduled, attended, no-show, or cancelled.',
+  rescheduled:
+    'Appointments moved to a new time. Counted separately from bookings so the invoice still matches.',
+  attendance_rate:
+    'Of appointments that already happened, how many the patient attended. Does not include cancelled, still scheduled, or pending outcomes.',
+  billed_appointments:
+    'Bookings plus reschedules — the appointments billed for this period.',
   emergency_situation:
-    'Patients flagged for an emergency that needs immediate staff attention.',
+    'People flagged for an emergency that needs immediate staff attention.',
   human_intervention:
-    'Patients where a staff member had to take over the ASA conversation.',
+    'People where a staff member had to take over the Asa conversation.',
   already_screened:
-    'Patients who said they were already screened or had the study elsewhere.',
+    'People who said they were already screened or had the study elsewhere.',
   declined:
-    'Patients who declined the invitation.',
+    'People who declined the invitation.',
   opt_out:
-    'Patients who asked to stop receiving messages.',
+    'People who asked to stop receiving messages.',
   snoozed:
-    'Patients who asked to be contacted again later.',
+    'People who asked to be contacted again later.',
+};
+
+const FUNNEL_STAGES_META = [
+  { key: 'invited', label: 'Invited', gradient: 'linear-gradient(180deg, #5D4EBF, #6E5FD8)', progressStatus: null },
+  { key: 'delivered', label: 'Delivered', gradient: 'linear-gradient(180deg, #6E5FD8, #8C7DEC)', progressStatus: null },
+  { key: 'engaged', label: 'Engaged', gradient: 'linear-gradient(180deg, #8C7DEC, #A99AF0)', progressStatus: 'BOOKING' },
+  { key: 'booked', label: 'Patients booked', gradient: 'linear-gradient(180deg, #A99AF0, #C4B9F5)', progressStatus: 'BOOKED' },
+];
+
+const fmtCount = (n) => {
+  if (n == null || Number.isNaN(Number(n))) return '—';
+  return Number(n).toLocaleString();
 };
 
 const MetricHint = ({ tip }) => {
@@ -98,27 +112,12 @@ const MetricHint = ({ tip }) => {
   );
 };
 
-// Each funnel stage moves the eye from the brand purple (outreach) toward the
-// booking teal (success). Invited = patients added; Waiting = still on Added;
-// Delivered = first successful outbound; Engaged = replied once; Booked =
-// patients with ≥1 booking. Waiting sits beside Invited and is excluded from
-// the conversion chain so Delivered still compares against Invited.
-const FUNNEL_STAGES_META = [
-  { key: 'invited', label: 'Invited', gradient: 'linear-gradient(90deg, #6E5FD8, #8C7DEC)', progressStatus: null },
-  // Waiting hidden for now — ADDED/null status can mix never-messaged with some
-  // failed-send patients; not a clean funnel stage until the definition is tightened.
-  // { key: 'waiting', label: 'Waiting', gradient: 'linear-gradient(90deg, #94A3B8, #B0BBC8)', progressStatus: 'ADDED', excludeFromConversionChain: true },
-  { key: 'delivered', label: 'Delivered', gradient: 'linear-gradient(90deg, #5D4EBF, #6E5FD8)', progressStatus: null },
-  { key: 'engaged', label: 'Engaged', gradient: 'linear-gradient(90deg, #2FA8C7, #45C2D8)', progressStatus: 'BOOKING' },
-  { key: 'booked', label: 'Booked', gradient: 'linear-gradient(90deg, #14C2B0, #18D9C5)', progressStatus: 'BOOKED' },
-];
-
 const PLACEHOLDER_APPOINTMENT_OUTCOMES = [
-  { name: 'Scheduled', value: 35 },
-  { name: 'Attended', value: 25 },
-  { name: 'Not attended', value: 8 },
-  { name: 'Cancelled', value: 5 },
-  { name: 'Rescheduled', value: 4 },
+  { name: 'Scheduled', value: 35, percent: 45.5, color: STATUS_COLORS.scheduled },
+  { name: 'Attended', value: 25, percent: 32.5, color: STATUS_COLORS.attended },
+  { name: 'No-show', value: 8, percent: 10.4, color: STATUS_COLORS.no_show },
+  { name: 'Cancelled', value: 5, percent: 6.5, color: STATUS_COLORS.cancelled },
+  { name: 'Outcome pending', value: 4, percent: 5.2, color: STATUS_COLORS.outcome_pending },
 ];
 
 // The "Booking progress" tab on the Overview page is keyed "5". Clicking a
@@ -130,14 +129,9 @@ const BOOKING_PROGRESS_TAB_KEY = '5';
 const OUTCOME_TO_PROGRESS_STATUS = {
   'Scheduled': 'BOOKED',
   'Attended': 'ATTENDED',
-  'Not attended': 'NOT_ATTENDED',
+  'No-show': 'NOT_ATTENDED',
   'Cancelled': 'CANCELLED',
-  'Rescheduled': 'RESCHEDULED',
-  'Arrived': 'ARRIVED',
-  'Sent in': 'SENT_IN',
-  'Quiet sent in': 'QUIET_SENT_IN',
-  'Walked out': 'WALKED_OUT',
-  'Not updated': 'NOT_UPDATED',
+  'Outcome pending': 'NOT_UPDATED',
 };
 
 const areAllAppointmentOutcomesZero = (values) =>
@@ -302,7 +296,6 @@ const StatCard = ({ title, value, subtitle, color = HEADING_COLOR, change = null
 
 // Supporting rate tile used alongside the funnel. A coloured accent dot keeps
 // the metrics visually tied to the brand without competing with the funnel.
-// Width/height match the conversion row tiles (Outreach / Cohort / Close).
 const RATE_TILE_MIN_HEIGHT = 110;
 const RATE_TILE_MIN_HEIGHT_MOBILE = 100;
 
@@ -380,20 +373,13 @@ const RateTile = ({
   </div>
 );
 
-// Side-by-side vertical gauges. Every stage shares an equal-height track and is
-// filled from the bottom in proportion to the largest stage, so the funnel
-// drop-off is read by comparing bar heights at a glance — the count sits on top
-// and a conversion pill underneath shows how many carried over from the
-// previous step.
+// Side-by-side vertical gauges. Each bar fills to the backend conversion
+// for that step (same number as the chip), not the stage count vs invited.
 const ConversionFunnel = ({ stages, isMobile, onStageClick }) => {
   const [hoveredKey, setHoveredKey] = useState(null);
-  const numericValues = stages.map((s) => (isMissing(s.value) ? 0 : Number(s.value)));
-  const maxValue = Math.max(...numericValues, 1);
   const chartHeight = isMobile ? 150 : 200;
   const barWidth = isMobile ? 28 : 48;
   const isClickable = typeof onStageClick === 'function';
-  const invitedIndex = stages.findIndex((s) => s.key === 'invited');
-  const invitedValue = invitedIndex >= 0 ? numericValues[invitedIndex] : 0;
 
   return (
     <div>
@@ -401,28 +387,11 @@ const ConversionFunnel = ({ stages, isMobile, onStageClick }) => {
       {stages.map((stage, index) => {
         const rawValue = isMissing(stage.value) ? null : Number(stage.value);
         const value = rawValue ?? 0;
-        const fillPx = rawValue == null ? 0 : Math.max((value / maxValue) * chartHeight, value > 0 ? 6 : 0);
-
-        // All stage pills are share of Invited (Invited itself stays 100%).
-        let pillText = '—';
-        if (index === 0 || stage.key === 'invited') {
-          pillText = '100%';
-        } else if (invitedValue > 0) {
-          pillText = `${((value / invitedValue) * 100).toFixed(0)}%`;
-        }
+        const fillPercent = Number(stage.fill_percent ?? 0);
+        const fillPx = rawValue == null ? 0 : Math.max((fillPercent / 100) * chartHeight, fillPercent > 0 ? 6 : 0);
+        const pillText = stage.chip_label || '—';
 
         const isHovered = hoveredKey === stage.key;
-        const asa = Number(stage.asa ?? 0);
-        const assisted = Number(stage.assisted ?? 0);
-        const human = Number(stage.human ?? 0);
-        const unknown = Number(stage.unknown ?? 0);
-        const sourceTotal = asa + assisted + human + unknown;
-        const showSourceSplit = stage.key === 'booked' && sourceTotal > 0 && fillPx > 0;
-        const asaShare = showSourceSplit ? asa / sourceTotal : 0;
-        const assistedShare = showSourceSplit ? assisted / sourceTotal : 0;
-        const humanShare = showSourceSplit ? human / sourceTotal : 0;
-        const unknownShare = showSourceSplit ? unknown / sourceTotal : 0;
-        const isSideMetric = Boolean(stage.excludeFromConversionChain);
 
         return (
           <div
@@ -473,116 +442,18 @@ const ConversionFunnel = ({ stages, isMobile, onStageClick }) => {
                 overflow: 'hidden',
               }}
             >
-              {showSourceSplit ? (
-                <div
-                  style={{
-                    position: 'absolute',
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    height: fillPx,
-                    display: 'flex',
-                    flexDirection: 'column-reverse',
-                    borderRadius: fillPx >= chartHeight ? 12 : '12px 12px 0 0',
-                    overflow: 'hidden',
-                    transition: 'height 0.7s cubic-bezier(0.22, 1, 0.36, 1)',
-                  }}
-                >
-                  {asa > 0 ? (
-                    <div
-                      style={{
-                        height: `${asaShare * 100}%`,
-                        minHeight: 4,
-                        width: '100%',
-                        background: ASA_COLOR,
-                      }}
-                    >
-                      <Tooltip
-                        title={`${asa.toLocaleString()} patients — ASA booked (only ASA bookings; no staff bookings)`}
-                        placement="right"
-                      >
-                        <div
-                          style={{ height: '100%', width: '100%' }}
-                          onClick={(e) => e.stopPropagation()}
-                        />
-                      </Tooltip>
-                    </div>
-                  ) : null}
-                  {assisted > 0 ? (
-                    <div
-                      style={{
-                        height: `${assistedShare * 100}%`,
-                        minHeight: 4,
-                        width: '100%',
-                        background: ASSISTED_COLOR,
-                      }}
-                    >
-                      <Tooltip
-                        title={`${assisted.toLocaleString()} patients — ASA assisted (both ASA and staff bookings)`}
-                        placement="right"
-                      >
-                        <div
-                          style={{ height: '100%', width: '100%' }}
-                          onClick={(e) => e.stopPropagation()}
-                        />
-                      </Tooltip>
-                    </div>
-                  ) : null}
-                  {human > 0 ? (
-                    <div
-                      style={{
-                        height: `${humanShare * 100}%`,
-                        minHeight: 4,
-                        width: '100%',
-                        background: HUMAN_COLOR,
-                      }}
-                    >
-                      <Tooltip
-                        title={`${human.toLocaleString()} patients — Staff booked (only staff bookings; no ASA bookings)`}
-                        placement="right"
-                      >
-                        <div
-                          style={{ height: '100%', width: '100%' }}
-                          onClick={(e) => e.stopPropagation()}
-                        />
-                      </Tooltip>
-                    </div>
-                  ) : null}
-                  {unknown > 0 ? (
-                    <div
-                      style={{
-                        height: `${unknownShare * 100}%`,
-                        minHeight: 4,
-                        width: '100%',
-                        background: '#CBD5E1',
-                      }}
-                    >
-                      <Tooltip
-                        title={`${unknown.toLocaleString()} patients — booking source unknown`}
-                        placement="right"
-                      >
-                        <div
-                          style={{ height: '100%', width: '100%' }}
-                          onClick={(e) => e.stopPropagation()}
-                        />
-                      </Tooltip>
-                    </div>
-                  ) : null}
-                </div>
-              ) : (
-                <div
-                  style={{
-                    position: 'absolute',
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    height: fillPx,
-                    borderRadius: fillPx >= chartHeight ? 12 : '12px 12px 0 0',
-                    background: stage.gradient,
-                    transition: 'height 0.7s cubic-bezier(0.22, 1, 0.36, 1)',
-                  }}
-                />
-              )}
+              <div
+                style={{
+                  position: 'absolute',
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  height: fillPx,
+                  borderRadius: fillPx >= chartHeight ? 12 : '12px 12px 0 0',
+                  background: stage.gradient,
+                  transition: 'height 0.7s cubic-bezier(0.22, 1, 0.36, 1)',
+                }}
+              />
             </div>
 
             <span
@@ -590,8 +461,8 @@ const ConversionFunnel = ({ stages, isMobile, onStageClick }) => {
                 marginTop: 12,
                 fontSize: isMobile ? 10 : 12,
                 fontWeight: 600,
-                color: index === 0 || isSideMetric ? MUTED_COLOR : '#5D4EBF',
-                background: index === 0 || isSideMetric ? 'rgba(114, 132, 154, 0.10)' : 'rgba(93, 78, 191, 0.10)',
+                color: index === 0 ? MUTED_COLOR : '#5D4EBF',
+                background: index === 0 ? 'rgba(114, 132, 154, 0.10)' : 'rgba(93, 78, 191, 0.10)',
                 padding: isMobile ? '2px 7px' : '3px 9px',
                 borderRadius: 999,
                 whiteSpace: 'nowrap',
@@ -603,56 +474,6 @@ const ConversionFunnel = ({ stages, isMobile, onStageClick }) => {
         );
       })}
       </div>
-      {(() => {
-        const booked = stages.find((s) => s.key === 'booked');
-        if (!booked) return null;
-        const asa = Number(booked.asa ?? 0);
-        const assisted = Number(booked.assisted ?? 0);
-        const human = Number(booked.human ?? 0);
-        const unknown = Number(booked.unknown ?? 0);
-        if (asa + assisted + human + unknown <= 0) return null;
-        const legendItems = [
-          { label: 'ASA booked', color: ASA_COLOR, show: asa > 0 },
-          { label: 'ASA assisted', color: ASSISTED_COLOR, show: assisted > 0 },
-          { label: 'Staff booked', color: HUMAN_COLOR, show: human > 0 },
-          { label: 'Unknown', color: '#CBD5E1', show: unknown > 0 },
-        ].filter((item) => item.show);
-        return (
-          <div
-            style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              justifyContent: 'center',
-              gap: isMobile ? 8 : 14,
-              marginTop: isMobile ? 10 : 14,
-            }}
-          >
-            {legendItems.map((item) => (
-              <span
-                key={item.label}
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 6,
-                  fontSize: isMobile ? 10 : 11,
-                  color: MUTED_COLOR,
-                }}
-              >
-                <span
-                  style={{
-                    width: 8,
-                    height: 8,
-                    borderRadius: 2,
-                    background: item.color,
-                    flexShrink: 0,
-                  }}
-                />
-                {item.label}
-              </span>
-            ))}
-          </div>
-        );
-      })()}
     </div>
   );
 };
@@ -693,9 +514,6 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country, startTi
   const { PASProvider } = useSelector((state) => state.auth.user || {});
   const isMedbridge = PASProvider?.toLowerCase() === 'medbridge';
 
-  // Deep-link to the Overview "Booking progress" tab. When a progress status is
-  // provided it is pre-selected in the tab's "Filter by status" control via
-  // router state; passing a falsy status opens the tab unfiltered.
   const goToBookingProgress = (progressStatus) => {
     const state = { activeTabKey: BOOKING_PROGRESS_TAB_KEY };
     if (progressStatus) {
@@ -712,69 +530,48 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country, startTi
     if (!progressStatus) return;
     goToBookingProgress(progressStatus);
   };
+
   const {
     engagement_rate,
     booking_rate,
-    booking_rate_of_invited,
-    booking_rate_of_engaged,
-    booking_rate_asa,
-    booking_rate_asa_assisted,
-    booking_rate_human,
-    asa_booking_share,
     after_hours_bookings,
     after_hours_share,
-    after_hours_asa,
-    after_hours_asa_assisted,
-    after_hours_human,
-    total_messages_sent,
-    total_messages_received,
-    reminders_scheduled,
-    reminders_sent,
-    reminders_failed,
-    reminders_sent_patients_responded,
-    total_patients_added,
+    handled_without_human_rate,
+    handled_without_human_numerator,
+    handled_without_human_denominator,
     total_patients_invited,
     total_patients_failed_message_status,
     total_failed_messages_count,
     total_patients_engaged,
     total_patients_read_but_no_response,
-    patients_waiting_added,
-    patients_booked,
+    engaged_who_booked,
+    funnel_stages,
     bookings,
-    booked_asa,
-    booked_asa_assisted,
+    booked_asa_end_to_end,
+    booked_human_started,
+    booked_staff_managed,
     booked_human,
-    patients_asa,
-    patients_asa_assisted,
-    patients_human,
-    patients_unknown,
-    scheduled_asa,
-    scheduled_asa_assisted,
-    scheduled_human,
-    attended_asa,
-    attended_asa_assisted,
-    attended_human,
-    arrived_asa,
-    arrived_asa_assisted,
-    arrived_human,
-    cancelled_asa,
-    cancelled_asa_assisted,
-    cancelled_human,
-    reschedule_asa,
-    reschedule_asa_assisted,
-    reschedule_human,
-    non_attended_asa,
-    non_attended_asa_assisted,
-    non_attended_human,
+    booked_asa_end_to_end_percent,
+    booked_human_started_percent,
+    booked_staff_managed_percent,
+    staff_messages_sent,
+    staff_rescheduled_by_asa,
+    status_scheduled,
+    status_attended,
+    status_no_show,
+    status_cancelled,
+    status_outcome_pending,
+    status_scheduled_percent,
+    status_attended_percent,
+    status_no_show_percent,
+    status_cancelled_percent,
+    status_outcome_pending_percent,
+    attendance_rate,
+    billed_appointments,
     reschedule,
     cancelled,
     attended,
     non_attended,
-    booking_time_distribution,
-    walked_out,
-    quiet_sent_in,
-    sent_in,
-    arrived,
     not_updated,
     declines,
     opt_out,
@@ -788,94 +585,79 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country, startTi
     interventionsLoading,
   } = useSelector(makeSelectClinicStatsData);
 
-  const calculateAfterHoursBookings = () => {
-    if (after_hours_bookings != null) return after_hours_bookings;
-    return -1;
-  };
+  const asaEndToEnd = booked_asa_end_to_end ?? 0;
+  const humanStarted = booked_human_started ?? 0;
+  const staffManaged = booked_staff_managed ?? booked_human ?? 0;
+  const bookingsTotal = Number(bookings ?? 0);
 
-  const otherAppointmentOutcomeCounts =
-    (reschedule ?? 0)
-    + (attended ?? 0)
-    + (non_attended ?? 0)
-    + (cancelled ?? 0)
-    + (arrived ?? 0)
-    + (sent_in ?? 0)
-    + (quiet_sent_in ?? 0)
-    + (walked_out ?? 0)
-    + (not_updated ?? 0);
-
-  const scheduledOnlyCount = Math.max((bookings ?? 0) - otherAppointmentOutcomeCounts, 0);
-  // Arrived is treated as Attended for the Appointment Status chart (combined count, no separate row).
-  const attendedCombinedCount = (attended ?? 0) + (arrived ?? 0);
-
-  const appointmentOutcomeValues = [
-    scheduledOnlyCount,
-    attendedCombinedCount,
-    non_attended,
-    cancelled,
-    reschedule,
-    sent_in,
-    quiet_sent_in,
-    walked_out,
-    not_updated,
-  ];
-
-  const appointmentOutcomes = [
+  const statusRows = [
     {
       name: 'Scheduled',
-      value: scheduledOnlyCount,
-      color: '#6366F1',
-      asa: scheduled_asa,
-      human: scheduled_human,
+      value: status_scheduled ?? 0,
+      percent: status_scheduled_percent ?? 0,
+      color: STATUS_COLORS.scheduled,
+      tip: KPI_TOOLTIPS.status_scheduled,
     },
     {
       name: 'Attended',
-      value: attendedCombinedCount,
-      color: '#10B981',
-      asa: (attended_asa ?? 0) + (arrived_asa ?? 0),
-      human: (attended_human ?? 0) + (arrived_human ?? 0),
+      value: status_attended ?? attended ?? 0,
+      percent: status_attended_percent ?? 0,
+      color: STATUS_COLORS.attended,
+      tip: KPI_TOOLTIPS.status_attended,
     },
     {
-      name: 'Not attended',
-      value: non_attended ?? -1,
-      color: '#F59E0B',
-      asa: non_attended_asa,
-      human: non_attended_human,
+      name: 'No-show',
+      value: status_no_show ?? non_attended ?? 0,
+      percent: status_no_show_percent ?? 0,
+      color: STATUS_COLORS.no_show,
+      tip: KPI_TOOLTIPS.status_no_show,
     },
     {
       name: 'Cancelled',
-      value: cancelled ?? -1,
-      color: '#EF4444',
-      asa: cancelled_asa,
-      human: cancelled_human,
+      value: status_cancelled ?? cancelled ?? 0,
+      percent: status_cancelled_percent ?? 0,
+      color: STATUS_COLORS.cancelled,
+      tip: KPI_TOOLTIPS.status_cancelled,
     },
     {
-      name: 'Rescheduled',
-      value: reschedule ?? -1,
-      color: '#6B7280',
-      asa: reschedule_asa,
-      human: reschedule_human,
+      name: 'Outcome pending',
+      value: status_outcome_pending ?? not_updated ?? 0,
+      percent: status_outcome_pending_percent ?? 0,
+      color: STATUS_COLORS.outcome_pending,
+      tip: KPI_TOOLTIPS.status_outcome_pending,
     },
-    { name: 'Sent in', value: sent_in ?? -1, color: '#06B6D4' },
-    { name: 'Quiet sent in', value: quiet_sent_in ?? -1, color: '#84CC16' },
-    { name: 'Walked out', value: walked_out ?? -1, color: '#F97316' },
-    { name: 'Not updated', value: not_updated ?? -1, color: '#64748B' }
-  ].filter(item => item.value > 0);
-
+  ];
+  const statusValues = statusRows.map((row) => Number(row.value ?? 0));
   const usePlaceholderAppointmentOutcomes =
-    !bookingLoading && areAllAppointmentOutcomesZero(appointmentOutcomeValues);
-
-  const appointmentOutcomesForChart = usePlaceholderAppointmentOutcomes
+    !bookingLoading && areAllAppointmentOutcomesZero(statusValues);
+  const statusForChart = usePlaceholderAppointmentOutcomes
     ? PLACEHOLDER_APPOINTMENT_OUTCOMES
-    : appointmentOutcomes;
+    : statusRows;
 
-  const appointmentOutcomesTotal = appointmentOutcomesForChart.reduce(
-    (sum, item) => sum + Number(item.value ?? 0),
-    0
-  );
-
-  const sortedAppointmentOutcomes = [...appointmentOutcomesForChart]
-    .sort((a, b) => Number(b.value ?? 0) - Number(a.value ?? 0));
+  const bookedByRows = [
+    {
+      label: 'Asa end-to-end',
+      value: asaEndToEnd,
+      percent: booked_asa_end_to_end_percent ?? 0,
+      color: ASA_COLOR,
+      tip: KPI_TOOLTIPS.booked_asa_end_to_end,
+    },
+    {
+      label: 'Human-started, Asa-completed',
+      value: humanStarted,
+      percent: booked_human_started_percent ?? 0,
+      color: ASSISTED_COLOR,
+      tip: KPI_TOOLTIPS.booked_human_started,
+    },
+    {
+      label: 'Booked by staff, managed by Asa',
+      value: staffManaged,
+      percent: booked_staff_managed_percent ?? 0,
+      color: HUMAN_COLOR,
+      tip: KPI_TOOLTIPS.booked_staff_managed,
+      extra: `${fmtCount(staff_messages_sent)} messages sent · ${fmtCount(staff_rescheduled_by_asa)} rescheduled by Asa`,
+    },
+  ];
 
   const interventionData = [
     {
@@ -919,49 +701,40 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country, startTi
       change: calculateValueChange(snoozed, percentage_changes?.pc_snoozed),
       progressStatus: 'SNOOZED',
       tip: KPI_TOOLTIPS.snoozed,
-    }
+    },
   ];
 
-  const messagesFailedCount = total_patients_failed_message_status;
-  const previousMessagesFailedCount = percentage_changes?.pc_failed_messages;
+  const messagesFailedPatients = total_patients_failed_message_status;
   const failedMessagesChange = calculateValueChange(
-    messagesFailedCount,
-    previousMessagesFailedCount
-  );
-  const totalFailedMessagesChange = calculateValueChange(
-    total_failed_messages_count,
-    percentage_changes?.pc_total_failed_messages
+    messagesFailedPatients,
+    percentage_changes?.pc_failed_messages
   );
   const deliveredUnengagedChange = calculateValueChange(
     total_patients_read_but_no_response,
     percentage_changes?.pc_delivered_unengaged
   );
+  const messagesFailedTip = total_failed_messages_count
+    ? `${KPI_TOOLTIPS.messages_failed} ${fmtCount(total_failed_messages_count)} messages failed to send.`
+    : KPI_TOOLTIPS.messages_failed;
 
+  const afterHoursCount = after_hours_bookings ?? 0;
+  const afterHoursShareOfAsa = after_hours_share ?? 0;
+
+  const stagesByKey = Object.fromEntries((funnel_stages || []).map((stage) => [stage.key, stage]));
   const funnelStages = FUNNEL_STAGES_META.map((meta) => ({
     ...meta,
-    value: {
-      invited: total_patients_added,
-      waiting: patients_waiting_added ?? 0,
-      delivered: total_patients_invited,
-      engaged: total_patients_engaged,
-      booked: patients_booked ?? 0,
-    }[meta.key],
+    value: stagesByKey[meta.key]?.value,
+    fill_percent: stagesByKey[meta.key]?.fill_percent,
+    chip_label: stagesByKey[meta.key]?.chip_label,
     tip: {
       invited: KPI_TOOLTIPS.invited,
-      waiting: KPI_TOOLTIPS.waiting_added,
       delivered: KPI_TOOLTIPS.delivered,
       engaged: KPI_TOOLTIPS.engaged,
       booked: KPI_TOOLTIPS.booked_funnel,
     }[meta.key],
-    // Patient counts (not appointment rows) so segments sum to Booked.
-    asa: meta.key === 'booked' ? patients_asa : undefined,
-    assisted: meta.key === 'booked' ? patients_asa_assisted : undefined,
-    human: meta.key === 'booked' ? patients_human : undefined,
-    unknown: meta.key === 'booked' ? patients_unknown : undefined,
   }));
 
   const mobileShortFormat = getDateFormatByCountry(country).replace('YYYY', 'YY');
-
   const previousPeriodLabel = previousPeriod ? (
     <Text type="secondary" style={{ fontSize: isMobile ? 11 : 13 }}>
       vs {isMobile
@@ -970,29 +743,75 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country, startTi
     </Text>
   ) : null;
 
-  const messagingMetrics = [
-    {
-      key: 'messagesSent',
-      label: 'Messages sent',
-      tip: KPI_TOOLTIPS.total_messages_sent,
-      value: displayValue(total_messages_sent),
-      change: calculateValueChange(total_messages_sent, percentage_changes?.pc_total_messages_sent),
-    },
-    {
-      key: 'messagesReceived',
-      label: 'Messages received',
-      tip: KPI_TOOLTIPS.total_messages_received,
-      value: displayValue(total_messages_received),
-      change: calculateValueChange(total_messages_received, percentage_changes?.pc_total_messages_received),
-    },
-    {
-      key: 'totalFailedMessages',
-      label: 'Messages failed',
-      tip: KPI_TOOLTIPS.messages_failed,
-      value: displayValue(total_failed_messages_count),
-      change: totalFailedMessagesChange,
-      onClick: () => setFailedMessagesModalOpen(true),
-    },
+  const billedLine = `${fmtCount(bookingsTotal)} bookings + ${fmtCount(reschedule)} reschedules = ${fmtCount(billed_appointments)} billed appointments`;
+
+  const renderBarRow = ({
+    key,
+    label,
+    value,
+    percent,
+    color,
+    tip,
+    extra,
+    isClickable,
+    onClick,
+    hovered,
+    onHover,
+  }) => {
+    const pct = Number(percent ?? 0);
+    const fillWidth = Math.max(pct, Number(value ?? 0) > 0 ? 2 : 0);
+    return (
+      <div
+        key={key}
+        role={isClickable ? 'button' : undefined}
+        tabIndex={isClickable ? 0 : undefined}
+        onClick={isClickable ? onClick : undefined}
+        onKeyDown={isClickable ? (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onClick();
+          }
+        } : undefined}
+        onMouseEnter={isClickable ? () => onHover(true) : undefined}
+        onMouseLeave={isClickable ? () => onHover(false) : undefined}
+        style={{
+          cursor: isClickable ? 'pointer' : 'default',
+          margin: '0 -8px',
+          padding: isMobile ? '6px 8px' : '6px 8px',
+          borderRadius: 10,
+          background: isClickable && hovered ? 'rgba(93, 78, 191, 0.06)' : 'transparent',
+          outline: 'none',
+        }}
+      >
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 7 }}>
+          <Text style={{ fontSize: isMobile ? 13 : 14, color: HEADING_COLOR }}>
+            {label}
+            <MetricHint tip={tip} />
+          </Text>
+          <span style={{ fontSize: isMobile ? 13 : 14, color: HEADING_COLOR, whiteSpace: 'nowrap' }}>
+            <span style={{ fontWeight: 700 }}>{Number(value ?? 0).toLocaleString()}</span>
+            <span style={{ color: MUTED_COLOR, marginLeft: 8 }}>{pct.toFixed(1)}%</span>
+          </span>
+        </div>
+        <div style={{ height: isMobile ? 8 : 10, borderRadius: 999, background: TRACK_COLOR, overflow: 'hidden' }}>
+          <div
+            style={{
+              height: '100%',
+              width: `${fillWidth}%`,
+              borderRadius: 999,
+              background: color,
+              transition: 'width 0.7s cubic-bezier(0.22, 1, 0.36, 1)',
+            }}
+          />
+        </div>
+        {extra ? (
+          <div style={{ fontSize: 11, color: MUTED_COLOR, marginTop: 6 }}>{extra}</div>
+        ) : null}
+      </div>
+    );
+  };
+
+  const journeyAlerts = [
     {
       key: 'unengaged',
       label: 'Delivered · unengaged',
@@ -1002,84 +821,14 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country, startTi
       onClick: () => goToBookingProgress('NO_RESPONSE'),
     },
     {
-      key: 'remindersScheduled',
-      label: 'Reminders scheduled',
-      tip: KPI_TOOLTIPS.reminders_scheduled,
-      value: displayValue(reminders_scheduled),
-      change: calculateValueChange(reminders_scheduled, percentage_changes?.pc_reminders_scheduled),
-    },
-    {
-      key: 'remindersSent',
-      label: 'Reminders sent',
-      tip: KPI_TOOLTIPS.reminders_sent,
-      value: displayValue(reminders_sent),
-      change: calculateValueChange(reminders_sent, percentage_changes?.pc_reminders_sent),
-    },
-    {
-      key: 'remindersFailed',
-      label: 'Reminders failed',
-      tip: KPI_TOOLTIPS.reminders_failed,
-      value: displayValue(reminders_failed),
-      change: calculateValueChange(reminders_failed, percentage_changes?.pc_reminders_failed),
-    },
-    {
-      key: 'reminderReplies',
-      label: 'Reminder replies',
-      tip: KPI_TOOLTIPS.reminders_sent_patients_responded,
-      value: displayValue(reminders_sent_patients_responded),
-      change: calculateValueChange(
-        reminders_sent_patients_responded,
-        percentage_changes?.pc_reminders_sent_patients_responded,
-      ),
-      subtitle: reminders_sent > 0
-        ? `of ${Number(reminders_sent).toLocaleString()} sent`
-        : undefined,
+      key: 'failed',
+      label: 'Messages failed',
+      tip: messagesFailedTip,
+      value: displayValue(messagesFailedPatients),
+      change: failedMessagesChange,
+      onClick: () => setFailedMessagesModalOpen(true),
     },
   ];
-
-  // Handling mix as % of that tile’s denominator so ASA + Assisted + Staff ≈ headline.
-  // Shown on hover of the main % to keep the tile uncluttered.
-  const handlingMixTip = (denominator) => {
-    const share = (count) => {
-      if (isMissing(denominator) || Number(denominator) <= 0) return '—';
-      if (isMissing(count) || Number(count) < 0) return '—';
-      return `${((Number(count) / Number(denominator)) * 100).toFixed(1)}%`;
-    };
-    const rows = [
-      { label: 'ASA booked', value: share(patients_asa), color: ASA_COLOR, count: patients_asa },
-      { label: 'ASA assisted', value: share(patients_asa_assisted), color: ASSISTED_COLOR, count: patients_asa_assisted },
-      { label: 'Staff booked', value: share(patients_human), color: HUMAN_COLOR, count: patients_human },
-    ];
-    return (
-      <div style={{ minWidth: 180 }}>
-        <div style={{ fontWeight: 600, marginBottom: 8, fontSize: 12 }}>Handling mix</div>
-        {rows.map((row) => (
-          <div
-            key={row.label}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              gap: 16,
-              marginBottom: 6,
-              fontSize: 12,
-            }}
-          >
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-              <span style={{ width: 7, height: 7, borderRadius: '50%', background: row.color, flexShrink: 0 }} />
-              {row.label}
-            </span>
-            <span style={{ fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
-              {row.value}
-              {!isMissing(row.count) && Number(row.count) >= 0 ? (
-                <span style={{ opacity: 0.75, marginLeft: 6 }}>({Number(row.count).toLocaleString()})</span>
-              ) : null}
-            </span>
-          </div>
-        ))}
-      </div>
-    );
-  };
 
   return (
     <>
@@ -1110,7 +859,6 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country, startTi
                 onStageClick={(stage) => goToBookingProgress(stage.progressStatus)}
               />
             </Col>
-
             <Col xs={24} lg={8}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                 <RateTile
@@ -1121,108 +869,48 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country, startTi
                   changeType="percentage"
                   accent="#5D4EBF"
                   isMobile={isMobile}
-                  subtitle="of delivered patients who replied"
+                  subtitle={`${fmtCount(total_patients_engaged)} of ${fmtCount(total_patients_invited)} messaged`}
                 />
                 <RateTile
-                  label="After-hours share"
+                  label="Booking rate"
+                  tip={KPI_TOOLTIPS.booking_rate}
+                  value={displayValue(booking_rate, true)}
+                  change={percentage_changes?.pc_booking_rate}
+                  changeType="percentage"
+                  accent="#6E5FD8"
+                  isMobile={isMobile}
+                  subtitle={`${fmtCount(engaged_who_booked)} of ${fmtCount(total_patients_engaged)} who replied`}
+                />
+                <RateTile
+                  label="Booked outside clinic hours"
                   tip={KPI_TOOLTIPS.bookings_after_hours}
-                  value={displayValue(after_hours_share, true)}
-                  change={percentage_changes?.pc_after_hours_share}
-                  changeType="percentage"
-                  accent="#E880FF"
+                  value={displayValue(afterHoursCount)}
+                  change={calculateValueChange(afterHoursCount, percentage_changes?.pc_after_hours_bookings)}
+                  changeType="value"
+                  accent="#8C7DEC"
                   isMobile={isMobile}
-                  subtitle={
-                    `${displayValue(calculateAfterHoursBookings())} patients`
-                    + ` · ASA ${displayValue(after_hours_asa)}`
-                    + ` · Assisted ${displayValue(after_hours_asa_assisted)}`
-                  }
-                />
-                <RateTile
-                  label="ASA booking share"
-                  tip={KPI_TOOLTIPS.asa_booking_share}
-                  value={displayValue(
-                    patients_booked > 0
-                      ? ((Number(patients_asa) || 0) / Number(patients_booked)) * 100
-                      : (asa_booking_share ?? 0),
-                    true,
-                  )}
-                  change={percentage_changes?.pc_asa_booking_share}
-                  changeType="percentage"
-                  accent="#14C2B0"
-                  isMobile={isMobile}
-                  subtitle="pure ASA · of patients booked"
-                  valueTip={handlingMixTip(patients_booked)}
+                  subtitle={`${displayValue(afterHoursShareOfAsa, true)} of bookings Asa made`}
                 />
               </div>
             </Col>
           </Row>
-
           <Row gutter={[12, 12]} style={{ marginTop: isMobile ? 12 : 16 }}>
-            <Col xs={24} sm={8}>
-              <RateTile
-                label="Outreach conversion"
-                tip={KPI_TOOLTIPS.outreach_conversion}
-                value={displayValue(booking_rate, true)}
-                change={percentage_changes?.pc_booking_rate}
-                changeType="percentage"
-                accent="#18D9C5"
-                isMobile={isMobile}
-                subtitle="standard outreach · of delivered"
-                valueTip={handlingMixTip(total_patients_invited)}
-              />
-            </Col>
-            <Col xs={24} sm={8}>
-              <RateTile
-                label="Cohort conversion"
-                tip={KPI_TOOLTIPS.cohort_conversion}
-                value={displayValue(booking_rate_of_invited, true)}
-                change={percentage_changes?.pc_booking_rate_of_invited}
-                changeType="percentage"
-                accent="#5D4EBF"
-                isMobile={isMobile}
-                subtitle="ops throughput · full invite cohort"
-                valueTip={handlingMixTip(total_patients_added)}
-              />
-            </Col>
-            <Col xs={24} sm={8}>
-              <RateTile
-                label="Close rate"
-                tip={KPI_TOOLTIPS.close_rate}
-                value={displayValue(booking_rate_of_engaged, true)}
-                change={percentage_changes?.pc_booking_rate_of_engaged}
-                changeType="percentage"
-                accent="#14C2B0"
-                isMobile={isMobile}
-                subtitle="among patients who replied"
-                valueTip={handlingMixTip(total_patients_engaged)}
-              />
-            </Col>
-          </Row>
-        </SectionCard>
-      </Spin>
-
-      <Spin spinning={funnelLoading} style={{ marginTop: isMobile ? 12 : 16, display: 'block' }}>
-        <SectionCard title="Messaging" isMobile={isMobile}>
-          <Row gutter={[12, 12]}>
-            {messagingMetrics.map((metric) => {
-              const isClickable = typeof metric.onClick === 'function';
+            {journeyAlerts.map((metric) => {
               const isHovered = hoveredConcernKey === metric.key;
-              const isAlert = metric.key === 'totalFailedMessages' || metric.key === 'remindersFailed' || metric.key === 'unengaged';
-
               return (
-                <Col xs={24} sm={12} lg={6} key={metric.key}>
+                <Col xs={24} sm={12} key={metric.key}>
                   <div
-                    role={isClickable ? 'button' : undefined}
-                    tabIndex={isClickable ? 0 : undefined}
-                    onClick={isClickable ? metric.onClick : undefined}
-                    onKeyDown={isClickable ? (e) => {
+                    role="button"
+                    tabIndex={0}
+                    onClick={metric.onClick}
+                    onKeyDown={(e) => {
                       if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault();
                         metric.onClick();
                       }
-                    } : undefined}
-                    onMouseEnter={isClickable ? () => setHoveredConcernKey(metric.key) : undefined}
-                    onMouseLeave={isClickable ? () => setHoveredConcernKey(null) : undefined}
+                    }}
+                    onMouseEnter={() => setHoveredConcernKey(metric.key)}
+                    onMouseLeave={() => setHoveredConcernKey(null)}
                     style={{
                       display: 'flex',
                       flexDirection: 'column',
@@ -1231,13 +919,9 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country, startTi
                       borderRadius: 14,
                       background: '#fff',
                       border: CARD_BORDER,
-                      cursor: isClickable ? 'pointer' : 'default',
+                      cursor: 'pointer',
                       outline: 'none',
-                      minHeight: isMobile ? undefined : 110,
-                      boxShadow: isClickable && isHovered
-                        ? '0 4px 12px rgba(26, 51, 83, 0.08)'
-                        : 'none',
-                      transition: 'box-shadow 0.2s ease',
+                      boxShadow: isHovered ? '0 4px 12px rgba(26, 51, 83, 0.08)' : 'none',
                     }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -1246,7 +930,7 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country, startTi
                           width: 8,
                           height: 8,
                           borderRadius: '50%',
-                          background: isAlert ? '#E5484D' : '#5D4EBF',
+                          background: ALERT_COLOR,
                           flexShrink: 0,
                         }}
                       />
@@ -1254,16 +938,14 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country, startTi
                         {metric.label}
                         <MetricHint tip={metric.tip} />
                       </Text>
-                      {isClickable ? (
-                        <RightOutlined
-                          style={{
-                            marginLeft: 'auto',
-                            fontSize: 11,
-                            color: isHovered ? (isAlert ? '#E5484D' : '#5D4EBF') : MUTED_COLOR,
-                            opacity: isHovered ? 1 : 0.45,
-                          }}
-                        />
-                      ) : null}
+                      <RightOutlined
+                        style={{
+                          marginLeft: 'auto',
+                          fontSize: 11,
+                          color: isHovered ? ALERT_COLOR : MUTED_COLOR,
+                          opacity: isHovered ? 1 : 0.45,
+                        }}
+                      />
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
                       <span style={{ fontSize: isMobile ? 20 : 24, fontWeight: 700, color: HEADING_COLOR, letterSpacing: '-0.02em' }}>
@@ -1271,9 +953,6 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country, startTi
                       </span>
                       <DeltaBadge change={metric.change} changeType="value" isMobile={isMobile} />
                     </div>
-                    {metric.subtitle ? (
-                      <div style={{ fontSize: 11, color: MUTED_COLOR }}>{metric.subtitle}</div>
-                    ) : null}
                   </div>
                 </Col>
               );
@@ -1283,7 +962,7 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country, startTi
       </Spin>
 
       <Row gutter={[isMobile ? 12 : 16, isMobile ? 12 : 16]} style={{ marginTop: isMobile ? 12 : 16 }} align="stretch">
-        <Col xs={24} md={12} style={{ display: 'flex' }}>
+        <Col xs={24} lg={12} style={{ display: 'flex' }}>
           <Spin
             spinning={bookingLoading}
             style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}
@@ -1292,7 +971,7 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country, startTi
             <SectionCard
               title={(
                 <span style={{ display: 'inline-flex', alignItems: 'center' }}>
-                  Appointment Status
+                  Bookings
                   <MetricHint tip={KPI_TOOLTIPS.bookings} />
                 </span>
               )}
@@ -1301,172 +980,101 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country, startTi
               extra={usePlaceholderAppointmentOutcomes ? (
                 <Text type="secondary" style={{ fontSize: 12 }}>Sample data</Text>
               ) : null}
-              style={isMobile ? { height: 'auto', width: '100%' } : { minHeight: 460, height: '100%', width: '100%' }}
+              style={isMobile ? { height: 'auto', width: '100%' } : { minHeight: 520, height: '100%', width: '100%' }}
             >
-              <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>
-                <div style={{ marginBottom: isMobile ? 14 : 18 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? 16 : 20, flex: 1 }}>
+                <div>
                   <div style={{ display: 'flex', alignItems: 'baseline', gap: 10 }}>
                     <span style={{ fontSize: isMobile ? 30 : 36, fontWeight: 700, color: HEADING_COLOR, letterSpacing: '-0.02em', lineHeight: 1 }}>
-                      {appointmentOutcomesTotal.toLocaleString()}
+                      {bookingsTotal.toLocaleString()}
                     </span>
                     <span style={{ fontSize: isMobile ? 13 : 14, color: MUTED_COLOR }}>total bookings</span>
                   </div>
-                  {!usePlaceholderAppointmentOutcomes ? (
-                    <Tooltip title={KPI_TOOLTIPS.booked_handling}>
-                      <Text type="secondary" style={{ fontSize: isMobile ? 11 : 12, display: 'block', marginTop: 6 }}>
-                        ASA {(booked_asa ?? 0).toLocaleString()}
-                        {' · '}
-                        Staff {(booked_human ?? 0).toLocaleString()}
-                      </Text>
-                    </Tooltip>
-                  ) : null}
                 </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? 10 : 12, flex: 1, justifyContent: 'space-between' }}>
-                  {sortedAppointmentOutcomes.map((item, index) => {
-                    const value = Number(item.value ?? 0);
-                    const pct = appointmentOutcomesTotal > 0 ? (value / appointmentOutcomesTotal) * 100 : 0;
-                    const color = item.color || pieChartColors[index % pieChartColors.length];
-                    const isClickable = Boolean(OUTCOME_TO_PROGRESS_STATUS[item.name]);
-                    const isHovered = hoveredOutcome === item.name;
-                    const asa = Number(item.asa ?? 0);
-                    const human = Number(item.human ?? 0);
-                    const sourceTotal = asa + human;
-                    const showSourceSplit =
-                      !usePlaceholderAppointmentOutcomes
-                      && item.asa != null
-                      && sourceTotal > 0
-                      && value > 0;
-                    const fillWidth = Math.max(pct, value > 0 ? 2 : 0);
-                    const asaShare = showSourceSplit ? asa / sourceTotal : 0;
-                    const humanShare = showSourceSplit ? human / sourceTotal : 0;
+                <div>
+                  <Text style={{ fontSize: 13, fontWeight: 600, color: HEADING_COLOR, display: 'block', marginBottom: 8 }}>
+                    Booked by
+                  </Text>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                    {bookedByRows.map((row) => renderBarRow({
+                      key: row.label,
+                      label: row.label,
+                      value: usePlaceholderAppointmentOutcomes ? 0 : row.value,
+                      percent: usePlaceholderAppointmentOutcomes ? 0 : row.percent,
+                      color: row.color,
+                      tip: row.tip,
+                      extra: usePlaceholderAppointmentOutcomes ? null : row.extra,
+                    }))}
+                  </div>
+                  <Text type="secondary" style={{ fontSize: 11, display: 'block', marginTop: 10, lineHeight: 1.45 }}>
+                    Staff bookings still sit in Asa’s inbox — Asa messages the patient and can reschedule them.
+                  </Text>
+                </div>
 
-                    return (
-                      <div
-                        key={item.name}
-                        role={isClickable ? 'button' : undefined}
-                        tabIndex={isClickable ? 0 : undefined}
-                        onClick={isClickable ? () => handleOutcomeClick(item.name) : undefined}
-                        onKeyDown={isClickable ? (e) => {
-                          if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault();
-                            handleOutcomeClick(item.name);
-                          }
-                        } : undefined}
-                        onMouseEnter={isClickable ? () => setHoveredOutcome(item.name) : undefined}
-                        onMouseLeave={isClickable ? () => setHoveredOutcome(null) : undefined}
-                        style={{
-                          cursor: isClickable ? 'pointer' : 'default',
-                          margin: '0 -8px',
-                          padding: isMobile ? '6px 8px' : '6px 8px',
-                          borderRadius: 10,
-                          background: isClickable && isHovered ? 'rgba(93, 78, 191, 0.06)' : 'transparent',
-                          transition: 'background 0.2s ease',
-                          outline: 'none',
-                        }}
-                      >
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 7 }}>
-                          <Text style={{ fontSize: isMobile ? 13 : 14, color: HEADING_COLOR }}>{item.name}</Text>
-                          <span style={{ display: 'inline-flex', alignItems: 'center', whiteSpace: 'nowrap' }}>
-                            <span style={{ fontSize: isMobile ? 13 : 14, color: HEADING_COLOR }}>
-                              <span style={{ fontWeight: 700 }}>{value.toLocaleString()}</span>
-                              <span style={{ color: MUTED_COLOR, marginLeft: 8 }}>{pct.toFixed(1)}%</span>
-                            </span>
-                            {isClickable ? (
-                              <RightOutlined
-                                style={{
-                                  fontSize: isMobile ? 11 : 12,
-                                  marginLeft: 10,
-                                  color: isHovered ? '#5D4EBF' : MUTED_COLOR,
-                                  opacity: isHovered ? 1 : 0.5,
-                                  transform: isHovered ? 'translateX(2px)' : 'none',
-                                  transition: 'color 0.2s ease, opacity 0.2s ease, transform 0.2s ease',
-                                }}
-                              />
-                            ) : null}
-                          </span>
-                        </div>
-                        <div style={{ height: isMobile ? 8 : 10, borderRadius: 999, background: TRACK_COLOR, overflow: 'hidden' }}>
-                          {showSourceSplit ? (
-                            <div
-                              style={{
-                                height: '100%',
-                                width: `${fillWidth}%`,
-                                display: 'flex',
-                                borderRadius: 999,
-                                overflow: 'hidden',
-                                transition: 'width 0.7s cubic-bezier(0.22, 1, 0.36, 1)',
-                              }}
-                            >
-                              {asa > 0 ? (
-                                <Tooltip title={`ASA: ${asa.toLocaleString()} appointments`}>
-                                  <div
-                                    style={{
-                                      height: '100%',
-                                      width: `${asaShare * 100}%`,
-                                      minWidth: 4,
-                                      background: ASA_COLOR,
-                                    }}
-                                    onClick={(e) => e.stopPropagation()}
-                                  />
-                                </Tooltip>
-                              ) : null}
-                              {human > 0 ? (
-                                <Tooltip title={`Staff: ${human.toLocaleString()} appointments`}>
-                                  <div
-                                    style={{
-                                      height: '100%',
-                                      width: `${humanShare * 100}%`,
-                                      minWidth: 4,
-                                      background: HUMAN_COLOR,
-                                    }}
-                                    onClick={(e) => e.stopPropagation()}
-                                  />
-                                </Tooltip>
-                              ) : null}
-                            </div>
-                          ) : (
-                            <div
-                              style={{
-                                height: '100%',
-                                width: `${fillWidth}%`,
-                                borderRadius: 999,
-                                background: color,
-                                transition: 'width 0.7s cubic-bezier(0.22, 1, 0.36, 1)',
-                              }}
-                            />
-                          )}
-                        </div>
-                      </div>
-                    );
-                  })}
+                <div>
+                  <Text style={{ fontSize: 13, fontWeight: 600, color: HEADING_COLOR, display: 'block', marginBottom: 8 }}>
+                    Status
+                  </Text>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                    {statusForChart.map((item) => renderBarRow({
+                      key: item.name,
+                      label: item.name,
+                      value: item.value,
+                      percent: item.percent,
+                      color: item.color,
+                      tip: item.tip,
+                      isClickable: Boolean(OUTCOME_TO_PROGRESS_STATUS[item.name]) && !usePlaceholderAppointmentOutcomes,
+                      onClick: () => handleOutcomeClick(item.name),
+                      hovered: hoveredOutcome === item.name,
+                      onHover: (on) => setHoveredOutcome(on ? item.name : null),
+                    }))}
+                  </div>
                 </div>
               </div>
             </SectionCard>
           </Spin>
         </Col>
 
-        <Col xs={24} md={12} style={{ display: 'flex' }}>
+        <Col xs={24} lg={12} style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? 12 : 16 }}>
           <Spin
             spinning={interventionsLoading}
-            style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}
+            style={{ width: '100%', display: 'flex', flexDirection: 'column' }}
             wrapperClassName="kpi-equal-card-spin"
           >
-            <SectionCard
-              title="Intervention & special cases"
-              isMobile={isMobile}
-              fillHeight={!isMobile}
-              style={isMobile ? { height: 'auto', width: '100%' } : { minHeight: 460, height: '100%', width: '100%' }}
-            >
+            <SectionCard title="Intervention & special cases" isMobile={isMobile}>
+              <div
+                style={{
+                  marginBottom: isMobile ? 12 : 16,
+                  padding: isMobile ? '12px 14px' : '14px 16px',
+                  borderRadius: 14,
+                  background: 'rgba(20, 194, 176, 0.08)',
+                  border: '1px solid rgba(20, 194, 176, 0.22)',
+                }}
+              >
+                <Text type="secondary" style={{ fontSize: isMobile ? 12 : 13, display: 'block', marginBottom: 6 }}>
+                  Resolved by Asa without escalation
+                  <MetricHint tip={KPI_TOOLTIPS.resolved_by_asa} />
+                </Text>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, flexWrap: 'wrap' }}>
+                  <span style={{ fontSize: isMobile ? 22 : 26, fontWeight: 700, color: HEADING_COLOR, letterSpacing: '-0.02em' }}>
+                    {displayValue(handled_without_human_rate, true)}
+                  </span>
+                  <DeltaBadge
+                    change={percentage_changes?.pc_handled_without_human_rate}
+                    changeType="percentage"
+                    isMobile={isMobile}
+                  />
+                </div>
+                <Text type="secondary" style={{ fontSize: 12, display: 'block', marginTop: 6 }}>
+                  {fmtCount(handled_without_human_numerator)} of {fmtCount(handled_without_human_denominator)} people who replied
+                </Text>
+              </div>
               <div
                 style={{
                   display: 'grid',
                   gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
-                  gridTemplateRows: isMobile ? 'auto' : 'repeat(3, 1fr)',
                   gap: isMobile ? 8 : 12,
-                  flex: 1,
-                  minHeight: 0,
-                  alignContent: 'stretch',
                 }}
               >
                 {interventionData.map((item, index) => (
@@ -1483,6 +1091,55 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country, startTi
                     onClick={item.progressStatus ? () => goToBookingProgress(item.progressStatus) : undefined}
                   />
                 ))}
+              </div>
+            </SectionCard>
+          </Spin>
+
+          <Spin spinning={bookingLoading} style={{ width: '100%' }}>
+            <SectionCard
+              title={(
+                <span style={{ display: 'inline-flex', alignItems: 'center' }}>
+                  Changes and attendance
+                  <MetricHint tip={KPI_TOOLTIPS.rescheduled} />
+                </span>
+              )}
+              isMobile={isMobile}
+            >
+              <Row gutter={[12, 12]}>
+                <Col xs={24} sm={12}>
+                  <RateTile
+                    label="Rescheduled"
+                    tip={KPI_TOOLTIPS.rescheduled}
+                    value={displayValue(reschedule)}
+                    accent={HUMAN_COLOR}
+                    isMobile={isMobile}
+                    subtitle="Moved to a new time"
+                  />
+                </Col>
+                <Col xs={24} sm={12}>
+                  <RateTile
+                    label="Attendance rate"
+                    tip={KPI_TOOLTIPS.attendance_rate}
+                    value={displayValue(attendance_rate, true)}
+                    accent={ASA_COLOR}
+                    isMobile={isMobile}
+                    subtitle={`${fmtCount(status_attended ?? attended)} attended of ${fmtCount((Number(status_attended ?? attended ?? 0) + Number(status_no_show ?? non_attended ?? 0)))} taken place`}
+                  />
+                </Col>
+              </Row>
+              <div
+                style={{
+                  marginTop: 12,
+                  padding: '10px 12px',
+                  borderRadius: 10,
+                  background: '#f7f8fc',
+                  fontSize: 12,
+                  color: HEADING_COLOR,
+                }}
+              >
+                <MetricHint tip={KPI_TOOLTIPS.billed_appointments} />
+                {' '}
+                {billedLine}
               </div>
             </SectionCard>
           </Spin>
