@@ -478,6 +478,37 @@ const ConversionFunnel = ({ stages, isMobile, onStageClick }) => {
   );
 };
 
+// One track; each segment width is the backend percent so the bar
+// matches the listed shares (no frontend ratio math).
+const StackedShareBar = ({ segments, isMobile = false }) => {
+  const visible = segments.filter((seg) => Number(seg.percent ?? 0) > 0);
+  return (
+    <div
+      style={{
+        display: 'flex',
+        width: '100%',
+        height: isMobile ? 10 : 12,
+        borderRadius: 999,
+        overflow: 'hidden',
+        background: TRACK_COLOR,
+      }}
+    >
+      {visible.map((seg) => (
+        <div
+          key={seg.key}
+          style={{
+            flexGrow: Number(seg.percent),
+            flexShrink: 0,
+            flexBasis: 0,
+            height: '100%',
+            background: seg.color,
+          }}
+        />
+      ))}
+    </div>
+  );
+};
+
 const SectionCard = ({ title, extra, children, style, isMobile, fillHeight = false }) => (
   <Card
     title={<span style={{ fontSize: isMobile ? 15 : 16, fontWeight: 600, color: HEADING_COLOR }}>{title}</span>}
@@ -996,16 +1027,49 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country, startTi
                   <Text style={{ fontSize: 13, fontWeight: 600, color: HEADING_COLOR, display: 'block', marginBottom: 8 }}>
                     Booked by
                   </Text>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                    {bookedByRows.map((row) => renderBarRow({
+                  <StackedShareBar
+                    isMobile={isMobile}
+                    segments={bookedByRows.map((row) => ({
                       key: row.label,
-                      label: row.label,
-                      value: usePlaceholderAppointmentOutcomes ? 0 : row.value,
                       percent: usePlaceholderAppointmentOutcomes ? 0 : row.percent,
                       color: row.color,
-                      tip: row.tip,
-                      extra: usePlaceholderAppointmentOutcomes ? null : row.extra,
                     }))}
+                  />
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 12 }}>
+                    {bookedByRows.map((row) => {
+                      const pct = Number((usePlaceholderAppointmentOutcomes ? 0 : row.percent) ?? 0);
+                      const value = usePlaceholderAppointmentOutcomes ? 0 : row.value;
+                      return (
+                        <div key={row.label}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12 }}>
+                            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
+                              <span
+                                style={{
+                                  width: 8,
+                                  height: 8,
+                                  borderRadius: '50%',
+                                  background: row.color,
+                                  flexShrink: 0,
+                                }}
+                              />
+                              <Text style={{ fontSize: isMobile ? 13 : 14, color: HEADING_COLOR }}>
+                                {row.label}
+                                <MetricHint tip={row.tip} />
+                              </Text>
+                            </span>
+                            <span style={{ fontSize: isMobile ? 13 : 14, color: HEADING_COLOR, whiteSpace: 'nowrap' }}>
+                              <span style={{ fontWeight: 700 }}>{Number(value ?? 0).toLocaleString()}</span>
+                              <span style={{ color: MUTED_COLOR, marginLeft: 8 }}>{pct.toFixed(1)}%</span>
+                            </span>
+                          </div>
+                          {!usePlaceholderAppointmentOutcomes && row.extra ? (
+                            <div style={{ fontSize: 11, color: MUTED_COLOR, marginTop: 4, paddingLeft: 16 }}>
+                              {row.extra}
+                            </div>
+                          ) : null}
+                        </div>
+                      );
+                    })}
                   </div>
                   <Text type="secondary" style={{ fontSize: 11, display: 'block', marginTop: 10, lineHeight: 1.45 }}>
                     Staff bookings still sit in Asa’s inbox — Asa messages the patient and can reschedule them.
