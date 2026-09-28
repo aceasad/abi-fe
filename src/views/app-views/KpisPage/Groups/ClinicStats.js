@@ -20,7 +20,6 @@ const CARD_SHADOW = '0 1px 2px rgba(26, 51, 83, 0.04), 0 8px 24px -16px rgba(26,
 const ASA_COLOR = '#14C2B0';
 const ASSISTED_COLOR = '#7DD3C8';
 const HUMAN_COLOR = '#94A3B8';
-const STAFF_NO_REPLY_COLOR = '#64748B';
 const ALERT_COLOR = '#E5484D';
 const STATUS_COLORS = {
   scheduled: '#5D4EBF',
@@ -57,8 +56,6 @@ const KPI_TOOLTIPS = {
     'A staff member stepped into the conversation before the booking was made; Asa completed the booking and manages everything afterwards.',
   booked_staff_managed:
     'Staff booked the appointment by phone or in the clinic system. Asa then took over confirmations, reminders and any rescheduling.',
-  booked_staff_no_replies:
-    'Staff booked the appointment and the patient never replied.',
   resolved_by_asa:
     'Patients who replied to Asa and whose conversation was completed without a team member stepping in.',
   status_scheduled:
@@ -589,12 +586,10 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country, startTi
     booked_asa_end_to_end,
     booked_human_started,
     booked_staff_managed,
-    booked_staff_no_replies,
     booked_human,
     booked_asa_end_to_end_percent,
     booked_human_started_percent,
     booked_staff_managed_percent,
-    booked_staff_no_replies_percent,
     staff_messages_sent,
     staff_rescheduled_by_asa,
     status_scheduled,
@@ -631,7 +626,6 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country, startTi
   const asaEndToEnd = booked_asa_end_to_end ?? 0;
   const humanStarted = booked_human_started ?? 0;
   const staffManaged = booked_staff_managed ?? booked_human ?? 0;
-  const staffNoReplies = booked_staff_no_replies ?? 0;
   const bookingsTotal = Number(bookings ?? 0);
 
   const statusRows = [
@@ -700,13 +694,6 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country, startTi
       color: HUMAN_COLOR,
       tip: KPI_TOOLTIPS.booked_staff_managed,
       extra: `${fmtCount(staff_messages_sent)} messages sent · ${fmtCount(staff_rescheduled_by_asa)} rescheduled by Asa`,
-    },
-    {
-      label: 'Staff booked solely with no replies',
-      value: staffNoReplies,
-      percent: booked_staff_no_replies_percent ?? 0,
-      color: STAFF_NO_REPLY_COLOR,
-      tip: KPI_TOOLTIPS.booked_staff_no_replies,
     },
   ];
 

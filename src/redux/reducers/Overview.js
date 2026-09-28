@@ -48,11 +48,9 @@ const initialState = {
   booked_asa_end_to_end: 0,
   booked_human_started: 0,
   booked_staff_managed: 0,
-  booked_staff_no_replies: 0,
   booked_asa_end_to_end_percent: 0,
   booked_human_started_percent: 0,
   booked_staff_managed_percent: 0,
-  booked_staff_no_replies_percent: 0,
   staff_messages_sent: 0,
   staff_rescheduled_by_asa: 0,
   status_scheduled: 0,
@@ -156,7 +154,6 @@ const chats = (state = initialState, action) =>
         draft.booked_asa_end_to_end = p.booked_asa_end_to_end ?? 0;
         draft.booked_human_started = p.booked_human_started ?? 0;
         draft.booked_staff_managed = p.booked_staff_managed ?? 0;
-        draft.booked_staff_no_replies = p.booked_staff_no_replies ?? 0;
         draft.staff_messages_sent = p.staff_messages_sent ?? 0;
         draft.staff_rescheduled_by_asa = p.staff_rescheduled_by_asa ?? 0;
         draft.status_scheduled = p.status_scheduled ?? 0;
@@ -220,11 +217,9 @@ const chats = (state = initialState, action) =>
         draft.booked_asa_end_to_end = p.booked_asa_end_to_end ?? 0;
         draft.booked_human_started = p.booked_human_started ?? 0;
         draft.booked_staff_managed = p.booked_staff_managed ?? 0;
-        draft.booked_staff_no_replies = p.booked_staff_no_replies ?? 0;
         draft.booked_asa_end_to_end_percent = p.booked_asa_end_to_end_percent ?? 0;
         draft.booked_human_started_percent = p.booked_human_started_percent ?? 0;
         draft.booked_staff_managed_percent = p.booked_staff_managed_percent ?? 0;
-        draft.booked_staff_no_replies_percent = p.booked_staff_no_replies_percent ?? 0;
         draft.staff_messages_sent = p.staff_messages_sent ?? 0;
         draft.staff_rescheduled_by_asa = p.staff_rescheduled_by_asa ?? 0;
         draft.status_scheduled = p.status_scheduled ?? 0;
