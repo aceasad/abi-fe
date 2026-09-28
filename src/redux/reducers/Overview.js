@@ -48,9 +48,11 @@ const initialState = {
   booked_asa_end_to_end: 0,
   booked_human_started: 0,
   booked_staff_managed: 0,
+  booked_staff_no_replies: 0,
   booked_asa_end_to_end_percent: 0,
   booked_human_started_percent: 0,
   booked_staff_managed_percent: 0,
+  booked_staff_no_replies_percent: 0,
   staff_messages_sent: 0,
   staff_rescheduled_by_asa: 0,
   status_scheduled: 0,
@@ -64,6 +66,8 @@ const initialState = {
   status_cancelled_percent: 0,
   status_outcome_pending_percent: 0,
   attendance_rate: 0,
+  taken_place: 0,
+  no_show_of_taken_place_percent: 0,
   billed_appointments: 0,
   engaged_who_booked: 0,
   after_hours_bookings: 0,
@@ -152,6 +156,7 @@ const chats = (state = initialState, action) =>
         draft.booked_asa_end_to_end = p.booked_asa_end_to_end ?? 0;
         draft.booked_human_started = p.booked_human_started ?? 0;
         draft.booked_staff_managed = p.booked_staff_managed ?? 0;
+        draft.booked_staff_no_replies = p.booked_staff_no_replies ?? 0;
         draft.staff_messages_sent = p.staff_messages_sent ?? 0;
         draft.staff_rescheduled_by_asa = p.staff_rescheduled_by_asa ?? 0;
         draft.status_scheduled = p.status_scheduled ?? 0;
@@ -160,6 +165,8 @@ const chats = (state = initialState, action) =>
         draft.status_cancelled = p.status_cancelled ?? 0;
         draft.status_outcome_pending = p.status_outcome_pending ?? 0;
         draft.attendance_rate = p.attendance_rate ?? 0;
+        draft.taken_place = p.taken_place ?? 0;
+        draft.no_show_of_taken_place_percent = p.no_show_of_taken_place_percent ?? 0;
         draft.billed_appointments = p.billed_appointments ?? 0;
         draft.engaged_who_booked = p.engaged_who_booked ?? 0;
         draft.reschedule = p.reschedule;
@@ -213,9 +220,11 @@ const chats = (state = initialState, action) =>
         draft.booked_asa_end_to_end = p.booked_asa_end_to_end ?? 0;
         draft.booked_human_started = p.booked_human_started ?? 0;
         draft.booked_staff_managed = p.booked_staff_managed ?? 0;
+        draft.booked_staff_no_replies = p.booked_staff_no_replies ?? 0;
         draft.booked_asa_end_to_end_percent = p.booked_asa_end_to_end_percent ?? 0;
         draft.booked_human_started_percent = p.booked_human_started_percent ?? 0;
         draft.booked_staff_managed_percent = p.booked_staff_managed_percent ?? 0;
+        draft.booked_staff_no_replies_percent = p.booked_staff_no_replies_percent ?? 0;
         draft.staff_messages_sent = p.staff_messages_sent ?? 0;
         draft.staff_rescheduled_by_asa = p.staff_rescheduled_by_asa ?? 0;
         draft.status_scheduled = p.status_scheduled ?? 0;
@@ -229,6 +238,8 @@ const chats = (state = initialState, action) =>
         draft.status_cancelled_percent = p.status_cancelled_percent ?? 0;
         draft.status_outcome_pending_percent = p.status_outcome_pending_percent ?? 0;
         draft.attendance_rate = p.attendance_rate ?? 0;
+        draft.taken_place = p.taken_place ?? 0;
+        draft.no_show_of_taken_place_percent = p.no_show_of_taken_place_percent ?? 0;
         draft.billed_appointments = p.billed_appointments ?? 0;
         draft.attended = p.attended;
         draft.non_attended = p.non_attended;

@@ -20,6 +20,7 @@ const CARD_SHADOW = '0 1px 2px rgba(26, 51, 83, 0.04), 0 8px 24px -16px rgba(26,
 const ASA_COLOR = '#14C2B0';
 const ASSISTED_COLOR = '#7DD3C8';
 const HUMAN_COLOR = '#94A3B8';
+const STAFF_NO_REPLY_COLOR = '#64748B';
 const ALERT_COLOR = '#E5484D';
 const STATUS_COLORS = {
   scheduled: '#5D4EBF',
@@ -37,43 +38,45 @@ const KPI_TOOLTIPS = {
   engaged:
     'People we successfully messaged who also replied at least once. Does not include people who never answered.',
   booked_funnel:
-    'People who booked at least one appointment in this period. Does not include people who only rescheduled.',
+    'Patients who made at least one booking in this period.',
   engagement_rate:
-    'Of people we successfully messaged, how many replied. Does not include failed sends or people never messaged.',
+    'The share of patients whose first message was delivered and who replied at least once.',
   booking_rate:
-    'Of people who replied, how many also booked. Does not include people who booked by phone without ever messaging Asa.',
+    'The share of patients whose first message was delivered and who went on to book.',
   bookings_after_hours:
-    'Appointments Asa booked after the clinic closed, in clinic local time. Does not include staff bookings — those timestamps are when the clinic system synced, not when the patient booked.',
+    "Bookings Asa made outside the clinic's opening hours.",
   delivered_unengaged:
     'People we successfully messaged who have not replied yet. Does not include failed sends.',
   messages_failed:
     'People whose messages could not be delivered. The count is people, not message rows.',
   bookings:
-    'Appointments booked in this period. Paired overnight slots count as one. Does not include reschedules — those sit under Changes and attendance.',
+    'One patient\'s appointment journey, managed by Asa from confirmation to follow-up. If the appointment is moved, it is still the same booking here. A two-part sleep study counts once.',
   booked_asa_end_to_end:
-    'Asa booked this appointment with no staff in the conversation before it was confirmed.',
+    'Asa messaged the patient, handled the conversation and made the booking with no staff involvement.',
   booked_human_started:
-    'Staff entered the conversation, then Asa finished the booking.',
+    'A staff member stepped into the conversation before the booking was made; Asa completed the booking and manages everything afterwards.',
   booked_staff_managed:
-    'Staff booked this in the clinic system. Asa still messages the patient and can reschedule.',
+    'Staff booked the appointment by phone or in the clinic system. Asa then took over confirmations, reminders and any rescheduling.',
+  booked_staff_no_replies:
+    'Staff booked the appointment and the patient never replied.',
   resolved_by_asa:
-    'People who replied and never needed a staff takeover. Does not include people flagged for human intervention.',
+    'Patients who replied to Asa and whose conversation was completed without a team member stepping in.',
   status_scheduled:
-    'Upcoming appointments that have not happened yet. Does not include attended, no-show, cancelled, or pending outcomes.',
+    'Bookings whose appointment is still to come.',
   status_attended:
-    'Appointments the patient attended. Does not include no-shows, cancellations, or still-scheduled bookings.',
+    'Bookings where the patient attended.',
   status_no_show:
-    'Appointments the patient missed. Does not include cancelled or still-scheduled bookings.',
+    'Bookings where the patient did not attend and did not cancel, shown as a share of all bookings.',
   status_cancelled:
-    'Appointments cancelled and not replaced. Does not include reschedules.',
+    'Bookings the patient or clinic cancelled.',
   status_outcome_pending:
-    'The clinic has not recorded whether the patient attended. Does not include scheduled, attended, no-show, or cancelled.',
+    "The appointment date has passed but your clinic system hasn't sent us the outcome yet.",
   rescheduled:
-    'Appointments moved to a new time. Counted separately from bookings so the invoice still matches.',
+    "Each reschedule is a new appointment booked into your system and is billed as one. On this page it stays part of the original booking so patient numbers aren't double-counted.",
   attendance_rate:
-    'Of appointments that already happened, how many the patient attended. Does not include cancelled, still scheduled, or pending outcomes.',
+    'Patients who attended, as a share of the appointments that have taken place (attended plus no-shows). Not a share of all bookings.',
   billed_appointments:
-    'Bookings plus reschedules — the appointments billed for this period.',
+    'Bookings plus reschedules. Each is an appointment booked into your system and managed by Asa. This matches your invoice for the period.',
   emergency_situation:
     'People flagged for an emergency that needs immediate staff attention.',
   human_intervention:
@@ -141,7 +144,7 @@ const isMissing = (value) => value === null || value === undefined || value === 
 
 const displayValue = (value, isPercentage = false) => {
   if (isMissing(value)) return '—';
-  if (isPercentage) return `${Number(value).toFixed(1)}%`;
+  if (isPercentage) return `${Number(value).toFixed(0)}%`;
   return Number(value).toLocaleString();
 };
 
@@ -388,7 +391,12 @@ const ConversionFunnel = ({ stages, isMobile, onStageClick }) => {
         const rawValue = isMissing(stage.value) ? null : Number(stage.value);
         const value = rawValue ?? 0;
         const fillPercent = Number(stage.fill_percent ?? 0);
-        const fillPx = rawValue == null ? 0 : Math.max((fillPercent / 100) * chartHeight, fillPercent > 0 ? 6 : 0);
+        const fillPx = rawValue == null
+          ? 0
+          : Math.min(
+            chartHeight,
+            Math.max((fillPercent / 100) * chartHeight, fillPercent > 0 ? 6 : 0),
+          );
         const pillText = stage.chip_label || '—';
 
         const isHovered = hoveredKey === stage.key;
@@ -575,16 +583,18 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country, startTi
     total_failed_messages_count,
     total_patients_engaged,
     total_patients_read_but_no_response,
-    engaged_who_booked,
+    patients_booked,
     funnel_stages,
     bookings,
     booked_asa_end_to_end,
     booked_human_started,
     booked_staff_managed,
+    booked_staff_no_replies,
     booked_human,
     booked_asa_end_to_end_percent,
     booked_human_started_percent,
     booked_staff_managed_percent,
+    booked_staff_no_replies_percent,
     staff_messages_sent,
     staff_rescheduled_by_asa,
     status_scheduled,
@@ -598,6 +608,8 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country, startTi
     status_cancelled_percent,
     status_outcome_pending_percent,
     attendance_rate,
+    taken_place,
+    no_show_of_taken_place_percent,
     billed_appointments,
     reschedule,
     cancelled,
@@ -619,6 +631,7 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country, startTi
   const asaEndToEnd = booked_asa_end_to_end ?? 0;
   const humanStarted = booked_human_started ?? 0;
   const staffManaged = booked_staff_managed ?? booked_human ?? 0;
+  const staffNoReplies = booked_staff_no_replies ?? 0;
   const bookingsTotal = Number(bookings ?? 0);
 
   const statusRows = [
@@ -641,7 +654,7 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country, startTi
       value: status_no_show ?? non_attended ?? 0,
       percent: status_no_show_percent ?? 0,
       color: STATUS_COLORS.no_show,
-      tip: KPI_TOOLTIPS.status_no_show,
+      tip: `${KPI_TOOLTIPS.status_no_show} As a share of appointments that have taken place it is ${Number(no_show_of_taken_place_percent ?? 0).toFixed(0)}%.`,
     },
     {
       name: 'Cancelled',
@@ -687,6 +700,13 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country, startTi
       color: HUMAN_COLOR,
       tip: KPI_TOOLTIPS.booked_staff_managed,
       extra: `${fmtCount(staff_messages_sent)} messages sent · ${fmtCount(staff_rescheduled_by_asa)} rescheduled by Asa`,
+    },
+    {
+      label: 'Staff booked solely with no replies',
+      value: staffNoReplies,
+      percent: booked_staff_no_replies_percent ?? 0,
+      color: STAFF_NO_REPLY_COLOR,
+      tip: KPI_TOOLTIPS.booked_staff_no_replies,
     },
   ];
 
@@ -774,6 +794,12 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country, startTi
     </Text>
   ) : null;
 
+  const selectedPeriodLabel = startTime && endTime ? (
+    <Text type="secondary" style={{ fontSize: isMobile ? 11 : 13 }}>
+      {`${formatDateByCountry(startTime, country)} – ${formatDateByCountry(endTime, country)}`}
+    </Text>
+  ) : null;
+
   const billedLine = `${fmtCount(bookingsTotal)} bookings + ${fmtCount(reschedule)} reschedules = ${fmtCount(billed_appointments)} billed appointments`;
 
   const renderBarRow = ({
@@ -821,7 +847,7 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country, startTi
           </Text>
           <span style={{ fontSize: isMobile ? 13 : 14, color: HEADING_COLOR, whiteSpace: 'nowrap' }}>
             <span style={{ fontWeight: 700 }}>{Number(value ?? 0).toLocaleString()}</span>
-            <span style={{ color: MUTED_COLOR, marginLeft: 8 }}>{pct.toFixed(1)}%</span>
+            <span style={{ color: MUTED_COLOR, marginLeft: 8 }}>{pct.toFixed(0)}%</span>
           </span>
         </div>
         <div style={{ height: isMobile ? 8 : 10, borderRadius: 999, background: TRACK_COLOR, overflow: 'hidden' }}>
@@ -910,7 +936,7 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country, startTi
                   changeType="percentage"
                   accent="#6E5FD8"
                   isMobile={isMobile}
-                  subtitle={`${fmtCount(engaged_who_booked)} of ${fmtCount(total_patients_engaged)} who replied`}
+                  subtitle={`${fmtCount(patients_booked)} of ${fmtCount(total_patients_invited)} delivered`}
                 />
                 <RateTile
                   label="Booked outside clinic hours"
@@ -1008,9 +1034,14 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country, startTi
               )}
               isMobile={isMobile}
               fillHeight={!isMobile}
-              extra={usePlaceholderAppointmentOutcomes ? (
-                <Text type="secondary" style={{ fontSize: 12 }}>Sample data</Text>
-              ) : null}
+              extra={(
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                  {selectedPeriodLabel}
+                  {usePlaceholderAppointmentOutcomes ? (
+                    <Text type="secondary" style={{ fontSize: 12 }}>Sample data</Text>
+                  ) : null}
+                </span>
+              )}
               style={isMobile ? { height: 'auto', width: '100%' } : { minHeight: 520, height: '100%', width: '100%' }}
             >
               <div style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? 16 : 20, flex: 1 }}>
@@ -1059,7 +1090,8 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country, startTi
                             </span>
                             <span style={{ fontSize: isMobile ? 13 : 14, color: HEADING_COLOR, whiteSpace: 'nowrap' }}>
                               <span style={{ fontWeight: 700 }}>{Number(value ?? 0).toLocaleString()}</span>
-                              <span style={{ color: MUTED_COLOR, marginLeft: 8 }}>{pct.toFixed(1)}%</span>
+                              <span style={{ color: MUTED_COLOR, marginLeft: 8 }}>{pct.toFixed(0)}%</span>
+                              <RightOutlined style={{ marginLeft: 8, fontSize: 11, color: MUTED_COLOR, opacity: 0.55 }} />
                             </span>
                           </div>
                           {!usePlaceholderAppointmentOutcomes && row.extra ? (
@@ -1072,28 +1104,59 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country, startTi
                     })}
                   </div>
                   <Text type="secondary" style={{ fontSize: 11, display: 'block', marginTop: 10, lineHeight: 1.45 }}>
-                    Staff bookings still sit in Asa’s inbox — Asa messages the patient and can reschedule them.
+                    Every booking on this page is managed by Asa, whoever made it: confirmations, reminders, reschedules and follow-up.
                   </Text>
                 </div>
 
                 <div>
-                  <Text style={{ fontSize: 13, fontWeight: 600, color: HEADING_COLOR, display: 'block', marginBottom: 8 }}>
-                    Status
-                  </Text>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                    {statusForChart.map((item) => renderBarRow({
-                      key: item.name,
-                      label: item.name,
-                      value: item.value,
-                      percent: item.percent,
-                      color: item.color,
-                      tip: item.tip,
-                      isClickable: Boolean(OUTCOME_TO_PROGRESS_STATUS[item.name]) && !usePlaceholderAppointmentOutcomes,
-                      onClick: () => handleOutcomeClick(item.name),
-                      hovered: hoveredOutcome === item.name,
-                      onHover: (on) => setHoveredOutcome(on ? item.name : null),
-                    }))}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 8 }}>
+                    <Text style={{ fontSize: 13, fontWeight: 600, color: HEADING_COLOR }}>
+                      Status
+                    </Text>
+                    <Text type="secondary" style={{ fontSize: 12 }}>% of all bookings</Text>
                   </div>
+                  {[
+                    { header: 'Taken place', names: ['Attended', 'No-show'] },
+                    { header: 'Upcoming', names: ['Scheduled'] },
+                    { header: 'Not happening', names: ['Cancelled'] },
+                    { header: null, names: ['Outcome pending'] },
+                  ].map((group) => (
+                    <div key={group.header || 'outcome-pending'} style={{ marginTop: group.header ? 8 : 4 }}>
+                      {group.header ? (
+                        <Text
+                          type="secondary"
+                          style={{
+                            fontSize: 11,
+                            fontWeight: 600,
+                            letterSpacing: '0.04em',
+                            textTransform: 'uppercase',
+                            display: 'block',
+                            marginBottom: 2,
+                          }}
+                        >
+                          {group.header}
+                        </Text>
+                      ) : null}
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                        {group.names.map((name) => {
+                          const item = statusForChart.find((row) => row.name === name);
+                          if (!item) return null;
+                          return renderBarRow({
+                            key: item.name,
+                            label: item.name,
+                            value: item.value,
+                            percent: item.percent,
+                            color: item.color,
+                            tip: item.tip,
+                            isClickable: Boolean(OUTCOME_TO_PROGRESS_STATUS[item.name]) && !usePlaceholderAppointmentOutcomes,
+                            onClick: () => handleOutcomeClick(item.name),
+                            hovered: hoveredOutcome === item.name,
+                            onHover: (on) => setHoveredOutcome(on ? item.name : null),
+                          });
+                        })}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </SectionCard>
@@ -1177,7 +1240,7 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country, startTi
                     value={displayValue(reschedule)}
                     accent={HUMAN_COLOR}
                     isMobile={isMobile}
-                    subtitle="Moved to a new time"
+                    subtitle="each one billed as a new appointment"
                   />
                 </Col>
                 <Col xs={24} sm={12}>
@@ -1187,7 +1250,7 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country, startTi
                     value={displayValue(attendance_rate, true)}
                     accent={ASA_COLOR}
                     isMobile={isMobile}
-                    subtitle={`${fmtCount(status_attended ?? attended)} attended of ${fmtCount((Number(status_attended ?? attended ?? 0) + Number(status_no_show ?? non_attended ?? 0)))} taken place`}
+                    subtitle={`${fmtCount(status_attended ?? attended)} of ${fmtCount(taken_place)} appointments that have taken place`}
                   />
                 </Col>
               </Row>
