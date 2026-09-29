@@ -31,13 +31,13 @@ const STATUS_COLORS = {
 
 const KPI_TOOLTIPS = {
   invited:
-    'Everyone added in this date range. Does not exclude people we never reached or whose first message failed.',
+    'Patients added to Asa in this period, including any we were unable to reach.',
   delivered:
-    'People who successfully received at least one message from Asa. Does not include failed-only sends.',
+    'Patients who received at least one message from Asa. Patients whose messages all failed are counted under Messages failed instead.',
   engaged:
-    'People we successfully messaged who also replied at least once. Does not include people who never answered.',
+    'Patients who replied to Asa at least once.',
   booked_funnel:
-    'Patients who made at least one booking in this period.',
+    'Patients who replied to Asa and went on to book at least one appointment.',
   engagement_rate:
     'The share of patients whose first message was delivered and who replied at least once.',
   booking_rate:
@@ -45,9 +45,7 @@ const KPI_TOOLTIPS = {
   bookings_after_hours:
     "Bookings Asa made outside the clinic's opening hours.",
   delivered_unengaged:
-    'People we successfully messaged who have not replied yet. Does not include failed sends.',
-  messages_failed:
-    'People whose messages could not be delivered. The count is people, not message rows.',
+    'Patients we successfully messaged who have not replied yet. Does not include failed sends.',
   bookings:
     'One patient\'s appointment journey, managed by Asa from confirmation to follow-up. If the appointment is moved, it is still the same booking here. A two-part sleep study counts once.',
   booked_asa_end_to_end:
@@ -89,15 +87,23 @@ const KPI_TOOLTIPS = {
 };
 
 const FUNNEL_STAGES_META = [
-  { key: 'invited', label: 'Invited', gradient: 'linear-gradient(180deg, #5D4EBF, #6E5FD8)', progressStatus: null },
-  { key: 'delivered', label: 'Delivered', gradient: 'linear-gradient(180deg, #6E5FD8, #8C7DEC)', progressStatus: null },
-  { key: 'engaged', label: 'Engaged', gradient: 'linear-gradient(180deg, #8C7DEC, #A99AF0)', progressStatus: 'BOOKING' },
-  { key: 'booked', label: 'Patients booked', gradient: 'linear-gradient(180deg, #A99AF0, #C4B9F5)', progressStatus: 'BOOKED' },
+  { key: 'invited', label: 'Invited', gradient: 'linear-gradient(90deg, #6E5FD8, #8C7DEC)', progressStatus: null },
+  { key: 'delivered', label: 'Delivered', gradient: 'linear-gradient(90deg, #5D4EBF, #6E5FD8)', progressStatus: null },
+  { key: 'engaged', label: 'Engaged', gradient: 'linear-gradient(90deg, #2FA8C7, #45C2D8)', progressStatus: 'BOOKING' },
+  { key: 'booked', label: 'Booked through Asa', gradient: 'linear-gradient(90deg, #14C2B0, #18D9C5)', progressStatus: 'BOOKED' },
 ];
 
 const fmtCount = (n) => {
   if (n == null || Number.isNaN(Number(n))) return '—';
   return Number(n).toLocaleString();
+};
+
+const messagesFailedSentence = (patients, messages) => {
+  const patientCount = Number(patients) || 0;
+  const messageCount = Number(messages) || 0;
+  const patientWord = patientCount === 1 ? 'patient' : 'patients';
+  const messageWord = messageCount === 1 ? 'message' : 'messages';
+  return `${fmtCount(patientCount)} ${patientWord} had a message that could not be delivered (${fmtCount(messageCount)} ${messageWord})`;
 };
 
 const MetricHint = ({ tip }) => {
@@ -751,9 +757,10 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country, startTi
     total_patients_read_but_no_response,
     percentage_changes?.pc_delivered_unengaged
   );
-  const messagesFailedTip = total_failed_messages_count
-    ? `${KPI_TOOLTIPS.messages_failed} ${fmtCount(total_failed_messages_count)} messages failed to send.`
-    : KPI_TOOLTIPS.messages_failed;
+  const messagesFailedTip = messagesFailedSentence(
+    messagesFailedPatients,
+    total_failed_messages_count,
+  );
 
   const afterHoursCount = after_hours_bookings ?? 0;
   const afterHoursShareOfAsa = after_hours_share ?? 0;

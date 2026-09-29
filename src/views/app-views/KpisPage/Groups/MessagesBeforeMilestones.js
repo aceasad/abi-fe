@@ -16,7 +16,23 @@ const FIRST_ENGAGEMENT_TIP =
 const BOOKING_ATTRIBUTION_TIP =
   'For each booking, the last successful outreach before the patient replied and booked. After sequence is outreach beyond Reminder 4. Booked by staff is clinic-system bookings.';
 
-const DONUT_PURPLE_RAMP = ['#3D2E9E', '#5D4EBF', '#6E5FD8', '#8C7DEC', '#9B8AE8', '#7A68C9', '#5B4CB8'];
+// Same solids as the funnel bars, then the two status grays.
+const DONUT_COLORS = {
+  intro: '#5D4EBF',
+  r1: '#6E5FD8',
+  r2: '#8C7DEC',
+  r3: '#2FA8C7',
+  r4: '#14C2B0',
+  afterSequence: '#94A3B8',
+  staff: '#CBD5E1',
+};
+const SEQUENCE_COLORS = [
+  DONUT_COLORS.intro,
+  DONUT_COLORS.r1,
+  DONUT_COLORS.r2,
+  DONUT_COLORS.r3,
+  DONUT_COLORS.r4,
+];
 
 const ENGAGEMENT_TEMPLATE_LABELS = {
   1: 'Intro',
@@ -27,13 +43,13 @@ const ENGAGEMENT_TEMPLATE_LABELS = {
 };
 
 const BOOKING_STEP_META = [
-  { step: 'INTRO', label: 'Intro' },
-  { step: 'R1', label: 'Reminder 1' },
-  { step: 'R2', label: 'Reminder 2' },
-  { step: 'R3', label: 'Reminder 3' },
-  { step: 'R4', label: 'Reminder 4' },
-  { step: 'POST_SEQUENCE', label: 'After sequence' },
-  { step: 'NONE', label: 'Booked by staff' },
+  { step: 'INTRO', label: 'Intro', color: DONUT_COLORS.intro },
+  { step: 'R1', label: 'Reminder 1', color: DONUT_COLORS.r1 },
+  { step: 'R2', label: 'Reminder 2', color: DONUT_COLORS.r2 },
+  { step: 'R3', label: 'Reminder 3', color: DONUT_COLORS.r3 },
+  { step: 'R4', label: 'Reminder 4', color: DONUT_COLORS.r4 },
+  { step: 'POST_SEQUENCE', label: 'After sequence', color: DONUT_COLORS.afterSequence },
+  { step: 'NONE', label: 'Booked by staff', color: DONUT_COLORS.staff },
 ];
 
 const buildEngagementSlices = (rows, total) => {
@@ -51,7 +67,7 @@ const buildEngagementSlices = (rows, total) => {
   return {
     labels: keys.map((k) => (k >= 6 ? 'Other' : ENGAGEMENT_TEMPLATE_LABELS[k])),
     series: keys.map((k) => byMessages.get(k) || 0),
-    colors: keys.map((k) => DONUT_PURPLE_RAMP[k - 1] || DONUT_PURPLE_RAMP[DONUT_PURPLE_RAMP.length - 1]),
+    colors: keys.map((k) => SEQUENCE_COLORS[k - 1] || DONUT_COLORS.afterSequence),
     total: Number(total ?? 0),
   };
 };
@@ -62,7 +78,7 @@ const buildBookingSlices = (rows, total) => {
   return {
     labels: BOOKING_STEP_META.map((item) => item.label),
     series,
-    colors: DONUT_PURPLE_RAMP.slice(0, BOOKING_STEP_META.length),
+    colors: BOOKING_STEP_META.map((item) => item.color),
     total: Number(total ?? 0),
   };
 };
