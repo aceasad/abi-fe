@@ -63,15 +63,13 @@ const KPI_TOOLTIPS = {
   status_no_show:
     'Bookings where the patient did not attend and did not cancel, shown as a share of all bookings.',
   status_cancelled:
-    'Bookings the patient or clinic cancelled.',
+    'Bookings the patient or clinic cancelled. Includes insurance denied and clinic/admin cancelled.',
   status_outcome_pending:
     "The appointment date has passed but your clinic system hasn't sent us the outcome yet.",
   rescheduled:
     "Each reschedule is a new appointment booked into your system and is billed as one. On this page it stays part of the original booking so patient numbers aren't double-counted.",
   attendance_rate:
     'Patients who attended, as a share of the appointments that have taken place (attended plus no-shows). Not a share of all bookings.',
-  billed_appointments:
-    'Bookings plus reschedules. Each is an appointment booked into your system and managed by Asa. This matches your invoice for the period.',
   emergency_situation:
     'People flagged for an emergency that needs immediate staff attention.',
   human_intervention:
@@ -591,7 +589,6 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country, startTi
     attendance_rate,
     taken_place,
     no_show_of_taken_place_percent,
-    billed_appointments,
     reschedule,
     cancelled,
     attended,
@@ -773,8 +770,6 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country, startTi
     </Text>
   ) : null;
 
-  const billedLine = `${fmtCount(bookingsTotal)} bookings + ${fmtCount(reschedule)} reschedules = ${fmtCount(billed_appointments)} billed appointments`;
-
   const renderBarRow = ({
     key,
     label,
@@ -943,18 +938,19 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country, startTi
                     onMouseLeave={() => setHoveredConcernKey(null)}
                     style={{
                       display: 'flex',
-                      flexDirection: 'column',
-                      gap: 8,
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      gap: 12,
                       padding: isMobile ? '12px 14px' : '14px 16px',
                       borderRadius: 14,
-                      background: '#fff',
-                      border: CARD_BORDER,
+                      background: isHovered ? 'rgba(229, 72, 77, 0.1)' : 'rgba(229, 72, 77, 0.05)',
+                      border: isHovered ? '1px solid rgba(229, 72, 77, 0.25)' : '1px solid rgba(229, 72, 77, 0.12)',
                       cursor: 'pointer',
+                      transition: 'background 0.2s ease, border-color 0.2s ease',
                       outline: 'none',
-                      boxShadow: isHovered ? '0 4px 12px rgba(26, 51, 83, 0.08)' : 'none',
                     }}
                   >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
                       <span
                         style={{
                           width: 8,
@@ -964,24 +960,25 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country, startTi
                           flexShrink: 0,
                         }}
                       />
-                      <Text type="secondary" style={{ fontSize: isMobile ? 12 : 13 }}>
+                      <Text style={{ fontSize: isMobile ? 13 : 14, color: HEADING_COLOR }}>
                         {metric.label}
                         <MetricHint tip={metric.tip} />
                       </Text>
-                      <RightOutlined
-                        style={{
-                          marginLeft: 'auto',
-                          fontSize: 11,
-                          color: isHovered ? ALERT_COLOR : MUTED_COLOR,
-                          opacity: isHovered ? 1 : 0.45,
-                        }}
-                      />
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-                      <span style={{ fontSize: isMobile ? 20 : 24, fontWeight: 700, color: HEADING_COLOR, letterSpacing: '-0.02em' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+                      <span style={{ fontSize: isMobile ? 18 : 20, fontWeight: 700, color: HEADING_COLOR }}>
                         {metric.value}
                       </span>
                       <DeltaBadge change={metric.change} changeType="value" isMobile={isMobile} />
+                      <RightOutlined
+                        style={{
+                          fontSize: isMobile ? 11 : 12,
+                          color: isHovered ? ALERT_COLOR : MUTED_COLOR,
+                          opacity: isHovered ? 1 : 0.5,
+                          transform: isHovered ? 'translateX(2px)' : 'none',
+                          transition: 'color 0.2s ease, opacity 0.2s ease, transform 0.2s ease',
+                        }}
+                      />
                     </div>
                   </div>
                 </Col>
@@ -1084,12 +1081,12 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country, startTi
                     <Text type="secondary" style={{ fontSize: 12 }}>% of all bookings</Text>
                   </div>
                   {[
-                    { header: 'Taken place', names: ['Attended', 'No-show'] },
-                    { header: 'Upcoming', names: ['Scheduled'] },
-                    { header: 'Not happening', names: ['Cancelled'] },
-                    { header: null, names: ['Outcome pending'] },
+                    { key: 'taken-place', header: 'Taken place', names: ['Attended', 'No-show'] },
+                    { key: 'upcoming', header: 'Upcoming', names: ['Scheduled'] },
+                    { key: 'cancelled', header: null, names: ['Cancelled'] },
+                    { key: 'outcome-pending', header: null, names: ['Outcome pending'] },
                   ].map((group) => (
-                    <div key={group.header || 'outcome-pending'} style={{ marginTop: group.header ? 8 : 4 }}>
+                    <div key={group.key} style={{ marginTop: group.header ? 8 : 4 }}>
                       {group.header ? (
                         <Text
                           type="secondary"
@@ -1222,20 +1219,6 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country, startTi
                   />
                 </Col>
               </Row>
-              <div
-                style={{
-                  marginTop: 12,
-                  padding: '10px 12px',
-                  borderRadius: 10,
-                  background: '#f7f8fc',
-                  fontSize: 12,
-                  color: HEADING_COLOR,
-                }}
-              >
-                <MetricHint tip={KPI_TOOLTIPS.billed_appointments} />
-                {' '}
-                {billedLine}
-              </div>
             </SectionCard>
           </Spin>
         </Col>
