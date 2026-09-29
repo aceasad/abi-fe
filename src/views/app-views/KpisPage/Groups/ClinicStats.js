@@ -37,7 +37,7 @@ const KPI_TOOLTIPS = {
   engaged:
     'Patients who replied to Asa at least once.',
   booked_funnel:
-    'Patients who replied to Asa and went on to book at least one appointment.',
+    'Patients who made at least one booking in this period.',
   engagement_rate:
     'The share of patients whose first message was delivered and who replied at least once.',
   booking_rate:
@@ -90,7 +90,7 @@ const FUNNEL_STAGES_META = [
   { key: 'invited', label: 'Invited', gradient: 'linear-gradient(90deg, #6E5FD8, #8C7DEC)', progressStatus: null },
   { key: 'delivered', label: 'Delivered', gradient: 'linear-gradient(90deg, #5D4EBF, #6E5FD8)', progressStatus: null },
   { key: 'engaged', label: 'Engaged', gradient: 'linear-gradient(90deg, #2FA8C7, #45C2D8)', progressStatus: 'BOOKING' },
-  { key: 'booked', label: 'Booked through Asa', gradient: 'linear-gradient(90deg, #14C2B0, #18D9C5)', progressStatus: 'BOOKED' },
+  { key: 'booked', label: 'Patients booked', gradient: 'linear-gradient(90deg, #14C2B0, #18D9C5)', progressStatus: 'BOOKED' },
 ];
 
 const fmtCount = (n) => {
@@ -302,9 +302,6 @@ const StatCard = ({ title, value, subtitle, color = HEADING_COLOR, change = null
 
 // Supporting rate tile used alongside the funnel. A coloured accent dot keeps
 // the metrics visually tied to the brand without competing with the funnel.
-const RATE_TILE_MIN_HEIGHT = 110;
-const RATE_TILE_MIN_HEIGHT_MOBILE = 100;
-
 const RateTile = ({
   label,
   value,
@@ -325,14 +322,10 @@ const RateTile = ({
       display: 'flex',
       flexDirection: 'column',
       gap: 6,
-      justifyContent: 'space-between',
-      minHeight: isMobile ? RATE_TILE_MIN_HEIGHT_MOBILE : RATE_TILE_MIN_HEIGHT,
-      height: '100%',
-      boxSizing: 'border-box',
     }}
   >
     <div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
         <span style={{ width: 8, height: 8, borderRadius: '50%', background: accent, flexShrink: 0 }} />
         <Text type="secondary" style={{ fontSize: isMobile ? 13 : 14 }}>{label}</Text>
         <MetricHint tip={tip} />
@@ -362,20 +355,9 @@ const RateTile = ({
         <DeltaBadge change={change} changeType={changeType} isMobile={isMobile} />
       </div>
     </div>
-    <div
-      style={{
-        fontSize: isMobile ? 10 : 11,
-        color: MUTED_COLOR,
-        lineHeight: 1.45,
-        minHeight: isMobile ? 28 : 32,
-        overflow: 'hidden',
-        display: '-webkit-box',
-        WebkitLineClamp: 2,
-        WebkitBoxOrient: 'vertical',
-      }}
-    >
-      {subtitle || '\u00A0'}
-    </div>
+    {subtitle ? (
+      <Text type="secondary" style={{ fontSize: isMobile ? 10 : 11 }}>{subtitle}</Text>
+    ) : null}
   </div>
 );
 
@@ -384,12 +366,12 @@ const RateTile = ({
 const ConversionFunnel = ({ stages, isMobile, onStageClick }) => {
   const [hoveredKey, setHoveredKey] = useState(null);
   const chartHeight = isMobile ? 150 : 200;
-  const barWidth = isMobile ? 28 : 48;
+  const barWidth = isMobile ? 34 : 56;
   const isClickable = typeof onStageClick === 'function';
 
   return (
     <div>
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: isMobile ? 6 : 12 }}>
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: isMobile ? 8 : 16 }}>
       {stages.map((stage, index) => {
         const rawValue = isMissing(stage.value) ? null : Number(stage.value);
         const value = rawValue ?? 0;
@@ -596,8 +578,6 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country, startTi
     booked_asa_end_to_end_percent,
     booked_human_started_percent,
     booked_staff_managed_percent,
-    staff_messages_sent,
-    staff_rescheduled_by_asa,
     status_scheduled,
     status_attended,
     status_no_show,
@@ -699,7 +679,6 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country, startTi
       percent: booked_staff_managed_percent ?? 0,
       color: HUMAN_COLOR,
       tip: KPI_TOOLTIPS.booked_staff_managed,
-      extra: `${fmtCount(staff_messages_sent)} messages sent · ${fmtCount(staff_rescheduled_by_asa)} rescheduled by Asa`,
     },
   ];
 
@@ -902,16 +881,16 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country, startTi
       </style>
       <Spin spinning={funnelLoading}>
         <SectionCard title="Patient journey" extra={previousPeriodLabel} isMobile={isMobile}>
-          <Row gutter={[12, 12]} align="top">
-            <Col xs={24} lg={16}>
+          <Row gutter={[isMobile ? 16 : 28, 16]} align="top">
+            <Col xs={24} lg={15}>
               <ConversionFunnel
                 stages={funnelStages}
                 isMobile={isMobile}
                 onStageClick={(stage) => goToBookingProgress(stage.progressStatus)}
               />
             </Col>
-            <Col xs={24} lg={8}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <Col xs={24} lg={9}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12, height: '100%' }}>
                 <RateTile
                   label="Engagement rate"
                   tip={KPI_TOOLTIPS.engagement_rate}
@@ -945,7 +924,7 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country, startTi
               </div>
             </Col>
           </Row>
-          <Row gutter={[12, 12]} style={{ marginTop: isMobile ? 12 : 16 }}>
+          <Row gutter={[12, 12]} style={{ marginTop: isMobile ? 16 : 20 }}>
             {journeyAlerts.map((metric) => {
               const isHovered = hoveredConcernKey === metric.key;
               return (
@@ -1088,11 +1067,6 @@ const ClinicStats = ({ title, previousPeriod, isMobile = false, country, startTi
                               <RightOutlined style={{ marginLeft: 8, fontSize: 11, color: MUTED_COLOR, opacity: 0.55 }} />
                             </span>
                           </div>
-                          {!usePlaceholderAppointmentOutcomes && row.extra ? (
-                            <div style={{ fontSize: 11, color: MUTED_COLOR, marginTop: 4, paddingLeft: 16 }}>
-                              {row.extra}
-                            </div>
-                          ) : null}
                         </div>
                       );
                     })}
