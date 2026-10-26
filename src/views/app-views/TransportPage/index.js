@@ -112,6 +112,8 @@ const pickupWindowLabel = (trip) => {
 const distanceLabel = (trip) =>
   trip?.distance_miles == null ? '-' : `${Number(trip.distance_miles).toFixed(1)} mi`;
 
+const hasTripUrl = (trip) => Boolean(trip?.trip_url);
+
 const TransportPage = () => {
   const dispatch = useDispatch();
   const screens = utils.getBreakPoint(useBreakpoint());
@@ -384,6 +386,25 @@ const TransportPage = () => {
           <Space>
             <Tooltip
               title={
+                hasTripUrl(record)
+                  ? 'Open this trip in MediDrive'
+                  : 'Trip URL not available yet'
+              }
+            >
+              <Button
+                icon={<ExportOutlined />}
+                size="small"
+                disabled={!hasTripUrl(record)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (hasTripUrl(record)) {
+                    window.open(record.trip_url, '_blank', 'noopener');
+                  }
+                }}
+              />
+            </Tooltip>
+            <Tooltip
+              title={
                 isTerminalTrip(record)
                   ? 'This ride can no longer be cancelled'
                   : 'Cancel ride only (appointment stays booked)'
@@ -571,6 +592,25 @@ const TransportPage = () => {
         <Space
           style={{ width: '100%', justifyContent: 'flex-end', marginTop: '8px' }}
         >
+          <Tooltip
+            title={
+              hasTripUrl(trip)
+                ? 'Open this trip in MediDrive'
+                : 'Trip URL not available yet'
+            }
+          >
+            <Button
+              icon={<ExportOutlined />}
+              size="small"
+              disabled={!hasTripUrl(trip)}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (hasTripUrl(trip)) {
+                  window.open(trip.trip_url, '_blank', 'noopener');
+                }
+              }}
+            />
+          </Tooltip>
           <Tooltip title="Cancel ride only (appointment stays booked)">
             <Button
               icon={<CloseCircleOutlined />}

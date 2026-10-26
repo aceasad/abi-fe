@@ -1,4 +1,4 @@
-import { Button, Card, Table, Typography, Grid, Row, Col, Space, Tag } from 'antd';
+import { Button, Card, Table, Typography, Grid, Row, Col, Space, Tag, Tooltip } from 'antd';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setScheduledOrder, setScheduledPage } from 'redux/actions/Patient';
@@ -16,13 +16,14 @@ import {
   removeLeadingZeroFromTime,
   RenderPredictionText,
 } from 'utils/helpers';
-import { CalendarOutlined, ClockCircleOutlined, UserOutlined, FileTextOutlined, CarOutlined } from '@ant-design/icons';
+import { CalendarOutlined, ClockCircleOutlined, UserOutlined, FileTextOutlined, CarOutlined, ExportOutlined } from '@ant-design/icons';
 import utils from 'utils';
 import { makeSelectClinic } from 'redux/selectors/Clinic';
 import dayjs from 'utils/dayjs';
 
 const { Title, Text } = Typography;
 const { useBreakpoint } = Grid;
+const firstTripUrl = (trips = []) => (trips || []).find((trip) => trip?.trip_url)?.trip_url;
 
 const prepareField = (order, field) => {
   const base = order === ORDERING.DESC ? '-' : '';
@@ -117,9 +118,31 @@ const PatientOverviewScheduledCard = ({ patient, showAppointment }) => {
             sorter: false,
             render: (trips) =>
               trips?.length ? (
-                <Tag icon={<CarOutlined />} color="blue">
-                  Ride booked
-                </Tag>
+                <Space size="small">
+                  <Tag icon={<CarOutlined />} color="blue">
+                    Ride booked
+                  </Tag>
+                  <Tooltip
+                    title={
+                      firstTripUrl(trips)
+                        ? 'Open this trip in MediDrive'
+                        : 'Trip URL not available yet'
+                    }
+                  >
+                    <Button
+                      icon={<ExportOutlined />}
+                      size="small"
+                      disabled={!firstTripUrl(trips)}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        const tripUrl = firstTripUrl(trips);
+                        if (tripUrl) {
+                          window.open(tripUrl, '_blank', 'noopener');
+                        }
+                      }}
+                    />
+                  </Tooltip>
+                </Space>
               ) : (
                 <Text type="secondary">None</Text>
               ),
@@ -182,9 +205,31 @@ const PatientOverviewScheduledCard = ({ patient, showAppointment }) => {
         </Space>
 
         {isTMSEnabled && appointment.trips?.length > 0 && (
-          <Tag icon={<CarOutlined />} color="blue">
-            Ride booked
-          </Tag>
+          <Space size="small">
+            <Tag icon={<CarOutlined />} color="blue">
+              Ride booked
+            </Tag>
+            <Tooltip
+              title={
+                firstTripUrl(appointment.trips)
+                  ? 'Open this trip in MediDrive'
+                  : 'Trip URL not available yet'
+              }
+            >
+              <Button
+                icon={<ExportOutlined />}
+                size="small"
+                disabled={!firstTripUrl(appointment.trips)}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  const tripUrl = firstTripUrl(appointment.trips);
+                  if (tripUrl) {
+                    window.open(tripUrl, '_blank', 'noopener');
+                  }
+                }}
+              />
+            </Tooltip>
+          </Space>
         )}
 
         {appointment.no_show_score !== null && appointment.no_show_score !== undefined && (

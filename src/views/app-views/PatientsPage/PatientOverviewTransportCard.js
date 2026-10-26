@@ -1,4 +1,5 @@
-import { Card, Table, Typography, Grid } from 'antd';
+import { Card, Table, Typography, Grid, Button, Tooltip } from 'antd';
+import { ExportOutlined } from '@ant-design/icons';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { makeSelectScheduledAppointments } from 'redux/selectors/Patient';
@@ -73,6 +74,27 @@ const PatientOverviewTransportCard = ({ showAppointment }) => {
       title: 'Dropoff',
       dataIndex: 'dropoff_place',
       render: (place) => formatPlace(place),
+    },
+    {
+      title: 'MediDrive',
+      key: 'tripUrl',
+      render: (_, record) => (
+        <Tooltip
+          title={record?.trip_url ? 'Open this trip in MediDrive' : 'Trip URL not available yet'}
+        >
+          <Button
+            icon={<ExportOutlined />}
+            size="small"
+            disabled={!record?.trip_url}
+            onClick={(event) => {
+              event.stopPropagation();
+              if (record?.trip_url) {
+                window.open(record.trip_url, '_blank', 'noopener');
+              }
+            }}
+          />
+        </Tooltip>
+      ),
     },
   ];
 
