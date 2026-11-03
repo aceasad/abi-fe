@@ -1,5 +1,4 @@
 import { produce } from 'immer';
-import { getVisibleUnreadNotificationCount } from 'utils/notificationVisibility';
 
 const initialState = {
     notifications: [],
@@ -19,25 +18,21 @@ const notifications = (state = initialState, action) => {
         switch (action.type) {
             case 'MARK_NOTIFICATION_AS_READ':
                 const notificationId = action.payload;
-                // Update in main notifications array
-                const notification = draft.notifications.find(n => n.id === notificationId);
-                if (notification && !notification.is_read) {
-                    notification.is_read = true;
+                let wasUnread = false;
+                const markRead = (items) => {
+                    const item = items.find((n) => n.id === notificationId);
+                    if (item && !item.is_read) {
+                        wasUnread = true;
+                        item.is_read = true;
+                    }
+                };
+                markRead(draft.notifications);
+                markRead(draft.bookingNotifications);
+                markRead(draft.offTopicNotifications);
+                markRead(draft.humanInterventionNotifications);
+                if (wasUnread) {
+                    draft.unreadCount = Math.max(0, (draft.unreadCount || 0) - 1);
                 }
-                // Update in categorized arrays
-                const bookingNotification = draft.bookingNotifications.find(n => n.id === notificationId);
-                if (bookingNotification && !bookingNotification.is_read) {
-                    bookingNotification.is_read = true;
-                }
-                const offTopicNotification = draft.offTopicNotifications.find(n => n.id === notificationId);
-                if (offTopicNotification && !offTopicNotification.is_read) {
-                    offTopicNotification.is_read = true;
-                }
-                const humanInterventionNotification = draft.humanInterventionNotifications.find(n => n.id === notificationId);
-                if (humanInterventionNotification && !humanInterventionNotification.is_read) {
-                    humanInterventionNotification.is_read = true;
-                }
-                draft.unreadCount = getVisibleUnreadNotificationCount(draft);
                 draft.markReadLoading = false;
                 break;
 
@@ -54,7 +49,6 @@ const notifications = (state = initialState, action) => {
 
             case 'SET_NOTIFICATIONS':
                 draft.notifications = action.payload || [];
-                draft.unreadCount = getVisibleUnreadNotificationCount(draft);
                 draft.fetchLoading = false;
                 break;
 
@@ -90,13 +84,11 @@ const notifications = (state = initialState, action) => {
             // Category-specific actions
             case 'SET_BOOKING_NOTIFICATIONS':
                 draft.bookingNotifications = action.payload || [];
-                draft.unreadCount = getVisibleUnreadNotificationCount(draft);
                 draft.fetchLoading = false;
                 break;
 
             case 'SET_OFF_TOPIC_NOTIFICATIONS':
                 draft.offTopicNotifications = action.payload || [];
-                draft.unreadCount = getVisibleUnreadNotificationCount(draft);
                 draft.fetchLoading = false;
                 break;
 

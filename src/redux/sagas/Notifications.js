@@ -21,9 +21,7 @@ function* getUnreadNotifications() {
         const responseData = response.data || response;
         const notifications = responseData.notifications || [];
         yield put(setNotifications(notifications));
-        yield put(setUnreadCount(
-            getVisibleUnreadNotificationCount({ notifications })
-        ));
+        yield put(setUnreadCount(retainedUnreadCount(responseData, { notifications })));
     } catch (error) {
         console.error('Error fetching unread notifications:', error);
     }
@@ -57,6 +55,14 @@ function* markAllNotificationsAsReadSaga() {
     }
 }
 
+const retainedUnreadCount = (responseData, lists) => {
+    const count = Number(responseData?.unread_count);
+    if (Number.isFinite(count)) {
+        return count;
+    }
+    return getVisibleUnreadNotificationCount(lists);
+};
+
 const extractNotifications = (response) => {
     const responseData = response?.data || response || {};
     if (Array.isArray(responseData)) {
@@ -81,14 +87,13 @@ function* getNotificationDashboard() {
         yield put({ type: 'SET_BOOKING_NOTIFICATIONS', payload: bookingNotifications });
         yield put({ type: 'SET_OFF_TOPIC_NOTIFICATIONS', payload: offTopicNotifications });
         yield put({ type: 'SET_HUMAN_INTERVENTION_NOTIFICATIONS', payload: humanInterventionNotifications });
-        yield put(setUnreadCount(
-            getVisibleUnreadNotificationCount({
-                notifications,
-                bookingNotifications,
-                offTopicNotifications,
-                humanInterventionNotifications,
-            })
-        ));
+        const unreadData = unreadResponse?.data || unreadResponse || {};
+        yield put(setUnreadCount(retainedUnreadCount(unreadData, {
+            notifications,
+            bookingNotifications,
+            offTopicNotifications,
+            humanInterventionNotifications,
+        })));
     } catch (error) {
         console.error('Error fetching notification dashboard:', error);
     }

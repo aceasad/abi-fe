@@ -1,7 +1,5 @@
 import ApiService from './ApiService';
 
-const LIST_LIMIT = 50;
-
 const ENDPOINTS = {
     GET_UNREAD_NOTIFICATIONS: '/notifications/unread/',
     MARK_NOTIFICATION_AS_READ: '/notifications/:id/mark-read/',
@@ -13,9 +11,7 @@ const ENDPOINTS = {
 
 class NotificationService extends ApiService {
     getUnreadNotifications = (params = {}) =>
-        this.apiClient.get(ENDPOINTS.GET_UNREAD_NOTIFICATIONS, {
-            params: { limit: LIST_LIMIT, ...params },
-        });
+        this.apiClient.get(ENDPOINTS.GET_UNREAD_NOTIFICATIONS, { params });
 
     markNotificationAsRead = (notificationId) =>
         this.apiClient.post(
@@ -26,19 +22,13 @@ class NotificationService extends ApiService {
         this.apiClient.post(ENDPOINTS.MARK_ALL_NOTIFICATIONS_AS_READ);
 
     getBookingNotifications = (params = {}) =>
-        this.apiClient.get(ENDPOINTS.GET_BOOKING_NOTIFICATIONS, {
-            params: { limit: LIST_LIMIT, ...params },
-        });
+        this.apiClient.get(ENDPOINTS.GET_BOOKING_NOTIFICATIONS, { params });
 
     getOffTopicNotifications = (params = {}) =>
-        this.apiClient.get(ENDPOINTS.GET_OFF_TOPIC_NOTIFICATIONS, {
-            params: { limit: LIST_LIMIT, ...params },
-        });
+        this.apiClient.get(ENDPOINTS.GET_OFF_TOPIC_NOTIFICATIONS, { params });
 
     getHumanInterventionNotifications = (params = {}) =>
-        this.apiClient.get(ENDPOINTS.GET_HUMAN_INTERVENTION_NOTIFICATIONS, {
-            params: { limit: LIST_LIMIT, ...params },
-        });
+        this.apiClient.get(ENDPOINTS.GET_HUMAN_INTERVENTION_NOTIFICATIONS, { params });
 }
 
 export default new NotificationService();
