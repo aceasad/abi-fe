@@ -6,6 +6,7 @@ import {
   TeamOutlined,
   SettingOutlined,
   EnvironmentOutlined,
+  CreditCardOutlined,
 } from '@ant-design/icons';
 import { Card, Layout, Menu, Typography, Grid, Select } from 'antd';
 import { Link, Redirect, Route, Switch, useHistory } from 'react-router-dom';
@@ -14,6 +15,7 @@ import ProfileSettings from './ProfileSettings';
 import IndustryAverage from '../IndustryAveragePage';
 import UserSettings from '../UserSettings';
 import AdvancedSettings from './AdvancedSettings';
+import BillingSettings from './BillingSettings';
 import ClinicLocations from './ClinicLocations';
 import { useSelector } from 'react-redux';
 import { makeSelectIsOrganizationOwner } from 'redux/selectors/Auth';
@@ -51,6 +53,12 @@ const SettingOption = ({ match, location, isOrganizationOwner, isMobile, isTable
         icon: <SettingOutlined />,
         label: "Advanced Settings",
         path: 'advanced-settings'
+      },
+      {
+        key: `${match.url}/billing`,
+        icon: <CreditCardOutlined />,
+        label: "Billing",
+        path: 'billing'
       },
     ] : []),
     ...(showLocations ? [
@@ -138,6 +146,7 @@ const SettingContent = ({ match, isOrganizationOwner, showLocations }) => {
             path={`${match.url}/advanced-settings`}
             component={AdvancedSettings}
           />
+          <Route path={`${match.url}/billing`} component={BillingSettings} />
         </>
       )}
     </Switch>

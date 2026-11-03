@@ -35,6 +35,7 @@ import AppointmentPreview from '../CalendarPage/AppointmentPreview';
 import { FROM_PATIENT_APPOINTMENTS } from 'constants/ClinicConstants';
 import utils from 'utils';
 import { makeSelectClinic } from 'redux/selectors/Clinic';
+import SendCopayRequest from './SendCopayRequest';
 
 const { Text, Title } = Typography;
 const { useBreakpoint } = Grid;
@@ -278,17 +279,20 @@ const PatientOverview = ({
                 <Title level={3} className="mb-0" style={{ fontSize: isMobile ? '20px' : '28px' }}>
                   {"Patient overview"}
                 </Title>
-                <Badge>
-                  <Button
-                    type="primary"
-                    onClick={() => setShowMessages(true)}
-                    icon={<WhatsAppOutlined />}
-                    size={isMobile ? 'small' : 'middle'}
-                  >
-                    {!isMobile && <span>{"Messages"}</span>}
-                    {isMobile && <span>Messages</span>}
-                  </Button>
-                </Badge>
+                <Flex alignItems="center" style={{ gap: 8, flexWrap: 'wrap' }}>
+                  {patient?.id && <SendCopayRequest patient={patient} />}
+                  <Badge>
+                    <Button
+                      type="primary"
+                      onClick={() => setShowMessages(true)}
+                      icon={<WhatsAppOutlined />}
+                      size={isMobile ? 'small' : 'middle'}
+                    >
+                      {!isMobile && <span>{"Messages"}</span>}
+                      {isMobile && <span>Messages</span>}
+                    </Button>
+                  </Badge>
+                </Flex>
               </Flex>
               <PatientOverviewScheduledCard
                 patient={patient}
