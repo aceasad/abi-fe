@@ -1,12 +1,14 @@
 export const HIDDEN_NOTIFICATION_TITLES = ['Patient Intake Form Incomplete'];
 
 export const HUMAN_INTERVENTION_NOTIFICATION_TYPES = [
-    'Emergency Situation',
-    'Human Intervention',
-    'Opt out',
-    'Screened Elsewhere',
-    'Decline',
-    'Snoozed',
+    'emergency situation',
+    'human intervention',
+    'opt out',
+    'screened elsewhere',
+    'decline',
+    'snoozed',
+    'urgent',
+    'error',
 ];
 
 export const isVisibleNotification = (notification) =>
@@ -40,11 +42,19 @@ const countVisibleHumanInterventionUnread = (allNotifications) =>
             HUMAN_INTERVENTION_NOTIFICATION_TYPES.includes(n.notification_type)
     ).length;
 
+const countVisibleHumanInterventionList = (humanInterventionNotifications, allNotifications) => {
+    if (humanInterventionNotifications.length > 0) {
+        return humanInterventionNotifications.filter(isVisibleUnreadNotification).length;
+    }
+    return countVisibleHumanInterventionUnread(allNotifications);
+};
+
 export const getVisibleUnreadNotificationCount = ({
     bookingNotifications = [],
     offTopicNotifications = [],
+    humanInterventionNotifications = [],
     notifications = [],
 }) =>
     countVisibleBookingUnread(bookingNotifications, notifications) +
     countVisibleOffTopicUnread(offTopicNotifications, notifications) +
-    countVisibleHumanInterventionUnread(notifications);
+    countVisibleHumanInterventionList(humanInterventionNotifications, notifications);

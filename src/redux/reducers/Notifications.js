@@ -1,51 +1,22 @@
 import { produce } from 'immer';
-import {
-    getVisibleUnreadNotificationCount,
-    isVisibleUnreadNotification,
-} from 'utils/notificationVisibility';
+import { getVisibleUnreadNotificationCount } from 'utils/notificationVisibility';
 
 const initialState = {
     notifications: [],
     unreadCount: 0,
     loading: false,
     error: null,
-    stats: null,
     bookingNotifications: [],
     offTopicNotifications: [],
     humanInterventionNotifications: [],
-    // Loading states for different operations
     fetchLoading: false,
     markReadLoading: false,
     markAllReadLoading: false,
-    statsLoading: false,
 };
 
 const notifications = (state = initialState, action) => {
     return produce(state, (draft) => {
         switch (action.type) {
-            // Sync actions
-            case 'ADD_NOTIFICATION':
-                const newNotification = action.payload;
-                // Ensure notifications is an array
-                if (!Array.isArray(draft.notifications)) {
-                    draft.notifications = [];
-                }
-                const exists = draft.notifications.some(notif => notif.id === newNotification.id);
-                if (!exists) {
-                    // Convert the notification to match backend format
-                    const convertedNotification = {
-                        ...newNotification,
-                        is_read: newNotification.isRead || false,
-                        notification_type: newNotification.type || 'general',
-                        created_at: newNotification.timestamp || new Date().toISOString(),
-                    };
-                    draft.notifications.unshift(convertedNotification);
-                    if (isVisibleUnreadNotification(convertedNotification)) {
-                        draft.unreadCount = getVisibleUnreadNotificationCount(draft);
-                    }
-                }
-                break;
-
             case 'MARK_NOTIFICATION_AS_READ':
                 const notificationId = action.payload;
                 // Update in main notifications array
@@ -71,9 +42,12 @@ const notifications = (state = initialState, action) => {
                 break;
 
             case 'MARK_ALL_AS_READ':
-                draft.notifications.forEach(notif => {
-                    notif.is_read = true;
-                });
+                [draft.notifications, draft.bookingNotifications, draft.offTopicNotifications, draft.humanInterventionNotifications]
+                    .forEach((items) => {
+                        items.forEach((notif) => {
+                            notif.is_read = true;
+                        });
+                    });
                 draft.unreadCount = 0;
                 draft.markAllReadLoading = false;
                 break;
@@ -89,13 +63,12 @@ const notifications = (state = initialState, action) => {
                 draft.fetchLoading = false;
                 break;
 
-            // Saga actions - Fetch notifications
-            case 'FETCH_NOTIFICATIONS':
+            case 'FETCH_UNREAD_NOTIFICATIONS':
                 draft.fetchLoading = true;
                 draft.error = null;
                 break;
 
-            case 'FETCH_UNREAD_NOTIFICATIONS':
+            case 'FETCH_NOTIFICATION_DASHBOARD':
                 draft.fetchLoading = true;
                 draft.error = null;
                 break;
@@ -111,26 +84,6 @@ const notifications = (state = initialState, action) => {
 
             case 'MARK_ALL_NOTIFICATIONS_AS_READ':
                 draft.markAllReadLoading = true;
-                draft.error = null;
-                break;
-
-            case 'FETCH_NOTIFICATION_STATS':
-                draft.statsLoading = true;
-                draft.error = null;
-                break;
-
-            case 'FETCH_BOOKING_NOTIFICATIONS':
-                draft.fetchLoading = true;
-                draft.error = null;
-                break;
-
-            case 'FETCH_OFF_TOPIC_NOTIFICATIONS':
-                draft.fetchLoading = true;
-                draft.error = null;
-                break;
-
-            case 'FETCH_HUMAN_INTERVENTION_NOTIFICATIONS':
-                draft.fetchLoading = true;
                 draft.error = null;
                 break;
 
