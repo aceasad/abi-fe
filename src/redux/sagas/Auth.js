@@ -25,11 +25,7 @@ import { teardownSession } from 'services/sessionTeardown';
 import clinicService from 'services/ClinicService';
 import { setClinic } from '../actions/Clinic';
 import { getMessageRequiringImmediateAttentionStatuses } from '../actions/Appointment';
-import {
-  fetchUnreadNotifications,
-  fetchBookingNotifications,
-  fetchOffTopicNotifications,
-} from '../actions/Notifications';
+import { fetchUnreadNotifications } from '../actions/Notifications';
 
 export function* signIn() {
   yield takeEvery(SIGNIN, function* ({ payload }) {
@@ -54,8 +50,6 @@ export function* userFetch() {
       yield put(getMessageRequiringImmediateAttentionStatuses());
       // Fetch notifications for sidebar badge counts
       yield put(fetchUnreadNotifications());
-      yield put(fetchBookingNotifications());
-      yield put(fetchOffTopicNotifications());
     } catch (error) {
       yield put(showAuthMessage(error));
     }

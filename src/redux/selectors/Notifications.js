@@ -9,10 +9,16 @@ const selectNotificationsState = (state) => state.notifications || {};
 
 export const selectVisibleUnreadNotificationCount = createSelector(
     [selectNotificationsState],
-    ({ bookingNotifications = [], offTopicNotifications = [], notifications = [] }) =>
+    ({
+        bookingNotifications = [],
+        offTopicNotifications = [],
+        humanInterventionNotifications = [],
+        notifications = [],
+    }) =>
         getVisibleUnreadNotificationCount({
             bookingNotifications,
             offTopicNotifications,
+            humanInterventionNotifications,
             notifications,
         })
 );
@@ -22,8 +28,6 @@ export const makeSelectVisibleUnreadCount = () => selectVisibleUnreadNotificatio
 export const makeSelectNotificationsLoading = () => (state) => state.notifications?.loading || false;
 
 export const makeSelectNotificationsError = () => (state) => state.notifications?.error || null;
-
-export const makeSelectNotificationStats = () => (state) => state.notifications?.stats || null;
 
 export const makeSelectBookingNotifications = () => (state) => state.notifications?.bookingNotifications || [];
 
@@ -35,6 +39,4 @@ export const makeSelectFetchLoading = () => (state) => state.notifications?.fetc
 
 export const makeSelectMarkReadLoading = () => (state) => state.notifications?.markReadLoading || false;
 
-export const makeSelectMarkAllReadLoading = () => (state) => state.notifications?.markAllReadLoading || false;
-
-export const makeSelectStatsLoading = () => (state) => state.notifications?.statsLoading || false; 
+export const makeSelectMarkAllReadLoading = () => (state) => state.notifications?.markAllReadLoading || false; 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
     Button,
     Typography,
@@ -16,13 +16,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { makeSelectLoginDetails } from 'redux/selectors/Auth';
 import { makeSelectClinic } from 'redux/selectors/Clinic';
 import {
-    makeSelectNotifications,
     makeSelectVisibleUnreadCount,
     makeSelectFetchLoading,
     makeSelectMarkReadLoading,
     makeSelectMarkAllReadLoading,
     makeSelectBookingNotifications,
-    makeSelectOffTopicNotifications
+    makeSelectOffTopicNotifications,
+    makeSelectHumanInterventionNotifications
 } from 'redux/selectors/Notifications';
 import {
     createWebsocketNotificationUrl,
@@ -31,23 +31,15 @@ import {
 } from 'utils/helpers';
 import { addOneMessage, resetChats } from 'redux/actions/Chats';
 import {
-    addNotification,
     markNotificationAsRead,
     markAllNotificationsAsRead,
-    fetchNotifications,
-    fetchBookingNotifications,
-    fetchOffTopicNotifications,
-    fetchUnreadNotifications
+    fetchNotificationDashboard
 } from 'redux/actions/Notifications';
 import WebSocketClient from 'services/WebSocketClient';
 import authService from 'services/AuthService';
 import { API_BASE_URL } from 'configs/AppConfig';
 import utils from 'utils';
-import {
-    HUMAN_INTERVENTION_NOTIFICATION_TYPES,
-    isVisibleNotification,
-    isVisibleUnreadNotification,
-} from 'utils/notificationVisibility';
+import { isVisibleUnreadNotification } from 'utils/notificationVisibility';
 import {
     BellOutlined,
     MessageOutlined,
@@ -64,14 +56,15 @@ const { Title, Text } = Typography;
 const Notification = () => {
     const { token } = useSelector(makeSelectLoginDetails());
     const clinic = useSelector(makeSelectClinic());
-    const notifications = useSelector(makeSelectNotifications()) || [];
     const visibleUnreadCount = useSelector(makeSelectVisibleUnreadCount()) || 0;
     const fetchLoading = useSelector(makeSelectFetchLoading()) || false;
     const markReadLoading = useSelector(makeSelectMarkReadLoading()) || false;
     const markAllReadLoading = useSelector(makeSelectMarkAllReadLoading()) || false;
     const bookingNotifications = useSelector(makeSelectBookingNotifications()) || [];
     const offTopicNotifications = useSelector(makeSelectOffTopicNotifications()) || [];
+    const humanInterventionNotifications = useSelector(makeSelectHumanInterventionNotifications()) || [];
     const dispatch = useDispatch();
+    const refreshTimer = useRef(null);
 
     const screens = utils.getBreakPoint(useBreakpoint());
     const isMobile = !screens.includes('lg');
@@ -84,11 +77,12 @@ const Notification = () => {
     const handleReceiveMessage = (event) => {
         const parsedMessage = parseReceivedEvent(event);
 
-        // Refresh notifications from backend since new ones are saved there
-        dispatch(fetchNotifications());
-        dispatch(fetchBookingNotifications());
-        dispatch(fetchOffTopicNotifications());
-        dispatch(fetchUnreadNotifications());
+        if (refreshTimer.current) {
+            clearTimeout(refreshTimer.current);
+        }
+        refreshTimer.current = setTimeout(() => {
+            dispatch(fetchNotificationDashboard());
+        }, 1500);
     };
 
     // Your original WebSocket setup
@@ -123,9 +117,12 @@ const Notification = () => {
 
     // Load notifications from API on component mount
     useEffect(() => {
-        dispatch(fetchNotifications());
-        dispatch(fetchBookingNotifications());
-        dispatch(fetchOffTopicNotifications());
+        dispatch(fetchNotificationDashboard());
+        return () => {
+            if (refreshTimer.current) {
+                clearTimeout(refreshTimer.current);
+            }
+        };
     }, [dispatch]);
 
     // Your original RASA health check
@@ -163,11 +160,7 @@ const Notification = () => {
     const categorizedNotifications = {
         bookingNotes: bookingNotifications.filter(isVisibleUnreadNotification),
         offTopic: offTopicNotifications.filter(isVisibleUnreadNotification),
-        humanIntervention: notifications.filter(
-            (n) =>
-                isVisibleUnreadNotification(n) &&
-                HUMAN_INTERVENTION_NOTIFICATION_TYPES.includes(n.notification_type)
-        ),
+        humanIntervention: humanInterventionNotifications.filter(isVisibleUnreadNotification),
     };
 
     const getNotificationIcon = (notificationType, priority) => {
@@ -177,6 +170,7 @@ const Notification = () => {
         switch (notificationType) {
             case 'error':
             case 'emergency':
+            case 'emergency situation':
             case 'Emergency Situation':
                 return <ExclamationOutlined style={{ color: '#ff4d4f' }} />;
             case 'message':
@@ -400,24 +394,6 @@ const Notification = () => {
                     />
                 </Col>
             </Row>
-
-            {/* Fallback: Show all notifications if categorized ones are empty */}
-            {(!categorizedNotifications.bookingNotes.length &&
-                !categorizedNotifications.offTopic.length &&
-                !categorizedNotifications.humanIntervention.length) &&
-                notifications.length > 0 && (
-                    <Row style={{ marginTop: '24px' }}>
-                        <Col span={24}>
-                            <NotificationCard
-                                title="All Notifications"
-                                description="All notifications from the system"
-                                notifications={notifications.filter(isVisibleNotification)}
-                            />
-                        </Col>
-                    </Row>
-                )}
-
-
         </div>
     );
 };
