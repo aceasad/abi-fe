@@ -41,8 +41,8 @@ const CancelChoiceModal = ({
         <Space direction="vertical">
           <Radio value="trip" disabled={!canCancelRide}>
             {several
-              ? 'Rides only. The appointments stay booked. A round trip cancels both trips.'
-              : 'Ride only. The appointment stays booked. A round trip cancels both trips.'}
+              ? 'Rides only. A round trip cancels both trips.'
+              : 'Ride only. A round trip cancels both trips.'}
           </Radio>
           <Radio value="appointment" disabled={!canCancelAppointment}>
             {several

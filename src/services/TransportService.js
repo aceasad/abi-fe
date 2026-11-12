@@ -3,6 +3,7 @@ import ApiService from './ApiService';
 const ENDPOINTS = {
   STAFF_TRIPS: '/transport/booking/staff/trips/',
   STAFF_TRIPS_CANCEL: '/transport/booking/staff/trips/cancel/',
+  STAFF_RETURN_CONFIRM: '/transport/booking/staff/trips/return/confirm/',
   SERVICE_TYPES: '/transport/booking/service-types/',
 };
 
@@ -23,6 +24,11 @@ class TransportService extends ApiService {
     });
 
   bookStaffTrip = (payload) => this.apiClient.post(ENDPOINTS.STAFF_TRIPS, payload);
+
+  activateReturnTrip = (appointmentId) =>
+    this.apiClient.post(ENDPOINTS.STAFF_RETURN_CONFIRM, {
+      appointment_id: appointmentId,
+    });
 }
 
 const transportService = new TransportService();

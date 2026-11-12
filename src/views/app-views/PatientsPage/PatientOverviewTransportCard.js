@@ -63,7 +63,7 @@ const PatientOverviewTransportCard = ({ showAppointment }) => {
     {
       title: 'Ride Status',
       dataIndex: 'status',
-      render: (status) => rideStatusLabel(status),
+      render: (_, record) => rideStatusLabel(record.status, record),
     },
     {
       title: 'Pickup',

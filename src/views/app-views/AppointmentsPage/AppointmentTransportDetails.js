@@ -17,7 +17,23 @@ const legLabel = (legRole) => {
   return legRole || '';
 };
 
-const rideStatusLabel = (status) => {
+const isWaitingReturn = (trip) =>
+  trip?.leg_role === 'return' &&
+  trip?.pickup_type === 'will_call' &&
+  !trip?.activated_at &&
+  !['cancelled', 'canceled', 'completed', 'performed'].includes(
+    String(trip?.status || '').toLowerCase()
+  );
+
+const rideStatusLabel = (status, trip) => {
+  const normalized = String(status || '').trim().toLowerCase();
+  if (
+    isWaitingReturn(trip) ||
+    normalized === 'waiting' ||
+    normalized === 'waiting for activation'
+  ) {
+    return 'Will Call';
+  }
   if (!status) return 'Scheduled';
   return String(status)
     .replace(/_/g, ' ')
@@ -60,7 +76,7 @@ const AppointmentTransportDetails = ({ trips, title = 'Transport' }) => {
           )}
           <RowWithMultipleColumns className="mb-2" gutter={16} spanList={[8, 16]}>
             Ride Status:
-            {rideStatusLabel(trip.status)}
+            {rideStatusLabel(trip.status, trip)}
           </RowWithMultipleColumns>
           {formatPlace(trip.pickup_place) && (
             <RowWithMultipleColumns className="mb-2" gutter={16} spanList={[8, 16]}>

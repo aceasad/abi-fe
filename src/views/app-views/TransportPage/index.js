@@ -74,6 +74,12 @@ const isCancelledAppointment = (trip) =>
 const isNothingLeftToCancel = (trip) =>
   isTerminalTrip(trip) && isCancelledAppointment(trip);
 
+const canActivateReturn = (trip) =>
+  trip?.leg_role === 'return' &&
+  trip?.pickup_type === 'will_call' &&
+  !trip?.activated_at &&
+  !isTerminalTrip(trip);
+
 const TRAILING_OFFSET_PATTERN = /([+-]\d{2}:?\d{2}|Z)$/;
 
 // The pickup window belongs to wherever the patient is being collected, so it must render
@@ -120,6 +126,7 @@ const TRIP_TYPE_OPTIONS = [
 ];
 
 const RIDE_STATUS_OPTIONS = [
+  { value: 'waiting', label: 'Will Call' },
   { value: 'pending', label: 'Pending' },
   { value: 'assigned', label: 'Assigned' },
   { value: 'en_route', label: 'En route' },
@@ -159,6 +166,7 @@ const TransportPage = () => {
   const [appointmentCancelTargets, setAppointmentCancelTargets] = useState(null);
   const [cancelLoading, setCancelLoading] = useState(false);
   const [bookRideOpen, setBookRideOpen] = useState(false);
+  const [activatingTripId, setActivatingTripId] = useState(null);
 
   const fetchTrips = useCallback(async () => {
     setLoading(true);
@@ -257,6 +265,39 @@ const TransportPage = () => {
       : '';
     return [date, time].filter(Boolean).join(' ');
   };
+
+  const handleActivateReturn = async (trip) => {
+    const appointmentId = trip?.appointment?.id;
+    if (!appointmentId) return;
+    setActivatingTripId(trip.id);
+    try {
+      const response = await transportService.activateReturnTrip(appointmentId);
+      message.success(
+        response.data?.window_updated
+          ? 'Ride home started. The pickup window was moved to now.'
+          : 'Ride home started.'
+      );
+      await fetchTrips();
+    } catch (error) {
+      message.error(error?.response?.data?.message || 'Could not start the ride home');
+    } finally {
+      setActivatingTripId(null);
+    }
+  };
+
+  const activateReturnButton = (trip) =>
+    canActivateReturn(trip) ? (
+      <Button
+        size="small"
+        loading={activatingTripId === trip.id}
+        onClick={(event) => {
+          event.stopPropagation();
+          handleActivateReturn(trip);
+        }}
+      >
+        Activate
+      </Button>
+    ) : null;
 
   const handleCancelTrips = async (rows) => {
     const appointmentIds = uniqueAppointmentIds(rows || []);
@@ -386,7 +427,7 @@ const TransportPage = () => {
       title: 'Ride Status',
       dataIndex: 'status',
       key: 'status',
-      render: (status) => rideStatusLabel(status),
+      render: (_, record) => rideStatusLabel(record.status, record),
     },
     {
       title: 'Pickup',
@@ -420,6 +461,7 @@ const TransportPage = () => {
       render: (_, record) => (
         <div className="text-right">
           <Space>
+            {activateReturnButton(record)}
             <Tooltip
               title={
                 hasTripUrl(record)
@@ -619,7 +661,7 @@ const TransportPage = () => {
           {trip.appointment?.appointment_type?.name || '-'}
         </Typography.Text>
         <Typography.Text type="secondary">
-          {`${tripTypeLabel(tripsByAppointment.get(trip.appointment?.id))} - ${rideStatusLabel(trip.status)}`}
+          {`${tripTypeLabel(tripsByAppointment.get(trip.appointment?.id))} - ${rideStatusLabel(trip.status, trip)}`}
         </Typography.Text>
         {formatPlace(trip.pickup_place) && (
           <Typography.Text type="secondary">
@@ -634,6 +676,7 @@ const TransportPage = () => {
         <Space
           style={{ width: '100%', justifyContent: 'flex-end', marginTop: '8px' }}
         >
+          {activateReturnButton(trip)}
           <Tooltip
             title={
               hasTripUrl(trip)
