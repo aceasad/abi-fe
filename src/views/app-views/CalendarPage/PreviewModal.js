@@ -22,6 +22,7 @@ function PreviewModal({
   showCancel,
   showEnd,
   setNewData,
+  cancelLabel = 'Cancel appointment',
 }) {
   const { appointment, singleLoading } = useSelector(
     makeSelectSingleAppointment()
@@ -66,7 +67,7 @@ function PreviewModal({
           showCancel(appointment);
         }}
       >
-        {"Cancel appointment"}
+        {cancelLabel}
       </Button>
     );
   }

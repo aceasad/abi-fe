@@ -25,6 +25,51 @@ const { Title, Text } = Typography;
 const { useBreakpoint } = Grid;
 const firstTripUrl = (trips = []) => (trips || []).find((trip) => trip?.trip_url)?.trip_url;
 
+const TERMINAL_TRIP_STATUSES = new Set(['cancelled', 'canceled', 'completed', 'performed']);
+const CANCELLED_TRIP_STATUSES = new Set(['cancelled', 'canceled']);
+
+const transportColumnState = (trips) => {
+  const list = trips || [];
+  if (!list.length) return 'none';
+  const statusOf = (trip) => String(trip?.status || '').toLowerCase();
+  if (list.some((trip) => !TERMINAL_TRIP_STATUSES.has(statusOf(trip)))) return 'booked';
+  if (list.some((trip) => CANCELLED_TRIP_STATUSES.has(statusOf(trip)))) return 'cancelled';
+  return 'none';
+};
+
+const TransportStatus = ({ trips }) => {
+  const state = transportColumnState(trips);
+  if (state === 'none') return <Text type="secondary">None</Text>;
+  const cancelled = state === 'cancelled';
+  return (
+    <Space size="small">
+      <Tag icon={<CarOutlined />} color={cancelled ? 'default' : 'blue'}>
+        {cancelled ? 'Ride cancelled' : 'Ride booked'}
+      </Tag>
+      <Tooltip
+        title={
+          firstTripUrl(trips)
+            ? 'Open this trip in MediDrive'
+            : 'Trip URL not available yet'
+        }
+      >
+        <Button
+          icon={<ExportOutlined />}
+          size="small"
+          disabled={!firstTripUrl(trips)}
+          onClick={(event) => {
+            event.stopPropagation();
+            const tripUrl = firstTripUrl(trips);
+            if (tripUrl) {
+              window.open(tripUrl, '_blank', 'noopener');
+            }
+          }}
+        />
+      </Tooltip>
+    </Space>
+  );
+};
+
 const prepareField = (order, field) => {
   const base = order === ORDERING.DESC ? '-' : '';
   switch (field) {
@@ -116,36 +161,7 @@ const PatientOverviewScheduledCard = ({ patient, showAppointment }) => {
             title: "Transport",
             dataIndex: 'trips',
             sorter: false,
-            render: (trips) =>
-              trips?.length ? (
-                <Space size="small">
-                  <Tag icon={<CarOutlined />} color="blue">
-                    Ride booked
-                  </Tag>
-                  <Tooltip
-                    title={
-                      firstTripUrl(trips)
-                        ? 'Open this trip in MediDrive'
-                        : 'Trip URL not available yet'
-                    }
-                  >
-                    <Button
-                      icon={<ExportOutlined />}
-                      size="small"
-                      disabled={!firstTripUrl(trips)}
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        const tripUrl = firstTripUrl(trips);
-                        if (tripUrl) {
-                          window.open(tripUrl, '_blank', 'noopener');
-                        }
-                      }}
-                    />
-                  </Tooltip>
-                </Space>
-              ) : (
-                <Text type="secondary">None</Text>
-              ),
+            render: (trips) => <TransportStatus trips={trips} />,
           },
         ]
       : []),
@@ -204,33 +220,7 @@ const PatientOverviewScheduledCard = ({ patient, showAppointment }) => {
           </Text>
         </Space>
 
-        {isTMSEnabled && appointment.trips?.length > 0 && (
-          <Space size="small">
-            <Tag icon={<CarOutlined />} color="blue">
-              Ride booked
-            </Tag>
-            <Tooltip
-              title={
-                firstTripUrl(appointment.trips)
-                  ? 'Open this trip in MediDrive'
-                  : 'Trip URL not available yet'
-              }
-            >
-              <Button
-                icon={<ExportOutlined />}
-                size="small"
-                disabled={!firstTripUrl(appointment.trips)}
-                onClick={(event) => {
-                  event.stopPropagation();
-                  const tripUrl = firstTripUrl(appointment.trips);
-                  if (tripUrl) {
-                    window.open(tripUrl, '_blank', 'noopener');
-                  }
-                }}
-              />
-            </Tooltip>
-          </Space>
-        )}
+        {isTMSEnabled && <TransportStatus trips={appointment.trips} />}
 
         {appointment.no_show_score !== null && appointment.no_show_score !== undefined && (
           <div style={{ marginTop: '8px' }}>

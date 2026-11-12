@@ -20,11 +20,9 @@ import {
 import {
   CarOutlined,
   CloseCircleOutlined,
-  DeleteOutlined,
   ExportOutlined,
   SearchOutlined,
 } from '@ant-design/icons';
-import Modal from 'components/shared-components/Modal';
 import utils from 'utils';
 import dayjs from 'utils/dayjs';
 import { APP_PAGES_PREFIX_PATH } from 'configs/AppConfig';
@@ -44,7 +42,9 @@ import {
   rideTypeLabel,
   tripTypeLabel,
 } from '../AppointmentsPage/AppointmentTransportDetails';
+import BookRideModal from './BookRideModal';
 import CancelAppointmentsModal from './CancelAppointmentsModal';
+import CancelChoiceModal from './CancelChoiceModal';
 
 const { Title } = Typography;
 const { useBreakpoint } = Grid;
@@ -114,6 +114,22 @@ const distanceLabel = (trip) =>
 
 const hasTripUrl = (trip) => Boolean(trip?.trip_url);
 
+const TRIP_TYPE_OPTIONS = [
+  { value: 'single', label: 'Single trip' },
+  { value: 'round_trip', label: 'Round trip' },
+];
+
+const RIDE_STATUS_OPTIONS = [
+  { value: 'pending', label: 'Pending' },
+  { value: 'assigned', label: 'Assigned' },
+  { value: 'en_route', label: 'En route' },
+  { value: 'arrived_at_pickup', label: 'Arrived at pickup' },
+  { value: 'arrived_at_destination', label: 'Arrived at destination' },
+  { value: 'completed', label: 'Completed' },
+  { value: 'performed', label: 'Performed' },
+  { value: 'cancelled', label: 'Cancelled' },
+];
+
 const TransportPage = () => {
   const dispatch = useDispatch();
   const screens = utils.getBreakPoint(useBreakpoint());
@@ -132,14 +148,17 @@ const TransportPage = () => {
   const [pageSize, setPageSize] = useState(DEFAULT_PAGINATION_LIMIT);
   const [dateRange, setDateRange] = useState(null);
   const [appointmentTypeId, setAppointmentTypeId] = useState(null);
+  const [tripType, setTripType] = useState(null);
+  const [rideStatus, setRideStatus] = useState(null);
   const [patientSearch, setPatientSearch] = useState('');
   const debouncedPatientSearch = useDebounce(patientSearch, 400);
   const [appointmentTypes, setAppointmentTypes] = useState([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [activeAppointment, setActiveAppointment] = useState(null);
-  const [tripCancelTargets, setTripCancelTargets] = useState(null);
+  const [cancelChoiceTargets, setCancelChoiceTargets] = useState(null);
   const [appointmentCancelTargets, setAppointmentCancelTargets] = useState(null);
   const [cancelLoading, setCancelLoading] = useState(false);
+  const [bookRideOpen, setBookRideOpen] = useState(false);
 
   const fetchTrips = useCallback(async () => {
     setLoading(true);
@@ -151,6 +170,8 @@ const TransportPage = () => {
       if (dateRange?.[0]) params.start_date = dateRange[0].format('YYYY-MM-DD');
       if (dateRange?.[1]) params.end_date = dateRange[1].format('YYYY-MM-DD');
       if (appointmentTypeId) params.appointment_type_id = appointmentTypeId;
+      if (tripType) params.trip_type = tripType;
+      if (rideStatus) params.status = rideStatus;
       // Server-side so the search spans every page, not just the rows on screen.
       if (debouncedPatientSearch.trim()) {
         params.search = debouncedPatientSearch.trim();
@@ -168,7 +189,7 @@ const TransportPage = () => {
     } finally {
       setLoading(false);
     }
-  }, [page, pageSize, dateRange, appointmentTypeId, debouncedPatientSearch]);
+  }, [page, pageSize, dateRange, appointmentTypeId, tripType, rideStatus, debouncedPatientSearch]);
 
   useEffect(() => {
     if (isTMSEnabled) fetchTrips();
@@ -254,17 +275,22 @@ const TransportPage = () => {
           `${cancelled} ride(s) cancelled, ${failed} could not be cancelled on MediDrive`
         );
       } else if (cancelled) {
-        message.success(`${cancelled} appointment(s) had their ride(s) cancelled`);
+        message.success(
+          cancelled > 1
+            ? `${cancelled} rides cancelled. The appointments stay booked.`
+            : 'Ride cancelled. The appointment stays booked.'
+        );
       } else {
         message.info('No live rides to cancel');
       }
       setSelectedRowKeys([]);
+      setActiveAppointment(null);
       await fetchTrips();
     } catch {
       message.error('Failed to cancel ride(s)');
     } finally {
       setCancelLoading(false);
-      setTripCancelTargets(null);
+      setCancelChoiceTargets(null);
     }
   };
 
@@ -292,7 +318,17 @@ const TransportPage = () => {
     setSelectedRowKeys([]);
     setCancelLoading(false);
     setAppointmentCancelTargets(null);
+    setActiveAppointment(null);
     await fetchTrips();
+  };
+
+  const openCancelChoice = (rows) => {
+    const actionable = rows.filter((trip) => !isNothingLeftToCancel(trip));
+    if (!actionable.length) {
+      message.info('Nothing left to cancel');
+      return;
+    }
+    setCancelChoiceTargets(actionable);
   };
 
   const openAppointmentCancel = (rows) => {
@@ -405,37 +441,19 @@ const TransportPage = () => {
             </Tooltip>
             <Tooltip
               title={
-                isTerminalTrip(record)
-                  ? 'This ride can no longer be cancelled'
-                  : 'Cancel ride only (appointment stays booked)'
+                isNothingLeftToCancel(record)
+                  ? 'This ride and its appointment are already cancelled'
+                  : 'Cancel the ride, or the ride and the appointment'
               }
             >
               <Button
                 icon={<CloseCircleOutlined />}
                 size="small"
                 danger
-                disabled={isTerminalTrip(record)}
+                disabled={isNothingLeftToCancel(record)}
                 onClick={(e) => {
                   e.stopPropagation();
-                  setTripCancelTargets([record]);
-                }}
-              />
-            </Tooltip>
-            <Tooltip
-              title={
-                isCancelledAppointment(record)
-                  ? 'This appointment is already cancelled'
-                  : 'Cancel ride and appointment'
-              }
-            >
-              <Button
-                icon={<DeleteOutlined />}
-                size="small"
-                danger
-                disabled={isCancelledAppointment(record)}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  openAppointmentCancel([record]);
+                  openCancelChoice([record]);
                 }}
               />
             </Tooltip>
@@ -481,17 +499,49 @@ const TransportPage = () => {
         }))}
         style={{ width: isMobile ? '100%' : 200 }}
       />
+      <Select
+        allowClear
+        placeholder="Trip type"
+        value={tripType}
+        onChange={(value) => {
+          setTripType(value ?? null);
+          setPage(1);
+        }}
+        options={TRIP_TYPE_OPTIONS}
+        style={{ width: isMobile ? '100%' : 160 }}
+      />
+      <Select
+        allowClear
+        placeholder="Ride status"
+        value={rideStatus}
+        onChange={(value) => {
+          setRideStatus(value ?? null);
+          setPage(1);
+        }}
+        options={RIDE_STATUS_OPTIONS}
+        style={{ width: isMobile ? '100%' : 200 }}
+      />
     </>
   );
 
   const medidriveButton = (
-    <Button
-      icon={<ExportOutlined />}
-      onClick={() => window.open(MEDIDRIVE_BOOKING_URL, '_blank', 'noopener')}
-      block={isMobile}
-    >
-      Open MediDrive
-    </Button>
+    <Space direction={isMobile ? 'vertical' : 'horizontal'} style={{ width: isMobile ? '100%' : undefined }}>
+      <Button
+        type="primary"
+        icon={<CarOutlined />}
+        onClick={() => setBookRideOpen(true)}
+        block={isMobile}
+      >
+        Book ride
+      </Button>
+      <Button
+        icon={<ExportOutlined />}
+        onClick={() => window.open(MEDIDRIVE_BOOKING_URL, '_blank', 'noopener')}
+        block={isMobile}
+      >
+        Open MediDrive
+      </Button>
+    </Space>
   );
 
   // The destructive actions only mean anything once rows are picked, so they live in a
@@ -533,17 +583,9 @@ const TransportPage = () => {
               danger
               size="small"
               icon={<CloseCircleOutlined />}
-              onClick={() => setTripCancelTargets(selectedTrips)}
+              onClick={() => openCancelChoice(selectedTrips)}
             >
-              Cancel rides
-            </Button>
-            <Button
-              danger
-              size="small"
-              icon={<DeleteOutlined />}
-              onClick={() => openAppointmentCancel(selectedTrips)}
-            >
-              Cancel rides + appointments
+              Cancel
             </Button>
           </Space>
         </Col>
@@ -611,27 +653,21 @@ const TransportPage = () => {
               }}
             />
           </Tooltip>
-          <Tooltip title="Cancel ride only (appointment stays booked)">
+          <Tooltip
+            title={
+              isNothingLeftToCancel(trip)
+                ? 'This ride and its appointment are already cancelled'
+                : 'Cancel the ride, or the ride and the appointment'
+            }
+          >
             <Button
               icon={<CloseCircleOutlined />}
               size="small"
               danger
-              disabled={isTerminalTrip(trip)}
+              disabled={isNothingLeftToCancel(trip)}
               onClick={(e) => {
                 e.stopPropagation();
-                setTripCancelTargets([trip]);
-              }}
-            />
-          </Tooltip>
-          <Tooltip title="Cancel ride and appointment">
-            <Button
-              icon={<DeleteOutlined />}
-              size="small"
-              danger
-              disabled={isCancelledAppointment(trip)}
-              onClick={(e) => {
-                e.stopPropagation();
-                openAppointmentCancel([trip]);
+                openCancelChoice([trip]);
               }}
             />
           </Tooltip>
@@ -740,21 +776,35 @@ const TransportPage = () => {
         </div>
       )}
 
-      <Modal
-        title="Cancel ride(s)"
-        description={
-          tripCancelTargets
-            ? `This cancels every live ride on ${
-                uniqueAppointmentIds(tripCancelTargets).length
-              } appointment(s), including the return leg of a round trip. The appointment(s) stay booked.`
-            : ''
-        }
-        primaryAction="Cancel ride(s)"
-        secondaryAction="Close"
-        visible={!!tripCancelTargets}
-        confirmLoading={cancelLoading}
-        handlePrimaryAction={() => handleCancelTrips(tripCancelTargets)}
-        handleSecondaryAction={() => setTripCancelTargets(null)}
+      {cancelChoiceTargets && (
+        <CancelChoiceModal
+          appointmentCount={uniqueAppointmentIds(cancelChoiceTargets).length}
+          canCancelRide={cancelChoiceTargets.some((trip) => !isTerminalTrip(trip))}
+          canCancelAppointment={cancelChoiceTargets.some(
+            (trip) => !isCancelledAppointment(trip)
+          )}
+          confirmLoading={cancelLoading}
+          onClose={() => setCancelChoiceTargets(null)}
+          onRideOnly={() =>
+            handleCancelTrips(
+              cancelChoiceTargets.filter((trip) => !isTerminalTrip(trip))
+            )
+          }
+          onRideAndAppointment={() => {
+            const rows = cancelChoiceTargets;
+            setCancelChoiceTargets(null);
+            openAppointmentCancel(rows);
+          }}
+        />
+      )}
+
+      <BookRideModal
+        open={bookRideOpen}
+        onClose={() => setBookRideOpen(false)}
+        onBooked={() => {
+          setBookRideOpen(false);
+          fetchTrips();
+        }}
       />
 
       {appointmentCancelTargets && (
@@ -773,6 +823,12 @@ const TransportPage = () => {
             fetchTrips();
           }}
           appointment_type={activeAppointment.type}
+          beforeCancel={(appointment) => {
+            const rows = tripsByAppointment.get(appointment?.id) || [];
+            openCancelChoice(
+              rows.length ? rows : [{ appointment, status: '' }]
+            );
+          }}
         />
       )}
     </Layout>

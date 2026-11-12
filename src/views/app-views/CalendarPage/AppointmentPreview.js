@@ -27,6 +27,7 @@ const AppointmentPreview = ({
   appointment_type,
   staffId,
   appointment,
+  beforeCancel,
 }) => {
   const dispatch = useDispatch();
 
@@ -50,8 +51,13 @@ const AppointmentPreview = ({
       data,
     });
 
-  const showCancelAppointment = (data) =>
+  const showCancelAppointment = (data) => {
+    if (beforeCancel) {
+      beforeCancel(data);
+      return;
+    }
     setShowChildModal({ modal: NESTED_MODAL.CANCEL_APPOINTMENT, data });
+  };
 
   const showEndAppointment = (data) =>
     setShowChildModal({ modal: NESTED_MODAL.END_APPOINTMENT, data });
@@ -82,6 +88,7 @@ const AppointmentPreview = ({
           showCancel={showCancelAppointment}
           showEnd={showEndAppointment}
           setNewData={setNewData}
+          cancelLabel={beforeCancel ? 'Cancel' : 'Cancel appointment'}
         />
       );
     case NESTED_MODAL.DELETE:

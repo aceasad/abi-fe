@@ -67,12 +67,12 @@ class PatientService extends ApiService {
   updatePatient = (id, data) =>
     this.apiClient.put(ENDPOINTS.GET_PATIENTS + id + '/', data);
 
-  getScheduledAppointments = (id, { field, page = 1 }) =>
+  getScheduledAppointments = (id, { field, page = 1, limit = DEFAULT_SMALL_PAGINATION_LIMIT } = {}) =>
     this.apiClient.get(ENDPOINTS.GET_SCHEDULED_APPOINTMENTS + id + '/', {
       params: {
         ordering: field,
-        limit: DEFAULT_SMALL_PAGINATION_LIMIT,
-        offset: (page - 1) * DEFAULT_SMALL_PAGINATION_LIMIT,
+        limit,
+        offset: (page - 1) * limit,
       },
     });
 
