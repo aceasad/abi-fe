@@ -68,7 +68,7 @@ const SendCopayRequest = ({ patient }) => {
       } else if (rowResult?.error) {
         message.error(copayRowError(rowResult.error));
       } else {
-        const sent = rowResult?.status === 'sent' || created?.status === 'completed';
+        const sent = rowResult?.status === 'sent' || created?.status === 'sent';
         message.success(sent ? 'Co-pay request sent.' : 'Co-pay request is sending.');
         setOpen(false);
         form.resetFields();

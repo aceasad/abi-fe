@@ -2,6 +2,10 @@ import ApiService from './ApiService';
 
 const ENDPOINTS = {
   STATUS: '/billing/status/',
+  LEDGER: '/billing/ledger/',
+  INVOICES: '/billing/invoices/',
+  USAGE_DASHBOARD: '/billing/usage-dashboard/',
+  USAGE: '/billing/usage/',
   ONBOARD: '/billing/connect/onboard/',
   ATTACH: '/billing/connect/attach/',
   REFRESH: '/billing/connect/refresh/',
@@ -13,6 +17,20 @@ const ENDPOINTS = {
 
 class BillingService extends ApiService {
   getStatus = () => this.apiClient.get(ENDPOINTS.STATUS);
+
+  getLedger = () => this.apiClient.get(ENDPOINTS.LEDGER);
+
+  getInvoices = () => this.apiClient.get(ENDPOINTS.INVOICES);
+
+  getUsageDashboard = () => this.apiClient.get(ENDPOINTS.USAGE_DASHBOARD);
+
+  getUsage = (start, end, grain) =>
+    this.apiClient.get(ENDPOINTS.USAGE, { params: { start, end, grain } });
+
+  payInvoice = (invoiceId) => this.apiClient.post(`/billing/invoices/${invoiceId}/pay/`);
+
+  downloadInvoice = (invoiceId) =>
+    this.apiClient.get(`/billing/invoices/${invoiceId}/pdf/`, { responseType: 'blob' });
 
   startOnboarding = () => this.apiClient.post(ENDPOINTS.ONBOARD);
 

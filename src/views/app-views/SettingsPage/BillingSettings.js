@@ -6,7 +6,6 @@ import {
   Form,
   Input,
   Space,
-  Divider,
   Tag,
   Typography,
   message,
@@ -22,7 +21,6 @@ import {
   billingErrorMessage,
   maskConnectedAccount,
 } from './billingStatus';
-import CopayRequestUpload from './CopayRequestUpload';
 
 const { Text, Paragraph } = Typography;
 
@@ -312,9 +310,6 @@ const BillingSettings = () => {
           Connect existing Stripe account
         </Button>
       </Form>
-
-      <Divider />
-      <CopayRequestUpload paymentLinksEnabled={Boolean(status?.payment_links_enabled)} />
     </Space>
   );
 };

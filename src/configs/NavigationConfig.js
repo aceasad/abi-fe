@@ -10,10 +10,12 @@ import {
   PaperClipOutlined,
   LineChartOutlined,
   NotificationOutlined,
+  CreditCardOutlined,
 } from '@ant-design/icons';
 import { useSelector } from 'react-redux';
 import { APP_PAGES_PREFIX_PATH } from 'configs/AppConfig';
 import { makeSelectClinic } from 'redux/selectors/Clinic';
+import { makeSelectIsOrganizationOwner } from 'redux/selectors/Auth';
 
 const pagesNavTree = [
   {
@@ -98,7 +100,11 @@ const pagesNavTree = [
   },
 ];
 
-export const getNavigationConfig = (pasProvider, isTMSEnabled = false) => {
+export const getNavigationConfig = (
+  pasProvider,
+  isTMSEnabled = false,
+  isOrganizationOwner = false
+) => {
   const isMedbridge = pasProvider?.toLowerCase() === 'medbridge';
   const hiddenKeys = new Set();
   if (isMedbridge) {
@@ -108,7 +114,25 @@ export const getNavigationConfig = (pasProvider, isTMSEnabled = false) => {
   if (!isTMSEnabled) {
     hiddenKeys.add('transport');
   }
-  return pagesNavTree.filter((item) => !hiddenKeys.has(item.key));
+  const items = pagesNavTree.filter((item) => !hiddenKeys.has(item.key));
+  if (!isOrganizationOwner) {
+    return items;
+  }
+  const settingsIndex = items.findIndex((item) => item.key === 'settings');
+  const billingItem = {
+    key: 'billing-and-usage',
+    path: `${APP_PAGES_PREFIX_PATH}/overview/billing`,
+    title: 'Billing and usage',
+    icon: CreditCardOutlined,
+    breadcrumb: false,
+    submenu: [],
+  };
+  const insertAt = settingsIndex === -1 ? items.length : settingsIndex;
+  return [
+    ...items.slice(0, insertAt),
+    billingItem,
+    ...items.slice(insertAt),
+  ];
 };
 
 export const useNavigationConfig = () => {
@@ -116,9 +140,11 @@ export const useNavigationConfig = () => {
     (state) => state.auth.user || {}
   );
   const clinic = useSelector(makeSelectClinic());
+  const isOrganizationOwner = useSelector(makeSelectIsOrganizationOwner());
   return getNavigationConfig(
     PASProvider,
-    Boolean(clinic?.isTMSEnabled ?? userIsTMSEnabled)
+    Boolean(clinic?.isTMSEnabled ?? userIsTMSEnabled),
+    Boolean(isOrganizationOwner)
   );
 };
 

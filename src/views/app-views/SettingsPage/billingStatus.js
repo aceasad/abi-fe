@@ -7,6 +7,15 @@ export const ONBOARDING_STATUS = {
 
 const ERROR_MESSAGES = {
   billing_disabled: 'Billing is turned off on this environment.',
+  invoice_unavailable: 'The clinic bill could not be loaded. Try again.',
+  dashboard_unavailable: 'The usage dashboard could not be loaded. Try again.',
+  usage_range_invalid: 'Choose a start date, an end date, and daily, weekly, or monthly.',
+  usage_unavailable: 'Usage could not be loaded. Try again.',
+  metronome_customer_missing: 'This clinic is not set up for usage yet.',
+  invoice_not_found: 'That bill could not be found.',
+  invoice_not_paid: 'A bill can be downloaded after it is paid.',
+  invoice_not_payable: 'This bill has nothing left to pay.',
+  stripe_checkout_failed: 'Stripe could not open the payment page. Try again.',
   stripe_not_configured: 'Stripe is not configured on this environment.',
   stripe_live_key_in_sandbox:
     'Sandbox mode rejected a live Stripe key.',
@@ -18,7 +27,8 @@ const ERROR_MESSAGES = {
     'Stripe Connect is not enabled on this sandbox. Enable Connect, then try again.',
   stripe_onboard_failed: 'Stripe could not start onboarding. Try again.',
   stripe_dashboard_link_failed: 'Stripe could not open the dashboard. Try again.',
-  stripe_account_not_ready: 'Connect Stripe and finish onboarding before sending a co-pay request.',
+  stripe_account_not_ready: 'Connect the clinic Stripe account before paying the bill or sending a co-pay request.',
+  invoice_payment_method_missing: 'Save a card on the clinic Stripe account before this bill can be charged.',
   patient_not_found: 'No patient in this clinic has that external identification number.',
   appointment_required: 'This patient has more than one upcoming visit. Add the appointment id.',
   appointment_not_found: 'That appointment was not found for this patient.',
