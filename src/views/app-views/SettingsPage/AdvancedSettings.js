@@ -7,6 +7,7 @@ import {
   InputNumber,
   Row,
   Select,
+  Switch,
   TimePicker,
   Typography,
   message,
@@ -160,6 +161,7 @@ const apiToFormValues = (settings) => ({
   timezone: settings.timezone,
   email_for_reports: settings.email_for_reports || '',
   email_for_docman: settings.email_for_docman || '',
+  allow_patient_pickup_address_change: Boolean(settings.allow_patient_pickup_address_change),
 });
 
 const formToApiPayload = (values, isEmis) => {
@@ -191,6 +193,7 @@ const formToApiPayload = (values, isEmis) => {
     message_earliest_send_minute: earliestTime ? earliestTime.minute() : null,
     timezone: values.timezone || null,
     email_for_reports: values.email_for_reports?.trim() || null,
+    allow_patient_pickup_address_change: Boolean(values.allow_patient_pickup_address_change),
   };
 
   if (isEmis) {
@@ -301,6 +304,7 @@ const AdvancedSettings = () => {
       message_latest_send_time: null,
       timezone: defaults.timezone,
       email_for_reports: '',
+      allow_patient_pickup_address_change: false,
       location_display_preference: DEFAULT_LOCATION_DISPLAY_PREFERENCE,
       ...(isEmis ? { email_for_docman: '' } : {}),
     });
@@ -483,6 +487,16 @@ const AdvancedSettings = () => {
             label="Disable patient delete"
             defaultValue={defaults.disable_patient_delete}
           />
+        </Col>
+        <Col xs={24} md={12}>
+          <Form.Item
+            label="Allow ASA to update pickup address"
+            name="allow_patient_pickup_address_change"
+            valuePropName="checked"
+            extra="When on, ASA updates the patient's home address after they confirm a different pickup. When off, staff update it. The clinic is notified either way."
+          >
+            <Switch />
+          </Form.Item>
         </Col>
       </Row>
 
