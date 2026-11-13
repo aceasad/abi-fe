@@ -21,7 +21,7 @@ const isWaitingReturn = (trip) =>
   trip?.leg_role === 'return' &&
   trip?.pickup_type === 'will_call' &&
   !trip?.activated_at &&
-  !['cancelled', 'canceled', 'completed', 'performed'].includes(
+  !['cancelled', 'canceled', 'completed', 'performed', 'tp declined'].includes(
     String(trip?.status || '').toLowerCase()
   );
 
@@ -33,6 +33,9 @@ const rideStatusLabel = (status, trip) => {
     normalized === 'waiting for activation'
   ) {
     return 'Will Call';
+  }
+  if (normalized === 'tp declined' || normalized === 'transportation_provider_declined') {
+    return 'TP declined';
   }
   if (!status) return 'Scheduled';
   return String(status)

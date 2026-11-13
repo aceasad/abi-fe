@@ -24,6 +24,7 @@ const TERMINAL_TRIP_STATUSES = new Set([
   'canceled',
   'completed',
   'performed',
+  'tp declined',
 ]);
 
 const hasActiveTrip = (appointment) =>

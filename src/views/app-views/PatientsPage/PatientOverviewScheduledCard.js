@@ -25,8 +25,8 @@ const { Title, Text } = Typography;
 const { useBreakpoint } = Grid;
 const firstTripUrl = (trips = []) => (trips || []).find((trip) => trip?.trip_url)?.trip_url;
 
-const TERMINAL_TRIP_STATUSES = new Set(['cancelled', 'canceled', 'completed', 'performed']);
-const CANCELLED_TRIP_STATUSES = new Set(['cancelled', 'canceled']);
+const TERMINAL_TRIP_STATUSES = new Set(['cancelled', 'canceled', 'completed', 'performed', 'tp declined']);
+const CANCELLED_TRIP_STATUSES = new Set(['cancelled', 'canceled', 'tp declined']);
 
 const transportColumnState = (trips) => {
   const list = trips || [];

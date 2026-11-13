@@ -62,6 +62,7 @@ const TERMINAL_TRIP_STATUSES = new Set([
   'canceled',
   'completed',
   'performed',
+  'tp declined',
 ]);
 
 const isTerminalTrip = (trip) =>
@@ -135,6 +136,7 @@ const RIDE_STATUS_OPTIONS = [
   { value: 'completed', label: 'Completed' },
   { value: 'performed', label: 'Performed' },
   { value: 'cancelled', label: 'Cancelled' },
+  { value: 'tp declined', label: 'TP declined' },
 ];
 
 const TransportPage = () => {
