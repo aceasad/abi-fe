@@ -19,6 +19,7 @@ import clinicService from 'services/ClinicService';
 import Loading from 'components/shared-components/Loading';
 import { useDispatch, useSelector } from 'react-redux';
 import { getClinic } from 'redux/actions/Clinic';
+import { makeSelectClinic } from 'redux/selectors/Clinic';
 import { getLocalStorageItem, setLocalStorageItem } from 'utils/localStorage';
 import {
   DEFAULT_LOCATION_DISPLAY_PREFERENCE,
@@ -26,7 +27,7 @@ import {
   LOCATION_DISPLAY_PREFERENCES,
 } from 'constants/FrontendSettings';
 
-const { Text } = Typography;
+const { Text, Title } = Typography;
 const { Option } = Select;
 
 const CLINIC_TIMEZONES = [
@@ -162,9 +163,11 @@ const apiToFormValues = (settings) => ({
   email_for_reports: settings.email_for_reports || '',
   email_for_docman: settings.email_for_docman || '',
   allow_patient_pickup_address_change: Boolean(settings.allow_patient_pickup_address_change),
+  transport_max_trip_hours: settings.transport_max_trip_hours ?? 2,
+  transport_pickup_match: settings.transport_pickup_match || 'state',
 });
 
-const formToApiPayload = (values, isEmis) => {
+const formToApiPayload = (values, isEmis, isTMSEnabled) => {
   const inviteTime = values.patient_invite_send_time;
   const earliestTime = values.message_earliest_send_time;
   const latestTime = values.message_latest_send_time;
@@ -193,8 +196,15 @@ const formToApiPayload = (values, isEmis) => {
     message_earliest_send_minute: earliestTime ? earliestTime.minute() : null,
     timezone: values.timezone || null,
     email_for_reports: values.email_for_reports?.trim() || null,
-    allow_patient_pickup_address_change: Boolean(values.allow_patient_pickup_address_change),
   };
+
+  if (isTMSEnabled) {
+    payload.allow_patient_pickup_address_change = Boolean(
+      values.allow_patient_pickup_address_change,
+    );
+    payload.transport_max_trip_hours = values.transport_max_trip_hours ?? 2;
+    payload.transport_pickup_match = values.transport_pickup_match || 'state';
+  }
 
   if (isEmis) {
     payload.email_for_docman = values.email_for_docman?.trim() || null;
@@ -221,8 +231,12 @@ const formToApiPayload = (values, isEmis) => {
 
 const AdvancedSettings = () => {
   const dispatch = useDispatch();
-  const { PASProvider } = useSelector((state) => state.auth.user || {});
+  const clinic = useSelector(makeSelectClinic());
+  const { PASProvider, isTMSEnabled: userIsTMSEnabled } = useSelector(
+    (state) => state.auth.user || {},
+  );
   const isEmis = PASProvider?.toLowerCase() === 'emis';
+  const isTMSEnabled = Boolean(clinic?.isTMSEnabled ?? userIsTMSEnabled);
 
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(true);
@@ -265,7 +279,7 @@ const AdvancedSettings = () => {
         LOCATION_DISPLAY_PREFERENCE_KEY,
         values.location_display_preference || DEFAULT_LOCATION_DISPLAY_PREFERENCE,
       );
-      const payload = formToApiPayload(values, isEmis);
+      const payload = formToApiPayload(values, isEmis, isTMSEnabled);
       const { data } = await clinicService.updateAdvancedSettings(payload);
       const { system_defaults: systemDefaults, ...settings } = data;
       setDefaults(systemDefaults || {});
@@ -304,7 +318,13 @@ const AdvancedSettings = () => {
       message_latest_send_time: null,
       timezone: defaults.timezone,
       email_for_reports: '',
-      allow_patient_pickup_address_change: false,
+      ...(isTMSEnabled
+        ? {
+            allow_patient_pickup_address_change: false,
+            transport_max_trip_hours: 2,
+            transport_pickup_match: 'state',
+          }
+        : {}),
       location_display_preference: DEFAULT_LOCATION_DISPLAY_PREFERENCE,
       ...(isEmis ? { email_for_docman: '' } : {}),
     });
@@ -488,17 +508,49 @@ const AdvancedSettings = () => {
             defaultValue={defaults.disable_patient_delete}
           />
         </Col>
-        <Col xs={24} md={12}>
-          <Form.Item
-            label="Allow ASA to update pickup address"
-            name="allow_patient_pickup_address_change"
-            valuePropName="checked"
-            extra="When on, ASA updates the patient's home address after they confirm a different pickup. When off, staff update it. The clinic is notified either way."
-          >
-            <Switch />
-          </Form.Item>
-        </Col>
       </Row>
+
+      {isTMSEnabled && (
+        <>
+          <Title level={4} style={{ marginTop: 8 }}>
+            Transport Settings
+          </Title>
+          <Row gutter={[24, 0]}>
+            <Col xs={24} md={12}>
+              <Form.Item
+                label="Max trip hours"
+                name="transport_max_trip_hours"
+                extra="A pickup is not eligible when the ride would take longer than this."
+                rules={[{ required: true, message: 'Enter the maximum trip hours' }]}
+              >
+                <InputNumber min={1} style={{ width: '100%' }} addonAfter="hours" />
+              </Form.Item>
+            </Col>
+            <Col xs={24} md={12}>
+              <Form.Item
+                label="Pickup must match"
+                name="transport_pickup_match"
+                extra="The pickup is compared with the clinic location for that appointment."
+              >
+                <Select>
+                  <Option value="state">State</Option>
+                  <Option value="state_and_city">State and city</Option>
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col xs={24} md={12}>
+              <Form.Item
+                label="Allow ASA to update pickup address"
+                name="allow_patient_pickup_address_change"
+                valuePropName="checked"
+                extra="When on, ASA updates the patient's home address after they confirm a different pickup. When off, staff update it. The clinic is notified either way."
+              >
+                <Switch />
+              </Form.Item>
+            </Col>
+          </Row>
+        </>
+      )}
 
       <Space style={{ marginTop: 8 }}>
         <Button type="primary" htmlType="submit" loading={saving}>
