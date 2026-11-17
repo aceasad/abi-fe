@@ -44,6 +44,7 @@ import { makeSelectClinic } from 'redux/selectors/Clinic';
 import Modal from 'components/shared-components/Modal';
 import utils from 'utils';
 import UploaderPatient from './UploaderPatient';
+import CopayBulkPayment from './CopayBulkPayment';
 import patientService from 'services/PatientService';
 import { formatDateByCountry, formatHomeLocationDisplay } from 'utils/helpers';
 
@@ -310,6 +311,7 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
               </Button>
             </Tooltip>
             <UploaderPatient onUploadComplete={handleUploadCompletion} />
+            <CopayBulkPayment />
             <Tooltip title={"Unsuccessful Invites"}>
               <Button
                 onClick={downloadNotOnWhatsapp}
@@ -346,6 +348,7 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
                   {"New patient"}
                 </Button>
                 <UploaderPatient onUploadComplete={handleUploadCompletion} />
+                <CopayBulkPayment />
                 <Button onClick={downloadNotOnWhatsapp} type="primary">
                   {"Unsuccessful Invites"}
                 </Button>

@@ -8,7 +8,6 @@ import {
 } from 'antd';
 import { PageHeader } from '@ant-design/pro-components';
 import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import AppointmentsLikelyToBeMissed from './AppointmentsLikelyToBeMissed';
 import MessagesRequiringImmediateAttention from './MessagesRequiringImmediateAttention';
