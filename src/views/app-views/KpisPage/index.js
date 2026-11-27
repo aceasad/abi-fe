@@ -11,6 +11,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import ClinicStats from './Groups/ClinicStats';
 import MessagesBeforeMilestones from './Groups/MessagesBeforeMilestones';
+import OperationsKpis from './Groups/OperationsKpis';
 import { getOverviewClinicStatsData } from 'redux/actions/Overview';
 import { getCampaigns } from 'redux/actions/Patient';
 import { makeSelectCampaigns } from 'redux/selectors/Patient';
@@ -250,6 +251,14 @@ const KpisPage = () => {
               />
             </Col>
           </Row>
+
+          <div style={{ marginTop: isMobile ? 12 : 16 }}>
+            <OperationsKpis
+              startTime={normalizedDateRange[0] ? normalizedDateRange[0].format('YYYY-MM-DD') : null}
+              endTime={normalizedDateRange[1] ? normalizedDateRange[1].format('YYYY-MM-DD') : null}
+              campaignId={selectedCampaign}
+            />
+          </div>
         </>
       )}
     </div>

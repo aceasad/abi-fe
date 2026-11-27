@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Card, Segmented, Typography, Grid } from 'antd';
-import { Redirect } from 'react-router-dom';
+import { Redirect, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { makeSelectIsOrganizationOwner } from 'redux/selectors/Auth';
 import { APP_PAGES_PREFIX_PATH } from 'configs/AppConfig';
@@ -22,7 +22,9 @@ const BillingPage = () => {
   const screens = utils.getBreakPoint(useBreakpoint());
   const isMobile = !screens.includes('lg');
   const isOrganizationOwner = useSelector(makeSelectIsOrganizationOwner());
-  const [tab, setTab] = useState('usage');
+  const location = useLocation();
+  const requestedTab = new URLSearchParams(location.search).get('tab');
+  const [tab, setTab] = useState(TABS.some((item) => item.value === requestedTab) ? requestedTab : 'usage');
   const [sandbox, setSandbox] = useState(false);
 
   useEffect(() => {

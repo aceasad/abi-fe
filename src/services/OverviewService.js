@@ -9,6 +9,7 @@ const ENDPOINTS = {
   DOWNLOAD_CLINICSTATS_DATA: '/industry_averages/download-kpi/',
   GET_FAILED_MESSAGES: '/industry_averages/failed-messages/',
   GET_MESSAGES_BEFORE_MILESTONES: '/industry_averages/messages-before-milestones/',
+  GET_KPI_OPERATIONS: '/industry_averages/get-kpi-operations/',
 
 };
 
@@ -44,6 +45,14 @@ class OverviewService extends ApiService {
     });
   getMessagesBeforeMilestones = (start_time, end_time, campaign_id) =>
     this.apiClient.get(ENDPOINTS.GET_MESSAGES_BEFORE_MILESTONES, {
+      params: {
+        start_time,
+        end_time,
+        ...(campaign_id != null && campaign_id !== '' ? { campaign_id } : {}),
+      },
+    });
+  getKpiOperations = (start_time, end_time, campaign_id) =>
+    this.apiClient.get(ENDPOINTS.GET_KPI_OPERATIONS, {
       params: {
         start_time,
         end_time,
