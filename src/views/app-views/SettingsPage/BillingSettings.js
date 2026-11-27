@@ -431,7 +431,7 @@ const BillingSettings = () => {
             />
             <SettingRow
               title="Copay fee"
-              detail="0.5% of the amount, with a $0.50 minimum. Set by Spryt. A $40 copay costs $0.50."
+              detail={status?.copay_fee_detail || 'Set by Spryt.'}
             />
           </Card>
         </Col>
