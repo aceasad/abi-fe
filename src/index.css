@@ -831,6 +831,33 @@ input.ant-input:hover,
   box-shadow: 0 0 0 2px rgba(93, 78, 191, 0.2) !important;
 }
 
+.billing-collection-switch.ant-switch {
+  width: 36px !important;
+  min-width: 36px !important;
+  max-width: 36px !important;
+  height: 20px !important;
+  min-height: 20px !important;
+  line-height: 20px !important;
+}
+
+.billing-collection-switch.ant-switch .ant-switch-handle {
+  width: 16px !important;
+  height: 16px !important;
+  top: 2px !important;
+}
+
+.billing-collection-switch.ant-switch .ant-switch-handle::before {
+  border-radius: 50% !important;
+}
+
+.billing-collection-switch.ant-switch.ant-switch-checked .ant-switch-handle {
+  inset-inline-start: 18px !important;
+}
+
+.billing-collection-switch.ant-switch .ant-switch-inner {
+  display: none !important;
+}
+
 .ant-btn-primary {
   background-color: #5d4ebf !important;
   border-color: #5d4ebf !important;

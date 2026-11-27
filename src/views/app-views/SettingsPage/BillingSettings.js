@@ -374,6 +374,7 @@ const BillingSettings = () => {
               detail="Asa tells the patient the amount and sends a secure payment link."
               control={(
                 <Switch
+                  className="billing-collection-switch"
                   checked={collectCopays}
                   loading={acting === 'collection'}
                   onChange={(checked) => persistCollection({ collect_copays: checked })}
@@ -398,6 +399,7 @@ const BillingSettings = () => {
               detail="Patients can choose to pay at the front desk."
               control={(
                 <Switch
+                  className="billing-collection-switch"
                   checked={payAtVisit}
                   loading={acting === 'collection'}
                   onChange={(checked) => persistCollection({ offer_pay_at_visit: checked })}
@@ -428,7 +430,7 @@ const SettingRow = ({ title, detail, control }) => (
       <div>{title}</div>
       <Text type="secondary">{detail}</Text>
     </div>
-    {control}
+    {control ? <div style={{ flex: '0 0 auto', lineHeight: 0 }}>{control}</div> : null}
   </div>
 );
 
