@@ -300,6 +300,7 @@ const PatientOverview = ({
               />
               {isTMSEnabled && (
                 <PatientOverviewTransportCard
+                  patient={patient}
                   showAppointment={setActiveAppointment}
                 />
               )}

@@ -5,7 +5,6 @@ import {
   Button,
   Card,
   Col,
-  DatePicker,
   Grid,
   Input,
   Layout,
@@ -19,7 +18,6 @@ import {
 } from 'antd';
 import {
   CarOutlined,
-  CloseCircleOutlined,
   ExportOutlined,
   SearchOutlined,
 } from '@ant-design/icons';
@@ -29,26 +27,19 @@ import { APP_PAGES_PREFIX_PATH } from 'configs/AppConfig';
 import { env } from 'configs/EnvironmentConfig';
 import { DEFAULT_PAGINATION_LIMIT } from 'constants/ApiConstant';
 import { SCHEDULED_APPOINTMENT } from 'constants/ClinicConstants';
-import { formatDateByCountry, removeLeadingZeroFromTime } from 'utils/helpers';
+import { formatDateByCountry, formatLocationLabel, removeLeadingZeroFromTime } from 'utils/helpers';
 import { useDebounce } from 'utils/hooks';
 import { makeSelectClinic } from 'redux/selectors/Clinic';
 import { getSingleAppointment } from 'redux/actions/Appointment';
-import appointmentService from 'services/AppointmentService';
+import patientService from 'services/PatientService';
 import transportService from 'services/TransportService';
 import AppointmentPreview from '../CalendarPage/AppointmentPreview';
-import {
-  formatPlace,
-  rideStatusLabel,
-  rideTypeLabel,
-  tripTypeLabel,
-} from '../AppointmentsPage/AppointmentTransportDetails';
+import { rideStatusLabel } from '../AppointmentsPage/AppointmentTransportDetails';
 import BookRideModal from './BookRideModal';
 import CancelAppointmentsModal from './CancelAppointmentsModal';
 import CancelChoiceModal from './CancelChoiceModal';
 
-const { Title } = Typography;
 const { useBreakpoint } = Grid;
-const { RangePicker } = DatePicker;
 
 const MEDIDRIVE_BOOKING_URL =
   env?.MEDIDRIVE_BOOKING_URL || 'https://booking-staging.medidrive.com/login';
@@ -116,10 +107,25 @@ const pickupWindowLabel = (trip) => {
   return start || end || '-';
 };
 
-const distanceLabel = (trip) =>
-  trip?.distance_miles == null ? '-' : `${Number(trip.distance_miles).toFixed(1)} mi`;
+const isCompletedRide = (trip) =>
+  ['completed', 'performed'].includes(String(trip?.status || '').toLowerCase());
 
-const hasTripUrl = (trip) => Boolean(trip?.trip_url);
+const rideTimingLabel = (trip) => {
+  if (!trip) return '';
+  if (isCompletedRide(trip) && trip.dropped_off_at) {
+    const dropped = formatWindowTime(trip.dropped_off_at, trip.pickup_timezone);
+    return dropped ? `Dropped off ${dropped}` : 'Dropped off';
+  }
+  const windowLabel = pickupWindowLabel(trip);
+  return windowLabel === '-' ? '' : windowLabel;
+};
+
+const BUCKETS = [
+  { key: 'attention', label: 'Needs attention' },
+  { key: 'today', label: 'Today' },
+  { key: 'upcoming', label: 'Upcoming' },
+  { key: 'past', label: 'Past' },
+];
 
 const TRIP_TYPE_OPTIONS = [
   { value: 'single', label: 'Single trip' },
@@ -152,17 +158,17 @@ const TransportPage = () => {
 
   const [trips, setTrips] = useState([]);
   const [count, setCount] = useState(0);
+  const [buckets, setBuckets] = useState({});
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(DEFAULT_PAGINATION_LIMIT);
-  const [dateRange, setDateRange] = useState(null);
-  const [appointmentTypeId, setAppointmentTypeId] = useState(null);
+  const [bucket, setBucket] = useState('today');
   const [tripType, setTripType] = useState(null);
   const [rideStatus, setRideStatus] = useState(null);
+  const [locationId, setLocationId] = useState(null);
+  const [locations, setLocations] = useState([]);
   const [patientSearch, setPatientSearch] = useState('');
   const debouncedPatientSearch = useDebounce(patientSearch, 400);
-  const [appointmentTypes, setAppointmentTypes] = useState([]);
-  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [activeAppointment, setActiveAppointment] = useState(null);
   const [cancelChoiceTargets, setCancelChoiceTargets] = useState(null);
   const [appointmentCancelTargets, setAppointmentCancelTargets] = useState(null);
@@ -176,10 +182,9 @@ const TransportPage = () => {
       const params = {
         limit: pageSize,
         offset: (page - 1) * pageSize,
+        bucket,
       };
-      if (dateRange?.[0]) params.start_date = dateRange[0].format('YYYY-MM-DD');
-      if (dateRange?.[1]) params.end_date = dateRange[1].format('YYYY-MM-DD');
-      if (appointmentTypeId) params.appointment_type_id = appointmentTypeId;
+      if (locationId) params.location = locationId;
       if (tripType) params.trip_type = tripType;
       if (rideStatus) params.status = rideStatus;
       // Server-side so the search spans every page, not just the rows on screen.
@@ -192,14 +197,16 @@ const TransportPage = () => {
       const results = Array.isArray(data) ? data : data?.results || [];
       setTrips(results.map((trip) => ({ ...trip, key: trip.id })));
       setCount(Array.isArray(data) ? results.length : data?.count || 0);
+      setBuckets(data?.buckets || {});
     } catch {
       message.error('Failed to load transport trips');
       setTrips([]);
       setCount(0);
+      setBuckets({});
     } finally {
       setLoading(false);
     }
-  }, [page, pageSize, dateRange, appointmentTypeId, tripType, rideStatus, debouncedPatientSearch]);
+  }, [page, pageSize, bucket, locationId, tripType, rideStatus, debouncedPatientSearch]);
 
   useEffect(() => {
     if (isTMSEnabled) fetchTrips();
@@ -207,47 +214,54 @@ const TransportPage = () => {
 
   useEffect(() => {
     let cancelled = false;
-    async function fetchAppointmentTypes() {
-      try {
-        const response = await appointmentService.getAppointmentTypes();
-        if (!cancelled) {
-          setAppointmentTypes(response.data?.results || response.data || []);
-        }
-      } catch {
-        if (!cancelled) setAppointmentTypes([]);
-      }
-    }
-    fetchAppointmentTypes();
+    patientService
+      .getPatientLocations()
+      .then(({ data }) => {
+        if (cancelled) return;
+        const options = (Array.isArray(data) ? data : [])
+          .filter((item) => item?.location_id)
+          .map((item) => {
+            const id = String(item.location_id);
+            return {
+              value: id,
+              label: formatLocationLabel(item, id),
+            };
+          });
+        setLocations(options);
+      })
+      .catch(() => {
+        if (!cancelled) setLocations([]);
+      });
     return () => {
       cancelled = true;
     };
   }, []);
 
-  // Drop selections that are no longer on screen after a refresh or page change.
-  useEffect(() => {
-    const visibleKeys = new Set(trips.map((trip) => trip.key));
-    setSelectedRowKeys((prev) => prev.filter((key) => visibleKeys.has(key)));
-  }, [trips]);
-
   useEffect(() => {
     if (activeAppointment) dispatch(getSingleAppointment(activeAppointment.id));
   }, [activeAppointment, dispatch]);
 
-  // tripTypeLabel needs every leg of an appointment to tell round trips from single ones.
-  const tripsByAppointment = useMemo(() => {
+  const appointmentRows = useMemo(() => {
     const grouped = new Map();
     trips.forEach((trip) => {
       const appointmentId = trip.appointment?.id;
-      if (!grouped.has(appointmentId)) grouped.set(appointmentId, []);
-      grouped.get(appointmentId).push(trip);
+      if (!grouped.has(appointmentId)) {
+        grouped.set(appointmentId, {
+          key: appointmentId,
+          appointment: trip.appointment,
+          patient: trip.patient,
+          legs: [],
+          rideThere: null,
+          rideHome: null,
+        });
+      }
+      const row = grouped.get(appointmentId);
+      row.legs.push(trip);
+      if (trip.leg_role === 'return') row.rideHome = trip;
+      else row.rideThere = trip;
     });
-    return grouped;
+    return [...grouped.values()];
   }, [trips]);
-
-  const selectedTrips = useMemo(
-    () => trips.filter((trip) => selectedRowKeys.includes(trip.key)),
-    [trips, selectedRowKeys]
-  );
 
   // A round trip is two rows on one appointment - cancel it once.
   const uniqueAppointmentIds = (rows) => [
@@ -326,7 +340,6 @@ const TransportPage = () => {
       } else {
         message.info('No live rides to cancel');
       }
-      setSelectedRowKeys([]);
       setActiveAppointment(null);
       await fetchTrips();
     } catch {
@@ -358,7 +371,6 @@ const TransportPage = () => {
         `${succeeded} appointment(s) and their ride(s) cancelled`
       );
     }
-    setSelectedRowKeys([]);
     setCancelLoading(false);
     setAppointmentCancelTargets(null);
     setActiveAppointment(null);
@@ -390,6 +402,59 @@ const TransportPage = () => {
     return <Redirect to={`${APP_PAGES_PREFIX_PATH}/overview`} />;
   }
 
+  const openAppointment = (appointmentId) => {
+    if (!appointmentId) return;
+    setActiveAppointment({
+      id: appointmentId,
+      type: SCHEDULED_APPOINTMENT,
+    });
+  };
+
+  const openInMediDrive = (trip) => (
+    <Tooltip title={trip?.trip_url ? 'Open this trip in MediDrive' : 'Trip URL not available yet'}>
+      <Button
+        icon={<ExportOutlined />}
+        size="small"
+        disabled={!trip?.trip_url}
+        onClick={(event) => {
+          event.stopPropagation();
+          if (trip?.trip_url) {
+            window.open(trip.trip_url, '_blank', 'noopener');
+          }
+        }}
+      />
+    </Tooltip>
+  );
+
+  const rideCell = (trip, emptyLabel) => {
+    if (!trip) {
+      return <Typography.Text type="secondary">{emptyLabel}</Typography.Text>;
+    }
+    const timing = rideTimingLabel(trip);
+    return (
+      <Space align="start" onClick={(event) => event.stopPropagation()}>
+        <div>
+          <div>{rideStatusLabel(trip.status, trip)}</div>
+          {timing && (
+            <Typography.Text type="secondary" style={{ fontSize: 12 }}>
+              {timing}
+            </Typography.Text>
+          )}
+        </div>
+        {openInMediDrive(trip)}
+      </Space>
+    );
+  };
+
+  const rowActions = (record) => (
+    <Space onClick={(event) => event.stopPropagation()}>
+      {activateReturnButton(record.rideHome)}
+      <Button size="small" onClick={() => openAppointment(record.appointment?.id)}>
+        Open
+      </Button>
+    </Space>
+  );
+
   const columns = [
     {
       title: 'Patient',
@@ -397,113 +462,43 @@ const TransportPage = () => {
       render: (_, record) => record.patient?.full_name || '-',
     },
     {
-      title: 'Date & time',
-      key: 'datetime',
-      render: (_, record) => formatAppointmentDateTime(record.appointment),
+      title: 'Appointment',
+      key: 'appointment',
+      render: (_, record) => (
+        <div>
+          <div>{formatAppointmentDateTime(record.appointment) || '-'}</div>
+          <Typography.Text type="secondary">
+            {record.appointment?.appointment_type?.name || '-'}
+          </Typography.Text>
+          {record.appointment?.location_name && (
+            <div>
+              <Typography.Text type="secondary">
+                {record.appointment.location_name}
+              </Typography.Text>
+            </div>
+          )}
+        </div>
+      ),
     },
     {
-      title: 'Appointment type',
-      key: 'appointmentType',
-      render: (_, record) => record.appointment?.appointment_type?.name || '-',
-      responsive: ['lg'],
-    },
-    {
-      title: 'Appointment status',
-      key: 'appointmentStatus',
-      render: (_, record) => record.appointment?.status?.name || '-',
-      responsive: ['lg'],
-    },
-    {
-      title: 'Trip Type',
+      title: 'Trip',
       key: 'tripType',
-      render: (_, record) =>
-        tripTypeLabel(tripsByAppointment.get(record.appointment?.id)),
+      render: (_, record) => (record.rideHome ? 'Round trip' : 'Single trip'),
     },
     {
-      title: 'Ride type',
-      key: 'rideType',
-      render: (_, record) => rideTypeLabel(record) || '-',
-      responsive: ['lg'],
+      title: 'Ride there',
+      key: 'rideThere',
+      render: (_, record) => rideCell(record.rideThere, '-'),
     },
     {
-      title: 'Ride Status',
-      dataIndex: 'status',
-      key: 'status',
-      render: (_, record) => rideStatusLabel(record.status, record),
-    },
-    {
-      title: 'Pickup',
-      dataIndex: 'pickup_place',
-      key: 'pickup',
-      render: (place) => formatPlace(place) || '-',
-      responsive: ['lg'],
-    },
-    {
-      title: 'Dropoff',
-      dataIndex: 'dropoff_place',
-      key: 'dropoff',
-      render: (place) => formatPlace(place) || '-',
-      responsive: ['lg'],
-    },
-    {
-      title: 'Pickup window',
-      key: 'pickupWindow',
-      render: (_, record) => pickupWindowLabel(record),
-      responsive: ['lg'],
-    },
-    {
-      title: 'Distance',
-      key: 'distance',
-      render: (_, record) => distanceLabel(record),
-      responsive: ['lg'],
+      title: 'Ride home',
+      key: 'rideHome',
+      render: (_, record) => rideCell(record.rideHome, 'No ride home'),
     },
     {
       title: '',
       key: 'actions',
-      render: (_, record) => (
-        <div className="text-right">
-          <Space>
-            {activateReturnButton(record)}
-            <Tooltip
-              title={
-                hasTripUrl(record)
-                  ? 'Open this trip in MediDrive'
-                  : 'Trip URL not available yet'
-              }
-            >
-              <Button
-                icon={<ExportOutlined />}
-                size="small"
-                disabled={!hasTripUrl(record)}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (hasTripUrl(record)) {
-                    window.open(record.trip_url, '_blank', 'noopener');
-                  }
-                }}
-              />
-            </Tooltip>
-            <Tooltip
-              title={
-                isNothingLeftToCancel(record)
-                  ? 'This ride and its appointment are already cancelled'
-                  : 'Cancel the ride, or the ride and the appointment'
-              }
-            >
-              <Button
-                icon={<CloseCircleOutlined />}
-                size="small"
-                danger
-                disabled={isNothingLeftToCancel(record)}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  openCancelChoice([record]);
-                }}
-              />
-            </Tooltip>
-          </Space>
-        </div>
-      ),
+      render: (_, record) => rowActions(record),
     },
   ];
 
@@ -520,27 +515,15 @@ const TransportPage = () => {
         allowClear
         style={{ width: isMobile ? '100%' : 240 }}
       />
-      <RangePicker
-        value={dateRange}
-        onChange={(range) => {
-          setDateRange(range);
-          setPage(1);
-        }}
-        format="DD/MM/YYYY"
-        style={isMobile ? { width: '100%' } : undefined}
-      />
       <Select
         allowClear
-        placeholder="Appointment type"
-        value={appointmentTypeId}
+        placeholder="Location"
+        value={locationId}
         onChange={(value) => {
-          setAppointmentTypeId(value ?? null);
+          setLocationId(value ?? null);
           setPage(1);
         }}
-        options={appointmentTypes.map((type) => ({
-          value: type.id,
-          label: type.name,
-        }))}
+        options={locations}
         style={{ width: isMobile ? '100%' : 200 }}
       />
       <Select
@@ -569,7 +552,12 @@ const TransportPage = () => {
   );
 
   const medidriveButton = (
-    <Space direction={isMobile ? 'vertical' : 'horizontal'} style={{ width: isMobile ? '100%' : undefined }}>
+    <Space
+      className="transport-header-actions"
+      align="center"
+      direction={isMobile ? 'vertical' : 'horizontal'}
+      style={{ width: isMobile ? '100%' : undefined }}
+    >
       <Button
         type="primary"
         icon={<CarOutlined />}
@@ -588,135 +576,51 @@ const TransportPage = () => {
     </Space>
   );
 
-  // The destructive actions only mean anything once rows are picked, so they live in a
-  // bar that appears on selection instead of sitting greyed out in the filter row.
-  const appointmentSelectionCount = uniqueAppointmentIds(selectedTrips).length;
-
-  const selectionBar = selectedRowKeys.length > 0 && (
-    <div
-      style={{
-        marginTop: '16px',
-        padding: '12px 16px',
-        background: '#fafafa',
-        border: '1px solid #f0f0f0',
-        borderRadius: '8px',
-      }}
-    >
-      <Row gutter={[16, 12]} align="middle">
-        <Col flex="auto">
-          <Typography.Text strong>
-            {`${selectedRowKeys.length} ${
-              selectedRowKeys.length > 1 ? 'rides' : 'ride'
-            } selected`}
-          </Typography.Text>
-          <Typography.Text type="secondary" style={{ marginLeft: '8px' }}>
-            {`across ${appointmentSelectionCount} ${
-              appointmentSelectionCount > 1 ? 'appointments' : 'appointment'
-            }`}
-          </Typography.Text>
-        </Col>
-        <Col>
-          <Space size="small" wrap>
-            <Button
-              size="small"
-              onClick={() => setSelectedRowKeys([])}
-            >
-              Clear
-            </Button>
-            <Button
-              danger
-              size="small"
-              icon={<CloseCircleOutlined />}
-              onClick={() => openCancelChoice(selectedTrips)}
-            >
-              Cancel
-            </Button>
-          </Space>
-        </Col>
-      </Row>
-    </div>
+  const pills = (
+    <Space wrap size="small">
+      {BUCKETS.map((item) => {
+        const selected = bucket === item.key;
+        const total = buckets[item.key];
+        return (
+          <Button
+            key={item.key}
+            type={selected ? 'primary' : 'default'}
+            onClick={() => {
+              setBucket(item.key);
+              setPage(1);
+            }}
+          >
+            {total == null ? item.label : `${item.label} ${total}`}
+          </Button>
+        );
+      })}
+    </Space>
   );
 
-  const TripCard = ({ trip }) => (
+  const TripCard = ({ row }) => (
     <Card
       hoverable
       styles={{ body: { padding: '16px' } }}
       style={{ height: '100%', borderRadius: '8px' }}
-      onClick={() =>
-        setActiveAppointment({
-          id: trip.appointment?.id,
-          type: SCHEDULED_APPOINTMENT,
-        })
-      }
+      onClick={() => openAppointment(row.appointment?.id)}
     >
       <Space direction="vertical" size="small" style={{ width: '100%' }}>
-        <Space>
-          <CarOutlined style={{ fontSize: '24px', color: '#1890ff' }} />
-          <Typography.Text strong style={{ fontSize: '16px' }}>
-            {trip.patient?.full_name || '-'}
-          </Typography.Text>
-        </Space>
-        <Typography.Text type="secondary">
-          {formatAppointmentDateTime(trip.appointment)}
+        <Typography.Text strong style={{ fontSize: '16px' }}>
+          {row.patient?.full_name || '-'}
         </Typography.Text>
         <Typography.Text type="secondary">
-          {trip.appointment?.appointment_type?.name || '-'}
+          {formatAppointmentDateTime(row.appointment)}
         </Typography.Text>
         <Typography.Text type="secondary">
-          {`${tripTypeLabel(tripsByAppointment.get(trip.appointment?.id))} - ${rideStatusLabel(trip.status, trip)}`}
+          {row.appointment?.appointment_type?.name || '-'}
+          {row.appointment?.location_name ? ` · ${row.appointment.location_name}` : ''}
         </Typography.Text>
-        {formatPlace(trip.pickup_place) && (
-          <Typography.Text type="secondary">
-            {`Pickup: ${formatPlace(trip.pickup_place)}`}
-          </Typography.Text>
-        )}
-        {formatPlace(trip.dropoff_place) && (
-          <Typography.Text type="secondary">
-            {`Dropoff: ${formatPlace(trip.dropoff_place)}`}
-          </Typography.Text>
-        )}
-        <Space
-          style={{ width: '100%', justifyContent: 'flex-end', marginTop: '8px' }}
-        >
-          {activateReturnButton(trip)}
-          <Tooltip
-            title={
-              hasTripUrl(trip)
-                ? 'Open this trip in MediDrive'
-                : 'Trip URL not available yet'
-            }
-          >
-            <Button
-              icon={<ExportOutlined />}
-              size="small"
-              disabled={!hasTripUrl(trip)}
-              onClick={(e) => {
-                e.stopPropagation();
-                if (hasTripUrl(trip)) {
-                  window.open(trip.trip_url, '_blank', 'noopener');
-                }
-              }}
-            />
-          </Tooltip>
-          <Tooltip
-            title={
-              isNothingLeftToCancel(trip)
-                ? 'This ride and its appointment are already cancelled'
-                : 'Cancel the ride, or the ride and the appointment'
-            }
-          >
-            <Button
-              icon={<CloseCircleOutlined />}
-              size="small"
-              danger
-              disabled={isNothingLeftToCancel(trip)}
-              onClick={(e) => {
-                e.stopPropagation();
-                openCancelChoice([trip]);
-              }}
-            />
-          </Tooltip>
-        </Space>
+        <Typography.Text>
+          {row.rideHome ? 'Round trip' : 'Single trip'}
+        </Typography.Text>
+        <div>Ride there: {rideCell(row.rideThere, '-')}</div>
+        <div>Ride home: {rideCell(row.rideHome, 'No ride home')}</div>
+        {rowActions(row)}
       </Space>
     </Card>
   );
@@ -737,6 +641,7 @@ const TransportPage = () => {
               size="small"
               style={{ width: '100%', marginTop: '16px' }}
             >
+              {pills}
               {filters}
               {medidriveButton}
             </Space>
@@ -751,20 +656,20 @@ const TransportPage = () => {
               </Col>
               <Col>{medidriveButton}</Col>
             </Row>
-            <Space size="middle" wrap style={{ marginTop: '20px' }}>
+            <div style={{ marginTop: 16 }}>{pills}</div>
+            <Space size="middle" wrap style={{ marginTop: '16px' }}>
               {filters}
             </Space>
           </>
         )}
-        {selectionBar}
       </div>
 
       {isMobile ? (
-        trips.length > 0 ? (
+        appointmentRows.length > 0 ? (
           <Row gutter={[12, 12]}>
-            {trips.map((trip) => (
-              <Col xs={24} sm={12} key={trip.key}>
-                <TripCard trip={trip} />
+            {appointmentRows.map((row) => (
+              <Col xs={24} sm={12} key={row.key}>
+                <TripCard row={row} />
               </Col>
             ))}
           </Row>
@@ -779,32 +684,11 @@ const TransportPage = () => {
         <div className="table-responsive ant-table-row-pointer">
           <Table
             columns={columns}
-            dataSource={trips}
+            dataSource={appointmentRows}
             loading={loading}
             onRow={(record) => ({
-              onClick: () =>
-                setActiveAppointment({
-                  id: record.appointment?.id,
-                  type: SCHEDULED_APPOINTMENT,
-                }),
+              onClick: () => openAppointment(record.appointment?.id),
             })}
-            rowSelection={{
-              selectedRowKeys,
-              onChange: (keys) => setSelectedRowKeys(keys),
-              getCheckboxProps: (record) => ({
-                disabled: isNothingLeftToCancel(record),
-              }),
-              // Say why the row cannot be picked, otherwise a fully cancelled row just
-              // reads as a dead checkbox.
-              renderCell: (checked, record, index, originNode) =>
-                isNothingLeftToCancel(record) ? (
-                  <Tooltip title="This ride and its appointment are already cancelled">
-                    <span>{originNode}</span>
-                  </Tooltip>
-                ) : (
-                  originNode
-                ),
-            }}
             pagination={{
               current: page,
               pageSize,
@@ -869,9 +753,10 @@ const TransportPage = () => {
           }}
           appointment_type={activeAppointment.type}
           beforeCancel={(appointment) => {
-            const rows = tripsByAppointment.get(appointment?.id) || [];
+            const row = appointmentRows.find((item) => item.appointment?.id === appointment?.id);
+            const legs = row?.legs || [];
             openCancelChoice(
-              rows.length ? rows : [{ appointment, status: '' }]
+              legs.length ? legs : [{ appointment, status: '' }]
             );
           }}
         />

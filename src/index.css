@@ -840,6 +840,21 @@ input.ant-input:hover,
   border-radius: 0.625rem !important;
 }
 
+.transport-header-actions {
+  align-items: center;
+}
+
+.transport-header-actions .ant-btn {
+  height: 40px !important;
+  min-height: 40px !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  border-radius: 0.625rem !important;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
 .ant-btn-primary:hover,
 .ant-btn-primary:focus {
   background-color: #4a3d9f !important;
