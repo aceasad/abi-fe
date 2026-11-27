@@ -13,12 +13,15 @@ const ENDPOINTS = {
   COPAY_TEMPLATE: '/billing/copay-requests/template/',
   COPAY_VALIDATE: '/billing/copay-requests/validate/',
   COPAY_REQUESTS: '/billing/copay-requests/',
+  SETTINGS: '/billing/settings/',
+  COPAYS: '/billing/copays/',
 };
 
 class BillingService extends ApiService {
   getStatus = () => this.apiClient.get(ENDPOINTS.STATUS);
 
-  getLedger = () => this.apiClient.get(ENDPOINTS.LEDGER);
+  getLedger = ({ limit, offset } = {}) =>
+    this.apiClient.get(ENDPOINTS.LEDGER, { params: { limit, offset } });
 
   getInvoices = () => this.apiClient.get(ENDPOINTS.INVOICES);
 
@@ -52,6 +55,17 @@ class BillingService extends ApiService {
       rows,
       idempotency_key: idempotencyKey,
       source_filename: sourceFilename,
+    });
+
+  saveSettings = (payload) => this.apiClient.post(ENDPOINTS.SETTINGS, payload);
+
+  getCopays = (start, end) =>
+    this.apiClient.get(ENDPOINTS.COPAYS, { params: { start, end } });
+
+  exportCopays = (start, end) =>
+    this.apiClient.get(ENDPOINTS.COPAYS, {
+      params: { start, end, format: 'csv' },
+      responseType: 'blob',
     });
 }
 

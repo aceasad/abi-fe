@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Alert, Button, Table, Tag, Tooltip, Typography } from 'antd';
-import { InfoCircleOutlined } from '@ant-design/icons';
+import { Alert, Button, Card, Spin, Table, Typography } from 'antd';
+import { DownOutlined, RightOutlined } from '@ant-design/icons';
 import billingService from 'services/BillingService';
 import dayjs from 'utils/dayjs';
 import { billingErrorMessage } from '../SettingsPage/billingStatus';
@@ -14,11 +14,11 @@ const PAYMENT_LABEL = {
   void: 'Void',
 };
 
-const PAYMENT_COLOR = {
-  paid: 'success',
-  partial: 'warning',
-  unpaid: 'default',
-  void: 'default',
+const PAYMENT_STYLE = {
+  paid: { background: '#e5f6ec', color: '#1d7a45' },
+  partial: { background: '#f6e4c4', color: '#8a5a16' },
+  unpaid: { background: '#f0f0f0', color: '#595959' },
+  void: { background: '#f0f0f0', color: '#595959' },
 };
 
 const dollars = (cents) => {
@@ -32,121 +32,152 @@ const monthLabel = (start) => {
   if (!start) {
     return 'Bill';
   }
-  const date = new Date(start);
-  if (Number.isNaN(date.getTime())) {
+  const date = dayjs.utc(start);
+  if (!date.isValid()) {
     return 'Bill';
   }
-  return date.toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+  return date.format('MMMM YYYY');
 };
 
-const copayTip = (line) => {
-  const collected = Number(line.collected_cents) || 0;
-  const collectedText = collected
-    ? ` Patients paid ${dollars(collected)} in co-pay this period.`
-    : '';
-  return `Co-pay is not billed on this invoice. It is shown here as a metric.${collectedText}`;
-};
-
-const lineName = (line) => {
-  if (!line.informational) {
-    return line.name;
+const periodText = (invoice) => {
+  const start = invoice.start ? dayjs.utc(invoice.start) : null;
+  if (!start || !start.isValid()) {
+    return '';
   }
-  return (
-    <span>
-      {line.name}{' '}
-      <Tooltip title={copayTip(line)}>
-        <InfoCircleOutlined />
-      </Tooltip>
-    </span>
-  );
+  let end = invoice.end ? dayjs.utc(invoice.end) : start.endOf('month');
+  if (end.hour() === 0 && end.minute() === 0 && end.second() === 0) {
+    end = end.subtract(1, 'millisecond');
+  }
+  return `${start.format('MMM D')} to ${end.format('MMM D')} · closes ${end.format('MMM D')}`;
 };
 
-const BillTable = ({ invoice, paying, downloading, onPay, onDownload }) => (
-  <Table
-    style={{ marginTop: 12 }}
-    size="small"
-    pagination={false}
-    rowKey={(row, index) => `${invoice.id}-${row.name}-${index}`}
-    dataSource={invoice.lines || []}
-    title={() => (
-      <span style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-        <span>
-          {monthLabel(invoice.start)}{' '}
-          <Tag color={PAYMENT_COLOR[invoice.payment] || 'default'}>
-            {PAYMENT_LABEL[invoice.payment] || 'Unpaid'}
-          </Tag>
-        </span>
-        {invoice.payable && (
-          <Button type="primary" size="small" loading={paying} onClick={() => onPay(invoice)}>
-            {`Pay ${dollars(invoice.amount_due_cents)}`}
-          </Button>
-        )}
-        {invoice.payment === 'paid' && (
-          <Button size="small" loading={downloading} onClick={() => onDownload(invoice)}>
-            Download
-          </Button>
-        )}
-      </span>
-    )}
-    columns={[
-      { title: 'Line', dataIndex: 'name', render: (_, row) => lineName(row) },
-      { title: 'Quantity', dataIndex: 'quantity' },
-      {
-        title: 'Rate',
-        dataIndex: 'unit_price_cents',
-        render: (value, row) => (row.informational ? '—' : dollars(value)),
-      },
-      {
-        title: 'Amount',
-        dataIndex: 'total_cents',
-        render: (value, row) => (row.informational ? 'Not billed' : dollars(value)),
-      },
-    ]}
-    summary={() => (
-      <Table.Summary.Row>
-        <Table.Summary.Cell index={0} colSpan={3}>
-          <Text strong>Total</Text>
-        </Table.Summary.Cell>
-        <Table.Summary.Cell index={3}>
-          <Text strong>{dollars(invoice.total_cents)}</Text>
-        </Table.Summary.Cell>
-      </Table.Summary.Row>
-    )}
-  />
+const StatusPill = ({ invoice }) => (
+  <span
+    style={{
+      ...PAYMENT_STYLE[invoice.payment] || PAYMENT_STYLE.unpaid,
+      borderRadius: 999,
+      padding: '2px 10px',
+      fontSize: 13,
+      lineHeight: '22px',
+    }}
+  >
+    {PAYMENT_LABEL[invoice.payment] || 'Unpaid'}
+  </span>
 );
 
-const BillGroup = ({ title, invoices, empty, payingId, downloadingId, onPay, onDownload }) => (
-  <div style={{ marginTop: 8 }}>
-    <Title level={5} style={{ marginBottom: 0 }}>
-      {title}
-    </Title>
-    {invoices.length === 0 ? (
-      <Alert style={{ marginTop: 12 }} type="info" showIcon message={empty} />
-    ) : (
-      invoices.map((invoice) => (
-        <BillTable
-          key={invoice.id}
-          invoice={invoice}
-          paying={payingId === invoice.id}
-          downloading={downloadingId === invoice.id}
-          onPay={onPay}
-          onDownload={onDownload}
-        />
-      ))
-    )}
+const SummaryRow = ({ label, value, strong, color }) => (
+  <div
+    style={{
+      display: 'flex',
+      justifyContent: 'space-between',
+      gap: 24,
+      padding: '7px 0',
+      borderTop: strong && label === 'Total' ? '1px solid #f0f0f0' : undefined,
+    }}
+  >
+    <Text strong={strong}>{label}</Text>
+    <Text strong={strong} style={color ? { color } : undefined}>{value}</Text>
   </div>
 );
 
-const coversRange = (invoice, start, end) => {
-  if (!start || !end || !invoice.start) {
-    return true;
-  }
-  const invoiceStart = dayjs(invoice.start);
-  const invoiceEnd = invoice.end ? dayjs(invoice.end) : invoiceStart.add(1, 'month');
-  return invoiceStart.isBefore(dayjs(end).endOf('day')) && invoiceEnd.isAfter(dayjs(start).startOf('day'));
+const BillCard = ({ invoice, paying, downloading, onPay, onDownload }) => {
+  const [showEmpty, setShowEmpty] = useState(false);
+  const lines = invoice.lines || [];
+  const charged = lines.filter((line) => Number(line.quantity) > 0);
+  const empty = lines.filter((line) => !Number(line.quantity));
+  const visible = showEmpty ? lines : charged;
+  const paid = Number(invoice.paid_cents) || 0;
+
+  return (
+    <div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap' }}>
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+            <Title level={4} style={{ margin: 0 }}>{monthLabel(invoice.start)}</Title>
+            <StatusPill invoice={invoice} />
+            {invoice.current && (
+              <span
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  background: '#e5f6ec',
+                  color: '#1d7a45',
+                  borderRadius: 999,
+                  padding: '2px 10px',
+                  fontSize: 13,
+                }}
+              >
+                <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#1d7a45' }} />
+                Open · updating live
+              </span>
+            )}
+          </div>
+          <Text type="secondary">{periodText(invoice)}</Text>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <Button shape="round" loading={downloading} onClick={() => onDownload(invoice)}>
+            Download invoice
+          </Button>
+          {invoice.payable && (
+            <Button
+              shape="round"
+              type="primary"
+              loading={paying}
+              onClick={() => onPay(invoice)}
+              style={{ background: '#17382c', borderColor: '#17382c' }}
+            >
+              {`Pay ${dollars(invoice.amount_due_cents)}`}
+            </Button>
+          )}
+        </div>
+      </div>
+      <Table
+        style={{ marginTop: 16 }}
+        size="middle"
+        pagination={false}
+        rowKey={(row, index) => `${invoice.id}-${row.name}-${index}`}
+        dataSource={visible}
+        columns={[
+          { title: 'Line', dataIndex: 'name' },
+          { title: 'Quantity', dataIndex: 'quantity', align: 'right' },
+          {
+            title: 'Rate',
+            dataIndex: 'unit_price_cents',
+            align: 'right',
+            render: (value) => (value == null ? '—' : `${dollars(value)} each`),
+          },
+          { title: 'Amount', dataIndex: 'total_cents', align: 'right', render: (value) => dollars(value) },
+        ]}
+      />
+      {empty.length > 0 && (
+        <Button
+          type="text"
+          style={{ paddingLeft: 0, color: '#8c8c8c' }}
+          icon={showEmpty ? <DownOutlined /> : <RightOutlined />}
+          onClick={() => setShowEmpty((open) => !open)}
+        >
+          {showEmpty ? 'Hide lines with no charge' : `Show ${empty.length} lines with no charge`}
+        </Button>
+      )}
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 8 }}>
+        <div style={{ width: 280 }}>
+          <SummaryRow label="Subtotal" value={dollars(invoice.subtotal_cents)} />
+          <SummaryRow label="Taxes" value={dollars(invoice.tax_cents)} />
+          <SummaryRow label="Total" value={dollars(invoice.total_cents)} strong />
+          <SummaryRow
+            label="Paid"
+            value={paid ? `-${dollars(paid)}` : dollars(0)}
+            color={paid ? '#1d7a45' : undefined}
+          />
+          <SummaryRow label="Balance due" value={dollars(invoice.amount_due_cents)} strong />
+        </div>
+      </div>
+    </div>
+  );
 };
 
-const ClinicBills = ({ start, end }) => {
+const ClinicBills = ({ tabs }) => {
   const [invoices, setInvoices] = useState([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
@@ -207,39 +238,71 @@ const ClinicBills = ({ start, end }) => {
     }
   };
 
-  if (loading) {
-    return <Alert type="info" showIcon message="Loading bills…" />;
-  }
-
-  if (error) {
-    return <Alert type="error" showIcon message={error} />;
-  }
-
-  const inRange = invoices.filter((invoice) => coversRange(invoice, start, end));
-  const current = inRange.filter((invoice) => invoice.current);
-  const previous = inRange.filter((invoice) => !invoice.current);
+  const current = invoices.filter((invoice) => invoice.current);
+  const previous = invoices.filter((invoice) => !invoice.current);
+  const openBill = current[0];
+  const firstMonth = openBill ? monthLabel(openBill.start).split(' ')[0] : '';
 
   return (
     <>
-      {payError && <Alert style={{ marginBottom: 12 }} type="error" showIcon message={payError} />}
-      <BillGroup
-        title="Current bill"
-        invoices={current}
-        empty="No current bill in this range."
-        payingId={payingId}
-        downloadingId={downloadingId}
-        onPay={pay}
-        onDownload={download}
-      />
-      <BillGroup
-        title="Previous bills"
-        invoices={previous}
-        empty="No previous bills in this range."
-        payingId={payingId}
-        downloadingId={downloadingId}
-        onPay={pay}
-        onDownload={download}
-      />
+      <Card>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, marginBottom: 20, flexWrap: 'wrap' }}>
+          {tabs}
+          {openBill && (
+            <span
+              style={{
+                border: '1px solid #ececec',
+                borderRadius: 999,
+                padding: '6px 12px',
+                color: '#595959',
+                background: '#fff',
+              }}
+            >
+              {`Bill: ${monthLabel(openBill.start)}`}
+            </span>
+          )}
+        </div>
+        {payError && <Alert style={{ marginBottom: 12 }} type="error" showIcon message={payError} />}
+        {loading && (
+          <div style={{ display: 'flex', justifyContent: 'center', padding: '48px 0' }}>
+            <Spin />
+          </div>
+        )}
+        {!loading && error && <Alert type="error" showIcon message={error} />}
+        {!loading && !error && openBill && (
+          <BillCard
+            invoice={openBill}
+            paying={payingId === openBill.id}
+            downloading={downloadingId === openBill.id}
+            onPay={pay}
+            onDownload={download}
+          />
+        )}
+        {!loading && !error && !openBill && <Text type="secondary">No current bill.</Text>}
+      </Card>
+      {!loading && (
+      <Card style={{ marginTop: 16 }}>
+        <Title level={5} style={{ marginTop: 0 }}>Previous bills</Title>
+        {!loading && !error && previous.length === 0 && (
+          <Text type="secondary">
+            {firstMonth
+              ? `No previous bills yet. ${firstMonth} is this clinic's first billing month.`
+              : 'No previous bills.'}
+          </Text>
+        )}
+        {previous.map((invoice) => (
+          <div key={invoice.id} style={{ marginTop: 16 }}>
+            <BillCard
+              invoice={invoice}
+              paying={payingId === invoice.id}
+              downloading={downloadingId === invoice.id}
+              onPay={pay}
+              onDownload={download}
+            />
+          </div>
+        ))}
+      </Card>
+      )}
     </>
   );
 };

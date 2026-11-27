@@ -1,61 +1,88 @@
-import { useState } from 'react';
-import { Card, Layout, Tabs, Typography, Grid } from 'antd';
+import { useEffect, useState } from 'react';
+import { Card, Segmented, Typography, Grid } from 'antd';
 import { Redirect } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { makeSelectIsOrganizationOwner } from 'redux/selectors/Auth';
 import { APP_PAGES_PREFIX_PATH } from 'configs/AppConfig';
+import billingService from 'services/BillingService';
 import utils from 'utils';
-import BillingPeriodFilter, { currentMonthRange } from './BillingPeriodFilter';
 import ClinicBills from './ClinicBills';
+import CopaysPanel from './CopaysPanel';
 import UsageDashboard from './UsageDashboard';
 
 const { useBreakpoint } = Grid;
+
+const TABS = [
+  { label: 'Usage', value: 'usage' },
+  { label: 'Bill', value: 'bill' },
+  { label: 'Copays', value: 'copays' },
+];
 
 const BillingPage = () => {
   const screens = utils.getBreakPoint(useBreakpoint());
   const isMobile = !screens.includes('lg');
   const isOrganizationOwner = useSelector(makeSelectIsOrganizationOwner());
-  const [grain, setGrain] = useState('day');
-  const [range, setRange] = useState(currentMonthRange);
-  const start = range?.[0] ? range[0].format('YYYY-MM-DD') : '';
-  const end = range?.[1] ? range[1].format('YYYY-MM-DD') : '';
+  const [tab, setTab] = useState('usage');
+  const [sandbox, setSandbox] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    billingService.getStatus()
+      .then((response) => {
+        if (!cancelled) {
+          setSandbox(Boolean(response.data?.sandbox));
+        }
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   if (!isOrganizationOwner) {
     return <Redirect to={`${APP_PAGES_PREFIX_PATH}/overview`} />;
   }
 
+  const tabs = <Segmented value={tab} onChange={setTab} options={TABS} />;
+
   return (
     <>
-      <div className="mb-4" style={{ paddingTop: isMobile ? 0 : '24px' }}>
+      <div
+        className="mb-4"
+        style={{
+          paddingTop: isMobile ? 0 : '24px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          gap: 12,
+        }}
+      >
         <Typography.Title level={3} style={{ marginTop: '8px', marginBottom: isMobile ? '16px' : 0 }}>
           Billing and usage
         </Typography.Title>
+        {sandbox && (
+          <span
+            style={{
+              background: '#f4e7c8',
+              color: '#8d6b2f',
+              borderRadius: 999,
+              padding: '4px 12px',
+              fontSize: 13,
+              whiteSpace: 'nowrap',
+            }}
+          >
+            Sandbox · no real money moves
+          </span>
+        )}
       </div>
-      <Layout>
+      {tab === 'bill' ? (
+        <ClinicBills tabs={tabs} />
+      ) : (
         <Card>
-          <BillingPeriodFilter
-            grain={grain}
-            onGrainChange={setGrain}
-            range={range}
-            onRangeChange={setRange}
-          />
-          <Tabs
-            defaultActiveKey="usage"
-            items={[
-              {
-                key: 'usage',
-                label: 'Usage',
-                children: <UsageDashboard start={start} end={end} grain={grain} />,
-              },
-              {
-                key: 'billing',
-                label: 'Billing',
-                children: <ClinicBills start={start} end={end} />,
-              },
-            ]}
-          />
+          <div style={{ marginBottom: 16 }}>{tabs}</div>
+          {tab === 'usage' ? <UsageDashboard /> : <CopaysPanel />}
         </Card>
-      </Layout>
+      )}
     </>
   );
 };

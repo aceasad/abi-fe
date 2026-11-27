@@ -57,7 +57,7 @@ const SettingOption = ({ match, location, isOrganizationOwner, isMobile, isTable
       {
         key: `${match.url}/billing`,
         icon: <CreditCardOutlined />,
-        label: "Billing",
+        label: "Payment setup",
         path: 'billing'
       },
     ] : []),
