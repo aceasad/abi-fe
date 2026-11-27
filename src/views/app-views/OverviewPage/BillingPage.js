@@ -3,6 +3,7 @@ import { Card, Segmented, Typography, Grid } from 'antd';
 import { Redirect, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { makeSelectIsOrganizationOwner } from 'redux/selectors/Auth';
+import { makeSelectClinic } from 'redux/selectors/Clinic';
 import { APP_PAGES_PREFIX_PATH } from 'configs/AppConfig';
 import billingService from 'services/BillingService';
 import utils from 'utils';
@@ -22,12 +23,16 @@ const BillingPage = () => {
   const screens = utils.getBreakPoint(useBreakpoint());
   const isMobile = !screens.includes('lg');
   const isOrganizationOwner = useSelector(makeSelectIsOrganizationOwner());
+  const clinic = useSelector(makeSelectClinic());
+  const userBillingEnabled = useSelector((state) => state.auth.user?.billing_enabled);
+  const billingEnabled = Boolean(clinic?.billing_enabled ?? userBillingEnabled);
   const location = useLocation();
   const requestedTab = new URLSearchParams(location.search).get('tab');
   const [tab, setTab] = useState(TABS.some((item) => item.value === requestedTab) ? requestedTab : 'usage');
   const [sandbox, setSandbox] = useState(false);
 
   useEffect(() => {
+    if (!billingEnabled) return undefined;
     let cancelled = false;
     billingService.getStatus()
       .then((response) => {
@@ -39,9 +44,9 @@ const BillingPage = () => {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [billingEnabled]);
 
-  if (!isOrganizationOwner) {
+  if (!isOrganizationOwner || !billingEnabled) {
     return <Redirect to={`${APP_PAGES_PREFIX_PATH}/overview`} />;
   }
 

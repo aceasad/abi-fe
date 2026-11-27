@@ -19,13 +19,14 @@ import BillingSettings from './BillingSettings';
 import ClinicLocations from './ClinicLocations';
 import { useSelector } from 'react-redux';
 import { makeSelectIsOrganizationOwner } from 'redux/selectors/Auth';
+import { makeSelectClinic } from 'redux/selectors/Clinic';
 import utils from 'utils';
 
 const { Title } = Typography;
 const { useBreakpoint } = Grid;
 const { Option } = Select;
 
-const SettingOption = ({ match, location, isOrganizationOwner, isMobile, isTablet, showLocations }) => {
+const SettingOption = ({ match, location, isOrganizationOwner, isMobile, isTablet, showLocations, showBilling }) => {
   const history = useHistory();
 
   const menuItems = [
@@ -54,12 +55,14 @@ const SettingOption = ({ match, location, isOrganizationOwner, isMobile, isTable
         label: "Advanced Settings",
         path: 'advanced-settings'
       },
-      {
-        key: `${match.url}/billing`,
-        icon: <CreditCardOutlined />,
-        label: "Payment setup",
-        path: 'billing'
-      },
+      ...(showBilling ? [
+        {
+          key: `${match.url}/billing`,
+          icon: <CreditCardOutlined />,
+          label: "Payment setup",
+          path: 'billing'
+        },
+      ] : []),
     ] : []),
     ...(showLocations ? [
       {
@@ -120,7 +123,7 @@ const SettingOption = ({ match, location, isOrganizationOwner, isMobile, isTable
   );
 };
 
-const SettingContent = ({ match, isOrganizationOwner, showLocations }) => {
+const SettingContent = ({ match, isOrganizationOwner, showLocations, showBilling }) => {
   return (
     <Switch>
       <Redirect exact from={`${match.url}`} to={`${match.url}/edit-clinic`} />
@@ -146,7 +149,9 @@ const SettingContent = ({ match, isOrganizationOwner, showLocations }) => {
             path={`${match.url}/advanced-settings`}
             component={AdvancedSettings}
           />
-          <Route path={`${match.url}/billing`} component={BillingSettings} />
+          {showBilling && (
+            <Route path={`${match.url}/billing`} component={BillingSettings} />
+          )}
         </>
       )}
     </Switch>
@@ -155,7 +160,9 @@ const SettingContent = ({ match, isOrganizationOwner, showLocations }) => {
 
 const SettingsPage = (props) => {
   const isOrganizationOwner = useSelector(makeSelectIsOrganizationOwner());
-  const { PASProvider, isPasIntegrated } = useSelector((state) => state.auth.user || {});
+  const { PASProvider, isPasIntegrated, billing_enabled: userBillingEnabled } = useSelector((state) => state.auth.user || {});
+  const clinic = useSelector(makeSelectClinic());
+  const showBilling = Boolean(clinic?.billing_enabled ?? userBillingEnabled);
   const showLocations =
     (PASProvider || '').toLowerCase() === 'internal' && !isPasIntegrated;
   const screens = utils.getBreakPoint(useBreakpoint());
@@ -178,12 +185,14 @@ const SettingsPage = (props) => {
             isMobile={isMobile}
             isTablet={isTablet}
             showLocations={showLocations}
+            showBilling={showBilling}
           />
           <div style={{ marginTop: isMobile ? '16px' : '24px' }} />
           <SettingContent
             {...props}
             isOrganizationOwner={isOrganizationOwner}
             showLocations={showLocations}
+            showBilling={showBilling}
           />
         </Card>
       </Layout>

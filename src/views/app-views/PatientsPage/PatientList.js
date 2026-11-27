@@ -60,14 +60,15 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
   const dispatch = useDispatch();
   const screens = utils.getBreakPoint(useBreakpoint());
   const isMobile = !screens.includes('lg');
-  const { PASProvider } = useSelector((state) => state.auth.user || {});
+  const { PASProvider, billing_enabled: userBillingEnabled } = useSelector((state) => state.auth.user || {});
   const pasProvider = PASProvider?.toLowerCase();
   const showPatientLocation = pasProvider === 'medbridge' || pasProvider === 'internal';
   const showPatientLocationFilter = pasProvider !== 'emis';
+  const clinic = useSelector(makeSelectClinic());
+  const billingEnabled = Boolean(clinic?.billing_enabled ?? userBillingEnabled);
   const [isUploadCompleted, setIsUploadCompleted] = useState(false);
   const [patientLocationOptions, setPatientLocationOptions] = useState([]);
   const { count, patients, loading, page, location } = useSelector(makeSelectPatients());
-  const clinic = useSelector(makeSelectClinic());
   const disablePatientDelete =
     clinic?.disable_patient_delete_resolved === true ||
     clinic?.disable_patient_delete === true;
@@ -376,7 +377,7 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
               </Button>
             </Tooltip>
             <UploaderPatient onUploadComplete={handleUploadCompletion} />
-            <CopayBulkPayment />
+            {billingEnabled && <CopayBulkPayment />}
             <Tooltip title={"Unsuccessful Invites"}>
               <Button
                 onClick={downloadNotOnWhatsapp}
@@ -423,7 +424,7 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
                   {"New patient"}
                 </Button>
                 <UploaderPatient onUploadComplete={handleUploadCompletion} />
-                <CopayBulkPayment />
+                {billingEnabled && <CopayBulkPayment />}
                 <Button onClick={downloadNotOnWhatsapp} type="primary">
                   {"Unsuccessful Invites"}
                 </Button>

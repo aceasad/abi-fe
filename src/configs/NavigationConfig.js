@@ -103,7 +103,8 @@ const pagesNavTree = [
 export const getNavigationConfig = (
   pasProvider,
   isTMSEnabled = false,
-  isOrganizationOwner = false
+  isOrganizationOwner = false,
+  billingEnabled = false
 ) => {
   const isMedbridge = pasProvider?.toLowerCase() === 'medbridge';
   const hiddenKeys = new Set();
@@ -115,7 +116,7 @@ export const getNavigationConfig = (
     hiddenKeys.add('transport');
   }
   const items = pagesNavTree.filter((item) => !hiddenKeys.has(item.key));
-  if (!isOrganizationOwner) {
+  if (!isOrganizationOwner || !billingEnabled) {
     return items;
   }
   const settingsIndex = items.findIndex((item) => item.key === 'settings');
@@ -136,7 +137,11 @@ export const getNavigationConfig = (
 };
 
 export const useNavigationConfig = () => {
-  const { PASProvider, isTMSEnabled: userIsTMSEnabled } = useSelector(
+  const {
+    PASProvider,
+    isTMSEnabled: userIsTMSEnabled,
+    billing_enabled: userBillingEnabled,
+  } = useSelector(
     (state) => state.auth.user || {}
   );
   const clinic = useSelector(makeSelectClinic());
@@ -144,7 +149,8 @@ export const useNavigationConfig = () => {
   return getNavigationConfig(
     PASProvider,
     Boolean(clinic?.isTMSEnabled ?? userIsTMSEnabled),
-    Boolean(isOrganizationOwner)
+    Boolean(isOrganizationOwner),
+    Boolean(clinic?.billing_enabled ?? userBillingEnabled)
   );
 };
 

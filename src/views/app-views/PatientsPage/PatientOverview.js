@@ -48,10 +48,11 @@ const PatientOverview = ({
 }) => {
   const dispatch = useDispatch();
   const { patient, loading } = useSelector(makeSelectPatientOverview());
-  const { PASProvider, isTMSEnabled: userIsTMSEnabled } = useSelector((state) => state.auth.user || {});
+  const { PASProvider, isTMSEnabled: userIsTMSEnabled, billing_enabled: userBillingEnabled } = useSelector((state) => state.auth.user || {});
   const [showMessages, setShowMessages] = useState();
   const clinic = useSelector(makeSelectClinic());
   const isTMSEnabled = Boolean(clinic?.isTMSEnabled ?? userIsTMSEnabled);
+  const billingEnabled = Boolean(clinic?.billing_enabled ?? userBillingEnabled);
   const screens = utils.getBreakPoint(useBreakpoint());
   const isMobile = !screens.includes('lg');
   const isMedbridge = PASProvider?.toLowerCase() === 'medbridge';
@@ -280,7 +281,7 @@ const PatientOverview = ({
                   {"Patient overview"}
                 </Title>
                 <Flex alignItems="center" style={{ gap: 8, flexWrap: 'wrap' }}>
-                  {patient?.id && <SendCopayRequest patient={patient} />}
+                  {billingEnabled && patient?.id && <SendCopayRequest patient={patient} />}
                   <Badge>
                     <Button
                       type="primary"
