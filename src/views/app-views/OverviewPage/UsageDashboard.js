@@ -1,11 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Alert, Button, Card, Col, InputNumber, Row, Spin, Table, Typography } from 'antd';
+import { Alert, Button, Card, Col, Row, Spin, Table, Typography } from 'antd';
 import billingService from 'services/BillingService';
 import { DEFAULT_SMALL_PAGINATION_LIMIT } from 'constants/ApiConstant';
 import dayjs from 'utils/dayjs';
 import { billingErrorMessage } from '../SettingsPage/billingStatus';
-
-const { Text } = Typography;
 
 const dollars = (cents) => {
   if (cents === null || cents === undefined || cents === '') {
@@ -63,6 +61,19 @@ const WeeklyBars = ({ points }) => {
   );
 };
 
+const SummaryCard = ({ label, value, detail, children }) => (
+  <Card size="small" styles={{ body: { minHeight: 132 } }}>
+    <div style={{ fontSize: 13, fontWeight: 400, color: '#72849a' }}>{label}</div>
+    <div style={{ marginTop: 10, fontSize: 28, fontWeight: 700, color: '#1a3353', letterSpacing: '-0.03em', lineHeight: 1.1 }}>
+      {value}
+    </div>
+    {children}
+    {detail ? (
+      <div style={{ marginTop: 8, fontSize: 12, color: '#8c9bab' }}>{detail}</div>
+    ) : null}
+  </Card>
+);
+
 const UsageDashboard = () => {
   const [metrics, setMetrics] = useState([]);
   const [events, setEvents] = useState([]);
@@ -70,11 +81,9 @@ const UsageDashboard = () => {
   const [eventPage, setEventPage] = useState(1);
   const [invoices, setInvoices] = useState([]);
   const [status, setStatus] = useState(null);
-  const [budget, setBudget] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
   const [showEmpty, setShowEmpty] = useState(false);
-  const [savingBudget, setSavingBudget] = useState(false);
 
   useEffect(() => {
     const { start, end } = currentMonth();
@@ -97,8 +106,6 @@ const UsageDashboard = () => {
         setEventTotal(Number.isInteger(ledger.data?.count) ? ledger.data.count : rows.length);
         setInvoices(invoiceResponse.data?.invoices || []);
         setStatus(statusResponse.data || null);
-        const cents = statusResponse.data?.monthly_budget_cents;
-        setBudget(cents == null ? null : cents / 100);
       })
       .catch((err) => {
         if (!cancelled) {
@@ -114,19 +121,6 @@ const UsageDashboard = () => {
       cancelled = true;
     };
   }, []);
-
-  const saveBudget = async () => {
-    setSavingBudget(true);
-    try {
-      const cents = budget == null || budget === '' ? null : Math.round(Number(budget) * 100);
-      const response = await billingService.saveSettings({ monthly_budget_cents: cents });
-      setStatus(response.data);
-    } catch (err) {
-      setError(billingErrorMessage(err));
-    } finally {
-      setSavingBudget(false);
-    }
-  };
 
   const changeEventPage = (next) => {
     setEventPage(next);
@@ -155,26 +149,19 @@ const UsageDashboard = () => {
     return <Alert type="error" showIcon message={error} />;
   }
 
+  const today = dayjs();
   const openBill = invoices.find((invoice) => invoice.current) || invoices[0];
   const previous = invoices.find((invoice) => !invoice.current);
   const spend = openBill?.total_cents || 0;
   const forecast = forecastCents(spend);
   const budgetCents = status?.monthly_budget_cents;
   const used = budgetCents ? Math.round((spend / budgetCents) * 100) : null;
-  const rates = {};
-  (openBill?.lines || []).forEach((line) => {
-    rates[String(line.name || '').toLowerCase()] = line;
-  });
-  const rows = metrics.map((metric) => {
-    const line = rates[(meterLabel[metric.key] || metric.name || '').toLowerCase()];
-    const rate = line?.unit_price_cents;
-    const quantity = metric.total || 0;
-    return {
-      ...metric,
-      rate,
-      cost: rate == null ? line?.total_cents : quantity * rate,
-    };
-  });
+  const barWidth = used == null ? 0 : Math.min(100, Math.max(0, used));
+  const rows = metrics.map((metric) => ({
+    ...metric,
+    rate: metric.rate_cents,
+    cost: metric.cost_cents,
+  }));
   const active = rows.filter((row) => row.total > 0);
   const idle = rows.filter((row) => !row.total);
 
@@ -183,40 +170,38 @@ const UsageDashboard = () => {
       {error && <Alert style={{ marginBottom: 12 }} type="error" showIcon message={error} />}
       <Row gutter={[16, 16]}>
         <Col xs={24} md={12} xl={6}>
-          <Card size="small" title="Spend this month">
-            <Text strong>{dollars(spend)}</Text>
-          </Card>
+          <SummaryCard
+            label="Spend this month"
+            value={dollars(spend)}
+            detail={`${today.startOf('month').format('MMM D')} to today`}
+          />
         </Col>
         <Col xs={24} md={12} xl={6}>
-          <Card size="small" title="Forecast">
-            <Text strong>{dollars(forecast)}</Text>
-          </Card>
+          <SummaryCard
+            label={`Forecast for ${today.format('MMMM')}`}
+            value={dollars(forecast)}
+            detail="At the current pace"
+          />
         </Col>
         <Col xs={24} md={12} xl={6}>
-          <Card size="small" title="Budget">
+          <SummaryCard
+            label="Budget"
+            value={budgetCents ? dollars(budgetCents) : 'None is set'}
+            detail={budgetCents ? `${used}% used` : 'Set a monthly budget in Payment setup'}
+          >
             {budgetCents ? (
-              <Text strong>{`${dollars(budgetCents)} · ${used}% used`}</Text>
-            ) : (
-              <Text type="secondary">None is set</Text>
-            )}
-            <div style={{ marginTop: 8, display: 'flex', gap: 8 }}>
-              <InputNumber
-                min={0}
-                value={budget}
-                placeholder="Monthly budget"
-                onChange={setBudget}
-                style={{ width: '100%' }}
-              />
-              <Button size="small" loading={savingBudget} onClick={saveBudget}>
-                Save
-              </Button>
-            </div>
-          </Card>
+              <div style={{ marginTop: 12, height: 6, borderRadius: 99, background: '#e7eaef', overflow: 'hidden' }}>
+                <div style={{ width: `${barWidth}%`, height: '100%', background: '#2ec4d6' }} />
+              </div>
+            ) : null}
+          </SummaryCard>
         </Col>
         <Col xs={24} md={12} xl={6}>
-          <Card size="small" title="Last invoice">
-            <Text strong>{previous ? dollars(previous.total_cents) : '—'}</Text>
-          </Card>
+          <SummaryCard
+            label="Last invoice"
+            value={previous ? dollars(previous.total_cents) : 'None yet'}
+            detail={previous ? 'Previous bill' : `First bill closes ${today.endOf('month').format('MMM D')}`}
+          />
         </Col>
       </Row>
       <Table
@@ -228,7 +213,11 @@ const UsageDashboard = () => {
         columns={[
           { title: 'Meter', dataIndex: 'name' },
           { title: 'Quantity', dataIndex: 'total' },
-          { title: 'Rate', dataIndex: 'rate', render: (value) => dollars(value) },
+          {
+            title: 'Rate',
+            dataIndex: 'rate',
+            render: (value, row) => (value == null ? (row.rate_label || '—') : dollars(value)),
+          },
           { title: 'Cost', dataIndex: 'cost', render: (value) => dollars(value) },
           { title: 'Week', dataIndex: 'points', render: (points) => <WeeklyBars points={points} /> },
         ]}

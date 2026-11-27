@@ -111,8 +111,7 @@ const CopaysPanel = () => {
       report?.collected_cents,
       countPhrase(paidCount, 'copay paid by link', 'copays paid by link'),
     ],
-    ['Spryt fee', report?.fee_cents, '0.5%, $0.50 minimum'],
-    ['Net to clinic', report?.net_cents, 'Paid out through Stripe'],
+    ['Net to clinic', report?.net_cents, 'After the Spryt fee. This amount does not include the Stripe fee.'],
     ['Outstanding', report?.outstanding_cents, countPhrase(openCount, 'copay requested, not paid', 'copays requested, not paid')],
   ];
 
@@ -164,7 +163,7 @@ const CopaysPanel = () => {
       <>
       <Row gutter={[16, 16]}>
         {cards.map(([title, cents, detail]) => (
-          <Col key={title} xs={24} md={12} xl={6}>
+          <Col key={title} xs={24} md={12} xl={8}>
             <Card>
               <Text type="secondary">{title}</Text>
               <div style={{ fontSize: 28, fontWeight: 600, lineHeight: 1.2, margin: '4px 0' }}>

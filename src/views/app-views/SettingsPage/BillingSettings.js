@@ -6,6 +6,7 @@ import {
   Col,
   Form,
   Input,
+  InputNumber,
   Row,
   Select,
   Spin,
@@ -54,6 +55,7 @@ const BillingSettings = () => {
   const [collectCopays, setCollectCopays] = useState(false);
   const [leadDays, setLeadDays] = useState(3);
   const [payAtVisit, setPayAtVisit] = useState(false);
+  const [budgetDollars, setBudgetDollars] = useState(null);
   const [changingAccount, setChangingAccount] = useState(false);
   const [form] = Form.useForm();
   const handledStripeReturn = useRef('');
@@ -67,6 +69,8 @@ const BillingSettings = () => {
       setCollectCopays(Boolean(response.data?.collect_copays));
       setLeadDays(response.data?.copay_lead_days ?? 3);
       setPayAtVisit(Boolean(response.data?.offer_pay_at_visit));
+      const cents = response.data?.monthly_budget_cents;
+      setBudgetDollars(cents == null ? null : cents / 100);
     } catch (err) {
       setError(billingErrorMessage(err));
     } finally {
@@ -205,6 +209,25 @@ const BillingSettings = () => {
       const response = await billingService.saveSettings(payload);
       if (response?.data?.organization_id) {
         setStatus(response.data);
+      }
+    } catch (err) {
+      setError(billingErrorMessage(err));
+    } finally {
+      setActing('');
+    }
+  };
+
+  const saveBudget = async (value) => {
+    const cents = value == null || value === '' ? null : Math.round(Number(value) * 100);
+    setBudgetDollars(value == null || value === '' ? null : Number(value));
+    setActing('budget');
+    setError('');
+    try {
+      const response = await billingService.saveSettings({ monthly_budget_cents: cents });
+      if (response?.data?.organization_id) {
+        setStatus(response.data);
+        const saved = response.data.monthly_budget_cents;
+        setBudgetDollars(saved == null ? null : saved / 100);
       }
     } catch (err) {
       setError(billingErrorMessage(err));
@@ -413,6 +436,34 @@ const BillingSettings = () => {
           </Card>
         </Col>
       </Row>
+      <Card style={{ marginTop: 16 }} title="Monthly budget">
+        <SettingRow
+          title="Spend limit for the month"
+          detail="Shown on Usage as a bar against this month's spend."
+          control={(
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <InputNumber
+                min={0}
+                prefix="$"
+                value={budgetDollars}
+                placeholder="None"
+                style={{ width: 160 }}
+                disabled={acting === 'budget'}
+                onChange={setBudgetDollars}
+                onPressEnter={() => saveBudget(budgetDollars)}
+              />
+              <Button
+                type="primary"
+                loading={acting === 'budget'}
+                disabled={Boolean(acting) && acting !== 'budget'}
+                onClick={() => saveBudget(budgetDollars)}
+              >
+                Save
+              </Button>
+            </div>
+          )}
+        />
+      </Card>
     </div>
   );
 };
@@ -430,7 +481,7 @@ const SettingRow = ({ title, detail, control }) => (
       <div>{title}</div>
       <Text type="secondary">{detail}</Text>
     </div>
-    {control ? <div style={{ flex: '0 0 auto', lineHeight: 0 }}>{control}</div> : null}
+    {control ? <div style={{ flex: '0 0 auto' }}>{control}</div> : null}
   </div>
 );
 
