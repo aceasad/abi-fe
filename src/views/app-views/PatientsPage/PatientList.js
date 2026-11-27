@@ -61,8 +61,9 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
   const screens = utils.getBreakPoint(useBreakpoint());
   const isMobile = !screens.includes('lg');
   const { PASProvider } = useSelector((state) => state.auth.user || {});
-  const isMedbridge = PASProvider?.toLowerCase() === 'medbridge';
-  const showPatientLocationFilter = PASProvider?.toLowerCase() !== 'emis';
+  const pasProvider = PASProvider?.toLowerCase();
+  const showPatientLocation = pasProvider === 'medbridge' || pasProvider === 'internal';
+  const showPatientLocationFilter = pasProvider !== 'emis';
   const [isUploadCompleted, setIsUploadCompleted] = useState(false);
   const [patientLocationOptions, setPatientLocationOptions] = useState([]);
   const { count, patients, loading, page, location } = useSelector(makeSelectPatients());
@@ -174,7 +175,7 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
       sorter: true,
       responsive: ['md'], // Hide on mobile
     },
-    ...(isMedbridge
+    ...(showPatientLocation
       ? [
           {
             title: "Location",
@@ -291,7 +292,7 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
           </Space>
         </Space>
 
-        {isMedbridge && (
+        {showPatientLocation && (
           <Typography.Text type="secondary" style={{ fontSize: '12px' }}>
             {"Location"}: {formatHomeLocationDisplay(patient.home_location)}
           </Typography.Text>
