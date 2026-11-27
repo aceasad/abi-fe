@@ -1,7 +1,7 @@
-import React from 'react';
-import { Timeline, Typography, Empty, Spin } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Timeline, Typography, Empty, Spin, Pagination } from 'antd';
+import { DEFAULT_SMALL_PAGINATION_LIMIT } from 'constants/ApiConstant';
 import {
-  formatDateTimeByCountry,
   formatDateTimeByCountryInTimezone,
   getConversationProgressColor,
   humanizeConversationStatus,
@@ -20,6 +20,12 @@ const ConversationStatusTimeline = ({
   country,
   patientTimezone,
 }) => {
+  const [page, setPage] = useState(1);
+
+  useEffect(() => {
+    setPage(1);
+  }, [items]);
+
   if (loading) {
     return (
       <div style={{ textAlign: 'center', padding: '32px 0' }}>
@@ -32,10 +38,13 @@ const ConversationStatusTimeline = ({
     return <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="No data" />;
   }
 
+  const start = (page - 1) * DEFAULT_SMALL_PAGINATION_LIMIT;
+  const pageItems = items.slice(start, start + DEFAULT_SMALL_PAGINATION_LIMIT);
+
   return (
     <div className="conversation-status-timeline" style={{ paddingLeft: 16 }}>
       <Timeline
-        items={items.map((item) => {
+        items={pageItems.map((item) => {
           const dotColor = getStatusDotColor(item.status);
           return {
             key: item.id,
@@ -78,6 +87,16 @@ const ConversationStatusTimeline = ({
           };
         })}
       />
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 16 }}>
+        <Pagination
+          current={page}
+          pageSize={DEFAULT_SMALL_PAGINATION_LIMIT}
+          total={items.length}
+          onChange={setPage}
+          hideOnSinglePage
+          showSizeChanger={false}
+        />
+      </div>
     </div>
   );
 };
