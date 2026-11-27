@@ -44,6 +44,10 @@ import {
 import staffService from 'services/StaffService';
 import { UPDATE_MESSAGE_REQUIRING_IMMEDIATE_ATTENTION_STATUS } from 'redux/constants/Appointment';
 import { setSingleAppointmentLoading } from 'redux/actions/Appointment';
+import {
+  fetchNotificationDashboard,
+  fetchUnreadNotifications,
+} from 'redux/actions/Notifications';
 
 function* getPaginatedStaff() {
   try {
@@ -229,6 +233,8 @@ export function* updateMessageRequiringImmediateAttentionStatus({ payload }) {
     yield call(getMessagesRequiringImmediateAttention, {
       payload: updatePayload,
     });
+    yield put(fetchUnreadNotifications());
+    yield put(fetchNotificationDashboard());
     if (afterMessageRequiringImmediateAttentionStatusUpdate) {
       yield call(afterMessageRequiringImmediateAttentionStatusUpdate);
     }
