@@ -5,6 +5,7 @@ import {
   SET_PATIENT_LOADING,
   SET_PATIENT_ORDER,
   SET_PATIENT_SEARCH,
+  SET_PATIENT_LOCATION,
   DELETE_PATIENT,
   GET_PATIENTS_DETAILS,
   SET_PATIENT_DETAILS,
@@ -65,6 +66,11 @@ export const setOrder = (payload) => ({
 
 export const setPatientSearch = (payload) => ({
   type: SET_PATIENT_SEARCH,
+  payload,
+});
+
+export const setPatientLocation = (payload) => ({
+  type: SET_PATIENT_LOCATION,
   payload,
 });
 

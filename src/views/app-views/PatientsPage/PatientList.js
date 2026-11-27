@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { interpolate } from 'utils/interpolate';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -36,6 +36,7 @@ import {
   setPatientPage,
   setOrder,
   setPatientSearch,
+  setPatientLocation,
   deletePatient,
 } from 'redux/actions/Patient';
 import { DEFAULT_PAGINATION_LIMIT, SET_DEFAULT_PAGINATION_LIMIT } from 'constants/ApiConstant';
@@ -46,7 +47,9 @@ import utils from 'utils';
 import UploaderPatient from './UploaderPatient';
 import CopayBulkPayment from './CopayBulkPayment';
 import patientService from 'services/PatientService';
-import { formatDateByCountry, formatHomeLocationDisplay } from 'utils/helpers';
+import { formatDateByCountry, formatHomeLocationDisplay, formatLocationLabel } from 'utils/helpers';
+import ConversationFilters from 'views/app-views/ChatPage/ConversationFilters';
+import { FILTER_ATTRIBUTES } from 'constants/ChatConstants';
 
 const { useBreakpoint } = Grid;
 
@@ -59,8 +62,10 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
   const isMobile = !screens.includes('lg');
   const { PASProvider } = useSelector((state) => state.auth.user || {});
   const isMedbridge = PASProvider?.toLowerCase() === 'medbridge';
+  const showPatientLocationFilter = PASProvider?.toLowerCase() !== 'emis';
   const [isUploadCompleted, setIsUploadCompleted] = useState(false);
-  const { count, patients, loading, page } = useSelector(makeSelectPatients());
+  const [patientLocationOptions, setPatientLocationOptions] = useState([]);
+  const { count, patients, loading, page, location } = useSelector(makeSelectPatients());
   const clinic = useSelector(makeSelectClinic());
   const disablePatientDelete =
     clinic?.disable_patient_delete_resolved === true ||
@@ -69,6 +74,53 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
   useEffect(() => {
     dispatch(getPatients());
   }, [dispatch, isUploadCompleted]);
+
+  useEffect(() => {
+    if (!showPatientLocationFilter) {
+      setPatientLocationOptions([]);
+      return undefined;
+    }
+
+    let cancelled = false;
+    patientService
+      .getPatientLocations()
+      .then(({ data }) => {
+        if (cancelled) return;
+        const options = (Array.isArray(data) ? data : [])
+          .filter((item) => item?.location_id)
+          .map((item) => {
+            const id = String(item.location_id);
+            return {
+              value: id,
+              label: formatLocationLabel(item, id),
+            };
+          });
+        setPatientLocationOptions(options);
+      })
+      .catch(() => {
+        if (!cancelled) setPatientLocationOptions([]);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [showPatientLocationFilter]);
+
+  const locationFilters = useMemo(
+    () => (
+      location
+        ? [{ attribute: FILTER_ATTRIBUTES.LOCATION, values: [String(location)] }]
+        : []
+    ),
+    [location]
+  );
+
+  const handleLocationFilters = (next) => {
+    const entry = (next || []).find(
+      (filter) => filter.attribute === FILTER_ATTRIBUTES.LOCATION
+    );
+    dispatch(setPatientLocation(entry?.values?.[0] || ''));
+  };
 
   // Callback to set upload completion status
   const handleUploadCompletion = () => {
@@ -290,15 +342,27 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
           <Typography.Title level={3} style={{ fontSize: '20px', marginBottom: '16px' }}>
             {"Patients"}
           </Typography.Title>
-          <form onSubmit={handleSearch} style={{ marginBottom: '12px', width: '100%' }}>
-            <Input
-              placeholder={"Search"}
-              prefix={<SearchOutlined />}
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              style={{ width: '100%' }}
-            />
-          </form>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+            <form onSubmit={handleSearch} style={{ flex: 1, minWidth: 0 }}>
+              <Input
+                placeholder={"Search"}
+                prefix={<SearchOutlined />}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                style={{ width: '100%' }}
+              />
+            </form>
+            {showPatientLocationFilter && (
+              <div className="patient-list-location-filter">
+                <ConversationFilters
+                  value={locationFilters}
+                  onChange={handleLocationFilters}
+                  showStatusFilter={false}
+                  patientLocationOptions={patientLocationOptions}
+                />
+              </div>
+            )}
+          </div>
           <Space wrap size="small" style={{ width: '100%', display: 'flex', justifyContent: 'flex-start' }}>
             <Tooltip title={"New patient"}>
               <Button
@@ -344,6 +408,16 @@ const PatientList = ({ showCreate, updatePatient, showPreview }) => {
                     style={{ width: '200px' }}
                   />
                 </form>
+            {showPatientLocationFilter && (
+              <div className="patient-list-location-filter">
+                <ConversationFilters
+                  value={locationFilters}
+                  onChange={handleLocationFilters}
+                  showStatusFilter={false}
+                  patientLocationOptions={patientLocationOptions}
+                />
+              </div>
+            )}
                 <Button onClick={showCreate} type="primary">
                   {"New patient"}
                 </Button>

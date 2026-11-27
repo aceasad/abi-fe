@@ -12,6 +12,7 @@ import { CHAT_FILTERS, FILTER_ATTRIBUTES } from 'constants/ChatConstants';
 const ConversationFilters = ({
   value,
   onChange,
+  showStatusFilter = true,
   showPatientLocationFilter = true,
   patientLocationOptions = [],
 }) => {
@@ -53,12 +54,13 @@ const ConversationFilters = ({
   );
 
   const ATTRIBUTES = useMemo(() => {
-    const attrs = {
-      [FILTER_ATTRIBUTES.STATUS]: {
+    const attrs = {};
+    if (showStatusFilter) {
+      attrs[FILTER_ATTRIBUTES.STATUS] = {
         label: "Status",
         getOptions: () => STATUS_OPTIONS,
-      },
-    };
+      };
+    }
     if (showPatientLocationFilter) {
       attrs[FILTER_ATTRIBUTES.LOCATION] = {
         label: "Patient location",
@@ -66,7 +68,7 @@ const ConversationFilters = ({
       };
     }
     return attrs;
-  }, [STATUS_OPTIONS, showPatientLocationFilter, patientLocationOptions]);
+  }, [STATUS_OPTIONS, showStatusFilter, showPatientLocationFilter, patientLocationOptions]);
 
   const resetPicker = () => {
     setEditingAttribute(null);

@@ -13,6 +13,7 @@ const makeSelectPatients = () =>
     count: patients.count,
     loading: patients.loading,
     page: patients.page,
+    location: patients.location || '',
     patient_show_messages: patients.patient_show_messages,
   }));
 
@@ -22,6 +23,7 @@ const makeSelectPatientRequestData = () =>
     field: patients.field,
     page: patients.page,
     search: patients.search,
+    location: patients.location || '',
   }));
 
 const makeSelectLastOnThePage = () =>

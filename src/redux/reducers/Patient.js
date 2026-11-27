@@ -6,6 +6,7 @@ import {
   SET_PATIENT_ORDER,
   SET_PATIENT_PAGE,
   SET_PATIENT_SEARCH,
+  SET_PATIENT_LOCATION,
   SET_PATIENT_DETAILS,
   SET_PATIENT_DETAILS_NEW_PATIENT_FORM,
   SET_PATIENT_LOCATIONS,
@@ -27,7 +28,7 @@ import {
 } from 'redux/constants/Patient';
 
 const initialState = {
-  patients: { ...baseState },
+  patients: { ...baseState, location: '' },
   education: [],
   employment: [],
   material_status: [],
@@ -70,6 +71,13 @@ const patient = (state = initialState, action) =>
           ...state.patients,
           page: 1,
           search: action.payload,
+        };
+        break;
+      case SET_PATIENT_LOCATION:
+        draft.patients = {
+          ...state.patients,
+          page: 1,
+          location: action.payload || '',
         };
         break;
       // Check if this is needed

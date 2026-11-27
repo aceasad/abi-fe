@@ -28,13 +28,14 @@ const ENDPOINTS = {
 };
 
 class PatientService extends ApiService {
-  getPatients = ({ page = 1, order, field, search }) =>
+  getPatients = ({ page = 1, order, field, search, location }) =>
     this.apiClient.get(ENDPOINTS.GET_PATIENTS, {
       params: {
         limit: DEFAULT_PAGINATION_LIMIT,
         offset: (page - 1) * DEFAULT_PAGINATION_LIMIT,
         ordering: `${order === ORDERING.DESC ? '-' : ''}${field}`,
         search,
+        ...(location ? { location } : {}),
       },
     });
 

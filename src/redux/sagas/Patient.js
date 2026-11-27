@@ -5,6 +5,7 @@ import {
   SET_PATIENT_ORDER,
   SET_PATIENT_PAGE,
   SET_PATIENT_SEARCH,
+  SET_PATIENT_LOCATION,
   DELETE_PATIENT,
   GET_PATIENTS_DETAILS,
   GET_PATIENT_DETAILS_NEW_PATIENT_FORM,
@@ -274,6 +275,7 @@ export function* patientSaga() {
   yield takeEvery(SET_PATIENT_PAGE, getPatients);
   yield takeEvery(SET_PATIENT_ORDER, getPatients);
   yield takeEvery(SET_PATIENT_SEARCH, getPatients);
+  yield takeEvery(SET_PATIENT_LOCATION, getPatients);
   yield takeEvery(DELETE_PATIENT, deletePatient);
   yield takeEvery(GET_PATIENTS_DETAILS, getPatientDetails);
   yield takeEvery(
